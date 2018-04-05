@@ -3,8 +3,8 @@ image: cangol/android-gradle:latest
 pipelines:
   branches:
     develop:
-    - step:
-        caches:
-          - gradle
-        script:
-          - bash ./gradlew build
+      - step:
+          caches:
+            - gradle
+          script:
+            - bash ./gradlew build
