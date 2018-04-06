@@ -8,7 +8,7 @@ pipelines:
           caches:
             - gradle
           script:
-            - bash ./gradlew build
+            - bash ./gradlew assemble
           artifacts:
             - app/build/**
       - step:
