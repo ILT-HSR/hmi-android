@@ -20,4 +20,4 @@ test:
   artifacts:
     expire_in: 30 days
     paths:
-      - app/build/outputs/apk/**.apk
+      - app/build/outputs/apk/*/*.apk
