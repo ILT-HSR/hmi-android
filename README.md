@@ -17,7 +17,7 @@ Install the newest release directly from here:
 ## Development Releases
 
 | Build Type | Link                                                                                                                         |
-|------------|------------------------------------------------------------------=-----------------------------------------------------------|
+|------------|------------------------------------------------------------------------------------------------------------------------------|
 | Debug      | https://gitlab.dev.ifs.hsr.ch/ARCHE18/gcs/-/artifacts/develop/raw/app/build/outputs/apk/debug/gcs-debug-1.0.apk?job=test     |
 | Release    | https://gitlab.dev.ifs.hsr.ch/ARCHE18/gcs/-/artifacts/develop/raw/app/build/outputs/apk/release/gcs-release-1.0.apk?job=test |
 
