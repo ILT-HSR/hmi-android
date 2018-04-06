@@ -21,7 +21,6 @@ build:
     paths:
       - .gradle/wrapper
       - .gradle/caches
-    policy: push
 
 test:
   stage: test
