@@ -3,11 +3,6 @@ image: gitlab.dev.ifs.hsr.ch:45023/arche18/gcs/android-sdk
 before_script:
   - export GRADLE_USER_HOME=$(pwd)/.gradle
 
-cache:
-  paths:
-    - .gradle/wrapper
-    - .gradle/caches
-
 stages:
   - build
   - test
@@ -21,6 +16,12 @@ build:
     expire_in: 1h
     paths:
       - app/build/**
+  cache:
+    key: gradle
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+    policy: push
 
 test:
   stage: test
@@ -31,6 +32,10 @@ test:
     paths:
       - app/build/outputs/apk/*/*.apk
   cache:
+    key: gradle
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
     policy: pull
 
 docs:
@@ -42,4 +47,9 @@ docs:
     paths:
       - javadoc/*
   cache:
+    key: gradle
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
     policy: pull
+
