@@ -8,3 +8,8 @@ pipelines:
             - gradle
           script:
             - bash ./gradlew build
+      - step:
+          caches:
+            - gradle
+          script:
+            - bash ./gradlew test
