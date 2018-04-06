@@ -7,6 +7,7 @@ cache:
 stages:
   - build
   - test
+  - docs
 
 build:
   stage: build
@@ -25,3 +26,12 @@ test:
     expire_in: 30 days
     paths:
       - app/build/outputs/apk/*/*.apk
+
+docs:
+  stage: docs
+  script:
+    - bash ./gradlew dokka
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - javadoc/*
