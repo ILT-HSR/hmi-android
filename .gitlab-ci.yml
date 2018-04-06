@@ -1,0 +1,54 @@
+image: gitlab.dev.ifs.hsr.ch:45023/arche18/gcs/android-sdk
+
+before_script:
+  - export GRADLE_USER_HOME=$(pwd)/.gradle
+
+stages:
+  - build
+  - test
+  - docs
+
+build:
+  stage: build
+  script:
+    - bash ./gradlew assemble
+  artifacts:
+    expire_in: 1h
+    paths:
+      - app/build/**
+  cache:
+    key: gradle
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+
+test:
+  stage: test
+  script:
+    - bash ./gradlew test
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - app/build/outputs/apk/*/*.apk
+  cache:
+    key: gradle
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+    policy: pull
+
+docs:
+  stage: docs
+  script:
+    - bash ./gradlew dokka
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - javadoc/*
+  cache:
+    key: gradle
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+    policy: pull
+

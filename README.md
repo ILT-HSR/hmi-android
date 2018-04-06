@@ -6,7 +6,20 @@ GCS is a ground control station developed at HSR for easy coordination of multip
 # Installation
 
 Install the newest release directly from here:
-> TBD
+
+## Stable Releases
+
+| Build Type | Link                                                                                                                                         |
+|------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| Debug      | [Download](https://gitlab.dev.ifs.hsr.ch/ARCHE18/gcs/-/jobs/artifacts/master/raw/app/build/outputs/apk/debug/gcs-debug-1.0.apk?job=test)     |
+| Release    | [Download](https://gitlab.dev.ifs.hsr.ch/ARCHE18/gcs/-/jobs/artifacts/master/raw/app/build/outputs/apk/release/gcs-release-1.0.apk?job=test) |
+
+## Development Releases
+
+| Build Type | Link                                                                                                                                          |
+|------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| Debug      | [Download](https://gitlab.dev.ifs.hsr.ch/ARCHE18/gcs/-/jobs/artifacts/develop/raw/app/build/outputs/apk/debug/gcs-debug-1.0.apk?job=test)     |
+| Release    | [Download](https://gitlab.dev.ifs.hsr.ch/ARCHE18/gcs/-/jobs/artifacts/develop/raw/app/build/outputs/apk/release/gcs-release-1.0.apk?job=test) |
 
 # Build
 
