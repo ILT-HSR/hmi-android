@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'org.jetbrains.dokka-android'
 
+apply from: '../artifacts.gradle'
+
 android {
     compileSdkVersion 26
     buildToolsVersion "27.0.3"
