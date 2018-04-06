@@ -1,5 +1,9 @@
 image: gitlab.dev.ifs.hsr.ch:45023/arche18/gcs/android-sdk
 
+cache:
+  paths:
+    - ~/.gradle
+
 stages:
   - build
   - test
