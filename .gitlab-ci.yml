@@ -1,0 +1,23 @@
+image: gitlab.dev.ifs.hsr.ch:45023/arche18/gcs/android-sdk
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - bash ./gradlew assemble
+  artifacts:
+    expire_in: 1h
+    paths:
+      - app/build/**
+
+test:
+  stage: test
+  script:
+    - bash ./gradlew test
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - app/build/outputs/apk/**.apk
