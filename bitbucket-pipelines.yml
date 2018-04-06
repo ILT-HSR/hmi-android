@@ -4,11 +4,13 @@ pipelines:
   branches:
     develop:
       - step:
+          name: build
           caches:
             - gradle
           script:
             - bash ./gradlew build
       - step:
+          name: test
           caches:
             - gradle
           script:
