@@ -9,6 +9,8 @@ pipelines:
             - gradle
           script:
             - bash ./gradlew build
+          artifacts:
+            - app/build/**
       - step:
           name: test
           caches:
