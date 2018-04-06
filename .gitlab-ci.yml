@@ -2,7 +2,8 @@ image: gitlab.dev.ifs.hsr.ch:45023/arche18/gcs/android-sdk
 
 cache:
   paths:
-    - ${HOME}/.gradle
+    - .gradle/wrapper
+    - .gradle/caches
 
 stages:
   - build
