@@ -1,4 +1,4 @@
-image: cangol/android-gradle:latest
+image: fmorgner/android-sdk:latest
 
 pipelines:
   branches:
