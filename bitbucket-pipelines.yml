@@ -8,7 +8,7 @@ pipelines:
           caches:
             - gradle
           script:
-            - bash ./gradlew assemble
+            - bash ./gradlew assembleDebug
           artifacts:
             - app/build/**
       - step:
@@ -16,10 +16,10 @@ pipelines:
           caches:
             - gradle
           script:
-            - bash ./gradlew test
+            - bash ./gradlew testDebugUnitTest
           artifacts:
-            - app/build/outputs/apk/release/*
+            - app/build/outputs/apk/debug/*
       - step:
           name: deploy
           script:
-            - find app/build/outputs/apk/release/ -name \*gcs-release\*.apk -exec curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"{}" \;
+            - find app/build/outputs/apk/debug/ -name \*gcs-debug\*.apk -exec curl -X POST "https://${BB_AUTH_STRING}@api.bitbucket.org/2.0/repositories/${BITBUCKET_REPO_OWNER}/${BITBUCKET_REPO_SLUG}/downloads" --form files=@"{}" -v \;
