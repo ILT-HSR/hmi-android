@@ -6,7 +6,6 @@ import android.preference.PreferenceManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.views.MapView
 
 class MainActivity : AppCompatActivity() {
 
