@@ -1,5 +1,8 @@
 image: gitlab.dev.ifs.hsr.ch:45023/arche18/gcs/android-sdk
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 before_script:
   - export GRADLE_USER_HOME=$(pwd)/.gradle
 
