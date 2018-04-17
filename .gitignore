@@ -66,3 +66,6 @@ fastlane/readme.md
 
 # docs
 javadoc
+
+# macOS
+.DS_Store
