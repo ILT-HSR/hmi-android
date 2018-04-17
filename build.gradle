@@ -11,10 +11,21 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:${dokka_version}"
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
+}
+
+apply plugin: 'org.jetbrains.dokka-android'
+
+dokka {
+    moduleName = "$rootProject.name"
+    outputDirectory = "javadoc"
+    outputFormat = "html"
+    processConfigurations = []
+
+    sourceDirs = files(subprojects.findAll { !it.name.contains("test") }.collect {
+        p ->
+            return new File(p.projectDir, "/src/main")
+    })
 }
 
 allprojects {
