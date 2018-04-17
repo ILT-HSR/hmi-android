@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/gcs.iml" filepath="$PROJECT_DIR$/gcs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libs/jMAVlib/jMAVlib.iml" filepath="$PROJECT_DIR$/libs/jMAVlib/jMAVlib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jMAVlib/jMAVlib.iml" filepath="$PROJECT_DIR$/jMAVlib/jMAVlib.iml" />
     </modules>
   </component>
 </project>
