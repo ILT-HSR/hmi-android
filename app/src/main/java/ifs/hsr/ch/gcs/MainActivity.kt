@@ -1,13 +1,20 @@
 package ifs.hsr.ch.gcs
 
+import android.content.Context
+import android.content.Intent
+import android.hardware.usb.UsbManager
+import android.os.Bundle
+import android.preference.PreferenceManager
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.hoho.android.usbserial.driver.UsbSerialPort
+import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
+import kotlinx.android.synthetic.main.activity_main.*
+import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import java.io.IOException
 import java.util.concurrent.Executors
-import com.hoho.android.usbserial.driver.UsbSerialPort
-import android.hardware.usb.UsbManager
-import android.content.Intent
-import com.hoho.android.usbserial.driver.UsbSerialProber
 
 class MainActivity : AppCompatActivity() {
 
