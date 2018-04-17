@@ -11,9 +11,16 @@ import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
 import kotlinx.android.synthetic.main.activity_main.*
+import me.drton.jmavlib.MAVLINK_SCHEMA_COMMON
+import me.drton.jmavlib.mavlink.MAVLinkStream
+import me.drton.jmavlib.newArmMessage
+import me.drton.jmavlib.newDisarmMessage
+import me.drton.jmavlib.newMAVLinkHeartbeat
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import java.io.IOException
+import java.nio.ByteBuffer
+import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
@@ -23,10 +30,22 @@ class MainActivity : AppCompatActivity() {
     private var button: UsbSerialPort? = null
     private var drone: UsbSerialPort? = null
 
-    private val mExecutor = Executors.newFixedThreadPool(2)
+    private val mExecutor = Executors.newFixedThreadPool(3)
 
     private var buttonIOManager: SerialInputOutputManager? = null
     private var droneIOManager: SerialInputOutputManager? = null
+
+    val mavlinkStream = MAVLinkStream(MAVLINK_SCHEMA_COMMON, object : ByteChannel {
+        override fun write(data: ByteBuffer): Int {
+            val array = ByteArray(data.remaining())
+            data.get(array)
+            return drone?.write(array, 100) ?: 0
+        }
+
+        override fun isOpen() = true
+        override fun close() = Unit
+        override fun read(p0: ByteBuffer?) = 0
+    })
 
     private val buttonListener = object : SerialInputOutputManager.Listener {
 
@@ -107,6 +126,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        mExecutor.submit {
+            val heartbeat = newMAVLinkHeartbeat()
+            while (true) {
+                mavlinkStream.write(heartbeat)
+                Thread.sleep(1000)
+            }
+
+        }
+
         onDeviceStateChange()
     }
 
@@ -162,8 +190,15 @@ class MainActivity : AppCompatActivity() {
             message += String.format("0x%02x ", it)
         }
 
-        when(port) {
-            button -> button_detected_field.text = "read ${data.size} bytes: $message"
+        when (port) {
+            button -> {
+                button_detected_field.text = "read ${data.size} bytes: $message"
+                if (data.contains(0x04)) {
+                    mavlinkStream.write(newArmMessage())
+                } else if (data.contains(0x02)) {
+                    mavlinkStream.write(newDisarmMessage())
+                }
+            }
             drone -> drone_detected_field.text = "read ${data.size} bytes: $message"
         }
     }
