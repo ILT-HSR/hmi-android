@@ -32,4 +32,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'org.osmdroid:osmdroid-android:6.0.1'
     implementation project(':jMAVlib')
+    implementation project(':usbSerialForAndroid')
 }

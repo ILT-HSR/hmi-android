@@ -1,3 +1,6 @@
 [submodule "jMAVlib"]
 	path = jMAVlib
 	url = ../jMAVlib.git
+[submodule "usb-serial-for-android"]
+	path = usb-serial-for-android
+	url = ../usb-serial-for-android
