@@ -1,3 +1,3 @@
-[submodule "libs/jMAVlib"]
+[submodule "jMAVlib"]
 	path = jMAVlib
 	url = ../jMAVlib.git
