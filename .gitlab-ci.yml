@@ -18,7 +18,7 @@ build:
   artifacts:
     expire_in: 1h
     paths:
-      - app/build/**
+      - '*/build/**'
   cache:
     key: gradle
     paths:

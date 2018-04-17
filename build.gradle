@@ -14,7 +14,9 @@ buildscript {
     }
 }
 
-task dokka(type: org.jetbrains.dokka.gradle.DokkaTask, overwrite: true) {
+apply plugin: 'org.jetbrains.dokka-android'
+
+dokka {
     moduleName = "$rootProject.name"
     outputDirectory = "javadoc"
     outputFormat = "html"
