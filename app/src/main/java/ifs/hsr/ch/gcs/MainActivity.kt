@@ -1,7 +1,7 @@
 package ifs.hsr.ch.gcs
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.hardware.usb.UsbManager
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -20,13 +20,15 @@ class MainActivity : AppCompatActivity() {
 
     private val TAG = MainActivity::class.java.simpleName
 
-    private var sPort: UsbSerialPort? = null
+    private var button: UsbSerialPort? = null
+    private var drone: UsbSerialPort? = null
 
-    private val mExecutor = Executors.newSingleThreadExecutor()
+    private val mExecutor = Executors.newFixedThreadPool(2)
 
-    private var mSerialIoManager: SerialInputOutputManager? = null
+    private var buttonIOManager: SerialInputOutputManager? = null
+    private var droneIOManager: SerialInputOutputManager? = null
 
-    private val mListener = object : SerialInputOutputManager.Listener {
+    private val buttonListener = object : SerialInputOutputManager.Listener {
 
         override fun onRunError(e: Exception) {
             Log.d(TAG, "Runner stopped.")
@@ -35,7 +37,22 @@ class MainActivity : AppCompatActivity() {
         override fun onNewData(data: ByteArray) {
             Thread(Runnable {
                 this@MainActivity.runOnUiThread({
-                    this@MainActivity.updateReceivedData(data)
+                    this@MainActivity.updateReceivedData(button!!, data)
+                })
+            }).start()
+        }
+    }
+
+    private val droneListener = object : SerialInputOutputManager.Listener {
+
+        override fun onRunError(e: Exception) {
+            Log.d(TAG, "Runner stopped.")
+        }
+
+        override fun onNewData(data: ByteArray) {
+            Thread(Runnable {
+                this@MainActivity.runOnUiThread({
+                    this@MainActivity.updateReceivedData(drone!!, data)
                 })
             }).start()
         }
@@ -50,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         map.setTileSource(TileSourceFactory.MAPNIK)
 
-        textView.text = "What is happening???"
+        button_detected_field.text = "What is happening???"
     }
 
     override fun onResume() {
@@ -58,39 +75,38 @@ class MainActivity : AppCompatActivity() {
         map.onResume()
 
         val mUsbManager = getSystemService(Context.USB_SERVICE) as UsbManager
-        if (mUsbManager != null && UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).size > 0) {
-            val driver = UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).get(0)
-            if (driver != null && driver.ports.size > 0) {
-                sPort = driver.ports.get(0)
+        UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).forEach {
+            if (it.device.manufacturerName.equals("Arduino (www.arduino.cc)")) {
+                button = it.ports[0]
+            } else if (it.device.manufacturerName.equals("FTDI")) {
+                drone = it.ports[0]
             }
         }
 
-        Log.d(TAG, "Resumed, port=$sPort")
-        if (sPort == null) {
-            textView.text = "No serial device."
-        } else {
-            val usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
-            val connection = usbManager.openDevice(sPort!!.getDriver().device)
-            if (connection == null) {
-                textView.text = "Opening device failed"
-                return
-            }
-            try {
-                sPort!!.open(connection)
-                sPort!!.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
-            } catch (e: IOException) {
-                Log.e(TAG, "Error setting up device: " + e.message, e)
-                textView.text = "Error opening device: " + e.message
+        button?.let { b ->
+            mUsbManager.openDevice(b.driver.device)?.let {
                 try {
-                    sPort!!.close()
-                } catch (e2: IOException) {
-                    // Ignore.
+                    b.open(it)
+                    b.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
+                    button_detected_field.text = "Button connected"
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error setting up button", e)
                 }
-                sPort = null
-                return
             }
-            textView.text = "Serial device: " + sPort!!::class.java.simpleName
         }
+
+        drone?.let { v ->
+            mUsbManager.openDevice(v.driver.device)?.let {
+                try {
+                    v.open(it)
+                    v.setParameters(57600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
+                    drone_detected_field.text = "Drone connected"
+                } catch (e: IOException) {
+                    Log.e(TAG, "Error setting up drone", e)
+                }
+            }
+        }
+
         onDeviceStateChange()
     }
 
@@ -98,52 +114,58 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         map.onPause()
 
-        stopIoManager()
-        if (sPort != null) {
+        stopIoManagers()
+        button?.let {
             try {
-                sPort!!.close()
+                it.close()
             } catch (e: IOException) {
-                // Ignore.
             }
-            sPort = null
+        }
+
+        drone?.let {
+            try {
+                it.close()
+            } catch (e: IOException) {
+            }
         }
         finish()
     }
 
-    private fun startIoManager() {
-        if (sPort != null) {
-            Log.i(TAG, "Starting io manager ..")
-            mSerialIoManager = SerialInputOutputManager(sPort, mListener)
-            mExecutor.submit(mSerialIoManager)
+    private fun startIoManagers() {
+        button?.let {
+            buttonIOManager = SerialInputOutputManager(button, buttonListener)
+            mExecutor.submit(buttonIOManager)
+        }
+
+        drone?.let {
+            droneIOManager = SerialInputOutputManager(drone, droneListener)
+            mExecutor.submit(droneIOManager)
         }
     }
 
-    private fun stopIoManager() {
-        if (mSerialIoManager != null) {
-            Log.i(TAG, "Stopping io manager ..")
-            mSerialIoManager!!.stop()
-            mSerialIoManager = null
-        }
+    private fun stopIoManagers() {
+        buttonIOManager?.stop()
+        buttonIOManager = null
+        droneIOManager?.stop()
+        droneIOManager = null
     }
 
     private fun onDeviceStateChange() {
-        stopIoManager()
-        startIoManager()
+        stopIoManagers()
+        startIoManagers()
     }
 
-    private fun updateReceivedData(data: ByteArray) {
+    @SuppressLint("SetTextI18n")
+    private fun updateReceivedData(port: UsbSerialPort, data: ByteArray) {
         var message = ""
         data.forEach {
             message += String.format("0x%02x ", it)
         }
-        textView.text = "read ${data.size} bytes: $message"
-    }
 
-    fun show(context: Context, port: UsbSerialPort) {
-        sPort = port
-        val intent = Intent(context, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY)
-        context.startActivity(intent)
+        when(port) {
+            button -> button_detected_field.text = "read ${data.size} bytes: $message"
+            drone -> drone_detected_field.text = "read ${data.size} bytes: $message"
+        }
     }
 
 }
