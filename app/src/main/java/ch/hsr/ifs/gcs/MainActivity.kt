@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.WindowManager
+import android.view.View
 import ch.hsr.ifs.gcs.dummy.DummyContent
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
@@ -87,8 +87,10 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Remove notification bar
-        this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        // Hide both the navigation bar and the status bar.
+        val decorView = window.decorView
+        val uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+        decorView.systemUiVisibility = uiOptions
 
         Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
 
