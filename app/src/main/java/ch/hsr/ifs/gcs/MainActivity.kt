@@ -51,21 +51,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val droneListener = object : SerialInputOutputManager.Listener {
-
-        override fun onRunError(e: Exception) {
-            Log.d(TAG, "Runner stopped.")
-        }
-
-        override fun onNewData(data: ByteArray) {
-            Thread(Runnable {
-                this@MainActivity.runOnUiThread({
-                    this@MainActivity.updateReceivedData(data)
-                })
-            }).start()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
