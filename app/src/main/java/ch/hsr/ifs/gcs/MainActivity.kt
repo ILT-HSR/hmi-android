@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import ch.hsr.ifs.gcs.driver.MAVLinkPlatform
+import ch.hsr.ifs.gcs.driver.Platform
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
@@ -28,24 +30,11 @@ class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
 
     private var button: UsbSerialPort? = null
-    private var drone: UsbSerialPort? = null
+    private var drone: Platform? = null
 
-    private val mExecutor = Executors.newFixedThreadPool(3)
+    private val mExecutor = Executors.newSingleThreadExecutor()
 
     private var buttonIOManager: SerialInputOutputManager? = null
-    private var droneIOManager: SerialInputOutputManager? = null
-
-    val mavlinkStream = MAVLinkStream(MAVLINK_SCHEMA_COMMON, object : ByteChannel {
-        override fun write(data: ByteBuffer): Int {
-            val array = ByteArray(data.remaining())
-            data.get(array)
-            return drone?.write(array, 100) ?: 0
-        }
-
-        override fun isOpen() = true
-        override fun close() = Unit
-        override fun read(p0: ByteBuffer?) = 0
-    })
 
     private val buttonListener = object : SerialInputOutputManager.Listener {
 
@@ -56,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         override fun onNewData(data: ByteArray) {
             Thread(Runnable {
                 this@MainActivity.runOnUiThread({
-                    this@MainActivity.updateReceivedData(button!!, data)
+                    this@MainActivity.updateReceivedData(data)
                 })
             }).start()
         }
@@ -71,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         override fun onNewData(data: ByteArray) {
             Thread(Runnable {
                 this@MainActivity.runOnUiThread({
-                    this@MainActivity.updateReceivedData(drone!!, data)
+                    this@MainActivity.updateReceivedData(data)
                 })
             }).start()
         }
@@ -98,7 +87,7 @@ class MainActivity : AppCompatActivity() {
             if (it.device.manufacturerName.equals("Arduino (www.arduino.cc)")) {
                 button = it.ports[0]
             } else if (it.device.manufacturerName.equals("FTDI")) {
-                drone = it.ports[0]
+                drone = MAVLinkPlatform.create(this, it.ports[0])
             }
         }
 
@@ -112,27 +101,6 @@ class MainActivity : AppCompatActivity() {
                     Log.e(TAG, "Error setting up button", e)
                 }
             }
-        }
-
-        drone?.let { v ->
-            mUsbManager.openDevice(v.driver.device)?.let {
-                try {
-                    v.open(it)
-                    v.setParameters(57600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
-                    drone_detected_field.text = "Drone connected"
-                } catch (e: IOException) {
-                    Log.e(TAG, "Error setting up drone", e)
-                }
-            }
-        }
-
-        mExecutor.submit {
-            val heartbeat = newMAVLinkHeartbeat()
-            while (true) {
-                mavlinkStream.write(heartbeat)
-                Thread.sleep(1000)
-            }
-
         }
 
         onDeviceStateChange()
@@ -150,12 +118,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        drone?.let {
-            try {
-                it.close()
-            } catch (e: IOException) {
-            }
-        }
         finish()
     }
 
@@ -164,18 +126,11 @@ class MainActivity : AppCompatActivity() {
             buttonIOManager = SerialInputOutputManager(button, buttonListener)
             mExecutor.submit(buttonIOManager)
         }
-
-        drone?.let {
-            droneIOManager = SerialInputOutputManager(drone, droneListener)
-            mExecutor.submit(droneIOManager)
-        }
     }
 
     private fun stopIoManagers() {
         buttonIOManager?.stop()
         buttonIOManager = null
-        droneIOManager?.stop()
-        droneIOManager = null
     }
 
     private fun onDeviceStateChange() {
@@ -184,22 +139,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun updateReceivedData(port: UsbSerialPort, data: ByteArray) {
+    private fun updateReceivedData(data: ByteArray) {
         var message = ""
         data.forEach {
             message += String.format("0x%02x ", it)
         }
 
-        when (port) {
-            button -> {
-                button_detected_field.text = "read ${data.size} bytes: $message"
-                if (data.contains(0x04)) {
-                    mavlinkStream.write(newArmMessage())
-                } else if (data.contains(0x02)) {
-                    mavlinkStream.write(newDisarmMessage())
-                }
-            }
-            drone -> drone_detected_field.text = "read ${data.size} bytes: $message"
+        if (data.contains(0x04)) {
+            (drone as MAVLinkPlatform?)?.arm()
+        } else if (data.contains(0x02)) {
+            (drone as MAVLinkPlatform?)?.disarm()
         }
     }
 
