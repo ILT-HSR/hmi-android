@@ -8,6 +8,7 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.WindowManager
+import ch.hsr.ifs.gcs.dummy.DummyContent
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
@@ -24,11 +25,12 @@ import java.nio.ByteBuffer
 import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.api.IMapController
 
+class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener {
 
-
-class MainActivity : AppCompatActivity() {
+    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private val TAG = MainActivity::class.java.simpleName
 
@@ -92,11 +94,18 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+        //Must be after inflation
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.menuholder, MissionResultsFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
+
         map.setTileSource(TileSourceFactory.MAPNIK)
         val mapController = map.controller
         mapController.setZoom(18.0)
         //TODO: Get location from device to find center coordinates
         val startPoint = GeoPoint(47.223231, 8.816547)
+        map.setBuiltInZoomControls(true)
         mapController.setCenter(startPoint)
     }
 
