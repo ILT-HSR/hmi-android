@@ -10,13 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import ch.hsr.ifs.gcs.dummy.DummyContent
-import ch.hsr.ifs.gcs.dummy.DummyContent.DummyItem
+import ch.hsr.ifs.gcs.dummy.MissionDummyContent
+import ch.hsr.ifs.gcs.dummy.MissionDummyContent.MissionResultDummyItem
 import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
 
 /**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
+ * A fragment representing a list of mission result items combined with a button to add
+ * additional needs. Activities containing this fragment MUST implement the
  * [MissionResultsFragment.OnListFragmentInteractionListener] interface.
  */
 class MissionResultsFragment : Fragment() {
@@ -46,7 +46,7 @@ class MissionResultsFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MissionResultsRecyclerViewAdapter(DummyContent.ITEMS, listener)
+                adapter = MissionResultsRecyclerViewAdapter(MissionDummyContent.MISSION_RESULT_ITEMS, listener)
             }
         }
         return view
@@ -79,7 +79,7 @@ class MissionResultsFragment : Fragment() {
      */
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: DummyItem?)
+        fun onListFragmentInteraction(item: MissionResultDummyItem?)
     }
 
     companion object {

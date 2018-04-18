@@ -8,17 +8,16 @@ import android.widget.TextView
 
 
 import ch.hsr.ifs.gcs.MissionResultsFragment.OnListFragmentInteractionListener
-import ch.hsr.ifs.gcs.dummy.DummyContent.DummyItem
+import ch.hsr.ifs.gcs.dummy.MissionDummyContent.MissionResultDummyItem
 
 import kotlinx.android.synthetic.main.fragment_missionresults.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
+ * [RecyclerView.Adapter] that can display a [MissionResultDummyItem] and makes a call to the
  * specified [OnListFragmentInteractionListener].
- * TODO: Replace the implementation with code for your data type.
  */
 class MissionResultsRecyclerViewAdapter(
-        private val mValues: List<DummyItem>,
+        private val mValues: List<MissionResultDummyItem>,
         private val mListener: OnListFragmentInteractionListener?)
     : RecyclerView.Adapter<MissionResultsRecyclerViewAdapter.ViewHolder>() {
 
@@ -26,7 +25,7 @@ class MissionResultsRecyclerViewAdapter(
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as DummyItem
+            val item = v.tag as MissionResultDummyItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
             mListener?.onListFragmentInteraction(item)

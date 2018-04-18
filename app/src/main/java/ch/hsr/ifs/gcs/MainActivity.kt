@@ -8,7 +8,7 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import ch.hsr.ifs.gcs.dummy.DummyContent
+import ch.hsr.ifs.gcs.dummy.MissionDummyContent
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
@@ -28,7 +28,7 @@ import org.osmdroid.util.GeoPoint
 
 class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener {
 
-    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
+    override fun onListFragmentInteraction(item: MissionDummyContent.MissionResultDummyItem?) {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -86,11 +86,6 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Hide both the navigation bar and the status bar.
-        val decorView = window.decorView
-        val uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
-        decorView.systemUiVisibility = uiOptions
 
         Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
 
@@ -221,6 +216,19 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
                 }
             }
             drone -> Log.d("DRONE","read ${data.size} bytes: $message")
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus:Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            val decorView = window.decorView
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
     }
 
