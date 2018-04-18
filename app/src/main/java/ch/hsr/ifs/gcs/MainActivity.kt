@@ -90,8 +90,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         map.setTileSource(TileSourceFactory.MAPNIK)
-
-        button_detected_field.text = "What is happening???"
     }
 
     override fun onResume() {
@@ -112,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     b.open(it)
                     b.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
-                    button_detected_field.text = "Button connected"
+                    Log.d("BUTTON","Button Connected")
                 } catch (e: IOException) {
                     Log.e(TAG, "Error setting up button", e)
                 }
@@ -124,7 +122,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     v.open(it)
                     v.setParameters(57600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
-                    drone_detected_field.text = "Drone connected"
+                    Log.d("DRONE","Drone Connected")
                 } catch (e: IOException) {
                     Log.e(TAG, "Error setting up drone", e)
                 }
@@ -194,17 +192,16 @@ class MainActivity : AppCompatActivity() {
         data.forEach {
             message += String.format("0x%02x ", it)
         }
-
         when (port) {
             button -> {
-                button_detected_field.text = "read ${data.size} bytes: $message"
+                Log.d("BUTTON","read ${data.size} bytes: $message")
                 if (data.contains(0x04)) {
                     mavlinkStream.write(newArmMessage())
                 } else if (data.contains(0x02)) {
                     mavlinkStream.write(newDisarmMessage())
                 }
             }
-            drone -> drone_detected_field.text = "read ${data.size} bytes: $message"
+            drone -> Log.d("DRONE","read ${data.size} bytes: $message")
         }
     }
 
