@@ -94,6 +94,8 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
 
         setContentView(R.layout.activity_main)
 
+        leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
+
         //Must be after inflation
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.menuholder, MissionResultsFragment())
@@ -218,12 +220,14 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
                     transaction.replace(R.id.menuholder, MissionStatusesFragment())
                     transaction.addToBackStack(null)
                     transaction.commit()
+                    leftButton.background = applicationContext.getDrawable(R.drawable.ic_cancel_black_24dp)
                 } else if (data.contains(0x02)) {
                     //mavlinkStream.write(newDisarmMessage())
                     val transaction = supportFragmentManager.beginTransaction()
                     transaction.replace(R.id.menuholder, MissionResultsFragment())
                     transaction.addToBackStack(null)
                     transaction.commit()
+                    leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
                 }
             }
             drone -> Log.d("DRONE","read ${data.size} bytes: $message")

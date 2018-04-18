@@ -14,7 +14,9 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </org.osmdroid.views.MapView>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -33,5 +35,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
+
+    <Button
+        android:id="@+id/leftButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.01"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.97" />
 
 </android.support.constraint.ConstraintLayout>
