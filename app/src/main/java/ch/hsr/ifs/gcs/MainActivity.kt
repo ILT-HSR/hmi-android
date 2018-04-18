@@ -23,6 +23,10 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.api.IMapController
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -89,6 +93,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         map.setTileSource(TileSourceFactory.MAPNIK)
+        val mapController = map.controller
+        mapController.setZoom(18.0)
+        //TODO: Get location from device to find center coordinates
+        val startPoint = GeoPoint(47.223231, 8.816547)
+        mapController.setCenter(startPoint)
     }
 
     override fun onResume() {
