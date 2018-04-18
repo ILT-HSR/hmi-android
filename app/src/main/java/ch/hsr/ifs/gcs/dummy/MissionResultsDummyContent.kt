@@ -7,7 +7,7 @@ import java.util.HashMap
 /**
  * Helper class for providing sample mission content for the [MissionResultsFragment].
  */
-object MissionDummyContent {
+object MissionResultsDummyContent {
 
     /**
      * An array of sample (dummy) mission result items.

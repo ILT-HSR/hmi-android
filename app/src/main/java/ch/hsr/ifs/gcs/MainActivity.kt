@@ -8,15 +8,14 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import ch.hsr.ifs.gcs.dummy.MissionDummyContent
+import ch.hsr.ifs.gcs.dummy.MissionStatusesDummyContent
+import ch.hsr.ifs.gcs.dummy.MissionResultsDummyContent
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
 import kotlinx.android.synthetic.main.activity_main.*
 import me.drton.jmavlib.MAVLINK_SCHEMA_COMMON
 import me.drton.jmavlib.mavlink.MAVLinkStream
-import me.drton.jmavlib.newArmMessage
-import me.drton.jmavlib.newDisarmMessage
 import me.drton.jmavlib.newMAVLinkHeartbeat
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -26,9 +25,13 @@ import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 import org.osmdroid.util.GeoPoint
 
-class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener, MissionStatusesFragment.OnListFragmentInteractionListener {
 
-    override fun onListFragmentInteraction(item: MissionDummyContent.MissionResultDummyItem?) {
+    override fun onListFragmentInteraction(item: MissionResultsDummyContent.MissionResultDummyItem?) {
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onListFragmentInteraction(item: MissionStatusesDummyContent.DummyItem?) {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -210,9 +213,17 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
             button -> {
                 Log.d("BUTTON","read ${data.size} bytes: $message")
                 if (data.contains(0x04)) {
-                    mavlinkStream.write(newArmMessage())
+                    //mavlinkStream.write(newArmMessage())
+                    val transaction = supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.menuholder, MissionStatusesFragment())
+                    transaction.addToBackStack(null)
+                    transaction.commit()
                 } else if (data.contains(0x02)) {
-                    mavlinkStream.write(newDisarmMessage())
+                    //mavlinkStream.write(newDisarmMessage())
+                    val transaction = supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.menuholder, MissionResultsFragment())
+                    transaction.addToBackStack(null)
+                    transaction.commit()
                 }
             }
             drone -> Log.d("DRONE","read ${data.size} bytes: $message")
