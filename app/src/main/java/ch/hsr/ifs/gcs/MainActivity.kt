@@ -1,4 +1,4 @@
-package ifs.hsr.ch.gcs
+package ch.hsr.ifs.gcs
 
 import android.annotation.SuppressLint
 import android.content.Context
