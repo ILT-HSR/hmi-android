@@ -1,15 +1,13 @@
-package ch.hsr.ifs.gcs
+package ch.hsr.ifs.gcs.fragments
 
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import kotlinx.android.synthetic.main.fragment_need_instruction.*
+import ch.hsr.ifs.gcs.R
 
 
 // TODO: Rename parameter arguments, choose names that match

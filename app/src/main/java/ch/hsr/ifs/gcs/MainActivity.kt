@@ -12,6 +12,10 @@ import android.view.View
 import ch.hsr.ifs.gcs.dummy.MissionStatusesDummyContent
 import ch.hsr.ifs.gcs.dummy.MissionResultsDummyContent
 import ch.hsr.ifs.gcs.dummy.NeedsDummyContent
+import ch.hsr.ifs.gcs.fragments.MissionResultsFragment
+import ch.hsr.ifs.gcs.fragments.MissionStatusesFragment
+import ch.hsr.ifs.gcs.fragments.NeedInstructionFragment
+import ch.hsr.ifs.gcs.fragments.NeedsFragment
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager

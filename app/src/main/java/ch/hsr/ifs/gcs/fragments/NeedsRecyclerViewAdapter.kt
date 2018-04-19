@@ -1,13 +1,14 @@
-package ch.hsr.ifs.gcs
+package ch.hsr.ifs.gcs.fragments
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import ch.hsr.ifs.gcs.R
 
 
-import ch.hsr.ifs.gcs.NeedsFragment.OnListFragmentInteractionListener
+import ch.hsr.ifs.gcs.fragments.NeedsFragment.OnListFragmentInteractionListener
 import ch.hsr.ifs.gcs.dummy.NeedsDummyContent.DummyItem
 
 import kotlinx.android.synthetic.main.fragment_need.view.*

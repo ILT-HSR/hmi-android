@@ -1,32 +1,32 @@
-package ch.hsr.ifs.gcs
+package ch.hsr.ifs.gcs.fragments
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import ch.hsr.ifs.gcs.R
 
 
-import ch.hsr.ifs.gcs.MissionStatusesFragment.OnListFragmentInteractionListener
-import ch.hsr.ifs.gcs.dummy.MissionStatusesDummyContent.DummyItem
+import ch.hsr.ifs.gcs.fragments.MissionResultsFragment.OnListFragmentInteractionListener
+import ch.hsr.ifs.gcs.dummy.MissionResultsDummyContent.MissionResultDummyItem
 
-import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
+import kotlinx.android.synthetic.main.fragment_missionresults.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
+ * [RecyclerView.Adapter] that can display a [MissionResultDummyItem] and makes a call to the
  * specified [OnListFragmentInteractionListener].
- * TODO: Replace the implementation with code for your data type.
  */
-class MissionStatusesRecyclerViewAdapter(
-        private val mValues: List<DummyItem>,
+class MissionResultsRecyclerViewAdapter(
+        private val mValues: List<MissionResultDummyItem>,
         private val mListener: OnListFragmentInteractionListener?)
-    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>() {
+    : RecyclerView.Adapter<MissionResultsRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as DummyItem
+            val item = v.tag as MissionResultDummyItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
             mListener?.onListFragmentInteraction(item)
@@ -35,7 +35,7 @@ class MissionStatusesRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.fragment_missionstatuses, parent, false)
+                .inflate(R.layout.fragment_missionresults, parent, false)
         return ViewHolder(view)
     }
 
