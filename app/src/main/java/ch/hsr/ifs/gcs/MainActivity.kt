@@ -3,6 +3,7 @@ package ch.hsr.ifs.gcs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.hardware.usb.UsbManager
+import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
@@ -26,7 +27,7 @@ import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 import org.osmdroid.util.GeoPoint
 
-class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener, MissionStatusesFragment.OnListFragmentInteractionListener, NeedsFragment.OnListFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener, MissionStatusesFragment.OnListFragmentInteractionListener, NeedsFragment.OnListFragmentInteractionListener, NeedInstructionFragment.OnFragmentInteractionListener {
 
     override fun onListFragmentInteraction(item: MissionResultsDummyContent.MissionResultDummyItem?) {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -37,6 +38,14 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
     }
 
     override fun onListFragmentInteraction(item: NeedsDummyContent.DummyItem?) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.menuholder, NeedInstructionFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
+        leftButton.visibility = View.INVISIBLE
+    }
+
+    override fun onFragmentInteraction(uri: Uri) {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
