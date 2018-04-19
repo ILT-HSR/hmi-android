@@ -31,7 +31,8 @@ class MissionResultsRecyclerViewAdapter(
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
             item.isSelected = !item.isSelected
-            v.setBackgroundColor(if (item.isSelected) Color.LTGRAY else Color.WHITE)
+            val lightColor = Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
+            v.setBackgroundColor(if (item.isSelected) lightColor else Color.WHITE)
             mListener?.onListFragmentInteraction(item)
         }
     }
@@ -44,7 +45,8 @@ class MissionResultsRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mView.setBackgroundColor(Color.WHITE)
+        val lightColor = Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
+        holder.mView.setBackgroundColor(if (item.isSelected) lightColor else Color.WHITE)
         holder.mIdView.text = item.id
         holder.mContentView.text = "Result"
         holder.mColorView.setBackgroundColor(item.color)
