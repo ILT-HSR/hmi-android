@@ -9,7 +9,7 @@ import ch.hsr.ifs.gcs.R
 
 
 import ch.hsr.ifs.gcs.ui.fragments.NeedsFragment.OnListFragmentInteractionListener
-import ch.hsr.ifs.gcs.ui.dummy.NeedsDummyContent.DummyItem
+import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent.DummyItem
 
 import kotlinx.android.synthetic.main.fragment_need.view.*
 

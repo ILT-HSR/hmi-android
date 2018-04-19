@@ -9,7 +9,7 @@ import ch.hsr.ifs.gcs.R
 
 
 import ch.hsr.ifs.gcs.ui.fragments.MissionStatusesFragment.OnListFragmentInteractionListener
-import ch.hsr.ifs.gcs.ui.dummy.MissionStatusesDummyContent.DummyItem
+import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.DummyItem
 
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 

@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.dummy
+package ch.hsr.ifs.gcs.ui.dummydata
 
 import android.graphics.Color
 import ch.hsr.ifs.gcs.ui.fragments.MissionResultsFragment

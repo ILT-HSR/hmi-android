@@ -9,9 +9,9 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import ch.hsr.ifs.gcs.ui.dummy.MissionStatusesDummyContent
-import ch.hsr.ifs.gcs.ui.dummy.MissionResultsDummyContent
-import ch.hsr.ifs.gcs.ui.dummy.NeedsDummyContent
+import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent
+import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent
+import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent
 import ch.hsr.ifs.gcs.ui.fragments.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.fragments.NeedInstructionFragment

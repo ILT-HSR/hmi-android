@@ -1,42 +1,39 @@
-package ch.hsr.ifs.gcs.ui.dummy
+package ch.hsr.ifs.gcs.ui.dummydata
 
+import ch.hsr.ifs.gcs.ui.fragments.MissionStatusesFragment
 import java.util.ArrayList
 import java.util.HashMap
 
 /**
- * Helper class for providing sample content for user interfaces created by
- * Android template wizards.
- *
- * TODO: Replace all uses of this class before publishing your app.
+ * Helper class for providing sample mission content for the [MissionStatusesFragment].
  */
-object NeedsDummyContent {
+object MissionStatusesDummyContent {
 
     /**
-     * An array of sample (dummy) items.
+     * An array of sample (dummy) mission status items.
      */
-    val ITEMS: MutableList<DummyItem> = ArrayList()
+    val MISSION_STATUS_ITEMS: MutableList<DummyItem> = ArrayList()
 
     /**
-     * A map of sample (dummy) items, by ID.
+     * A map of sample (dummy) mission status items, by ID.
      */
-    private val ITEM_MAP: MutableMap<String, DummyItem> = HashMap()
+    private val MISSION_STATUS_ITEM_MAP: MutableMap<String, DummyItem> = HashMap()
 
     private const val COUNT = 25
 
     init {
-        // Add some sample items.
         for (i in 1..COUNT) {
             addItem(createDummyItem(i))
         }
     }
 
     private fun addItem(item: DummyItem) {
-        ITEMS.add(item)
-        ITEM_MAP.put(item.id, item)
+        MISSION_STATUS_ITEMS.add(item)
+        MISSION_STATUS_ITEM_MAP[item.id] = item
     }
 
     private fun createDummyItem(position: Int): DummyItem {
-        return DummyItem(position.toString(), "Bedürfnis", makeDetails(position))
+        return DummyItem(position.toString(), "Mission", makeDetails(position))
     }
 
     private fun makeDetails(position: Int): String {
@@ -49,9 +46,10 @@ object NeedsDummyContent {
     }
 
     /**
-     * A dummy item representing a piece of content.
+     * A dummy mission status item.
      */
     data class DummyItem(val id: String, val content: String, val details: String) {
         override fun toString(): String = content
     }
+
 }

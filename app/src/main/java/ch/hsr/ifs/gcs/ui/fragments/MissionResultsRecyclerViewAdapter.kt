@@ -10,7 +10,7 @@ import ch.hsr.ifs.gcs.R
 
 
 import ch.hsr.ifs.gcs.ui.fragments.MissionResultsFragment.OnListFragmentInteractionListener
-import ch.hsr.ifs.gcs.ui.dummy.MissionResultsDummyContent.MissionResultDummyItem
+import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent.MissionResultDummyItem
 
 import kotlinx.android.synthetic.main.fragment_missionresults.view.*
 

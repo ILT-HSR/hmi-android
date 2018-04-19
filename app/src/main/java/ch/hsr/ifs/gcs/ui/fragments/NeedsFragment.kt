@@ -11,8 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
 
-import ch.hsr.ifs.gcs.ui.dummy.NeedsDummyContent
-import ch.hsr.ifs.gcs.ui.dummy.NeedsDummyContent.DummyItem
+import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent
+import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent.DummyItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
 import kotlinx.android.synthetic.main.fragment_need_list.view.*
