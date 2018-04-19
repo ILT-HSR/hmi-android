@@ -61,11 +61,12 @@ class NeedsFragment : Fragment() {
         cancelButton.setOnClickListener {
             val transaction = activity.supportFragmentManager.beginTransaction()
             // TODO: Check which previous Fragment was present and go back to that
-            var returnFragment: Fragment? = null
-            when(previousFragment) {
-                "mission_results" -> returnFragment = MissionResultsFragment()
-                "mission_statuses" -> returnFragment = MissionStatusesFragment()
-                else -> returnFragment = MissionResultsFragment()
+            var returnFragment = when(previousFragment) {
+                "mission_results" -> MissionResultsFragment()
+                "mission_statuses" -> MissionStatusesFragment()
+                else -> {
+                    MissionResultsFragment()
+                }
             }
             transaction.replace(R.id.menuholder, returnFragment)
             transaction.addToBackStack(null)
