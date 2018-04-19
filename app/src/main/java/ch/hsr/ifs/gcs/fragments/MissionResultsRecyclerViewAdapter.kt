@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.fragments
 
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -29,6 +30,8 @@ class MissionResultsRecyclerViewAdapter(
             val item = v.tag as MissionResultDummyItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
+            item.isSelected = !item.isSelected
+            v.setBackgroundColor(if (item.isSelected) Color.LTGRAY else Color.WHITE)
             mListener?.onListFragmentInteraction(item)
         }
     }
@@ -41,9 +44,9 @@ class MissionResultsRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
+        holder.mView.setBackgroundColor(Color.WHITE)
         holder.mIdView.text = item.id
-        holder.mContentView.text = item.content
-
+        holder.mContentView.text = "Result"
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)

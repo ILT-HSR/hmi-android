@@ -34,13 +34,18 @@ import org.osmdroid.util.GeoPoint
 class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener, MissionStatusesFragment.OnListFragmentInteractionListener, NeedsFragment.OnListFragmentInteractionListener, NeedInstructionFragment.OnFragmentInteractionListener {
 
     override fun onListFragmentInteraction(item: MissionResultsDummyContent.MissionResultDummyItem?) {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        this@MainActivity.runOnUiThread({
+            item?.let {
+                if(it.isSelected) {
+                    map.overlayManager.addAll(it.mapOverlays)
+                } else {
+                    map.overlayManager.removeAll(it.mapOverlays)
+                }
+                map.invalidate()
+            }
+        })
     }
-
-    override fun onListFragmentInteraction(item: MissionStatusesDummyContent.DummyItem?) {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
+    override fun onListFragmentInteraction(item: MissionStatusesDummyContent.DummyItem?) {}
     override fun onListFragmentInteraction(item: NeedsDummyContent.DummyItem?) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.menuholder, NeedInstructionFragment())
@@ -48,10 +53,7 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
         transaction.commit()
         leftButton.visibility = View.INVISIBLE
     }
-
-    override fun onFragmentInteraction(uri: Uri) {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onFragmentInteraction(uri: Uri) {}
 
     private val TAG = MainActivity::class.java.simpleName
 
@@ -114,7 +116,7 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
 
         leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
 
-        //Must be after inflation
+        // Must be after inflation
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.menuholder, MissionResultsFragment())
         transaction.addToBackStack(null)

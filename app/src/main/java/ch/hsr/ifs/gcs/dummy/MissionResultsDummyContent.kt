@@ -1,8 +1,11 @@
 package ch.hsr.ifs.gcs.dummy
 
+import android.graphics.Color
 import ch.hsr.ifs.gcs.fragments.MissionResultsFragment
-import java.util.ArrayList
-import java.util.HashMap
+import org.osmdroid.views.overlay.Polygon
+import org.osmdroid.util.GeoPoint
+import java.util.*
+
 
 /**
  * Helper class for providing sample mission content for the [MissionResultsFragment].
@@ -19,7 +22,7 @@ object MissionResultsDummyContent {
      */
     private val MISSION_RESULT_ITEM_MAP: MutableMap<String, MissionResultDummyItem> = HashMap()
 
-    private const val COUNT = 25
+    private const val COUNT = 10
 
     init {
         for (i in 1..COUNT) {
@@ -33,7 +36,8 @@ object MissionResultsDummyContent {
     }
 
     private fun createDummyItem(position: Int): MissionResultDummyItem {
-        return MissionResultDummyItem(position.toString(), "Resultat", makeDetails(position))
+        val color = createRandomColorArgb()
+        return MissionResultDummyItem(position.toString(), createPolygons(color), makeDetails(position))
     }
 
     private fun makeDetails(position: Int): String {
@@ -48,8 +52,47 @@ object MissionResultsDummyContent {
     /**
      * A dummy mission result item.
      */
-    data class MissionResultDummyItem(val id: String, val content: String, val details: String) {
-        override fun toString(): String = content
+    data class MissionResultDummyItem(val id: String, val mapOverlays: List<Polygon>, val details: String) {
+        var isSelected: Boolean = false
+        override fun toString(): String = id
+    }
+
+    private fun createPolygons(colorArgb: Int) : List<Polygon> {
+        val polygonList = ArrayList<Polygon>()
+        for (i in 1 until 5) {
+            polygonList.add(createPolygon(colorArgb))
+        }
+        return polygonList
+    }
+
+    private fun createPolygon(colorArgb: Int) : Polygon {
+        val random = Random()
+        fun rand(from: Double, to: Double) : Double {
+            return from + (to - from) * random.nextDouble()
+        }
+        val geoPoints = ArrayList<GeoPoint>()
+        val latitude = rand(47.222, 47.224)
+        val longitude = rand(8.814, 8.819)
+        geoPoints.add(GeoPoint(latitude, longitude))
+        geoPoints.add(GeoPoint(latitude-0.00006, longitude))
+        geoPoints.add(GeoPoint(latitude-0.00006,longitude-0.00006))
+        geoPoints.add(GeoPoint(latitude, longitude-0.00006))
+        val polygon = Polygon()    //see note below
+        polygon.fillColor = colorArgb
+        polygon.strokeColor = colorArgb
+        geoPoints.add(geoPoints[0])    //forces the loop to close
+        polygon.points = geoPoints
+        polygon.title = "A sample polygon"
+        return polygon
+    }
+
+    private fun createRandomColorArgb() : Int {
+        val random = Random()
+        fun rand(from: Int, to: Int) : Int {
+            return random.nextInt(to - from) + from
+        }
+        val color = Color.argb(255, rand(0, 255), rand(0, 255), rand(0, 255))
+        return color
     }
 
 }
