@@ -1,7 +1,9 @@
-package ch.hsr.ifs.gcs.driver
+package ch.hsr.ifs.gcs.driver.internal
 
 import android.content.Context
 import ch.hsr.ifs.gcs.comm.SerialDataChannel
+import ch.hsr.ifs.gcs.driver.CommonMAVLinkPlatform
+import ch.hsr.ifs.gcs.driver.Platform
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import me.drton.jmavlib.MAVLINK_SCHEMA_COMMON
 import me.drton.jmavlib.mavlink.MAVLinkMessage
@@ -24,7 +26,7 @@ enum class MAVLinkMessageName {
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class MAVLinkPlatform private constructor(val channel: SerialDataChannel) : Platform {
+class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChannel) : CommonMAVLinkPlatform {
 
     private val fIOExecutor = Executors.newSingleThreadExecutor()
     private val fIOStream = MAVLinkStream(MAVLINK_SCHEMA_COMMON, channel)
@@ -53,7 +55,7 @@ class MAVLinkPlatform private constructor(val channel: SerialDataChannel) : Plat
             val channel = SerialDataChannel.create(context, port, 57600, 8, 1, SerialDataChannel.Parity.NONE)
             return when (channel) {
                 null -> null
-                else -> MAVLinkPlatform(channel)
+                else -> CommonMAVLinkPlatformImpl(channel)
             }
         }
 
@@ -64,7 +66,7 @@ class MAVLinkPlatform private constructor(val channel: SerialDataChannel) : Plat
             while(true) {
 
                 try {
-                    fIOStream.read()?.let(this@MAVLinkPlatform::handle)
+                    fIOStream.read()?.let(this@CommonMAVLinkPlatformImpl::handle)
                 } catch (e: IOException) {
                 }
 
@@ -89,11 +91,11 @@ class MAVLinkPlatform private constructor(val channel: SerialDataChannel) : Plat
 
     override val name = "<unknown>"
 
-    fun arm() {
+    override fun arm() {
         fCommandQueue.offer(newArmMessage())
     }
 
-    fun disarm() {
+    override fun disarm() {
         fCommandQueue.offer(newDisarmMessage())
     }
 

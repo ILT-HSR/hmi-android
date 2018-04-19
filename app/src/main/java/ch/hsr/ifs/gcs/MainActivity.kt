@@ -7,22 +7,16 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.MAVLinkPlatform
+import ch.hsr.ifs.gcs.driver.CommonMAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ifs.gcs.driver.internal.CommonMAVLinkPlatformImpl
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
 import kotlinx.android.synthetic.main.activity_main.*
-import me.drton.jmavlib.MAVLINK_SCHEMA_COMMON
-import me.drton.jmavlib.mavlink.MAVLinkStream
-import me.drton.jmavlib.newArmMessage
-import me.drton.jmavlib.newDisarmMessage
-import me.drton.jmavlib.newMAVLinkHeartbeat
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import java.io.IOException
-import java.nio.ByteBuffer
-import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
@@ -72,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             if (it.device.manufacturerName.equals("Arduino (www.arduino.cc)")) {
                 button = it.ports[0]
             } else if (it.device.manufacturerName.equals("FTDI")) {
-                drone = MAVLinkPlatform.create(this, it.ports[0])
+                drone = CommonMAVLinkPlatformImpl.create(this, it.ports[0])
             }
         }
 
@@ -131,9 +125,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (data.contains(0x04)) {
-            (drone as MAVLinkPlatform?)?.arm()
+            (drone as CommonMAVLinkPlatform?)?.arm()
         } else if (data.contains(0x02)) {
-            (drone as MAVLinkPlatform?)?.disarm()
+            (drone as CommonMAVLinkPlatform?)?.disarm()
         }
     }
 
