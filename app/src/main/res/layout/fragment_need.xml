@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:text="@android:string/fingerprint_icon_content_description"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textColor="#E81F3F" />
+        android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
         android:id="@+id/item_number"
@@ -19,7 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:text="item_number"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:textColor="#E81F3F" />
+        android:textAppearance="?attr/textAppearanceListItem" />
 
 </LinearLayout>
