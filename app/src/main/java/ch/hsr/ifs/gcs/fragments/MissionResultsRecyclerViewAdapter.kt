@@ -47,6 +47,7 @@ class MissionResultsRecyclerViewAdapter(
         holder.mView.setBackgroundColor(Color.WHITE)
         holder.mIdView.text = item.id
         holder.mContentView.text = "Result"
+        holder.mColorView.setBackgroundColor(item.color)
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
@@ -58,7 +59,7 @@ class MissionResultsRecyclerViewAdapter(
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.item_number
         val mContentView: TextView = mView.content
-
+        val mColorView: View = mView.colorView
         override fun toString(): String {
             return super.toString() + " '" + mContentView.text + "'"
         }

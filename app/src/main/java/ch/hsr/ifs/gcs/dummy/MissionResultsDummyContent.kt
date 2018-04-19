@@ -22,7 +22,7 @@ object MissionResultsDummyContent {
      */
     private val MISSION_RESULT_ITEM_MAP: MutableMap<String, MissionResultDummyItem> = HashMap()
 
-    private const val COUNT = 10
+    private const val COUNT = 9
 
     init {
         for (i in 1..COUNT) {
@@ -37,7 +37,7 @@ object MissionResultsDummyContent {
 
     private fun createDummyItem(position: Int): MissionResultDummyItem {
         val color = createRandomColorArgb()
-        return MissionResultDummyItem(position.toString(), createPolygons(color), makeDetails(position))
+        return MissionResultDummyItem(position.toString(), createPolygons(color), makeDetails(position), color)
     }
 
     private fun makeDetails(position: Int): String {
@@ -52,7 +52,7 @@ object MissionResultsDummyContent {
     /**
      * A dummy mission result item.
      */
-    data class MissionResultDummyItem(val id: String, val mapOverlays: List<Polygon>, val details: String) {
+    data class MissionResultDummyItem(val id: String, val mapOverlays: List<Polygon>, val details: String, val color: Int) {
         var isSelected: Boolean = false
         override fun toString(): String = id
     }
