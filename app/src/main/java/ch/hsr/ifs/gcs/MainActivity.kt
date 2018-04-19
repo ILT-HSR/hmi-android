@@ -45,7 +45,18 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
             }
         })
     }
-    override fun onListFragmentInteraction(item: MissionStatusesDummyContent.DummyItem?) {}
+    override fun onListFragmentInteraction(item: MissionStatusesDummyContent.DummyItem?) {
+        this@MainActivity.runOnUiThread({
+            item?.let {
+                if(it.isSelected) {
+                    map.overlayManager.addAll(it.mapOverlays)
+                } else {
+                    map.overlayManager.removeAll(it.mapOverlays)
+                }
+                map.invalidate()
+            }
+        })
+    }
     override fun onListFragmentInteraction(item: NeedsDummyContent.DummyItem?) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.menuholder, NeedInstructionFragment())

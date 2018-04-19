@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.ui.fragments.missionstatuses
 
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,6 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 /**
  * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
  * specified [OnListFragmentInteractionListener].
- * TODO: Replace the implementation with code for your data type.
  */
 class MissionStatusesRecyclerViewAdapter(
         private val mValues: List<DummyItem>,
@@ -30,6 +30,9 @@ class MissionStatusesRecyclerViewAdapter(
             val item = v.tag as DummyItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
+            item.isSelected = !item.isSelected
+            val lightColor = Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
+            v.setBackgroundColor(if (item.isSelected) lightColor else Color.WHITE)
             mListener?.onListFragmentInteraction(item)
         }
     }
@@ -42,9 +45,11 @@ class MissionStatusesRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
+        val lightColor = Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
+        holder.mView.setBackgroundColor(if (item.isSelected) lightColor else Color.WHITE)
         holder.mIdView.text = item.id
-        holder.mContentView.text = item.content
-
+        holder.mContentView.text = "Status"
+        holder.mColorView.setBackgroundColor(item.color)
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
@@ -56,7 +61,7 @@ class MissionStatusesRecyclerViewAdapter(
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.item_number
         val mContentView: TextView = mView.content
-
+        val mColorView: View = mView.colorView
         override fun toString(): String {
             return super.toString() + " '" + mContentView.text + "'"
         }

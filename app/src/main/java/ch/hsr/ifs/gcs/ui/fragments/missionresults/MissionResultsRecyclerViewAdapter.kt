@@ -48,7 +48,7 @@ class MissionResultsRecyclerViewAdapter(
         val lightColor = Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
         holder.mView.setBackgroundColor(if (item.isSelected) lightColor else Color.WHITE)
         holder.mIdView.text = item.id
-        holder.mContentView.text = "Result"
+        holder.mContentView.text = "Resultat"
         holder.mColorView.setBackgroundColor(item.color)
         with(holder.mView) {
             tag = item
