@@ -14,6 +14,10 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
+enum class MAVLinkMessageName {
+    HEARTBEAT
+}
+
 /**
  * Concrete implementation of the [platform driver interface][Platform] for MAVLink vehicles
  *
@@ -29,6 +33,8 @@ class MAVLinkPlatform private constructor(val channel: SerialDataChannel) : Plat
     private val fHeartbeatExecutor = Executors.newSingleThreadScheduledExecutor()
 
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
+
+    private var fVehicleLastHeartbeat: Long = 0
 
     companion object {
 
@@ -74,9 +80,12 @@ class MAVLinkPlatform private constructor(val channel: SerialDataChannel) : Plat
     }
 
     private fun handle(message: MAVLinkMessage) {
+        when(message.msgName) {
+            MAVLinkMessageName.HEARTBEAT.name -> fVehicleLastHeartbeat = System.currentTimeMillis()
+        }
     }
 
-    override val isAlive = true
+    override val isAlive = (System.currentTimeMillis() - fVehicleLastHeartbeat) < 10000
 
     override val name = "<unknown>"
 
