@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.ui.dummydata
 
-import ch.hsr.ifs.gcs.ui.fragments.MissionStatusesFragment
+import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
 import java.util.ArrayList
 import java.util.HashMap
 

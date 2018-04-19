@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments
+package ch.hsr.ifs.gcs.ui.fragments.missionstatuses
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import android.widget.TextView
 import ch.hsr.ifs.gcs.R
 
 
-import ch.hsr.ifs.gcs.ui.fragments.MissionStatusesFragment.OnListFragmentInteractionListener
+import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnListFragmentInteractionListener
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.DummyItem
 
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*

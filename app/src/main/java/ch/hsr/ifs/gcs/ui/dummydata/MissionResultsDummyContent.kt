@@ -1,7 +1,7 @@
 package ch.hsr.ifs.gcs.ui.dummydata
 
 import android.graphics.Color
-import ch.hsr.ifs.gcs.ui.fragments.MissionResultsFragment
+import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import org.osmdroid.views.overlay.Polygon
 import org.osmdroid.util.GeoPoint
 import java.util.*

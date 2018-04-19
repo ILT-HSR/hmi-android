@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments
+package ch.hsr.ifs.gcs.ui.fragments.needs
 
 import android.content.Context
 import android.net.Uri
