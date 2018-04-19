@@ -5,12 +5,10 @@ import ch.hsr.ifs.gcs.comm.SerialDataChannel
 import ch.hsr.ifs.gcs.driver.CommonMAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.Platform
 import com.hoho.android.usbserial.driver.UsbSerialPort
-import me.drton.jmavlib.MAVLINK_SCHEMA_COMMON
+import me.drton.jmavlib.*
 import me.drton.jmavlib.mavlink.MAVLinkMessage
+import me.drton.jmavlib.mavlink.MAVLinkSchemaRegistry
 import me.drton.jmavlib.mavlink.MAVLinkStream
-import me.drton.jmavlib.newArmMessage
-import me.drton.jmavlib.newDisarmMessage
-import me.drton.jmavlib.newMAVLinkHeartbeat
 import java.io.IOException
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
@@ -29,9 +27,9 @@ enum class MAVLinkMessageName {
 class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChannel) : CommonMAVLinkPlatform {
 
     private val fIOExecutor = Executors.newSingleThreadExecutor()
-    private val fIOStream = MAVLinkStream(MAVLINK_SCHEMA_COMMON, channel)
+    private val fIOStream = MAVLinkStream(MAVLinkSchemaRegistry.instance["common"], channel)
 
-    private val fHeartbeat = newMAVLinkHeartbeat()
+    private val fHeartbeat = createMAVLinkHeartbeat(system = 8, component = 250)
     private val fHeartbeatExecutor = Executors.newSingleThreadScheduledExecutor()
 
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
@@ -92,11 +90,11 @@ class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChann
     override val name = "<unknown>"
 
     override fun arm() {
-        fCommandQueue.offer(newArmMessage())
+        fCommandQueue.offer(createArmMessage(system = 8, component = 250))
     }
 
     override fun disarm() {
-        fCommandQueue.offer(newDisarmMessage())
+        fCommandQueue.offer(createDisarmMessage(system = 8, component = 250))
     }
 
 }
