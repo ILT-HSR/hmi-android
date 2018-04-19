@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import ch.hsr.ifs.gcs.dummy.MissionStatusesDummyContent
 import ch.hsr.ifs.gcs.dummy.MissionResultsDummyContent
+import ch.hsr.ifs.gcs.dummy.NeedsDummyContent
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
@@ -25,13 +26,17 @@ import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 import org.osmdroid.util.GeoPoint
 
-class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener, MissionStatusesFragment.OnListFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener, MissionStatusesFragment.OnListFragmentInteractionListener, NeedsFragment.OnListFragmentInteractionListener {
 
     override fun onListFragmentInteraction(item: MissionResultsDummyContent.MissionResultDummyItem?) {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onListFragmentInteraction(item: MissionStatusesDummyContent.DummyItem?) {
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onListFragmentInteraction(item: NeedsDummyContent.DummyItem?) {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

@@ -11,15 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/leftButton"
+        app:layout_constraintBottom_toTopOf="@id/statusesAddButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".MissionResultsFragment"
+        tools:context=".MissionStatusesFragment"
         tools:listitem="@layout/fragment_missionresults" />
 
     <Button
-        android:id="@+id/leftButton"
+        android:id="@+id/statusesAddButton"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"

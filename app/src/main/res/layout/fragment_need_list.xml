@@ -7,23 +7,23 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
-        android:name="ch.hsr.ifs.gcs.MissionResultsFragment"
+        android:name="ch.hsr.ifs.gcs.NeedsFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/resultsAddButton"
+        app:layout_constraintBottom_toTopOf="@id/cancelButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".MissionResultsFragment"
-        tools:listitem="@layout/fragment_missionresults" />
+        tools:context="NeedsFragment"
+        tools:listitem="@layout/fragment_need" />
 
     <Button
-        android:id="@+id/resultsAddButton"
+        android:id="@+id/cancelButton"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
-        android:text="(+) BEDÜRFNIS"
+        android:text="ABBRECHEN"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

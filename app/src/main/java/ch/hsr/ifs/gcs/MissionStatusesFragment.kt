@@ -12,6 +12,8 @@ import android.view.ViewGroup
 
 import ch.hsr.ifs.gcs.dummy.MissionStatusesDummyContent
 import ch.hsr.ifs.gcs.dummy.MissionStatusesDummyContent.DummyItem
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
 
 /**
@@ -50,6 +52,21 @@ class MissionStatusesFragment : Fragment() {
             }
         }
         return view
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        statusesAddButton.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("previous_fragment", "mission_statuses")
+            val transaction = activity.supportFragmentManager.beginTransaction()
+            val needsFragment = NeedsFragment()
+            needsFragment.arguments = bundle
+            transaction.replace(R.id.menuholder, needsFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+            activity.leftButton.visibility = View.INVISIBLE
+        }
     }
 
     override fun onAttach(context: Context) {
