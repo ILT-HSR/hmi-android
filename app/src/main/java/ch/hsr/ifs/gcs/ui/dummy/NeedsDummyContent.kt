@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.dummy
+package ch.hsr.ifs.gcs.ui.dummy
 
 import java.util.ArrayList
 import java.util.HashMap

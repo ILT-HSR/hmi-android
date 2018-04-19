@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.fragments
+package ch.hsr.ifs.gcs.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -11,18 +11,18 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
 
-import ch.hsr.ifs.gcs.dummy.MissionResultsDummyContent
-import ch.hsr.ifs.gcs.dummy.MissionResultsDummyContent.MissionResultDummyItem
+import ch.hsr.ifs.gcs.ui.dummy.MissionStatusesDummyContent
+import ch.hsr.ifs.gcs.ui.dummy.MissionStatusesDummyContent.DummyItem
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_missionresults_list.*
-import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
+import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
+import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
 
 /**
- * A fragment representing a list of mission result items combined with a button to add
- * additional needs. Activities containing this fragment MUST implement the
- * [MissionResultsFragment.OnListFragmentInteractionListener] interface.
+ * A fragment representing a list of Items.
+ * Activities containing this fragment MUST implement the
+ * [MissionStatusesFragment.OnListFragmentInteractionListener] interface.
  */
-class MissionResultsFragment : Fragment() {
+class MissionStatusesFragment : Fragment() {
 
     // TODO: Customize parameters
     private var columnCount = 1
@@ -39,7 +39,7 @@ class MissionResultsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_missionresults_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_missionstatuses_list, container, false)
         val list = view.list
 
         // Set the adapter
@@ -49,7 +49,7 @@ class MissionResultsFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MissionResultsRecyclerViewAdapter(MissionResultsDummyContent.MISSION_RESULT_ITEMS, listener)
+                adapter = MissionStatusesRecyclerViewAdapter(MissionStatusesDummyContent.MISSION_STATUS_ITEMS, listener)
             }
         }
         return view
@@ -57,9 +57,9 @@ class MissionResultsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        resultsAddButton.setOnClickListener {
+        statusesAddButton.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString("previous_fragment", "mission_results")
+            bundle.putString("previous_fragment", "mission_statuses")
             val transaction = activity.supportFragmentManager.beginTransaction()
             val needsFragment = NeedsFragment()
             needsFragment.arguments = bundle
@@ -97,7 +97,7 @@ class MissionResultsFragment : Fragment() {
      */
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: MissionResultDummyItem?)
+        fun onListFragmentInteraction(item: DummyItem?)
     }
 
     companion object {
@@ -108,7 +108,7 @@ class MissionResultsFragment : Fragment() {
         // TODO: Customize parameter initialization
         @JvmStatic
         fun newInstance(columnCount: Int) =
-                MissionResultsFragment().apply {
+                MissionStatusesFragment().apply {
                     arguments = Bundle().apply {
                         putInt(ARG_COLUMN_COUNT, columnCount)
                     }
