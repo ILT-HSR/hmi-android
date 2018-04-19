@@ -74,12 +74,12 @@ object MissionResultsDummyContent {
         val latitude = rand(47.222, 47.224)
         val longitude = rand(8.814, 8.819)
         geoPoints.add(GeoPoint(latitude, longitude))
-        geoPoints.add(GeoPoint(latitude-0.00006, longitude))
-        geoPoints.add(GeoPoint(latitude-0.00006,longitude-0.00006))
-        geoPoints.add(GeoPoint(latitude, longitude-0.00006))
+        geoPoints.add(GeoPoint(latitude-0.00007, longitude))
+        geoPoints.add(GeoPoint(latitude-0.00007,longitude-0.0001))
+        geoPoints.add(GeoPoint(latitude, longitude-0.0001))
         val polygon = Polygon()    //see note below
         polygon.fillColor = colorArgb
-        polygon.strokeColor = colorArgb
+        polygon.strokeWidth = 2.5F
         geoPoints.add(geoPoints[0])    //forces the loop to close
         polygon.points = geoPoints
         polygon.title = "A sample polygon"
