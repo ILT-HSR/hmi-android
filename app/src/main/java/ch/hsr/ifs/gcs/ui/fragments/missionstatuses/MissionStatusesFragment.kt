@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent
@@ -19,22 +20,22 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
 
 /**
- * A fragment representing a list of mission result items combined with a button to add
+ * A fragment representing a list of mission status items combined with a button to add
  * additional needs. The context containing this fragment must implement the
- * [MissionStatusesFragment.OnResultsFragmentChangedListener] interface.
+ * [MissionStatusesFragment.OnStatusesFragmentChangedListener] interface.
  */
 class MissionStatusesFragment : Fragment() {
 
     private var columnCount = 1
 
-    private var listener: OnResultsFragmentChangedListener? = null
-    
+    private var listener: OnStatusesFragmentChangedListener? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnResultsFragmentChangedListener) {
-            listener = context
+        if (context is MainActivity) {
+            listener = context.fragmentHandler!!.missionStatusesListener
         } else {
-            throw RuntimeException(context.toString() + " must implement OnResultsFragmentChangedListener")
+            throw RuntimeException(context.toString() + " must implement OnStatusesFragmentChangedListener")
         }
         listener?.refreshStatusesMapView(MissionStatusesDummyContent.MISSION_STATUS_ITEMS)
     }
@@ -50,8 +51,6 @@ class MissionStatusesFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_missionstatuses_list, container, false)
         val list = view.list
-
-        // Set the adapter
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = when {
@@ -87,7 +86,7 @@ class MissionStatusesFragment : Fragment() {
     /**
      * Defines functions to be overwritten by the context making use of this fragment.
      */
-    interface OnResultsFragmentChangedListener {
+    interface OnStatusesFragmentChangedListener {
 
         /**
          * Called when a [MissionSatusDummmyItem] is clicked in the [RecyclerView]. Implementation

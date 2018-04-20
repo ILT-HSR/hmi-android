@@ -9,18 +9,18 @@ import android.widget.TextView
 import ch.hsr.ifs.gcs.R
 
 
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnResultsFragmentChangedListener
+import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.MissionStatusDummyItem
 
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 
 /**
  * [RecyclerView.Adapter] that can display a [MissionStatusDummyItem] and makes a call to the
- * specified [OnResultsFragmentChangedListener].
+ * specified [OnStatusesFragmentChangedListener].
  */
 class MissionStatusesRecyclerViewAdapter(
         private val mValues: List<MissionStatusDummyItem>,
-        private val mListener: OnResultsFragmentChangedListener?)
+        private val mListener: OnStatusesFragmentChangedListener?)
     : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener

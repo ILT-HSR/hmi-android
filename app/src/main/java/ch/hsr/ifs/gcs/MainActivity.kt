@@ -12,6 +12,7 @@ import android.view.View
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent
 import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent
 import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedInstructionFragment
@@ -31,52 +32,10 @@ import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 import org.osmdroid.util.GeoPoint
 
-class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener, MissionStatusesFragment.OnResultsFragmentChangedListener, NeedsFragment.OnListFragmentInteractionListener, NeedInstructionFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), NeedsFragment.OnListFragmentInteractionListener, NeedInstructionFragment.OnFragmentInteractionListener {
 
-    override fun onListFragmentInteraction(item: MissionResultsDummyContent.MissionResultDummyItem?) {
-        this@MainActivity.runOnUiThread({
-            item?.let {
-                if(it.isSelected) {
-                    map.overlayManager.addAll(it.mapOverlays)
-                } else {
-                    map.overlayManager.removeAll(it.mapOverlays)
-                }
-                map.invalidate()
-            }
-        })
-    }
+    var fragmentHandler: FragmentHandler? = null
 
-    override fun refreshResultsMapView(items: List<MissionResultsDummyContent.MissionResultDummyItem>) {
-        this@MainActivity.runOnUiThread({
-            map.overlays.clear()
-            items.forEach {
-                if (it.isSelected) map.overlayManager.addAll(it.mapOverlays)
-            }
-            map.invalidate()
-        })
-    }
-    override fun onStatusItemChanged(item: MissionStatusesDummyContent.MissionStatusDummyItem?) {
-        this@MainActivity.runOnUiThread({
-            item?.let {
-                if(it.isSelected) {
-                    map.overlayManager.addAll(it.mapOverlays)
-                } else {
-                    map.overlayManager.removeAll(it.mapOverlays)
-                }
-                map.invalidate()
-            }
-        })
-    }
-
-    override fun refreshStatusesMapView(items: List<MissionStatusesDummyContent.MissionStatusDummyItem>) {
-        this@MainActivity.runOnUiThread({
-            map.overlays.clear()
-            items.forEach {
-                if (it.isSelected) map.overlayManager.addAll(it.mapOverlays)
-            }
-            map.invalidate()
-        })
-    }
     override fun onListFragmentInteraction(item: NeedsDummyContent.DummyItem?) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.menuholder, NeedInstructionFragment())
@@ -166,6 +125,8 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
         val startPoint = GeoPoint(47.223231, 8.816547)
         map.setBuiltInZoomControls(true)
         mapController.setCenter(startPoint)
+
+        fragmentHandler = FragmentHandler(this, map)
     }
 
     override fun onResume() {
