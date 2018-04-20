@@ -78,6 +78,7 @@ class MissionResultsFragment : Fragment() {
         } else {
             throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
         }
+        listener?.refreshResultsMapView(MissionResultsDummyContent.MISSION_RESULT_ITEMS)
     }
 
     override fun onDetach() {
@@ -99,6 +100,7 @@ class MissionResultsFragment : Fragment() {
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onListFragmentInteraction(item: MissionResultDummyItem?)
+        fun refreshResultsMapView(items: List<MissionResultDummyItem>)
     }
 
     companion object {

@@ -85,6 +85,7 @@ class NeedsFragment : Fragment() {
         } else {
             throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
         }
+        listener?.refreshNeedsMapView()
     }
 
     override fun onDetach() {
@@ -106,6 +107,7 @@ class NeedsFragment : Fragment() {
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onListFragmentInteraction(item: DummyItem?)
+        fun refreshNeedsMapView()
     }
 
     companion object {

@@ -45,7 +45,17 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
             }
         })
     }
-    override fun onListFragmentInteraction(item: MissionStatusesDummyContent.DummyItem?) {
+
+    override fun refreshResultsMapView(items: List<MissionResultsDummyContent.MissionResultDummyItem>) {
+        this@MainActivity.runOnUiThread({
+            map.overlays.clear()
+            items.forEach {
+                if (it.isSelected) map.overlayManager.addAll(it.mapOverlays)
+            }
+            map.invalidate()
+        })
+    }
+    override fun onListFragmentInteraction(item: MissionStatusesDummyContent.MissionStatusDummyItem?) {
         this@MainActivity.runOnUiThread({
             item?.let {
                 if(it.isSelected) {
@@ -57,6 +67,16 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
             }
         })
     }
+
+    override fun refreshStatusesMapView(items: List<MissionStatusesDummyContent.MissionStatusDummyItem>) {
+        this@MainActivity.runOnUiThread({
+            map.overlays.clear()
+            items.forEach {
+                if (it.isSelected) map.overlayManager.addAll(it.mapOverlays)
+            }
+            map.invalidate()
+        })
+    }
     override fun onListFragmentInteraction(item: NeedsDummyContent.DummyItem?) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.menuholder, NeedInstructionFragment())
@@ -65,6 +85,12 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
         leftButton.visibility = View.INVISIBLE
     }
     override fun onFragmentInteraction(uri: Uri) {}
+    override fun refreshNeedsMapView() {
+        this@MainActivity.runOnUiThread({
+            map.overlays.clear()
+            map.invalidate()
+        })
+    }
 
     private val TAG = MainActivity::class.java.simpleName
 

@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
 
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent
-import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.DummyItem
+import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.MissionStatusDummyItem
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
@@ -78,6 +78,7 @@ class MissionStatusesFragment : Fragment() {
         } else {
             throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
         }
+        listener?.refreshStatusesMapView(MissionStatusesDummyContent.MISSION_STATUS_ITEMS)
     }
 
     override fun onDetach() {
@@ -98,7 +99,8 @@ class MissionStatusesFragment : Fragment() {
      */
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: DummyItem?)
+        fun onListFragmentInteraction(item: MissionStatusDummyItem?)
+        fun refreshStatusesMapView(items: List<MissionStatusDummyItem>)
     }
 
     companion object {

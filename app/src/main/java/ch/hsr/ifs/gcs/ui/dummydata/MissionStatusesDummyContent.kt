@@ -14,12 +14,12 @@ object MissionStatusesDummyContent {
     /**
      * An array of sample (dummy) mission status items.
      */
-    val MISSION_STATUS_ITEMS: MutableList<DummyItem> = ArrayList()
+    val MISSION_STATUS_ITEMS: MutableList<MissionStatusDummyItem> = ArrayList()
 
     /**
      * A map of sample (dummy) mission status items, by ID.
      */
-    private val MISSION_STATUS_ITEM_MAP: MutableMap<String, DummyItem> = HashMap()
+    private val MISSION_STATUS_ITEM_MAP: MutableMap<String, MissionStatusDummyItem> = HashMap()
 
     private const val COUNT = 9
 
@@ -29,14 +29,14 @@ object MissionStatusesDummyContent {
         }
     }
 
-    private fun addItem(item: DummyItem) {
+    private fun addItem(item: MissionStatusDummyItem) {
         MISSION_STATUS_ITEMS.add(item)
         MISSION_STATUS_ITEM_MAP[item.id] = item
     }
 
-    private fun createDummyItem(position: Int): DummyItem {
+    private fun createDummyItem(position: Int): MissionStatusDummyItem {
         val color = createRandomColorArgb()
-        return DummyItem(position.toString(), createPolygons(color), makeDetails(position), color)
+        return MissionStatusDummyItem(position.toString(), createPolygons(color), makeDetails(position), color)
     }
 
     private fun makeDetails(position: Int): String {
@@ -51,7 +51,7 @@ object MissionStatusesDummyContent {
     /**
      * A dummy mission status item.
      */
-    data class DummyItem(val id: String, val mapOverlays: List<Polygon>, val details: String, val color: Int) {
+    data class MissionStatusDummyItem(val id: String, val mapOverlays: List<Polygon>, val details: String, val color: Int) {
         var isSelected: Boolean = false
         override fun toString(): String = id
     }

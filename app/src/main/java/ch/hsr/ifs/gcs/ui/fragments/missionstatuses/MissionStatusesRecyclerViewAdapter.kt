@@ -10,16 +10,16 @@ import ch.hsr.ifs.gcs.R
 
 
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnListFragmentInteractionListener
-import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.DummyItem
+import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.MissionStatusDummyItem
 
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
+ * [RecyclerView.Adapter] that can display a [MissionStatusDummyItem] and makes a call to the
  * specified [OnListFragmentInteractionListener].
  */
 class MissionStatusesRecyclerViewAdapter(
-        private val mValues: List<DummyItem>,
+        private val mValues: List<MissionStatusDummyItem>,
         private val mListener: OnListFragmentInteractionListener?)
     : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>() {
 
@@ -27,7 +27,7 @@ class MissionStatusesRecyclerViewAdapter(
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as DummyItem
+            val item = v.tag as MissionStatusDummyItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
             item.isSelected = !item.isSelected
