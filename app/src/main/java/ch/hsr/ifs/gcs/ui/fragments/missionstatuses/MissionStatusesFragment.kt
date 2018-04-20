@@ -101,6 +101,7 @@ class MissionStatusesFragment : Fragment() {
          * @param items The list of all items of the fragment.
          */
         fun refreshStatusesMapView(items: List<MissionStatusDummyItem>)
+
     }
 
 

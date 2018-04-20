@@ -8,26 +8,26 @@ import android.widget.TextView
 import ch.hsr.ifs.gcs.R
 
 
-import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnListFragmentInteractionListener
-import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent.DummyItem
+import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedListener
+import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent.NeedDummyItem
 
 import kotlinx.android.synthetic.main.fragment_need.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
- * specified [OnListFragmentInteractionListener].
+ * [RecyclerView.Adapter] that can display a [NeedDummyItem] and makes a call to the
+ * specified [OnNeedsFragmentChangedListener].
  * TODO: Replace the implementation with code for your data type.
  */
 class NeedsRecyclerViewAdapter(
-        private val mValues: List<DummyItem>,
-        private val mListener: OnListFragmentInteractionListener?)
+        private val mValues: List<NeedDummyItem>,
+        private val mListener: OnNeedsFragmentChangedListener?)
     : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as DummyItem
+            val item = v.tag as NeedDummyItem
             // Notify the active callbacks interface (the activity, if the fragment is attached to
             // one) that an item has been selected.
             mListener?.onListFragmentInteraction(item)

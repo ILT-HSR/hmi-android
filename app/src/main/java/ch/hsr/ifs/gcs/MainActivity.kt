@@ -9,14 +9,10 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent
-import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent
-import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedInstructionFragment
-import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
@@ -32,24 +28,11 @@ import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 import org.osmdroid.util.GeoPoint
 
-class MainActivity : AppCompatActivity(), NeedsFragment.OnListFragmentInteractionListener, NeedInstructionFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), NeedInstructionFragment.OnFragmentInteractionListener {
 
     var fragmentHandler: FragmentHandler? = null
 
-    override fun onListFragmentInteraction(item: NeedsDummyContent.DummyItem?) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.menuholder, NeedInstructionFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
-        leftButton.visibility = View.INVISIBLE
-    }
     override fun onFragmentInteraction(uri: Uri) {}
-    override fun refreshNeedsMapView() {
-        this@MainActivity.runOnUiThread({
-            map.overlays.clear()
-            map.invalidate()
-        })
-    }
 
     private val TAG = MainActivity::class.java.simpleName
 

@@ -1,42 +1,39 @@
 package ch.hsr.ifs.gcs.ui.dummydata
 
+import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
 import java.util.ArrayList
 import java.util.HashMap
 
 /**
- * Helper class for providing sample content for user interfaces created by
- * Android template wizards.
- *
- * TODO: Replace all uses of this class before publishing your app.
+ * Helper class for providing sample mission content for the [NeedsFragment].
  */
 object NeedsDummyContent {
 
     /**
-     * An array of sample (dummy) items.
+     * An array of sample (dummy) need items.
      */
-    val ITEMS: MutableList<DummyItem> = ArrayList()
+    val NEED_ITEMS: MutableList<NeedDummyItem> = ArrayList()
 
     /**
-     * A map of sample (dummy) items, by ID.
+     * A map of sample (dummy) need items, by ID.
      */
-    private val ITEM_MAP: MutableMap<String, DummyItem> = HashMap()
+    private val NEED_ITEM_MAP: MutableMap<String, NeedDummyItem> = HashMap()
 
-    private const val COUNT = 25
+    private const val COUNT = 12
 
     init {
-        // Add some sample items.
         for (i in 1..COUNT) {
             addItem(createDummyItem(i))
         }
     }
 
-    private fun addItem(item: DummyItem) {
-        ITEMS.add(item)
-        ITEM_MAP.put(item.id, item)
+    private fun addItem(item: NeedDummyItem) {
+        NEED_ITEMS.add(item)
+        NEED_ITEM_MAP[item.id] = item
     }
 
-    private fun createDummyItem(position: Int): DummyItem {
-        return DummyItem(position.toString(), "Bedürfnis", makeDetails(position))
+    private fun createDummyItem(position: Int): NeedDummyItem {
+        return NeedDummyItem(position.toString(), "Bedürfnis", makeDetails(position))
     }
 
     private fun makeDetails(position: Int): String {
@@ -51,7 +48,8 @@ object NeedsDummyContent {
     /**
      * A dummy item representing a piece of content.
      */
-    data class DummyItem(val id: String, val content: String, val details: String) {
+    data class NeedDummyItem(val id: String, val content: String, val details: String) {
         override fun toString(): String = content
     }
+
 }

@@ -101,6 +101,7 @@ class MissionResultsFragment : Fragment() {
          * @param items The list of all items of the fragment.
          */
         fun refreshResultsMapView(items: List<MissionResultDummyItem>)
+
     }
 
     companion object {
