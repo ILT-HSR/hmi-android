@@ -1,11 +1,8 @@
 package ch.hsr.ifs.gcs.driver.internal
 
-import android.content.Context
 import android.util.Log
-import ch.hsr.ifs.gcs.comm.SerialDataChannel
 import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.Platform
-import com.hoho.android.usbserial.driver.UsbSerialPort
 import me.drton.jmavlib.createArmMessage
 import me.drton.jmavlib.createDisarmMessage
 import me.drton.jmavlib.createHeartbeatMessage
@@ -56,7 +53,7 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
 
     private val fExecutors = object {
-        val io = Executors.newSingleThreadExecutor()
+        val io = Executors.newSingleThreadScheduledExecutor()
         val heartbeat = Executors.newSingleThreadScheduledExecutor()
         val lowFrequency = Executors.newSingleThreadScheduledExecutor()
         val highFrequency = Executors.newSingleThreadScheduledExecutor()
@@ -75,7 +72,7 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
 
 
     init {
-        fExecutors.io.submit {
+        fExecutors.io.scheduleAtFixedRate({
             while (true) {
                 fIOStream.read()?.let(this@MAVLinkCommonPlatformImpl::handle)
 
@@ -83,7 +80,7 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
                     fIOStream.write(it)
                 }
             }
-        }
+        }, 0, 138, TimeUnit.MICROSECONDS)
 
         fExecutors.heartbeat.scheduleAtFixedRate({
             fCommandQueue.offer(fMessages.heartbeat)
@@ -118,7 +115,7 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         when (MAVLinkMessageName.from(message.msgName)) {
             MAVLinkMessageName.HEARTBEAT -> fVehicleState.lastHeartbeat = System.currentTimeMillis()
             MAVLinkMessageName.AUTOPILOT_VERSION -> handleVersion(message)
-            else -> Log.d(TAG, "Unsupported message '$message'")
+            null -> Log.d(TAG, "Unsupported message '$message'")
         }
     }
 
