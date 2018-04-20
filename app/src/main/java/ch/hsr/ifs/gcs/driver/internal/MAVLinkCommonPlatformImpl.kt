@@ -39,12 +39,12 @@ class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChann
     private val fHighFrequencyTaskExecutor = Executors.newSingleThreadScheduledExecutor()
 
     private val fIOStream = MAVLinkStream(schema, channel)
-
-    private val fHeartbeat = createHeartbeatMessage(8, 250, schema)
-
-    private val fCapabilities = createRequestAutopilotCapabilitiesMessage(0, 8, 250, schema)
-
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
+
+    private val fMessages = object {
+        val heartbeat = createHeartbeatMessage(8, 250, schema)
+        val capabilities = createRequestAutopilotCapabilitiesMessage(0, 8, 250, schema)
+    }
 
     private val fVehicleState = object {
         var lastHeartbeat: Long = 0
@@ -87,11 +87,20 @@ class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChann
         }
 
         fHeartbeatExecutor.scheduleAtFixedRate({
-            fCommandQueue.offer(fHeartbeat)
-            fVehicleState.vendor?:fCommandQueue.offer(fCapabilities)
+            fCommandQueue.offer(fMessages.heartbeat)
+            fVehicleState.vendor?:fCommandQueue.offer(fMessages.capabilities)
         }, 0, 1, TimeUnit.SECONDS)
     }
 
+    /**
+     * Check if the connection to the vehicle is alive.
+     *
+     * @note A [MAVLinkCommonPlatform] vehicle is considered to be alive if the last heartbeat was
+     * received within the last ten seconds.
+     *
+     * @since 1.0.0
+     * @author IFS Institute for Software
+     */
     override val isAlive get() = (System.currentTimeMillis() - fVehicleState.lastHeartbeat) < 10000
 
     override val name get() = fVehicleState.vendor?.let {
