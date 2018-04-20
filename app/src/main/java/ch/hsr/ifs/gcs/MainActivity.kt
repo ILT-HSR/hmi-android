@@ -9,8 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
-import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
@@ -94,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         fragmentHandler = FragmentHandler(this, map)
 
         fragmentHandler?.let {
-            it.performFragmentTransaction(R.id.menuholder, MissionResultsFragment())
+            it.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
         }
 
         map.setTileSource(TileSourceFactory.MAPNIK)
@@ -212,13 +211,13 @@ class MainActivity : AppCompatActivity() {
                 if (data.contains(0x04)) {
                     //mavlinkStream.write(newArmMessage())
                     fragmentHandler?.let {
-                        it.performFragmentTransaction(R.id.menuholder, MissionStatusesFragment())
+                        it.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                     }
                     leftButton.background = applicationContext.getDrawable(R.drawable.ic_cancel_black_24dp)
                 } else if (data.contains(0x02)) {
                     //mavlinkStream.write(newDisarmMessage())
                     fragmentHandler?.let {
-                        it.performFragmentTransaction(R.id.menuholder, MissionResultsFragment())
+                        it.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
                     }
                     leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
                 }

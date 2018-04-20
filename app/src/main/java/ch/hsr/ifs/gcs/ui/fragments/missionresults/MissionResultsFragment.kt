@@ -37,7 +37,6 @@ class MissionResultsFragment : Fragment() {
         } else {
             throw RuntimeException(context.toString() + " must implement OnResultsFragmentChangedListener")
         }
-        listener?.refreshResultsMapView(MissionResultsDummyContent.MISSION_RESULT_ITEMS)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +75,11 @@ class MissionResultsFragment : Fragment() {
             transaction.commit()
             activity.leftButton.visibility = View.INVISIBLE
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        listener?.refreshResultsMapView(MissionResultsDummyContent.MISSION_RESULT_ITEMS)
     }
 
     override fun onDetach() {

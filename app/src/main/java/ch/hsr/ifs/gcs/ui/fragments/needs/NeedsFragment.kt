@@ -40,7 +40,6 @@ class NeedsFragment : Fragment() {
         } else {
             throw RuntimeException(context.toString() + " must implement OnNeedsFragmentChangedListener")
         }
-        listener?.refreshNeedsMapView()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,6 +82,11 @@ class NeedsFragment : Fragment() {
             transaction.commit()
             activity.leftButton.visibility = View.VISIBLE
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        listener?.refreshNeedsMapView()
     }
 
     override fun onDetach() {

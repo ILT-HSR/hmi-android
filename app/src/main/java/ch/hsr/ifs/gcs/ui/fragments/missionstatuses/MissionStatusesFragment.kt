@@ -37,7 +37,6 @@ class MissionStatusesFragment : Fragment() {
         } else {
             throw RuntimeException(context.toString() + " must implement OnStatusesFragmentChangedListener")
         }
-        listener?.refreshStatusesMapView(MissionStatusesDummyContent.MISSION_STATUS_ITEMS)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +75,11 @@ class MissionStatusesFragment : Fragment() {
             transaction.commit()
             activity.leftButton.visibility = View.INVISIBLE
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        listener?.refreshStatusesMapView(MissionStatusesDummyContent.MISSION_STATUS_ITEMS)
     }
 
     override fun onDetach() {
