@@ -70,20 +70,13 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         var product: String? = null
     }
 
+    private val fMessageListeners = HashMap<MAVLinkMessageName, MutableList<(MAVLinkMessage) -> Unit>>()
+
     init {
-        fExecutors.io.scheduleAtFixedRate({
-            while (true) {
-                fIOStream.read()?.let(this@MAVLinkCommonPlatformImpl::handle)
-
-                fCommandQueue.poll()?.let {
-                    fIOStream.write(it)
-                }
-            }
-        }, 0, 138, TimeUnit.MICROSECONDS)
-
-        fExecutors.heartbeat.scheduleAtFixedRate({
-            fCommandQueue.offer(fMessages.heartbeat)
-        }, 0, 1, TimeUnit.SECONDS)
+        registerBasicHandlers()
+        beginSerialIO()
+        scheduleHeartbeat()
+        requestVehicleCapabilities()
     }
 
     /**
@@ -112,10 +105,20 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
 
     private fun handle(message: MAVLinkMessage) {
         when (MAVLinkMessageName.from(message.msgName)) {
-            MAVLinkMessageName.HEARTBEAT -> fVehicleState.lastHeartbeat = System.currentTimeMillis()
-            MAVLinkMessageName.AUTOPILOT_VERSION -> handleVersion(message)
             null -> Log.d(TAG, "Unsupported message '$message'")
+            else -> {
+                MAVLinkMessageName.from(message.msgName)?.let {
+                    fMessageListeners[it]?.forEach {
+                        it(message)
+                    }
+                }
+            }
         }
+    }
+
+    private fun handleHeartbeat(message: MAVLinkMessage) {
+        fVehicleState.lastHeartbeat = System.currentTimeMillis()
+        Log.d(TAG, "Last vehicle heartbeat at ${fVehicleState.lastHeartbeat}")
     }
 
     private fun handleVersion(message: MAVLinkMessage) {
@@ -123,11 +126,58 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         fVehicleState.product = MAVLinkProducts[message["product_id"] as? Int ?: 0]
     }
 
-    private fun enqueueOnHighFrequencyScheduler(task: () -> Unit) {
-        fExecutors.highFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
+    private fun enqueueOnHighFrequencyScheduler(task: () -> Unit) =
+            fExecutors.highFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
+
+
+    private fun enqueueOnLowFrequencyScheduler(task: () -> Unit) =
+            fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 5000, TimeUnit.MILLISECONDS)
+
+
+    private fun addListener(messageName: MAVLinkMessageName, handler: (MAVLinkMessage) -> Unit) {
+        val listeners = fMessageListeners[messageName]
+        if (listeners != null) {
+            listeners.add(handler)
+        } else {
+            fMessageListeners[messageName] = listOf(handler).toMutableList()
+        }
     }
 
-    private fun enqueueOnLowFrequencyScheduler(task: () -> Unit) {
-        fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 5000, TimeUnit.MILLISECONDS)
+    private fun registerBasicHandlers() {
+        addListener(MAVLinkMessageName.HEARTBEAT, this::handleHeartbeat)
+        addListener(MAVLinkMessageName.AUTOPILOT_VERSION, this::handleVersion)
+    }
+
+    private fun beginSerialIO() {
+        fExecutors.io.scheduleAtFixedRate({
+            while (true) {
+                fIOStream.read()?.let(this@MAVLinkCommonPlatformImpl::handle)
+
+                fCommandQueue.poll()?.let {
+                    fIOStream.write(it)
+                }
+            }
+        }, 0, 138, TimeUnit.MICROSECONDS)
+    }
+
+    private fun scheduleHeartbeat() {
+        fExecutors.heartbeat.scheduleAtFixedRate({
+            fCommandQueue.offer(fMessages.heartbeat)
+        }, 0, 1, TimeUnit.SECONDS)
+    }
+
+    private fun requestVehicleCapabilities() {
+        enqueueOnLowFrequencyScheduler {
+            fVehicleState.vendor ?: fCommandQueue.offer(fMessages.capabilities)
+        }.let { f ->
+            addListener(MAVLinkMessageName.AUTOPILOT_VERSION, object : (MAVLinkMessage) -> Unit {
+                override fun invoke(msg: MAVLinkMessage) {
+                    if (!f.isCancelled) {
+                        f.cancel(false)
+                        fMessageListeners[MAVLinkMessageName.AUTOPILOT_VERSION]!!.remove(this)
+                    }
+                }
+            })
+        }
     }
 }
