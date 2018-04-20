@@ -33,25 +33,6 @@ private val TAG = MAVLinkCommonPlatformImpl::class.simpleName
  */
 class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChannel) : MAVLinkCommonPlatform {
 
-    private val fIOExecutor = Executors.newSingleThreadExecutor()
-    private val fHeartbeatExecutor = Executors.newSingleThreadScheduledExecutor()
-    private val fLowFrequencyTaskExecutor = Executors.newSingleThreadScheduledExecutor()
-    private val fHighFrequencyTaskExecutor = Executors.newSingleThreadScheduledExecutor()
-
-    private val fIOStream = MAVLinkStream(schema, channel)
-    private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
-
-    private val fMessages = object {
-        val heartbeat = createHeartbeatMessage(8, 250, schema)
-        val capabilities = createRequestAutopilotCapabilitiesMessage(0, 8, 250, schema)
-    }
-
-    private val fVehicleState = object {
-        var lastHeartbeat: Long = 0
-        var vendor: String? = null
-        var product: String? = null
-    }
-
     companion object {
 
         /**
@@ -75,8 +56,30 @@ class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChann
 
     }
 
+    private val fIOStream = MAVLinkStream(schema, channel)
+    private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
+
+    private val fExecutors = object {
+        val io = Executors.newSingleThreadExecutor()
+        val heartbeat = Executors.newSingleThreadScheduledExecutor()
+        val lowFrequency = Executors.newSingleThreadScheduledExecutor()
+        val highFrequency = Executors.newSingleThreadScheduledExecutor()
+    }
+
+    private val fMessages = object {
+        val heartbeat = createHeartbeatMessage(8, 250, schema)
+        val capabilities = createRequestAutopilotCapabilitiesMessage(0, 8, 250, schema)
+    }
+
+    private val fVehicleState = object {
+        var lastHeartbeat: Long = 0
+        var vendor: String? = null
+        var product: String? = null
+    }
+
+
     init {
-        fIOExecutor.submit {
+        fExecutors.io.submit {
             while (true) {
                 fIOStream.read()?.let(this@MAVLinkCommonPlatformImpl::handle)
 
@@ -86,9 +89,8 @@ class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChann
             }
         }
 
-        fHeartbeatExecutor.scheduleAtFixedRate({
+        fExecutors.heartbeat.scheduleAtFixedRate({
             fCommandQueue.offer(fMessages.heartbeat)
-            fVehicleState.vendor?:fCommandQueue.offer(fMessages.capabilities)
         }, 0, 1, TimeUnit.SECONDS)
     }
 
@@ -103,9 +105,10 @@ class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChann
      */
     override val isAlive get() = (System.currentTimeMillis() - fVehicleState.lastHeartbeat) < 10000
 
-    override val name get() = fVehicleState.vendor?.let {
-        "${fVehicleState.vendor} ${fVehicleState.product}"
-    } ?: "<unknown>"
+    override val name
+        get() = fVehicleState.vendor?.let {
+            "${fVehicleState.vendor} ${fVehicleState.product}"
+        } ?: "<unknown>"
 
     override fun arm() {
         fCommandQueue.offer(createArmMessage(1, 8, 250, schema))
@@ -128,4 +131,9 @@ class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChann
         fVehicleState.product = MAVLinkProducts[message["product_id"] as? Int ?: 0]
     }
 
+    private fun enqueueOnHighFrequencyScheduler(task: () -> Unit) =
+            fExecutors.highFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
+
+    private fun enqueueOnLowFrequencyScheduler(task: () -> Unit) =
+            fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
 }
