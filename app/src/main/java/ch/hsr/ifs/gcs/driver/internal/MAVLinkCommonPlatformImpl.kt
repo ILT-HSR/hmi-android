@@ -3,7 +3,7 @@ package ch.hsr.ifs.gcs.driver.internal
 import android.content.Context
 import android.util.Log
 import ch.hsr.ifs.gcs.comm.SerialDataChannel
-import ch.hsr.ifs.gcs.driver.CommonMAVLinkPlatform
+import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.Platform
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import me.drton.jmavlib.createArmMessage
@@ -23,7 +23,7 @@ enum class MAVLinkMessageName {
     AUTOPILOT_VERSION
 }
 
-private val TAG = CommonMAVLinkPlatformImpl::class.simpleName
+private val TAG = MAVLinkCommonPlatformImpl::class.simpleName
 
 /**
  * Concrete implementation of the [platform driver interface][Platform] for MAVLink vehicles
@@ -31,7 +31,7 @@ private val TAG = CommonMAVLinkPlatformImpl::class.simpleName
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChannel) : CommonMAVLinkPlatform {
+class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChannel) : MAVLinkCommonPlatform {
 
     private val fIOExecutor = Executors.newSingleThreadExecutor()
     private val fIOStream = MAVLinkStream(schema, channel)
@@ -65,7 +65,7 @@ class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChann
             val channel = SerialDataChannel.create(context, port, 57600, 8, 1, SerialDataChannel.Parity.NONE)
             return when (channel) {
                 null -> null
-                else -> CommonMAVLinkPlatformImpl(channel)
+                else -> MAVLinkCommonPlatformImpl(channel)
             }
         }
 
@@ -74,7 +74,7 @@ class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChann
     init {
         fIOExecutor.submit {
             while (true) {
-                fIOStream.read()?.let(this@CommonMAVLinkPlatformImpl::handle)
+                fIOStream.read()?.let(this@MAVLinkCommonPlatformImpl::handle)
 
                 fCommandQueue.poll()?.let {
                     fIOStream.write(it)

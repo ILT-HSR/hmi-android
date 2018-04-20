@@ -7,9 +7,9 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.CommonMAVLinkPlatform
+import ch.hsr.ifs.gcs.driver.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.Platform
-import ch.hsr.ifs.gcs.driver.internal.CommonMAVLinkPlatformImpl
+import ch.hsr.ifs.gcs.driver.internal.MAVLinkCommonPlatformImpl
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             if (it.device.manufacturerName.equals("Arduino (www.arduino.cc)")) {
                 button = it.ports[0]
             } else if (it.device.manufacturerName.equals("FTDI")) {
-                drone = CommonMAVLinkPlatformImpl.create(this, it.ports[0])
+                drone = MAVLinkCommonPlatformImpl.create(this, it.ports[0])
             }
         }
 
@@ -125,9 +125,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (data.contains(0x04)) {
-            (drone as CommonMAVLinkPlatform?)?.arm()
+            (drone as MAVLinkPlatform?)?.arm()
         } else if (data.contains(0x02)) {
-            (drone as CommonMAVLinkPlatform?)?.disarm()
+            (drone as MAVLinkPlatform?)?.disarm()
         }
     }
 

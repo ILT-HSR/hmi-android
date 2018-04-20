@@ -9,7 +9,7 @@ import me.drton.jmavlib.mavlink.MAVLinkSchemaRegistry
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-interface CommonMAVLinkPlatform : MAVLinkPlatform {
+interface MAVLinkCommonPlatform : MAVLinkPlatform {
 
     override val schema get() = MAVLinkSchemaRegistry["common"]!!
 
