@@ -35,8 +35,8 @@ class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChann
 
     private val fIOExecutor = Executors.newSingleThreadExecutor()
     private val fHeartbeatExecutor = Executors.newSingleThreadScheduledExecutor()
-    private val fLowPriorityTaskExecutor = Executors.newSingleThreadScheduledExecutor()
-    private val fHighPriorityTaskExecutor = Executors.newSingleThreadScheduledExecutor()
+    private val fLowFrequencyTaskExecutor = Executors.newSingleThreadScheduledExecutor()
+    private val fHighFrequencyTaskExecutor = Executors.newSingleThreadScheduledExecutor()
 
     private val fIOStream = MAVLinkStream(schema, channel)
 
