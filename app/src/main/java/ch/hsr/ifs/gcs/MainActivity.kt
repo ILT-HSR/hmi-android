@@ -31,7 +31,7 @@ import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 import org.osmdroid.util.GeoPoint
 
-class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener, MissionStatusesFragment.OnListFragmentInteractionListener, NeedsFragment.OnListFragmentInteractionListener, NeedInstructionFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentInteractionListener, MissionStatusesFragment.OnResultsFragmentChangedListener, NeedsFragment.OnListFragmentInteractionListener, NeedInstructionFragment.OnFragmentInteractionListener {
 
     override fun onListFragmentInteraction(item: MissionResultsDummyContent.MissionResultDummyItem?) {
         this@MainActivity.runOnUiThread({
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), MissionResultsFragment.OnListFragmentI
             map.invalidate()
         })
     }
-    override fun onListFragmentInteraction(item: MissionStatusesDummyContent.MissionStatusDummyItem?) {
+    override fun onStatusItemChanged(item: MissionStatusesDummyContent.MissionStatusDummyItem?) {
         this@MainActivity.runOnUiThread({
             item?.let {
                 if(it.isSelected) {

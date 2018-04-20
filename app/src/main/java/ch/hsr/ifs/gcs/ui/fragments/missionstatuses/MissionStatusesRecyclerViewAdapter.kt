@@ -9,18 +9,18 @@ import android.widget.TextView
 import ch.hsr.ifs.gcs.R
 
 
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnListFragmentInteractionListener
+import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnResultsFragmentChangedListener
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.MissionStatusDummyItem
 
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 
 /**
  * [RecyclerView.Adapter] that can display a [MissionStatusDummyItem] and makes a call to the
- * specified [OnListFragmentInteractionListener].
+ * specified [OnResultsFragmentChangedListener].
  */
 class MissionStatusesRecyclerViewAdapter(
         private val mValues: List<MissionStatusDummyItem>,
-        private val mListener: OnListFragmentInteractionListener?)
+        private val mListener: OnResultsFragmentChangedListener?)
     : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
@@ -33,7 +33,7 @@ class MissionStatusesRecyclerViewAdapter(
             item.isSelected = !item.isSelected
             val lightColor = Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
             v.setBackgroundColor(if (item.isSelected) lightColor else Color.WHITE)
-            mListener?.onListFragmentInteraction(item)
+            mListener?.onStatusItemChanged(item)
         }
     }
 
