@@ -14,13 +14,32 @@ import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkProducts
 import me.drton.jmavlib.mavlink.MAVLinkStream
 import me.drton.jmavlib.mavlink.MAVLinkVendors
+import java.nio.channels.ByteChannel
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 enum class MAVLinkMessageName {
     HEARTBEAT,
-    AUTOPILOT_VERSION
+    AUTOPILOT_VERSION;
+
+    companion object {
+
+        /**
+         * Try to create a [MAVLinkMessageName] with the given name
+         *
+         * @param name The name of a MAVLink message
+         * @return The corresponding [MAVLinkMessageName] if it exists, `null` otherwise
+         * @since 1.0.0
+         * @author IFS Institute for Software
+         */
+        fun from(name: String) = try {
+            MAVLinkMessageName.valueOf(name)
+        } catch (e: Exception) {
+            null
+        }
+
+    }
 }
 
 private val TAG = MAVLinkCommonPlatformImpl::class.simpleName
@@ -31,7 +50,7 @@ private val TAG = MAVLinkCommonPlatformImpl::class.simpleName
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChannel) : MAVLinkCommonPlatform {
+class MAVLinkCommonPlatformImpl private constructor(channel: ByteChannel) : MAVLinkCommonPlatform {
 
     companion object {
 
@@ -119,9 +138,9 @@ class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChann
     }
 
     private fun handle(message: MAVLinkMessage) {
-        when (message.msgName) {
-            MAVLinkMessageName.HEARTBEAT.name -> fVehicleState.lastHeartbeat = System.currentTimeMillis()
-            MAVLinkMessageName.AUTOPILOT_VERSION.name -> handleVersion(message)
+        when (MAVLinkMessageName.from(message.msgName)) {
+            MAVLinkMessageName.HEARTBEAT -> fVehicleState.lastHeartbeat = System.currentTimeMillis()
+            MAVLinkMessageName.AUTOPILOT_VERSION -> handleVersion(message)
             else -> Log.d(TAG, "Unsupported message '$message'")
         }
     }
