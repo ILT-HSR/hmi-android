@@ -7,11 +7,10 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
 import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.Platform
-import ch.hsr.ifs.gcs.driver.internal.MAVLinkCommonPlatformImpl
-import android.view.View
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import com.hoho.android.usbserial.driver.UsbSerialPort
@@ -20,9 +19,9 @@ import com.hoho.android.usbserial.util.SerialInputOutputManager
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
 import java.io.IOException
 import java.util.concurrent.Executors
-import org.osmdroid.util.GeoPoint
 
 class MainActivity : AppCompatActivity() {
 
@@ -94,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     b.open(it)
                     b.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
-                    Log.d("BUTTON","Button Connected")
+                    Log.d("BUTTON", "Button Connected")
                 } catch (e: IOException) {
                     Log.e(TAG, "Error setting up button", e)
                 }
@@ -158,7 +157,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onWindowFocusChanged(hasFocus:Boolean) {
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
             val decorView = window.decorView
