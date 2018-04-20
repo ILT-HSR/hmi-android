@@ -3,7 +3,6 @@ package ch.hsr.ifs.gcs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.hardware.usb.UsbManager
-import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
@@ -12,7 +11,6 @@ import android.view.View
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
-import ch.hsr.ifs.gcs.ui.fragments.needs.NeedInstructionFragment
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
@@ -28,11 +26,9 @@ import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 import org.osmdroid.util.GeoPoint
 
-class MainActivity : AppCompatActivity(), NeedInstructionFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity() {
 
     var fragmentHandler: FragmentHandler? = null
-
-    override fun onFragmentInteraction(uri: Uri) {}
 
     private val TAG = MainActivity::class.java.simpleName
 
