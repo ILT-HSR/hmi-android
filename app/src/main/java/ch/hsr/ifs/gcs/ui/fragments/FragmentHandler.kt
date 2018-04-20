@@ -30,7 +30,6 @@ class FragmentHandler(val activity: Activity, val map: MapView) {
     fun performFragmentTransaction(holderId: Int, fragmentType: FragmentType) {
         val transaction = (activity as MainActivity).supportFragmentManager.beginTransaction()
         transaction.replace(holderId, fragmentType.fragment)
-        transaction.addToBackStack(null)
         transaction.commit()
     }
 

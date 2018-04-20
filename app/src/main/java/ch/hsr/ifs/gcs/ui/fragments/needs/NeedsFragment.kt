@@ -78,7 +78,6 @@ class NeedsFragment : Fragment() {
                 }
             }
             transaction.replace(R.id.menuholder, returnFragment)
-            transaction.addToBackStack(null)
             transaction.commit()
             activity.leftButton.visibility = View.VISIBLE
         }
