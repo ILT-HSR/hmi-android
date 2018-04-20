@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver.internal
 
 import android.content.Context
+import android.util.Log
 import ch.hsr.ifs.gcs.comm.SerialDataChannel
 import ch.hsr.ifs.gcs.driver.CommonMAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.Platform
@@ -8,16 +9,21 @@ import com.hoho.android.usbserial.driver.UsbSerialPort
 import me.drton.jmavlib.createArmMessage
 import me.drton.jmavlib.createDisarmMessage
 import me.drton.jmavlib.createHeartbeatMessage
+import me.drton.jmavlib.createRequestAutopilotCapabilitiesMessage
 import me.drton.jmavlib.mavlink.MAVLinkMessage
+import me.drton.jmavlib.mavlink.MAVLinkProducts
 import me.drton.jmavlib.mavlink.MAVLinkStream
-import java.io.IOException
+import me.drton.jmavlib.mavlink.MAVLinkVendors
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 enum class MAVLinkMessageName {
-    HEARTBEAT
+    HEARTBEAT,
+    AUTOPILOT_VERSION
 }
+
+private val TAG = CommonMAVLinkPlatformImpl::class.simpleName
 
 /**
  * Concrete implementation of the [platform driver interface][Platform] for MAVLink vehicles
@@ -33,9 +39,14 @@ class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChann
     private val fHeartbeat = createHeartbeatMessage(8, 250, schema!!)
     private val fHeartbeatExecutor = Executors.newSingleThreadScheduledExecutor()
 
+    private val fCapabilities = createRequestAutopilotCapabilitiesMessage(0, 8, 250, schema!!)
+
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
 
     private var fVehicleLastHeartbeat: Long = 0
+    private lateinit var fVehicleVendor: String
+    private lateinit var fVehicleProduct: String
+
 
     companion object {
 
@@ -62,14 +73,10 @@ class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChann
 
     init {
         fIOExecutor.submit {
-            while(true) {
+            while (true) {
+                fIOStream.read()?.let(this@CommonMAVLinkPlatformImpl::handle)
 
-                try {
-                    fIOStream.read()?.let(this@CommonMAVLinkPlatformImpl::handle)
-                } catch (e: IOException) {
-                }
-
-                fCommandQueue.poll()?.let{
+                fCommandQueue.poll()?.let {
                     fIOStream.write(it)
                 }
             }
@@ -77,18 +84,16 @@ class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChann
 
         fHeartbeatExecutor.scheduleAtFixedRate({
             fCommandQueue.offer(fHeartbeat)
+
+            if (!(this::fVehicleProduct.isInitialized && this::fVehicleVendor.isInitialized)) {
+                fCommandQueue.offer(fCapabilities)
+            }
         }, 0, 1, TimeUnit.SECONDS)
     }
 
-    private fun handle(message: MAVLinkMessage) {
-        when(message.msgName) {
-            MAVLinkMessageName.HEARTBEAT.name -> fVehicleLastHeartbeat = System.currentTimeMillis()
-        }
-    }
+    override val isAlive get() = (System.currentTimeMillis() - fVehicleLastHeartbeat) < 10000
 
-    override val isAlive = (System.currentTimeMillis() - fVehicleLastHeartbeat) < 10000
-
-    override val name = "<unknown>"
+    override val name get() = if (this::fVehicleVendor.isInitialized) "$fVehicleVendor $fVehicleProduct" else "<unknown>"
 
     override fun arm() {
         fCommandQueue.offer(createArmMessage(1, 8, 250, schema!!))
@@ -96,6 +101,22 @@ class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChann
 
     override fun disarm() {
         fCommandQueue.offer(createDisarmMessage(1, 8, 250, schema!!))
+    }
+
+    private fun handle(message: MAVLinkMessage) {
+        when (message.msgName) {
+            MAVLinkMessageName.HEARTBEAT.name -> fVehicleLastHeartbeat = System.currentTimeMillis()
+            MAVLinkMessageName.AUTOPILOT_VERSION.name -> handleVersion(message)
+            else -> Log.d(TAG, "Unsupported message '$message'")
+        }
+    }
+
+    private fun handleVersion(message: MAVLinkMessage) {
+        val vendorId = message["vendor_id"] as? Int
+        val productId = message["product_id"] as? Int
+
+        fVehicleVendor = MAVLinkVendors[vendorId ?: 0]
+        fVehicleProduct = MAVLinkProducts[productId ?: 0]
     }
 
 }
