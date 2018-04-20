@@ -7,14 +7,15 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import com.hoho.android.usbserial.util.SerialInputOutputManager
 import kotlinx.android.synthetic.main.activity_main.*
 import me.drton.jmavlib.MAVLINK_SCHEMA_COMMON
 import me.drton.jmavlib.mavlink.MAVLinkStream
-import me.drton.jmavlib.newArmMessage
-import me.drton.jmavlib.newDisarmMessage
 import me.drton.jmavlib.newMAVLinkHeartbeat
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -22,8 +23,11 @@ import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
+import org.osmdroid.util.GeoPoint
 
 class MainActivity : AppCompatActivity() {
+
+    var fragmentHandler: FragmentHandler? = null
 
     private val TAG = MainActivity::class.java.simpleName
 
@@ -84,9 +88,21 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        map.setTileSource(TileSourceFactory.MAPNIK)
+        leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
 
-        button_detected_field.text = "What is happening???"
+        fragmentHandler = FragmentHandler(this, map)
+
+        fragmentHandler?.let {
+            it.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
+        }
+
+        map.setTileSource(TileSourceFactory.MAPNIK)
+        val mapController = map.controller
+        mapController.setZoom(18.0)
+        //TODO: Get location from device to find center coordinates
+        val startPoint = GeoPoint(47.223231, 8.816547)
+        map.setBuiltInZoomControls(true)
+        mapController.setCenter(startPoint)
     }
 
     override fun onResume() {
@@ -107,7 +123,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     b.open(it)
                     b.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
-                    button_detected_field.text = "Button connected"
+                    Log.d("BUTTON","Button Connected")
                 } catch (e: IOException) {
                     Log.e(TAG, "Error setting up button", e)
                 }
@@ -119,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     v.open(it)
                     v.setParameters(57600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE)
-                    drone_detected_field.text = "Drone connected"
+                    Log.d("DRONE","Drone Connected")
                 } catch (e: IOException) {
                     Log.e(TAG, "Error setting up drone", e)
                 }
@@ -189,17 +205,37 @@ class MainActivity : AppCompatActivity() {
         data.forEach {
             message += String.format("0x%02x ", it)
         }
-
         when (port) {
             button -> {
-                button_detected_field.text = "read ${data.size} bytes: $message"
+                Log.d("BUTTON","read ${data.size} bytes: $message")
                 if (data.contains(0x04)) {
-                    mavlinkStream.write(newArmMessage())
+                    //mavlinkStream.write(newArmMessage())
+                    fragmentHandler?.let {
+                        it.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                    }
+                    leftButton.background = applicationContext.getDrawable(R.drawable.ic_cancel_black_24dp)
                 } else if (data.contains(0x02)) {
-                    mavlinkStream.write(newDisarmMessage())
+                    //mavlinkStream.write(newDisarmMessage())
+                    fragmentHandler?.let {
+                        it.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
+                    }
+                    leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
                 }
             }
-            drone -> drone_detected_field.text = "read ${data.size} bytes: $message"
+            drone -> Log.d("DRONE","read ${data.size} bytes: $message")
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus:Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            val decorView = window.decorView
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
     }
 
