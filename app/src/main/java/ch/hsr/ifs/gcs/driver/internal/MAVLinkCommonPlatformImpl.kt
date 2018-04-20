@@ -70,7 +70,6 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         var product: String? = null
     }
 
-
     init {
         fExecutors.io.scheduleAtFixedRate({
             while (true) {
@@ -124,9 +123,11 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         fVehicleState.product = MAVLinkProducts[message["product_id"] as? Int ?: 0]
     }
 
-    private fun enqueueOnHighFrequencyScheduler(task: () -> Unit) =
-            fExecutors.highFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
+    private fun enqueueOnHighFrequencyScheduler(task: () -> Unit) {
+        fExecutors.highFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
+    }
 
-    private fun enqueueOnLowFrequencyScheduler(task: () -> Unit) =
-            fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 5000, TimeUnit.MILLISECONDS)
+    private fun enqueueOnLowFrequencyScheduler(task: () -> Unit) {
+        fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 5000, TimeUnit.MILLISECONDS)
+    }
 }
