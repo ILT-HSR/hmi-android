@@ -34,19 +34,23 @@ private val TAG = MAVLinkCommonPlatformImpl::class.simpleName
 class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChannel) : MAVLinkCommonPlatform {
 
     private val fIOExecutor = Executors.newSingleThreadExecutor()
+    private val fHeartbeatExecutor = Executors.newSingleThreadScheduledExecutor()
+    private val fLowPriorityTaskExecutor = Executors.newSingleThreadScheduledExecutor()
+    private val fHighPriorityTaskExecutor = Executors.newSingleThreadScheduledExecutor()
+
     private val fIOStream = MAVLinkStream(schema, channel)
 
     private val fHeartbeat = createHeartbeatMessage(8, 250, schema)
-    private val fHeartbeatExecutor = Executors.newSingleThreadScheduledExecutor()
 
     private val fCapabilities = createRequestAutopilotCapabilitiesMessage(0, 8, 250, schema)
 
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
 
-    private var fVehicleLastHeartbeat: Long = 0
-    private lateinit var fVehicleVendor: String
-    private lateinit var fVehicleProduct: String
-
+    private val fVehicleState = object {
+        var lastHeartbeat: Long = 0
+        var vendor: String? = null
+        var product: String? = null
+    }
 
     companion object {
 
@@ -84,16 +88,15 @@ class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChann
 
         fHeartbeatExecutor.scheduleAtFixedRate({
             fCommandQueue.offer(fHeartbeat)
-
-            if (!(this::fVehicleProduct.isInitialized && this::fVehicleVendor.isInitialized)) {
-                fCommandQueue.offer(fCapabilities)
-            }
+            fVehicleState.vendor?:fCommandQueue.offer(fCapabilities)
         }, 0, 1, TimeUnit.SECONDS)
     }
 
-    override val isAlive get() = (System.currentTimeMillis() - fVehicleLastHeartbeat) < 10000
+    override val isAlive get() = (System.currentTimeMillis() - fVehicleState.lastHeartbeat) < 10000
 
-    override val name get() = if (this::fVehicleVendor.isInitialized) "$fVehicleVendor $fVehicleProduct" else "<unknown>"
+    override val name get() = fVehicleState.vendor?.let {
+        "${fVehicleState.vendor} ${fVehicleState.product}"
+    } ?: "<unknown>"
 
     override fun arm() {
         fCommandQueue.offer(createArmMessage(1, 8, 250, schema))
@@ -105,18 +108,15 @@ class MAVLinkCommonPlatformImpl private constructor(val channel: SerialDataChann
 
     private fun handle(message: MAVLinkMessage) {
         when (message.msgName) {
-            MAVLinkMessageName.HEARTBEAT.name -> fVehicleLastHeartbeat = System.currentTimeMillis()
+            MAVLinkMessageName.HEARTBEAT.name -> fVehicleState.lastHeartbeat = System.currentTimeMillis()
             MAVLinkMessageName.AUTOPILOT_VERSION.name -> handleVersion(message)
             else -> Log.d(TAG, "Unsupported message '$message'")
         }
     }
 
     private fun handleVersion(message: MAVLinkMessage) {
-        val vendorId = message["vendor_id"] as? Int
-        val productId = message["product_id"] as? Int
-
-        fVehicleVendor = MAVLinkVendors[vendorId ?: 0]
-        fVehicleProduct = MAVLinkProducts[productId ?: 0]
+        fVehicleState.vendor = MAVLinkVendors[message["vendor_id"] as? Int ?: 0]
+        fVehicleState.product = MAVLinkProducts[message["product_id"] as? Int ?: 0]
     }
 
 }
