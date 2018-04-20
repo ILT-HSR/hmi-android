@@ -91,11 +91,11 @@ class MainActivity : AppCompatActivity() {
 
         leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
 
-        // Must be after inflation
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.menuholder, MissionResultsFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
+        fragmentHandler = FragmentHandler(this, map)
+
+        fragmentHandler?.let {
+            it.performFragmentTransaction(R.id.menuholder, MissionResultsFragment())
+        }
 
         map.setTileSource(TileSourceFactory.MAPNIK)
         val mapController = map.controller
@@ -104,8 +104,6 @@ class MainActivity : AppCompatActivity() {
         val startPoint = GeoPoint(47.223231, 8.816547)
         map.setBuiltInZoomControls(true)
         mapController.setCenter(startPoint)
-
-        fragmentHandler = FragmentHandler(this, map)
     }
 
     override fun onResume() {
@@ -213,17 +211,15 @@ class MainActivity : AppCompatActivity() {
                 Log.d("BUTTON","read ${data.size} bytes: $message")
                 if (data.contains(0x04)) {
                     //mavlinkStream.write(newArmMessage())
-                    val transaction = supportFragmentManager.beginTransaction()
-                    transaction.replace(R.id.menuholder, MissionStatusesFragment())
-                    transaction.addToBackStack(null)
-                    transaction.commit()
+                    fragmentHandler?.let {
+                        it.performFragmentTransaction(R.id.menuholder, MissionStatusesFragment())
+                    }
                     leftButton.background = applicationContext.getDrawable(R.drawable.ic_cancel_black_24dp)
                 } else if (data.contains(0x02)) {
                     //mavlinkStream.write(newDisarmMessage())
-                    val transaction = supportFragmentManager.beginTransaction()
-                    transaction.replace(R.id.menuholder, MissionResultsFragment())
-                    transaction.addToBackStack(null)
-                    transaction.commit()
+                    fragmentHandler?.let {
+                        it.performFragmentTransaction(R.id.menuholder, MissionResultsFragment())
+                    }
                     leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
                 }
             }

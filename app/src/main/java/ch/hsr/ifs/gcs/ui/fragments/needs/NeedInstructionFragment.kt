@@ -34,7 +34,7 @@ class NeedInstructionFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is MainActivity) {
-            listener = context.fragmentHandler!!.needInstructionFragment
+            listener = context.fragmentHandler!!.needInstructionListener
         } else {
             throw RuntimeException(context.toString() + " must implement OnNeedInstructionFragmentListener")
         }
