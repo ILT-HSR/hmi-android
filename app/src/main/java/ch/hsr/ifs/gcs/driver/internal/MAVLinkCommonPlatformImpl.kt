@@ -131,5 +131,5 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
             fExecutors.highFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
 
     private fun enqueueOnLowFrequencyScheduler(task: () -> Unit) =
-            fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
+            fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 5000, TimeUnit.MILLISECONDS)
 }
