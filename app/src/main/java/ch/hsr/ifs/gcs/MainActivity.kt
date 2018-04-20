@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.internal.MAVLinkCommonPlatformImpl
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             if (it.device.manufacturerName.equals("Arduino (www.arduino.cc)")) {
                 button = it.ports[0]
             } else if (it.device.manufacturerName.equals("FTDI")) {
-                drone = MAVLinkCommonPlatformImpl.create(this, it.ports[0])
+                drone = MAVLinkCommonPlatform.create(this, it.ports[0])
             }
         }
 

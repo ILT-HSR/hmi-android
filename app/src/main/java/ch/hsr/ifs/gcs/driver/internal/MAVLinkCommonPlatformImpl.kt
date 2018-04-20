@@ -50,30 +50,7 @@ private val TAG = MAVLinkCommonPlatformImpl::class.simpleName
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class MAVLinkCommonPlatformImpl private constructor(channel: ByteChannel) : MAVLinkCommonPlatform {
-
-    companion object {
-
-        /**
-         * Create a new driver instance for the given [port] in the given [context]
-         *
-         * This function ensures, that the communication port is initialized correctly, as required
-         * by the driver implementation.
-         *
-         * @param context The application context used for device input/ouput
-         * @param port The USB port to use for device communication
-         * @return A new instance of the MAVLink platform driver if a vehicle was detected on the
-         * provided port, `null` otherwise.
-         */
-        fun create(context: Context, port: UsbSerialPort): Platform? {
-            val channel = SerialDataChannel.create(context, port, 57600, 8, 1, SerialDataChannel.Parity.NONE)
-            return when (channel) {
-                null -> null
-                else -> MAVLinkCommonPlatformImpl(channel)
-            }
-        }
-
-    }
+internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAVLinkCommonPlatform {
 
     private val fIOStream = MAVLinkStream(schema, channel)
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
