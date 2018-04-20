@@ -36,10 +36,10 @@ class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChann
     private val fIOExecutor = Executors.newSingleThreadExecutor()
     private val fIOStream = MAVLinkStream(schema, channel)
 
-    private val fHeartbeat = createHeartbeatMessage(8, 250, schema!!)
+    private val fHeartbeat = createHeartbeatMessage(8, 250, schema)
     private val fHeartbeatExecutor = Executors.newSingleThreadScheduledExecutor()
 
-    private val fCapabilities = createRequestAutopilotCapabilitiesMessage(0, 8, 250, schema!!)
+    private val fCapabilities = createRequestAutopilotCapabilitiesMessage(0, 8, 250, schema)
 
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
 
@@ -96,11 +96,11 @@ class CommonMAVLinkPlatformImpl private constructor(val channel: SerialDataChann
     override val name get() = if (this::fVehicleVendor.isInitialized) "$fVehicleVendor $fVehicleProduct" else "<unknown>"
 
     override fun arm() {
-        fCommandQueue.offer(createArmMessage(1, 8, 250, schema!!))
+        fCommandQueue.offer(createArmMessage(1, 8, 250, schema))
     }
 
     override fun disarm() {
-        fCommandQueue.offer(createDisarmMessage(1, 8, 250, schema!!))
+        fCommandQueue.offer(createDisarmMessage(1, 8, 250, schema))
     }
 
     private fun handle(message: MAVLinkMessage) {
