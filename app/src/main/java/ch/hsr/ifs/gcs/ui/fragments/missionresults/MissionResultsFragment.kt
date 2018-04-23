@@ -70,7 +70,7 @@ class MissionResultsFragment : Fragment() {
             if(context is MainActivity) {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
             }
-            activity.leftButton.visibility = View.INVISIBLE
+            activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
         }
     }
 

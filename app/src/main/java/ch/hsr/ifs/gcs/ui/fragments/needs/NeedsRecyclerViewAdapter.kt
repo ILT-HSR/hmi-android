@@ -42,8 +42,8 @@ class NeedsRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mIdView.text = item.id
-        holder.mContentView.text = item.content
+        holder.mIdView.text = item.id.toString()
+        holder.mContentView.text = item.name
 
         with(holder.mView) {
             tag = item
@@ -56,9 +56,9 @@ class NeedsRecyclerViewAdapter(
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mIdView: TextView = mView.item_number
         val mContentView: TextView = mView.content
-
         override fun toString(): String {
             return super.toString() + " '" + mContentView.text + "'"
         }
     }
+
 }

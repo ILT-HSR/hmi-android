@@ -17,14 +17,19 @@ object NeedsDummyContent {
     /**
      * A map of sample (dummy) need items, by ID.
      */
-    private val NEED_ITEM_MAP: MutableMap<String, NeedDummyItem> = HashMap()
-
-    private const val COUNT = 12
+    private val NEED_ITEM_MAP: MutableMap<Int, NeedDummyItem> = HashMap()
 
     init {
-        for (i in 1..COUNT) {
-            addItem(createDummyItem(i))
-        }
+        val taskList = ArrayList<Task>()
+        taskList.add(Task("target", "Choose Target"))
+        taskList.add(Task("cargo", "Choose Cargo"))
+        taskList.add(Task("start", "Start Mission"))
+        addItem(NeedDummyItem(0, "Call In", taskList))
+
+        val taskList2 = ArrayList<Task>()
+        taskList.add(Task("area", "Choose Target Area"))
+        taskList.add(Task("start", "Start Mission"))
+        addItem(NeedDummyItem(1,"Heatmap", taskList2))
     }
 
     private fun addItem(item: NeedDummyItem) {
@@ -32,24 +37,18 @@ object NeedsDummyContent {
         NEED_ITEM_MAP[item.id] = item
     }
 
-    private fun createDummyItem(position: Int): NeedDummyItem {
-        return NeedDummyItem(position.toString(), "Need", makeDetails(position))
-    }
-
-    private fun makeDetails(position: Int): String {
-        val builder = StringBuilder()
-        builder.append("Details about Item: ").append(position)
-        for (i in 0 until position) {
-            builder.append("\nMore details information here.")
-        }
-        return builder.toString()
-    }
-
     /**
      * A dummy item representing a piece of content.
      */
-    data class NeedDummyItem(val id: String, val content: String, val details: String) {
-        override fun toString(): String = content
+    data class NeedDummyItem(val id: Int, val name: String, val taskList: List<Task>) {
+        override fun toString(): String = name
+    }
+
+    /**
+     * A dummy task representing a task step of a need.
+     */
+    data class Task(val name: String, val description: String) {
+        override fun toString(): String = name
     }
 
 }

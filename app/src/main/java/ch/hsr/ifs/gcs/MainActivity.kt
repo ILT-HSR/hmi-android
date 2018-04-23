@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
 
         setContentView(R.layout.activity_main)
 
-        leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
+        leftButton.background = applicationContext.getDrawable(R.drawable.refresh_mission)
 
         fragmentHandler = FragmentHandler(this, map)
 
@@ -73,12 +73,20 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
     override fun onButton(button: HandheldControls.Button) {
         when (button) {
             HandheldControls.Button.DPAD_LEFT -> {
-                fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-                leftButton.background = applicationContext.getDrawable(R.drawable.ic_cancel_black_24dp)
+                when(fragmentHandler?.activeFragment) {
+                    FragmentType.MISSION_RESULTS_FRAGMENT -> {
+                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                        leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
+                    }
+                }
             }
             HandheldControls.Button.DPAD_RIGHT -> {
-                fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
-                leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
+                when(fragmentHandler?.activeFragment) {
+                    FragmentType.MISSION_STATUSES_FRAGMENT -> {
+                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
+                        leftButton.background = applicationContext.getDrawable(R.drawable.refresh_mission)
+                    }
+                }
             }
             HandheldControls.Button.DPAD_UP -> {
                 (drone as? MAVLinkPlatform)?.arm()
@@ -87,10 +95,16 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
                 (drone as? MAVLinkPlatform)?.disarm()
             }
             HandheldControls.Button.BTN_NEED -> {
-                fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
-                leftButton.visibility = View.INVISIBLE
+                when(fragmentHandler?.activeFragment) {
+                    FragmentType.MISSION_STATUSES_FRAGMENT, FragmentType.MISSION_RESULTS_FRAGMENT -> {
+                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                    }
+                    FragmentType.NEEDS_FRAGMENT -> {
+                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
+                    }
+                }
+                leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
             }
-            else -> Log.d(TAG, "Unhandled button event $button")
         }
     }
 

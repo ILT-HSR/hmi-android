@@ -14,8 +14,7 @@ import ch.hsr.ifs.gcs.R
 
 import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent
 import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent.NeedDummyItem
-import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
 import kotlinx.android.synthetic.main.fragment_need_list.view.*
@@ -65,12 +64,12 @@ class NeedsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        cancelButton.setOnClickListener {
+        selectButton.setOnClickListener {
             val context = context
             if(context is MainActivity) {
-                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, context.fragmentHandler!!.previousFragment)
+                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
             }
-            activity.leftButton.visibility = View.VISIBLE
+            activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
         }
     }
 

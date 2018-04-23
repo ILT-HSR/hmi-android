@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/cancelButton"
+        app:layout_constraintBottom_toTopOf="@id/selectButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleText"
@@ -34,7 +34,7 @@
         tools:listitem="@layout/fragment_need" />
 
     <Button
-        android:id="@+id/cancelButton"
+        android:id="@+id/selectButton"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"

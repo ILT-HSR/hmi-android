@@ -22,7 +22,7 @@ enum class FragmentType(val fragment: Fragment) {
 
 class FragmentHandler(val activity: Activity, val map: MapView) {
 
-    private var activeFragment =  FragmentType.MISSION_RESULTS_FRAGMENT
+    var activeFragment =  FragmentType.MISSION_RESULTS_FRAGMENT
     var previousFragment = FragmentType.MISSION_RESULTS_FRAGMENT
 
     val missionResultsListener = MissionResultsListener(activity, map)
