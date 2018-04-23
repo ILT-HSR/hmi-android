@@ -33,7 +33,7 @@ object NeedsDummyContent {
     }
 
     private fun createDummyItem(position: Int): NeedDummyItem {
-        return NeedDummyItem(position.toString(), "Bedürfnis", makeDetails(position))
+        return NeedDummyItem(position.toString(), "Need", makeDetails(position))
     }
 
     private fun makeDetails(position: Int): String {
