@@ -22,15 +22,20 @@ enum class FragmentType(val fragment: Fragment) {
 
 class FragmentHandler(val activity: Activity, val map: MapView) {
 
+    private var activeFragment =  FragmentType.MISSION_RESULTS_FRAGMENT
+    var previousFragment = FragmentType.MISSION_RESULTS_FRAGMENT
+
     val missionResultsListener = MissionResultsListener(activity, map)
     val missionStatusesListener = MissionStatusesListener(activity, map)
     val needsListener = NeedsListener(activity, map)
     val needInstructionListener = NeedInstructionListener(activity, map)
 
     fun performFragmentTransaction(holderId: Int, fragmentType: FragmentType) {
+        previousFragment = activeFragment
         val transaction = (activity as MainActivity).supportFragmentManager.beginTransaction()
         transaction.replace(holderId, fragmentType.fragment)
         transaction.commit()
+        activeFragment = fragmentType
     }
 
 }

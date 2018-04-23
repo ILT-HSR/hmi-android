@@ -14,6 +14,7 @@ import ch.hsr.ifs.gcs.R
 
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.MissionStatusDummyItem
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
@@ -33,7 +34,7 @@ class MissionStatusesFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is MainActivity) {
-            listener = context.fragmentHandler!!.missionStatusesListener
+            listener = context.fragmentHandler?.missionStatusesListener
         } else {
             throw RuntimeException(context.toString() + " must implement OnStatusesFragmentChangedListener")
         }
@@ -65,14 +66,10 @@ class MissionStatusesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         statusesAddButton.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("previous_fragment", "mission_statuses")
-            val transaction = activity.supportFragmentManager.beginTransaction()
-            val needsFragment = NeedsFragment()
-            needsFragment.arguments = bundle
-            transaction.replace(R.id.menuholder, needsFragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+            val context = context
+            if(context is MainActivity) {
+                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+            }
             activity.leftButton.visibility = View.INVISIBLE
         }
     }

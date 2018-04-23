@@ -31,8 +31,6 @@ class NeedsFragment : Fragment() {
 
     private var listener: OnNeedsFragmentChangedListener? = null
 
-    private var previousFragment = ""
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is MainActivity) {
@@ -62,23 +60,16 @@ class NeedsFragment : Fragment() {
                 adapter = NeedsRecyclerViewAdapter(NeedsDummyContent.NEED_ITEMS, listener)
             }
         }
-        previousFragment = arguments.getString("previous_fragment")
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         cancelButton.setOnClickListener {
-            val transaction = activity.supportFragmentManager.beginTransaction()
-            var returnFragment = when(previousFragment) {
-                "mission_results" -> MissionResultsFragment()
-                "mission_statuses" -> MissionStatusesFragment()
-                else -> {
-                    MissionResultsFragment()
-                }
+            val context = context
+            if(context is MainActivity) {
+                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, context.fragmentHandler!!.previousFragment)
             }
-            transaction.replace(R.id.menuholder, returnFragment)
-            transaction.commit()
             activity.leftButton.visibility = View.VISIBLE
         }
     }

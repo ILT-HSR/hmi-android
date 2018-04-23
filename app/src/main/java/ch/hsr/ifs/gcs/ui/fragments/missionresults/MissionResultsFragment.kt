@@ -14,6 +14,7 @@ import ch.hsr.ifs.gcs.R
 
 import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent
 import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent.MissionResultDummyItem
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.*
@@ -65,14 +66,10 @@ class MissionResultsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         resultsAddButton.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("previous_fragment", "mission_results")
-            val transaction = activity.supportFragmentManager.beginTransaction()
-            val needsFragment = NeedsFragment()
-            needsFragment.arguments = bundle
-            transaction.replace(R.id.menuholder, needsFragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+            val context = context
+            if(context is MainActivity) {
+                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+            }
             activity.leftButton.visibility = View.INVISIBLE
         }
     }
