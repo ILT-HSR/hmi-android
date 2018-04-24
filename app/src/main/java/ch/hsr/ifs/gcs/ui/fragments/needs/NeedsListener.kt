@@ -12,9 +12,11 @@ import org.osmdroid.views.MapView
 
 class NeedsListener(val activity: Activity, val map: MapView) : NeedsFragment.OnNeedsFragmentChangedListener {
 
-    override fun onListFragmentInteraction(item: NeedsDummyContent.NeedDummyItem?) {
+    override fun onNeedItemChanged(item: NeedsDummyContent.NeedDummyItem?) {
         if(activity is MainActivity) {
-            activity.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
+            val needInstructionFragmentType = FragmentType.NEED_INSTRUCTION_FRAGMENT
+            (needInstructionFragmentType.fragment as NeedInstructionFragment).activeNeed = item
+            activity.fragmentHandler?.performFragmentTransaction(R.id.menuholder, needInstructionFragmentType)
             activity.leftButton.background = activity.applicationContext.getDrawable(R.drawable.cancel_action)
         }
     }

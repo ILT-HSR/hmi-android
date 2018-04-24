@@ -9,6 +9,7 @@
         android:id="@+id/titleText"
         android:layout_width="0dp"
         android:layout_height="48dp"
+        android:background="@android:color/holo_orange_light"
         android:gravity="center"
         android:text="@string/mission_statuses_list_title"
         android:textAlignment="center"

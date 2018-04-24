@@ -11,40 +11,40 @@
         android:layout_height="48dp"
         android:background="@android:color/holo_orange_light"
         android:gravity="center"
-        android:text="@string/new_need_list_title"
+        android:text="@string/instruction_title"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/list"
+        app:layout_constraintBottom_toTopOf="@+id/instructionList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
-        android:name="ch.hsr.ifs.gcs.NeedsFragment"
+        android:id="@+id/instructionList"
+        android:name="ch.hsr.ifs.gcs.NeedInstructionFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/selectButton"
+        app:layout_constraintBottom_toTopOf="@+id/startNeedButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleText"
-        tools:context=".ui.fragments.needs.NeedsFragment"
-        tools:listitem="@layout/fragment_need" />
+        tools:context=".ui.fragments.needs.NeedInstructionFragment"
+        tools:listitem="@layout/fragment_need_instruction" />
 
     <Button
-        android:id="@+id/selectButton"
+        android:id="@+id/startNeedButton"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
-        android:text="@string/select_need_button_text"
+        android:text="@string/start_need_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list"
+        app:layout_constraintTop_toBottomOf="@+id/instructionList"
         app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

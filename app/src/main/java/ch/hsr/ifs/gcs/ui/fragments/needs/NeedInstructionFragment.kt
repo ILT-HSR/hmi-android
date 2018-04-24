@@ -3,26 +3,30 @@ package ch.hsr.ifs.gcs.ui.fragments.needs
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_need_instruction.*
+import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
+import kotlinx.android.synthetic.main.fragment_need_instruction_list.view.*
 
 class NeedInstructionFragment : Fragment() {
 
+    var activeNeed: NeedsDummyContent.NeedDummyItem? = null
+
     private val TAG = NeedInstructionFragment::class.java.simpleName
 
-    private var listener: OnNeedInstructionFragmentListener? = null
+    private val columnCount = 1
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_need_instruction, container, false)
-    }
+    private var listener: OnNeedInstructionFragmentListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -31,6 +35,23 @@ class NeedInstructionFragment : Fragment() {
         } else {
             throw RuntimeException(context.toString() + " must implement OnNeedInstructionFragmentListener")
         }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view =  inflater.inflate(R.layout.fragment_need_instruction_list, container, false)
+        val list = view.instructionList
+        if (list is RecyclerView) {
+            with(list) {
+                layoutManager = when {
+                    columnCount <= 1 -> LinearLayoutManager(context)
+                    else -> GridLayoutManager(context, columnCount)
+                }
+                adapter = NeedInstructionRecyclerViewAdapter(activeNeed!!.taskList)
+            }
+        }
+        view.titleText.text = activeNeed!!.name
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -27,8 +27,8 @@ object NeedsDummyContent {
         addItem(NeedDummyItem(0, "Call In", taskList))
 
         val taskList2 = ArrayList<Task>()
-        taskList.add(Task("area", "Choose Target Area"))
-        taskList.add(Task("start", "Start Mission"))
+        taskList2.add(Task("area", "Choose Target Area"))
+        taskList2.add(Task("start", "Start Mission"))
         addItem(NeedDummyItem(1,"Heatmap", taskList2))
     }
 

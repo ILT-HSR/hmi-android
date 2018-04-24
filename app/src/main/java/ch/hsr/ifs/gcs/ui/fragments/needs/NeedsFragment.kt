@@ -90,7 +90,7 @@ class NeedsFragment : Fragment() {
          * defines what to do with the provided [item].
          * @param item The item that has been clicked.
          */
-        fun onListFragmentInteraction(item: NeedDummyItem?)
+        fun onNeedItemChanged(item: NeedDummyItem?)
 
         /**
          * Called when fragment is attached to its parent. Implementation should redraw the mapView

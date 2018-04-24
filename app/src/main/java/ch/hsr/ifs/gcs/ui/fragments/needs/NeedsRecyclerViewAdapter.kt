@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.ui.fragments.needs
 
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,6 @@ import kotlinx.android.synthetic.main.fragment_need.view.*
 /**
  * [RecyclerView.Adapter] that can display a [NeedDummyItem] and makes a call to the
  * specified [OnNeedsFragmentChangedListener].
- * TODO: Replace the implementation with code for your data type.
  */
 class NeedsRecyclerViewAdapter(
         private val mValues: List<NeedDummyItem>,
@@ -28,9 +28,7 @@ class NeedsRecyclerViewAdapter(
     init {
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as NeedDummyItem
-            // Notify the active callbacks interface (the activity, if the fragment is attached to
-            // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item)
+            mListener?.onNeedItemChanged(item)
         }
     }
 
@@ -42,9 +40,8 @@ class NeedsRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mIdView.text = item.id.toString()
-        holder.mContentView.text = item.name
-
+        holder.mNameView.text = item.name
+        holder.mView.setBackgroundColor(Color.WHITE)
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
@@ -54,10 +51,9 @@ class NeedsRecyclerViewAdapter(
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.item_number
-        val mContentView: TextView = mView.content
+        val mNameView: TextView = mView.name
         override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
+            return super.toString() + " '" + mNameView.text + "'"
         }
     }
 
