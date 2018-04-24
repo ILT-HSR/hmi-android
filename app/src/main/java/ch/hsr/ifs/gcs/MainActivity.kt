@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
 
         fragmentHandler = FragmentHandler(this, map)
 
-        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
+        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
 
         map.setTileSource(TileSourceFactory.MAPNIK)
         val mapController = map.controller
