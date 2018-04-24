@@ -3,13 +3,19 @@ package ch.hsr.ifs.gcs.ui.fragments.needs
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_need_instruction.*
 
 class NeedInstructionFragment : Fragment() {
+
+    private val TAG = NeedInstructionFragment::class.java.simpleName
 
     private var listener: OnNeedInstructionFragmentListener? = null
 
@@ -24,6 +30,20 @@ class NeedInstructionFragment : Fragment() {
             listener = context.fragmentHandler!!.needInstructionListener
         } else {
             throw RuntimeException(context.toString() + " must implement OnNeedInstructionFragmentListener")
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val context = context
+        if(context is MainActivity) {
+            startNeedButton.setOnClickListener {
+                Log.d(TAG, "Start Mission Pressed")
+            }
+            activity.leftButton.setOnClickListener {
+                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+            }
         }
     }
 

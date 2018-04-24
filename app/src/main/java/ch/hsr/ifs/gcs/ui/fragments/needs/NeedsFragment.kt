@@ -57,12 +57,16 @@ class NeedsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        selectButton.setOnClickListener {
-            val context = context
-            if(context is MainActivity) {
+        val context = context
+        if(context is MainActivity) {
+            selectButton.setOnClickListener {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
             }
             activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+            activity.leftButton.setOnClickListener {
+                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
+            }
         }
     }
 

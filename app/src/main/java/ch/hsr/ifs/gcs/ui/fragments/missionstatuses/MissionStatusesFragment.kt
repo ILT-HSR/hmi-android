@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,8 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
  * [MissionStatusesFragment.OnStatusesFragmentChangedListener] interface.
  */
 class MissionStatusesFragment : Fragment() {
+
+    private val TAG = MissionStatusesFragment::class.java.simpleName
 
     private var columnCount = 1
 
@@ -64,6 +67,9 @@ class MissionStatusesFragment : Fragment() {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
             }
             activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+        }
+        activity.leftButton.setOnClickListener {
+            Log.d(TAG, "Cancel Mission Pressed")
         }
     }
 

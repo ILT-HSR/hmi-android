@@ -6,17 +6,17 @@ import android.view.View
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.views.MapView
 
 class NeedsListener(val activity: Activity, val map: MapView) : NeedsFragment.OnNeedsFragmentChangedListener {
 
     override fun onListFragmentInteraction(item: NeedsDummyContent.NeedDummyItem?) {
-        val transaction = (activity as FragmentActivity).supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.menuholder, NeedInstructionFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
-        (activity as MainActivity).leftButton.visibility = View.INVISIBLE
+        if(activity is MainActivity) {
+            activity.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
+            activity.leftButton.background = activity.applicationContext.getDrawable(R.drawable.cancel_action)
+        }
     }
 
     override fun refreshNeedsMapView() {

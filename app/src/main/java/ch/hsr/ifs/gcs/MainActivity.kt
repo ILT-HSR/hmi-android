@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
 
         setContentView(R.layout.activity_main)
 
-        leftButton.background = applicationContext.getDrawable(R.drawable.refresh_mission)
+        leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
 
         fragmentHandler = FragmentHandler(this, map)
 
@@ -119,6 +119,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
                     }
                     FragmentType.NEED_INSTRUCTION_FRAGMENT -> {
                         fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                        leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
                     }
                 }
 
