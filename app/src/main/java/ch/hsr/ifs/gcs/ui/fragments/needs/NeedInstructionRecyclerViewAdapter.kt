@@ -22,6 +22,7 @@ class NeedInstructionRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
         holder.mView.setBackgroundColor(Color.WHITE)
+        holder.mCheckBoxView.background =  holder.mView.context.applicationContext.getDrawable(R.drawable.empty_checkbox)
         holder.mInstructionView.text = item.description
     }
 
@@ -29,6 +30,7 @@ class NeedInstructionRecyclerViewAdapter(
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mInstructionView: TextView = mView.instruction
+        val mCheckBoxView: View = mView.checkBoxView
         override fun toString(): String {
             return super.toString() + " '" + mInstructionView.text + "'"
         }
