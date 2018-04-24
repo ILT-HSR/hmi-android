@@ -74,17 +74,27 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
         when (button) {
             HandheldControls.Button.DPAD_LEFT -> {
                 when(fragmentHandler?.activeFragment) {
-                    FragmentType.MISSION_RESULTS_FRAGMENT -> {
-                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-                        leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
+                    FragmentType.MISSION_STATUSES_FRAGMENT, FragmentType.MISSION_RESULTS_FRAGMENT -> {
+                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                    }
+                    FragmentType.NEEDS_FRAGMENT -> {
+                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
+                    }
+                    FragmentType.NEED_INSTRUCTION_FRAGMENT -> {
+                        Log.d(TAG, "Start Mission Pressed")
                     }
                 }
+                leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
             }
             HandheldControls.Button.DPAD_RIGHT -> {
                 when(fragmentHandler?.activeFragment) {
                     FragmentType.MISSION_STATUSES_FRAGMENT -> {
                         fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
                         leftButton.background = applicationContext.getDrawable(R.drawable.refresh_mission)
+                    }
+                    FragmentType.MISSION_RESULTS_FRAGMENT -> {
+                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                        leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
                     }
                 }
             }
@@ -94,16 +104,24 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
             HandheldControls.Button.DPAD_DOWN -> {
                 (drone as? MAVLinkPlatform)?.disarm()
             }
-            HandheldControls.Button.BTN_NEED -> {
+            HandheldControls.Button.BTN_LEFT -> {
                 when(fragmentHandler?.activeFragment) {
-                    FragmentType.MISSION_STATUSES_FRAGMENT, FragmentType.MISSION_RESULTS_FRAGMENT -> {
-                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                    FragmentType.MISSION_STATUSES_FRAGMENT -> {
+                        Log.d(TAG, "Cancel Mission Pressed")
+                    }
+                    FragmentType.MISSION_RESULTS_FRAGMENT -> {
+                        Log.d(TAG, "Refresh Mission Pressed")
                     }
                     FragmentType.NEEDS_FRAGMENT -> {
-                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
+                        val previousFragment = fragmentHandler!!.previousFragment
+                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                        leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
+                    }
+                    FragmentType.NEED_INSTRUCTION_FRAGMENT -> {
+                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                     }
                 }
-                leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
+
             }
         }
     }
