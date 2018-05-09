@@ -7,6 +7,7 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.Platform
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
         UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).forEach {
             if (it.device.manufacturerName.equals("Arduino LLC")) {
                 controls = HandheldControls(this, this, it.ports[0])
-            } else if (it.device.manufacturerName.equals("FTDI")) {
+            } else { // if (it.device.manufacturerName.equals("FTDI")) {
                 drone = MAVLinkCommonPlatform.create(this, it.ports[0])
             }
         }
@@ -77,16 +78,18 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
                 leftButton.background = applicationContext.getDrawable(R.drawable.ic_cancel_black_24dp)
             }
             HandheldControls.Button.DPAD_RIGHT -> {
+                (drone as? MAVLinkCommonPlatform)?.arm()
                 fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
                 leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
             }
             HandheldControls.Button.DPAD_UP -> {
-                (drone as? MAVLinkPlatform)?.arm()
+                (drone as? MAVLinkCommonPlatform)?.takeOff(AerialVehicle.Altitude(1.0))
             }
             HandheldControls.Button.DPAD_DOWN -> {
-                (drone as? MAVLinkPlatform)?.disarm()
+                (drone as? MAVLinkCommonPlatform)?.land()
             }
             HandheldControls.Button.BTN_NEED -> {
+                (drone as? MAVLinkCommonPlatform)?.changeAltitude(AerialVehicle.Altitude(2.0)) // Move
                 fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 leftButton.visibility = View.INVISIBLE
             }

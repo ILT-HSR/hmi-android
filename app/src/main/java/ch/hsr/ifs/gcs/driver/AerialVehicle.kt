@@ -1,5 +1,7 @@
 package ch.hsr.ifs.gcs.driver
 
+import ch.hsr.ifs.gcs.comm.protocol.GPSPosition
+
 /**
  * The interface of drivers for aerial vehicles
  *
@@ -30,6 +32,20 @@ interface AerialVehicle : Platform {
      * @since 1.0.0
      */
     fun takeOff(altitude: Altitude)
+
+    /**
+     * Instruct the vehicle to land
+     *
+     * @since 1.0.0
+     */
+    fun land()
+
+    /**
+     * Instruct the vehicle to move to the given GPS position
+     *
+     * @since 1.0.0
+     */
+    fun moveTo(position: GPSPosition)
 
     /**
      * Instruct the vehicle to change its altitude to the given value

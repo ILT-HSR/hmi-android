@@ -50,7 +50,7 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
     private val fIOStream = MAVLinkStream(schema, channel)
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
     private val fSender = MAVLinkSystem(8, 250)
-    private val fTarget = MAVLinkSystem(1, 0)
+    private val fTarget = MAVLinkSystem(1, 1)
 
     private val fExecutors = object {
         val io = Executors.newSingleThreadScheduledExecutor()
@@ -106,11 +106,23 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
     }
 
     override fun takeOff(altitude: AerialVehicle.Altitude) {
-        fCommandQueue.offer(createTakeOffLocalMessage(fSender, fTarget, schema, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        changeMode(33816576)
+    }
+
+    override fun land() {
+        changeMode(100925440)
+    }
+
+    override fun moveTo(position: GPSPosition) {
+        fCommandQueue.offer(createDoRepositionMessage(fSender, fTarget, schema, WGS89Position(position)))
     }
 
     override fun changeAltitude(altitude: AerialVehicle.Altitude) {
-        fCommandQueue.offer(createLoiterToAltitudeMessage(fSender, fTarget, schema, altitude.meters.toFloat()))
+        TODO("Not implemented")
+    }
+
+    private fun changeMode(mode: Int) {
+        fCommandQueue.offer(createLegacySetModeMessage(fSender, fTarget, schema, 1, mode))
     }
 
     private fun handle(message: MAVLinkMessage) {
@@ -128,7 +140,8 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
 
     private fun handleHeartbeat(message: MAVLinkMessage) {
         fVehicleState.lastHeartbeat = System.currentTimeMillis()
-        Log.d(TAG, "Heartbeat from ${message.systemID} at ${fVehicleState.lastHeartbeat}")
+        Log.i(TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
+        Log.i(TAG, "Base mode : ${message.getInt("base_mode")}, status : ${message.getInt("system_status")}")
     }
 
     private fun handleVersion(message: MAVLinkMessage) {
