@@ -128,7 +128,7 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
 
     private fun handleHeartbeat(message: MAVLinkMessage) {
         fVehicleState.lastHeartbeat = System.currentTimeMillis()
-        Log.d(TAG, "Last vehicle heartbeat at ${fVehicleState.lastHeartbeat}")
+        Log.d(TAG, "Heartbeat from ${message.systemID} at ${fVehicleState.lastHeartbeat}")
     }
 
     private fun handleVersion(message: MAVLinkMessage) {

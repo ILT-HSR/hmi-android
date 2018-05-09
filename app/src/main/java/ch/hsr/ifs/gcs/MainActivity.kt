@@ -90,7 +90,6 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
                 fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 leftButton.visibility = View.INVISIBLE
             }
-            else -> Log.d(TAG, "Unhandled button event $button")
         }
     }
 
