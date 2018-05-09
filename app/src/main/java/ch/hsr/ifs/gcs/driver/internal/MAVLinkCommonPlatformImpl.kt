@@ -1,10 +1,10 @@
 package ch.hsr.ifs.gcs.driver.internal
 
 import android.util.Log
+import ch.hsr.ifs.gcs.comm.protocol.*
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.Platform
-import me.drton.jmavlib.*
 import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkProducts
 import me.drton.jmavlib.mavlink.MAVLinkStream
@@ -49,6 +49,8 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
 
     private val fIOStream = MAVLinkStream(schema, channel)
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
+    private val fSender = MAVLinkSystem(8, 250)
+    private val fTarget = MAVLinkSystem(1, 0)
 
     private val fExecutors = object {
         val io = Executors.newSingleThreadScheduledExecutor()
@@ -58,8 +60,8 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
     }
 
     private val fMessages = object {
-        val heartbeat = createHeartbeatMessage(8, 250, schema)
-        val capabilities = createRequestAutopilotCapabilitiesMessage(0, 8, 250, schema)
+        val heartbeat = createHeartbeatMessage(fSender, schema)
+        val capabilities = createRequestAutopilotCapabilitiesMessage(fSender, fTarget, schema)
     }
 
     private val fVehicleState = object {
@@ -96,19 +98,19 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         } ?: "<unknown>"
 
     override fun arm() {
-        fCommandQueue.offer(createArmMessage(1, 8, 250, schema))
+        fCommandQueue.offer(createArmMessage(fSender, fTarget, schema))
     }
 
     override fun disarm() {
-        fCommandQueue.offer(createDisarmMessage(1, 8, 250, schema))
+        fCommandQueue.offer(createDisarmMessage(fSender, fTarget, schema))
     }
 
     override fun takeOff(altitude: AerialVehicle.Altitude) {
-        fCommandQueue.offer(createTakeOffLocalMessage(1, 8, 250, schema, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+        fCommandQueue.offer(createTakeOffLocalMessage(fSender, fTarget, schema, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F));
     }
 
     override fun changeAltitude(altitude: AerialVehicle.Altitude) {
-        fCommandQueue.offer(createLoiterToAltitudeMessage(1, 8, 250, schema, altitude.meters.toFloat()))
+        fCommandQueue.offer(createLoiterToAltitudeMessage(fSender, fTarget, schema, altitude.meters.toFloat()))
     }
 
     private fun handle(message: MAVLinkMessage) {
