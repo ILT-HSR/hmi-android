@@ -1,12 +1,10 @@
 package ch.hsr.ifs.gcs.driver.internal
 
 import android.util.Log
+import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.Platform
-import me.drton.jmavlib.createArmMessage
-import me.drton.jmavlib.createDisarmMessage
-import me.drton.jmavlib.createHeartbeatMessage
-import me.drton.jmavlib.createRequestAutopilotCapabilitiesMessage
+import me.drton.jmavlib.*
 import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkProducts
 import me.drton.jmavlib.mavlink.MAVLinkStream
@@ -79,6 +77,8 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         requestVehicleCapabilities()
     }
 
+    override val driverId get() = "ch.hsr.ifs.gcs.driver.generic.MAVLinkCommonPlatform"
+
     /**
      * Check if the connection to the vehicle is alive.
      *
@@ -101,6 +101,14 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
 
     override fun disarm() {
         fCommandQueue.offer(createDisarmMessage(1, 8, 250, schema))
+    }
+
+    override fun takeOff(altitude: AerialVehicle.Altitude) {
+        fCommandQueue.offer(createTakeOffLocalMessage(1, 8, 250, schema, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F));
+    }
+
+    override fun changeAltitude(altitude: AerialVehicle.Altitude) {
+        fCommandQueue.offer(createLoiterToAltitudeMessage(1, 8, 250, schema, altitude.meters.toFloat()))
     }
 
     private fun handle(message: MAVLinkMessage) {

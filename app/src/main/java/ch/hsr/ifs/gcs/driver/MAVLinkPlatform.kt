@@ -8,7 +8,7 @@ import me.drton.jmavlib.mavlink.MAVLinkSchema
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-interface MAVLinkPlatform : Platform {
+interface MAVLinkPlatform : AerialVehicle {
 
     /**
      * The MAVLink message schema associated with this platform

@@ -18,6 +18,13 @@ package ch.hsr.ifs.gcs.driver
 interface Platform {
 
     /**
+     * The driver id of the specific implementation
+     *
+     * @since 1.0.0
+     */
+    val driverId: String
+
+    /**
      * Retrieve the platform name
      *
      * @since 1.0.0
