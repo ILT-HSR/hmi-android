@@ -21,7 +21,7 @@ object MissionStatusesDummyContent {
      */
     private val MISSION_STATUS_ITEM_MAP: MutableMap<String, MissionStatusDummyItem> = HashMap()
 
-    private const val COUNT = 9
+    private const val COUNT = 4
 
     init {
         for (i in 1..COUNT) {

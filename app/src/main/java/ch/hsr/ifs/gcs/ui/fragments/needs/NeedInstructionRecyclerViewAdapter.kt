@@ -14,6 +14,8 @@ class NeedInstructionRecyclerViewAdapter(
         private val mValues: List<NeedsDummyContent.Task>
     ) : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>() {
 
+    private var activeItemIndex = 0
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_need_instruction, parent, false)
         return ViewHolder(view)
@@ -21,7 +23,12 @@ class NeedInstructionRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mCheckBoxView.background =  holder.mView.context.applicationContext.getDrawable(R.drawable.checkbox_active_incomplete)
+        val context = holder.mView.context.applicationContext
+        if(position == activeItemIndex) {
+            holder.mCheckBoxView.background =  context.getDrawable(R.drawable.checkbox_active_incomplete)
+        } else {
+            holder.mCheckBoxView.background =  context.getDrawable(R.drawable.checkbox_inactive)
+        }
         holder.mInstructionView.text = item.description
     }
 
