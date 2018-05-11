@@ -8,4 +8,5 @@
     <string name="select_need_button_text">SELECT</string>
     <string name="instruction_text">Default Instruction</string>
     <string name="instruction_title">Default Need Instruction</string>
+    <string name="mission_status_title">Status</string>
 </resources>
