@@ -21,7 +21,7 @@ class NeedInstructionRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mCheckBoxView.background =  holder.mView.context.applicationContext.getDrawable(R.drawable.empty_checkbox)
+        holder.mCheckBoxView.background =  holder.mView.context.applicationContext.getDrawable(R.drawable.checkbox_active_incomplete)
         holder.mInstructionView.text = item.description
     }
 
