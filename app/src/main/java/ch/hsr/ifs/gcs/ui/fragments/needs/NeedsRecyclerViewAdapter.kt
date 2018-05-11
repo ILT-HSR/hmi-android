@@ -24,6 +24,7 @@ class NeedsRecyclerViewAdapter(
     : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
+    private var activeIndex = 0
 
     init {
         mOnClickListener = View.OnClickListener { v ->
@@ -39,6 +40,12 @@ class NeedsRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if(position == activeIndex) {
+            val color = Color.parseColor("#68E180")
+            val lightColor = Color.argb(50, Color.red(color), Color.green(color), Color.blue(color))
+            holder.mNameView.setBackgroundColor(lightColor)
+            // TODO: Implement background coloring change with button navigation
+        }
         val item = mValues[position]
         holder.mNameView.text = item.name
         with(holder.mView) {
