@@ -3,7 +3,6 @@ package ch.hsr.ifs.gcs.ui.fragments.needs
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -24,8 +23,6 @@ class NeedInstructionFragment : Fragment() {
 
     private val TAG = NeedInstructionFragment::class.java.simpleName
 
-    private val columnCount = 1
-
     private var listener: OnNeedInstructionFragmentListener? = null
 
     override fun onAttach(context: Context) {
@@ -43,10 +40,7 @@ class NeedInstructionFragment : Fragment() {
         val list = view.instructionList
         if (list is RecyclerView) {
             with(list) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
+                layoutManager = LinearLayoutManager(context)
                 adapter = NeedInstructionRecyclerViewAdapter(activeNeed!!.taskList)
             }
         }
