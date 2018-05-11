@@ -8,14 +8,9 @@ private const val MESSAGE_COMMAND_LONG = "COMMAND_LONG"
 private const val MESSAGE_SET_MODE = "SET_MODE"
 
 enum class MAVLinkLongCommand(val value: Int) {
-    NAV_TAKEOFF_LOCAL(24),
-    NAV_GUIDED_ENABLE(92),
-    NAV_LOITER_TO_ALT(31),
-    DO_SET_MODE(176),
+    DO_REPOSITION(192),
     COMPONENT_ARM_DISARM(400),
     REQUEST_AUTOPILOT_CAPABILITIES(520),
-    MAV_CMD_NAV_WAYPOINT(16),
-    MAV_CMD_DO_REPOSITION(192),
 }
 
 private val Boolean.int get() = if (this) 1 else 0
@@ -201,34 +196,6 @@ fun createRequestAutopilotCapabilitiesMessage(sender: MAVLinkSystem, target: MAV
 }
 
 /**
- * Create a new MAVLink 'Take-off Local' message
- *
- * @param sender The sender system
- * @param target The target system
- * @param schema The message schema
- * @param pitch The desired pitch of the vehicle
- * @param ascendRate The desired rate of ascend in m/s
- * @param yaw The desired yaw of the vehicle
- * @param x The desired X position of the vehicle
- * @param y The desired Y position of the vehicle
- * @param z The desired Z position of the vehicle
- *
- * @return a new MAVLink 'Long Command' message containing a 'Take-off Local' command
- */
-fun createTakeOffLocalMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, pitch: Float, ascendRate: Float, yaw: Float, x: Float, y: Float, z: Float): MAVLinkMessage {
-    val msg = createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.NAV_TAKEOFF_LOCAL)
-
-    msg.set("param1", pitch)
-    msg.set("param3", ascendRate)
-    msg.set("param4", yaw)
-    msg.set("param5", y)
-    msg.set("param6", x)
-    msg.set("param7", z)
-
-    return msg
-}
-
-/**
  * Create a new MAVLink 'Do Reposition' message
  *
  * @param sender The sender system
@@ -239,7 +206,7 @@ fun createTakeOffLocalMessage(sender: MAVLinkSystem, target: MAVLinkSystem, sche
  * @return a new MAVLink 'Long Command' message containing a 'Do Reposition' command
  */
 fun createDoRepositionMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, position: WGS89Position): MAVLinkMessage {
-    val msg = createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.MAV_CMD_DO_REPOSITION)
+    val msg = createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.DO_REPOSITION)
 
     msg.set("param1", -1)
     msg.set("param2", 1)

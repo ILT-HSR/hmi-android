@@ -2,9 +2,7 @@ package ch.hsr.ifs.gcs.driver.internal
 
 import android.util.Log
 import ch.hsr.ifs.gcs.comm.protocol.*
-import ch.hsr.ifs.gcs.driver.AerialVehicle
-import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
-import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ifs.gcs.driver.*
 import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkProducts
 import me.drton.jmavlib.mavlink.MAVLinkStream
@@ -14,43 +12,23 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-enum class MAVLinkMessageName {
-    HEARTBEAT,
-    AUTOPILOT_VERSION;
-
-    companion object {
-
-        /**
-         * Try to create a [MAVLinkMessageName] with the given name
-         *
-         * @param name The name of a MAVLink message
-         * @return The corresponding [MAVLinkMessageName] if it exists, `null` otherwise
-         * @since 1.0.0
-         * @author IFS Institute for Software
-         */
-        fun from(name: String) = try {
-            MAVLinkMessageName.valueOf(name)
-        } catch (e: Exception) {
-            null
-        }
-
-    }
-}
-
-private val TAG = MAVLinkCommonPlatformImpl::class.simpleName
-
 /**
  * Concrete implementation of the [platform driver interface][Platform] for MAVLink vehicles
  *
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAVLinkCommonPlatform {
+internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAVLinkCommonPlatform {
+
+    companion object {
+        private val TAG = MAVLinkCommonPlatformImpl::class.simpleName
+    }
+
+    private val fSender = MAVLinkSystem(8, 250)
+    private val fTarget = MAVLinkSystem(1, 1)
 
     private val fIOStream = MAVLinkStream(schema, channel)
     private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
-    private val fSender = MAVLinkSystem(8, 250)
-    private val fTarget = MAVLinkSystem(1, 1)
 
     private val fExecutors = object {
         val io = Executors.newSingleThreadScheduledExecutor()
@@ -70,7 +48,7 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         var product: String? = null
     }
 
-    private val fMessageListeners = HashMap<MAVLinkMessageName, MutableList<(MAVLinkMessage) -> Unit>>()
+    private val fMessageListeners = HashMap<MAVLinkPlatform.MessageID, MutableList<(MAVLinkMessage) -> Unit>>()
 
     init {
         registerBasicHandlers()
@@ -79,85 +57,63 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         requestVehicleCapabilities()
     }
 
-    override val driverId get() = "ch.hsr.ifs.gcs.driver.generic.MAVLinkCommonPlatform"
+    override val driverId get() = DRIVER_MAVLINK_COMMON
 
-    /**
-     * Check if the connection to the vehicle is alive.
-     *
-     * @note A [MAVLinkCommonPlatform] vehicle is considered to be alive if the last heartbeat was
-     * received within the last ten seconds.
-     *
-     * @since 1.0.0
-     * @author IFS Institute for Software
-     */
-    override val isAlive get() = (System.currentTimeMillis() - fVehicleState.lastHeartbeat) < 10000
+    override val isAlive get() = (System.currentTimeMillis() - fVehicleState.lastHeartbeat) < maximumExpectedHeartbeatInterval
 
     override val name
         get() = fVehicleState.vendor?.let {
             "${fVehicleState.vendor} ${fVehicleState.product}"
         } ?: "<unknown>"
 
-    override fun arm() {
-        fCommandQueue.offer(createArmMessage(fSender, fTarget, schema))
+    override fun arm() = enqueueCommand(createArmMessage(fSender, fTarget, schema))
+
+    override fun disarm() = enqueueCommand(createDisarmMessage(fSender, fTarget, schema))
+
+    override fun takeOff(altitude: AerialVehicle.Altitude) = Unit
+
+    override fun land() = Unit
+
+    override fun moveTo(position: GPSPosition) = enqueueCommand(createDoRepositionMessage(fSender, fTarget, schema, WGS89Position(position)))
+
+    override fun changeAltitude(altitude: AerialVehicle.Altitude) = Unit
+
+    /**
+     * Enqueue a command into the internal command queue
+     *
+     * @since 1.0.0
+     */
+    protected fun enqueueCommand(message: MAVLinkMessage) {
+        fCommandQueue.offer(message)
     }
 
-    override fun disarm() {
-        fCommandQueue.offer(createDisarmMessage(fSender, fTarget, schema))
-    }
+    /**
+     * Get the sender system
+     *
+     * @since 1.0.0
+     */
+    protected val senderSystem get() = fSender
 
-    override fun takeOff(altitude: AerialVehicle.Altitude) {
-        changeMode(33816576)
-    }
+    /**
+     * Get the target system
+     *
+     * @since 1.0.0
+     */
+    protected val targetSystem get() = fTarget
 
-    override fun land() {
-        changeMode(100925440)
-    }
+    /**
+     * The maximum time between 'Heartbeats' for a vehicle to be considered alive (in ms)
+     *
+     * @since 1.0.0
+     */
+    protected val maximumExpectedHeartbeatInterval = 10000
 
-    override fun moveTo(position: GPSPosition) {
-        fCommandQueue.offer(createDoRepositionMessage(fSender, fTarget, schema, WGS89Position(position)))
-    }
-
-    override fun changeAltitude(altitude: AerialVehicle.Altitude) {
-        TODO("Not implemented")
-    }
-
-    private fun changeMode(mode: Int) {
-        fCommandQueue.offer(createLegacySetModeMessage(fSender, fTarget, schema, 1, mode))
-    }
-
-    private fun handle(message: MAVLinkMessage) {
-        when (MAVLinkMessageName.from(message.msgName)) {
-            null -> Log.d(TAG, "Unsupported message '$message'")
-            else -> {
-                MAVLinkMessageName.from(message.msgName)?.let {
-                    fMessageListeners[it]?.forEach {
-                        it(message)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun handleHeartbeat(message: MAVLinkMessage) {
-        fVehicleState.lastHeartbeat = System.currentTimeMillis()
-        Log.i(TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
-        Log.i(TAG, "Base mode : ${message.getInt("base_mode")}, status : ${message.getInt("system_status")}")
-    }
-
-    private fun handleVersion(message: MAVLinkMessage) {
-        fVehicleState.vendor = MAVLinkVendors[message["vendor_id"] as? Int ?: 0]
-        fVehicleState.product = MAVLinkProducts[message["product_id"] as? Int ?: 0]
-    }
-
-    private fun enqueueOnHighFrequencyScheduler(task: () -> Unit) =
-            fExecutors.highFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
-
-
-    private fun enqueueOnLowFrequencyScheduler(task: () -> Unit) =
-            fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 5000, TimeUnit.MILLISECONDS)
-
-
-    private fun addListener(messageName: MAVLinkMessageName, handler: (MAVLinkMessage) -> Unit) {
+    /**
+     * Add a listener for a specific [message type][MAVLinkPlatform.MessageID]
+     *
+     * @since 1.0.0
+     */
+    protected fun addListener(messageName: MAVLinkPlatform.MessageID, handler: (MAVLinkMessage) -> Unit) {
         val listeners = fMessageListeners[messageName]
         if (listeners != null) {
             listeners.add(handler)
@@ -166,15 +122,29 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         }
     }
 
+    /**
+     * Register the listeners for the [message types][MAVLinkPlatform.MessageID] constituting the
+     * basic information source of the vehicle.
+     *
+     * MAVLink vehicles send out certain 'data streams' consisting of different message types
+     * which contain basic vehicle status information, as well as information regarding the
+     * vehicle's position, heading, etc.
+     */
     private fun registerBasicHandlers() {
-        addListener(MAVLinkMessageName.HEARTBEAT, this::handleHeartbeat)
-        addListener(MAVLinkMessageName.AUTOPILOT_VERSION, this::handleVersion)
+        addListener(MAVLinkPlatform.MessageID.HEARTBEAT, this::handleHeartbeat)
+        addListener(MAVLinkPlatform.MessageID.AUTOPILOT_VERSION, this::handleVersion)
     }
 
+    /**
+     * Initialize the serial I/O connection with the vehicle.
+     *
+     * We communicate with the vehicle using a serial (RS232) interface. The serial connection is
+     * wrapped in a MAVLink message stream, which allows us to work on a more 'abstract' level.
+     */
     private fun beginSerialIO() {
         fExecutors.io.scheduleAtFixedRate({
             while (true) {
-                fIOStream.read()?.let(this@MAVLinkCommonPlatformImpl::handle)
+                fIOStream.read()?.let(this::dispatch)
 
                 fCommandQueue.poll()?.let {
                     fIOStream.write(it)
@@ -183,24 +153,88 @@ internal class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAV
         }, 0, 138, TimeUnit.MICROSECONDS)
     }
 
+    /**
+     * Schedule the transmission of 'Heartbeat' messages to the vehicle at a fixed 1s interval
+     */
     private fun scheduleHeartbeat() {
         fExecutors.heartbeat.scheduleAtFixedRate({
             fCommandQueue.offer(fMessages.heartbeat)
         }, 0, 1, TimeUnit.SECONDS)
     }
 
+    /**
+     * Request the basic vehicle capabilities
+     *
+     * We need to know certain aspects of the vehicle, for example the vendor and firmware version
+     * in order to be able to make certain decisions.
+     */
     private fun requestVehicleCapabilities() {
         enqueueOnLowFrequencyScheduler {
             fVehicleState.vendor ?: fCommandQueue.offer(fMessages.capabilities)
         }.let { f ->
-            addListener(MAVLinkMessageName.AUTOPILOT_VERSION, object : (MAVLinkMessage) -> Unit {
+            addListener(MAVLinkPlatform.MessageID.AUTOPILOT_VERSION, object : (MAVLinkMessage) -> Unit {
                 override fun invoke(msg: MAVLinkMessage) {
                     if (!f.isCancelled) {
                         f.cancel(false)
-                        fMessageListeners[MAVLinkMessageName.AUTOPILOT_VERSION]!!.remove(this)
+                        fMessageListeners[MAVLinkPlatform.MessageID.AUTOPILOT_VERSION]!!.remove(this)
                     }
                 }
             })
         }
     }
+
+    /**
+     * Dispatch a received MAVLink message to the associated listener(s)
+     */
+    private fun dispatch(message: MAVLinkMessage) {
+        when (MAVLinkPlatform.MessageID.from(message.msgName)) {
+            null -> Log.d(TAG, "Unsupported message '$message'")
+            else -> {
+                MAVLinkPlatform.MessageID.from(message.msgName)?.let {
+                    fMessageListeners[it]?.forEach {
+                        it(message)
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Process a `Heartbeat` message received on the link
+     */
+    private fun handleHeartbeat(message: MAVLinkMessage) {
+        fVehicleState.lastHeartbeat = System.currentTimeMillis()
+        Log.i(TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
+        Log.i(TAG, "Base mode : ${message.getInt("base_mode")}, status : ${message.getInt("system_status")}")
+    }
+
+    /**
+     * Process a `Autopilot Version` message received on the link
+     */
+    private fun handleVersion(message: MAVLinkMessage) {
+        fVehicleState.vendor = MAVLinkVendors[message["vendor_id"] as? Int ?: 0]
+        fVehicleState.product = MAVLinkProducts[message["product_id"] as? Int ?: 0]
+    }
+
+    /**
+     * Enqueue a task on the high frequency scheduler
+     *
+     * The high frequency scheduler repeats its tasks at a rate of 10 times per second. This is
+     * useful for messages that need to be 'spammed' to the vehicle, for example when 'killing' the
+     * vehicle by sending it disarm messages.
+     */
+    private fun enqueueOnHighFrequencyScheduler(task: () -> Unit) =
+            fExecutors.highFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
+
+
+    /**
+     * Enqueue a task on the high frequency scheduler
+     *
+     * The high frequency scheduler repeats its tasks at a rate of 1 time per 5 seconds. This is
+     * useful for messages that request status information that needs to be updates regularly but
+     * not often.
+     */
+    private fun enqueueOnLowFrequencyScheduler(task: () -> Unit) =
+            fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 5000, TimeUnit.MILLISECONDS)
+
 }
