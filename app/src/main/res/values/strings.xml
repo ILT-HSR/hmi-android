@@ -3,11 +3,12 @@
     <string name="new_need_button_text">New Need</string>
     <string name="mission_results_list_title">Results</string>
     <string name="mission_statuses_list_title">Mission State</string>
-    <string name="start_need_button_text">START</string>
+    <string name="start_need_button_text">Start Mission</string>
     <string name="new_need_list_title">New Need</string>
-    <string name="select_need_button_text">SELECT</string>
+    <string name="select_need_button_text">Select</string>
     <string name="instruction_text">Default Instruction</string>
     <string name="instruction_title">Default Need Instruction</string>
     <string name="mission_status_title">Status</string>
     <string name="mission_result_title">Result</string>
+    <string name="default_need_name">Default Need Name</string>
 </resources>

@@ -21,15 +21,15 @@ object NeedsDummyContent {
 
     init {
         val taskList = ArrayList<Task>()
-        taskList.add(Task("target", "Choose Target"))
-        taskList.add(Task("cargo", "Choose Cargo"))
-        taskList.add(Task("start", "Start Mission"))
-        addItem(NeedDummyItem(0, "Call In", taskList))
+        taskList.add(Task("target", "Target"))
+        taskList.add(Task("cargo", "Cargo"))
+        addItem(NeedDummyItem(0, "Call-in", taskList))
 
         val taskList2 = ArrayList<Task>()
-        taskList2.add(Task("area", "Choose Target Area"))
-        taskList2.add(Task("start", "Start Mission"))
-        addItem(NeedDummyItem(1,"Heatmap", taskList2))
+        taskList2.add(Task("region", "Region"))
+        taskList2.add(Task("altitude", "Altitude"))
+        taskList2.add(Task("mode", "Mode"))
+        addItem(NeedDummyItem(1,"Radiation Map", taskList2))
     }
 
     private fun addItem(item: NeedDummyItem) {

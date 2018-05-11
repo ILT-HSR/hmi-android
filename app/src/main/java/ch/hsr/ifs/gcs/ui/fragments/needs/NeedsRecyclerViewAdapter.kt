@@ -41,7 +41,6 @@ class NeedsRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
         holder.mNameView.text = item.name
-        holder.mView.setBackgroundColor(Color.WHITE)
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
@@ -51,7 +50,7 @@ class NeedsRecyclerViewAdapter(
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mNameView: TextView = mView.name
+        val mNameView: TextView = mView.need_name
         override fun toString(): String {
             return super.toString() + " '" + mNameView.text + "'"
         }
