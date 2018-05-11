@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">GCS</string>
     <string name="new_need_button_text">New Need</string>
-    <string name="mission_results_list_title">Mission Results</string>
-    <string name="mission_statuses_list_title">Mission Statuses</string>
+    <string name="mission_results_list_title">Results</string>
+    <string name="mission_statuses_list_title">Mission State</string>
     <string name="start_need_button_text">START</string>
     <string name="new_need_list_title">New Need</string>
     <string name="select_need_button_text">SELECT</string>
