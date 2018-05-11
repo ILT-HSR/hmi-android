@@ -30,7 +30,7 @@ class MissionResultsRecyclerViewAdapter(
             val item = v.tag as MissionResultDummyItem
             item.isSelected = !item.isSelected
             val lightColor = Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
-            v.setBackgroundColor(if (item.isSelected) lightColor else Color.WHITE)
+            v.setBackgroundColor(if (item.isSelected) lightColor else Color.TRANSPARENT)
             mListener?.onResultItemChanged(item)
         }
     }
@@ -44,10 +44,8 @@ class MissionResultsRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
         val lightColor = Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
-        holder.mView.setBackgroundColor(if (item.isSelected) lightColor else Color.WHITE)
-        holder.mIdView.text = item.id
-        holder.mContentView.text = "Result"
-        holder.mColorView.setBackgroundColor(item.color)
+        holder.mView.setBackgroundColor(if (item.isSelected) lightColor else Color.TRANSPARENT)
+        holder.mMissionName.text = "Result"
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
@@ -57,11 +55,9 @@ class MissionResultsRecyclerViewAdapter(
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.item_number
-        val mContentView: TextView = mView.content
-        val mColorView: View = mView.colorView
+        val mMissionName: TextView = mView.mission_name
         override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
+            return super.toString() + " '" + mMissionName.text + "'"
         }
     }
 }

@@ -19,8 +19,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
 
-
-
 /**
  * A fragment representing a list of mission status items combined with a button to add
  * additional needs. The context containing this fragment must implement the
