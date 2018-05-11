@@ -11,6 +11,7 @@ import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ifs.gcs.driver.internal.MAVLinkPlaformPixhawkPX4
 import ch.hsr.ifs.gcs.input.HandheldControls
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
             if (it.device.manufacturerName.equals("Arduino LLC")) {
                 controls = HandheldControls(this, this, it.ports[0])
             } else { // if (it.device.manufacturerName.equals("FTDI")) {
-                drone = MAVLinkCommonPlatform.create(this, it.ports[0])
+                drone = MAVLinkCommonPlatform.create(::MAVLinkPlaformPixhawkPX4, this, it.ports[0])
             }
         }
     }
@@ -74,6 +75,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
     override fun onButton(button: HandheldControls.Button) {
         when (button) {
             HandheldControls.Button.DPAD_LEFT -> {
+                (drone as? MAVLinkCommonPlatform)?.disarm()
                 fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                 leftButton.background = applicationContext.getDrawable(R.drawable.ic_cancel_black_24dp)
             }

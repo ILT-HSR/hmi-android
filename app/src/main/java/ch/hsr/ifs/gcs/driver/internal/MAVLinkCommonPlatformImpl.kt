@@ -21,14 +21,14 @@ import java.util.concurrent.TimeUnit
 internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAVLinkCommonPlatform {
 
     companion object {
-        private val TAG = MAVLinkCommonPlatformImpl::class.simpleName
+        private val LOG_TAG = MAVLinkCommonPlatformImpl::class.simpleName
     }
 
     private val fSender = MAVLinkSystem(8, 250)
     private val fTarget = MAVLinkSystem(1, 1)
 
-    private val fIOStream = MAVLinkStream(schema, channel)
-    private val fCommandQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
+    private val fMessageStream = MAVLinkStream(schema, channel)
+    private val fMessageQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
 
     private val fExecutors = object {
         val io = Executors.newSingleThreadScheduledExecutor()
@@ -37,18 +37,59 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
         val highFrequency = Executors.newSingleThreadScheduledExecutor()
     }
 
-    private val fMessages = object {
+    private val fPeriodicMessages = object {
         val heartbeat = createHeartbeatMessage(fSender, schema)
         val capabilities = createRequestAutopilotCapabilitiesMessage(fSender, fTarget, schema)
     }
 
-    private val fVehicleState = object {
-        var lastHeartbeat: Long = 0
-        var vendor: String? = null
-        var product: String? = null
-    }
-
     private val fMessageListeners = HashMap<MAVLinkPlatform.MessageID, MutableList<(MAVLinkMessage) -> Unit>>()
+
+    private val fVehicleState = object {
+        /**
+         * The GCS local time of the last received vehicle heartbeat in milliseconds
+         */
+        var lastHeartbeat: Long = 0
+
+        /**
+         * The vehicle controller vendor
+         */
+        var vendor: String? = null
+
+        /**
+         * The vehicle controller product ID
+         */
+        var product: String? = null
+
+        /**
+         * The vehicle local time since the boot of the controller in milliseconds
+         */
+        var timeSinceBoot: Int = 0
+
+        /**
+         * The vehicle GPS position
+         */
+        var position: GPSPosition? = null
+
+        /**
+         * The vehicle ground speed
+         */
+        var groundSpeed = object {
+            /**
+             * The speed in north direction in centimeter per second
+             */
+            var north = 0
+
+            /**
+             * The speed in east direction in centimeter per second
+             */
+            var east = 0
+
+            /**
+             * The speed in up direction in centimeter per second
+             */
+            var up = 0
+        }
+    }
 
     init {
         registerBasicHandlers()
@@ -84,7 +125,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      * @since 1.0.0
      */
     protected fun enqueueCommand(message: MAVLinkMessage) {
-        fCommandQueue.offer(message)
+        fMessageQueue.offer(message)
     }
 
     /**
@@ -133,6 +174,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
     private fun registerBasicHandlers() {
         addListener(MAVLinkPlatform.MessageID.HEARTBEAT, this::handleHeartbeat)
         addListener(MAVLinkPlatform.MessageID.AUTOPILOT_VERSION, this::handleVersion)
+        addListener(MAVLinkPlatform.MessageID.GLOBAL_POSITION_INT, this::handlePosition)
     }
 
     /**
@@ -144,10 +186,10 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
     private fun beginSerialIO() {
         fExecutors.io.scheduleAtFixedRate({
             while (true) {
-                fIOStream.read()?.let(this::dispatch)
+                fMessageStream.read()?.let(this::dispatch)
 
-                fCommandQueue.poll()?.let {
-                    fIOStream.write(it)
+                fMessageQueue.poll()?.let {
+                    fMessageStream.write(it)
                 }
             }
         }, 0, 138, TimeUnit.MICROSECONDS)
@@ -158,7 +200,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      */
     private fun scheduleHeartbeat() {
         fExecutors.heartbeat.scheduleAtFixedRate({
-            fCommandQueue.offer(fMessages.heartbeat)
+            fMessageQueue.offer(fPeriodicMessages.heartbeat)
         }, 0, 1, TimeUnit.SECONDS)
     }
 
@@ -170,7 +212,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      */
     private fun requestVehicleCapabilities() {
         enqueueOnLowFrequencyScheduler {
-            fVehicleState.vendor ?: fCommandQueue.offer(fMessages.capabilities)
+            fVehicleState.vendor ?: fMessageQueue.offer(fPeriodicMessages.capabilities)
         }.let { f ->
             addListener(MAVLinkPlatform.MessageID.AUTOPILOT_VERSION, object : (MAVLinkMessage) -> Unit {
                 override fun invoke(msg: MAVLinkMessage) {
@@ -188,7 +230,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      */
     private fun dispatch(message: MAVLinkMessage) {
         when (MAVLinkPlatform.MessageID.from(message.msgName)) {
-            null -> Log.d(TAG, "Unsupported message '$message'")
+            null -> Log.d(LOG_TAG, "Unsupported message '$message'")
             else -> {
                 MAVLinkPlatform.MessageID.from(message.msgName)?.let {
                     fMessageListeners[it]?.forEach {
@@ -204,8 +246,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      */
     private fun handleHeartbeat(message: MAVLinkMessage) {
         fVehicleState.lastHeartbeat = System.currentTimeMillis()
-        Log.i(TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
-        Log.i(TAG, "Base mode : ${message.getInt("base_mode")}, status : ${message.getInt("system_status")}")
+        Log.i(LOG_TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
     }
 
     /**
@@ -214,6 +255,18 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
     private fun handleVersion(message: MAVLinkMessage) {
         fVehicleState.vendor = MAVLinkVendors[message["vendor_id"] as? Int ?: 0]
         fVehicleState.product = MAVLinkProducts[message["product_id"] as? Int ?: 0]
+    }
+
+    /**
+     * Process a `Global Position INT` message received on the link
+     */
+    private fun handlePosition(message: MAVLinkMessage) {
+        fVehicleState.timeSinceBoot = message.getInt("time_boot_ms")
+        fVehicleState.position = GPSPosition(WGS89Position(message.getInt("lat"), message.getInt("lon"), message.getInt("alt")))
+        fVehicleState.groundSpeed.north = message.getInt("vx")
+        fVehicleState.groundSpeed.east = message.getInt("vy")
+        fVehicleState.groundSpeed.up = message.getInt("vz")
+        Log.i(LOG_TAG, "Received position update: ${fVehicleState.position}")
     }
 
     /**

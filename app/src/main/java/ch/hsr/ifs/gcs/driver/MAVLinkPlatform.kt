@@ -10,9 +10,15 @@ import me.drton.jmavlib.mavlink.MAVLinkSchema
  */
 interface MAVLinkPlatform : AerialVehicle {
 
+    /**
+     * An enum of messages IDs commonly used by MAVLink vehicles
+     *
+     * @since 1.0.0
+     */
     enum class MessageID {
         HEARTBEAT,
-        AUTOPILOT_VERSION;
+        AUTOPILOT_VERSION,
+        GLOBAL_POSITION_INT;
 
         companion object {
 

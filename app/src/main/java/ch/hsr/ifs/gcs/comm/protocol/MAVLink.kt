@@ -44,9 +44,10 @@ data class GPSPosition(val latitude: Float, val longitude: Float, val altitude: 
      * @since 1.0.0
      */
     constructor(position: WGS89Position) : this(
-            position.latitude.toFloat() / 10e7F,
-            position.longitude.toFloat() / 10e7F,
-            position.altitude.toFloat() / 10e3F)
+            position.latitude.toFloat() / 1e7F,
+            position.longitude.toFloat() / 1e7F,
+            position.altitude.toFloat() / 1e3F)
+
 }
 
 /**
@@ -67,9 +68,9 @@ data class WGS89Position(val latitude: Int, val longitude: Int, val altitude: In
      * @since 1.0.0
      */
     constructor(position: GPSPosition) : this(
-            (position.latitude * 10e7F).toInt(),
-            (position.longitude * 10e7F).toInt(),
-            (position.altitude * 10e3F).toInt())
+            (position.latitude * 1e7F).toInt(),
+            (position.longitude * 1e7F).toInt(),
+            (position.altitude * 1e3F).toInt())
 }
 
 /**
