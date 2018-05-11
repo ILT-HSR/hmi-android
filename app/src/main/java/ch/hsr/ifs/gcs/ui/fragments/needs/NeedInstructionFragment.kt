@@ -50,7 +50,7 @@ class NeedInstructionFragment : Fragment() {
                 adapter = NeedInstructionRecyclerViewAdapter(activeNeed!!.taskList)
             }
         }
-        view.titleText.text = activeNeed!!.name
+        view.titleText.text = "New ${activeNeed!!.name}"
         return view
     }
 
