@@ -52,7 +52,7 @@ class NeedInstructionFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val context = context
         if(context is MainActivity) {
-            startNeedButton.setOnClickListener {
+            needNavigationButton.setOnClickListener {
                 Log.d(TAG, "Start Mission Pressed")
             }
             activity.leftButton.setOnClickListener {
