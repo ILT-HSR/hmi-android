@@ -12,6 +12,8 @@ class ChooseRegionTask: Task<List<GeoPoint>> {
 
     override var isActive = false
 
+    override var isCompleted = false
+
     override fun completeTask() {
         // TODO: Replace dummy data
         val upperLeft = GeoPoint(47.223231, 8.816547)

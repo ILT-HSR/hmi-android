@@ -27,8 +27,10 @@ class NeedInstructionRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
         val context = holder.mView.context.applicationContext
-        if(item.isActive) {
-            holder.mCheckBoxView.background =  context.getDrawable(R.drawable.checkbox_active_incomplete)
+        if(item.isActive && !item.isCompleted) {
+            holder.mCheckBoxView.background = context.getDrawable(R.drawable.checkbox_active_incomplete)
+        } else if(item.isCompleted) {
+            holder.mCheckBoxView.background = context.getDrawable(R.drawable.checkbox_active_complete)
         } else {
             holder.mCheckBoxView.background =  context.getDrawable(R.drawable.checkbox_inactive)
         }

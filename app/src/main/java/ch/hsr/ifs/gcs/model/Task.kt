@@ -26,6 +26,11 @@ interface Task<Result> {
     var isActive: Boolean
 
     /**
+     * A task is set to completed, if a result has been computed.
+     */
+    var isCompleted: Boolean
+
+    /**
      * Must provide the steps necessary to obtain the result of the task
      */
     fun completeTask()
