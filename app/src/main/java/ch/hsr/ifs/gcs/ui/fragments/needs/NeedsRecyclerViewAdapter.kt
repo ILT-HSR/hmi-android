@@ -26,7 +26,7 @@ class NeedsRecyclerViewAdapter(
 
     private val mOnClickListener: View.OnClickListener
 
-    private lateinit var activeItem: NeedDummyItem
+    private var activeItem: NeedDummyItem
 
     private lateinit var mRecyclerView: RecyclerView
 
