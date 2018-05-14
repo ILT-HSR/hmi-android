@@ -1,10 +1,10 @@
 package ch.hsr.ifs.gcs.model
 
-class ChooseCargoTask : Task<String> {
+class ChooseModeTask: Task<String> {
 
-    override val name get() = "Cargo"
+    override val name get() = "Mode"
 
-    override val description get() = "Select the cargo involved in your mission."
+    override val description get() = "Choose the mode for your vehicle."
 
     override var result: String? = ""
 
@@ -12,7 +12,7 @@ class ChooseCargoTask : Task<String> {
 
     override fun completeTask() {
         // TODO: Replace dummy data
-        result = "Medkit"
+        result = "Autonomous"
     }
 
 }

@@ -18,5 +18,4 @@ class ChooseTargetTask : Task<GeoPoint> {
         result = chosenPoint
     }
 
-
 }

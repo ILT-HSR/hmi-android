@@ -1,8 +1,6 @@
 package ch.hsr.ifs.gcs.ui.dummydata
 
-import ch.hsr.ifs.gcs.model.ChooseCargoTask
-import ch.hsr.ifs.gcs.model.ChooseTargetTask
-import ch.hsr.ifs.gcs.model.Task
+import ch.hsr.ifs.gcs.model.*
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
 import java.util.ArrayList
 import java.util.HashMap
@@ -28,11 +26,11 @@ object NeedsDummyContent {
         taskList.add(ChooseCargoTask() as Task<Any>)
         addItem(NeedDummyItem(0, "Call-in", taskList))
 
-        /*val taskList2 = ArrayList<Task<Any>>()
-        taskList2.add(Task("region", "Region"))
-        taskList2.add(Task("altitude", "Altitude"))
-        taskList2.add(Task("mode", "Mode"))
-        addItem(NeedDummyItem(1,"Radiation Map", taskList2))*/
+        val taskList2 = ArrayList<Task<Any>>()
+        taskList2.add(ChooseRegionTask() as Task<Any>)
+        taskList2.add(ChooseAltitudeTask() as Task<Any>)
+        taskList2.add(ChooseModeTask() as Task<Any>)
+        addItem(NeedDummyItem(1,"Radiation Map", taskList2))
     }
 
     private fun addItem(item: NeedDummyItem) {
