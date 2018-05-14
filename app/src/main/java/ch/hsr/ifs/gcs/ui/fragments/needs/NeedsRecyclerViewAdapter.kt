@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.ui.fragments.needs
 
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,13 +25,37 @@ class NeedsRecyclerViewAdapter(
     : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
-    private var activeIndex = 0
+
+    private lateinit var activeItem: NeedDummyItem
+
+    private lateinit var mRecyclerView: RecyclerView
 
     init {
+        val selected = mValues.find {
+            it.isSelected
+        }
+        if(selected != null) {
+            activeItem = selected
+        } else {
+            activeItem = mValues[0]
+            activeItem.isSelected = true
+        }
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as NeedDummyItem
+            activeItem.isSelected = false
+            item.isSelected = true
+            activeItem = item
+            val color = Color.parseColor("#68E180")
+            val lightColor = Color.argb(50, Color.red(color), Color.green(color), Color.blue(color))
+            v.setBackgroundColor(lightColor)
+            notifyDataSetChanged()
             mListener?.onNeedItemChanged(item)
         }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        mRecyclerView = recyclerView
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,13 +65,10 @@ class NeedsRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(position == activeIndex) {
-            val color = Color.parseColor("#68E180")
-            val lightColor = Color.argb(50, Color.red(color), Color.green(color), Color.blue(color))
-            holder.mNameView.setBackgroundColor(lightColor)
-            // TODO: Implement background coloring change with button navigation
-        }
         val item = mValues[position]
+        val color = Color.parseColor("#68E180")
+        val lightColor = Color.argb(50, Color.red(color), Color.green(color), Color.blue(color))
+        holder.mView.setBackgroundColor(if (item.isSelected) lightColor else Color.TRANSPARENT)
         holder.mNameView.text = item.name
         with(holder.mView) {
             tag = item

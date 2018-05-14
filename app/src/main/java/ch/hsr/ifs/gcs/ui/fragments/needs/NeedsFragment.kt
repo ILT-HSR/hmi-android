@@ -26,8 +26,6 @@ import kotlinx.android.synthetic.main.fragment_need_list.view.*
  */
 class NeedsFragment : Fragment() {
 
-    private var columnCount = 1
-
     private var listener: OnNeedsFragmentChangedListener? = null
 
     override fun onAttach(context: Context) {
@@ -45,10 +43,7 @@ class NeedsFragment : Fragment() {
         val list = view.list
         if (list is RecyclerView) {
             with(list) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
+                layoutManager = LinearLayoutManager(context)
                 adapter = NeedsRecyclerViewAdapter(NeedsDummyContent.NEED_ITEMS, listener)
             }
         }

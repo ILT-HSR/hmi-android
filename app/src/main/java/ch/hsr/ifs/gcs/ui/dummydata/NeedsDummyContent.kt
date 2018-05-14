@@ -41,6 +41,7 @@ object NeedsDummyContent {
      * A dummy item representing a piece of content.
      */
     data class NeedDummyItem(val id: Int, val name: String, val taskList: List<Task>) {
+        var isSelected: Boolean = false
         override fun toString(): String = name
     }
 
