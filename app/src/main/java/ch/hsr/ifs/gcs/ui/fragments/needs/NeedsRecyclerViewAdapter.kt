@@ -28,8 +28,6 @@ class NeedsRecyclerViewAdapter(
 
     private var activeItem: NeedDummyItem
 
-    private lateinit var mRecyclerView: RecyclerView
-
     init {
         val selected = mValues.find {
             it.isSelected
@@ -51,11 +49,6 @@ class NeedsRecyclerViewAdapter(
             notifyDataSetChanged()
             mListener?.onNeedItemChanged(item)
         }
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        mRecyclerView = recyclerView
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
