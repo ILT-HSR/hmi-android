@@ -12,7 +12,7 @@ import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedLis
 import kotlinx.android.synthetic.main.fragment_need.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [NeedDummyItem] and makes a call to the
+ * [RecyclerView.Adapter] that can display a [Need] and makes a call to the
  * specified [OnNeedsFragmentChangedListener].
  */
 class NeedsRecyclerViewAdapter(
