@@ -54,4 +54,12 @@ interface AerialVehicle : Platform {
      */
     fun changeAltitude(altitude: Altitude)
 
+    /**
+     * Access the current position of the vehicle
+     *
+     * The returned position shall be `null` if no position has yet been determined
+     *
+     * @since 1.0.0
+     */
+    val currentPosition: GPSPosition?
 }

@@ -5,13 +5,11 @@ import android.hardware.usb.UsbManager
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
-import ch.hsr.ifs.gcs.driver.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.Platform
-import ch.hsr.ifs.gcs.driver.internal.MAVLinkPlaformPixhawkPX4
+import ch.hsr.ifs.gcs.driver.internal.MAVLinkPlatformPixhawkPX4
 import ch.hsr.ifs.gcs.input.HandheldControls
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
@@ -56,7 +54,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
             if (it.device.manufacturerName.equals("Arduino LLC")) {
                 controls = HandheldControls(this, this, it.ports[0])
             } else { // if (it.device.manufacturerName.equals("FTDI")) {
-                drone = MAVLinkCommonPlatform.create(::MAVLinkPlaformPixhawkPX4, this, it.ports[0])
+                drone = MAVLinkCommonPlatform.create(::MAVLinkPlatformPixhawkPX4, this, it.ports[0])
             }
         }
     }

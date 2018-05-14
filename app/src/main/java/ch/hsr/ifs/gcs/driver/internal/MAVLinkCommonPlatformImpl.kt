@@ -107,6 +107,9 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
             "${fVehicleState.vendor} ${fVehicleState.product}"
         } ?: "<unknown>"
 
+    override val currentPosition: GPSPosition?
+        get() = fVehicleState.position
+
     override fun arm() = enqueueCommand(createArmMessage(fSender, fTarget, schema))
 
     override fun disarm() = enqueueCommand(createDisarmMessage(fSender, fTarget, schema))
@@ -120,12 +123,21 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
     override fun changeAltitude(altitude: AerialVehicle.Altitude) = Unit
 
     /**
-     * Enqueue a command into the internal command queue
+     * Enqueue a single command into the internal command queue
      *
      * @since 1.0.0
      */
     protected fun enqueueCommand(message: MAVLinkMessage) {
         fMessageQueue.offer(message)
+    }
+
+    /**
+     * Enqueue a series of commands into the internal command queue
+     *
+     * @since 1.0.0
+     */
+    protected  fun enqueueCommands(vararg messages: MAVLinkMessage) {
+        fMessageQueue.addAll(messages)
     }
 
     /**
@@ -247,6 +259,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
     private fun handleHeartbeat(message: MAVLinkMessage) {
         fVehicleState.lastHeartbeat = System.currentTimeMillis()
         Log.i(LOG_TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
+        Log.i(LOG_TAG, "Current mode: ${message["base_mode"]}:${message["custom_mode"]} status: ${message["system_status"]}")
     }
 
     /**
@@ -266,7 +279,6 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
         fVehicleState.groundSpeed.north = message.getInt("vx")
         fVehicleState.groundSpeed.east = message.getInt("vy")
         fVehicleState.groundSpeed.up = message.getInt("vz")
-        Log.i(LOG_TAG, "Received position update: ${fVehicleState.position}")
     }
 
     /**
