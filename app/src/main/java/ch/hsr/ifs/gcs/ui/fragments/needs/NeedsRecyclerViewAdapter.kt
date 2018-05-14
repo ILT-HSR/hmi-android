@@ -2,17 +2,13 @@ package ch.hsr.ifs.gcs.ui.fragments.needs
 
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.R
-
-
+import ch.hsr.ifs.gcs.model.Need
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedListener
-import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent.NeedDummyItem
-
 import kotlinx.android.synthetic.main.fragment_need.view.*
 
 /**
@@ -20,28 +16,28 @@ import kotlinx.android.synthetic.main.fragment_need.view.*
  * specified [OnNeedsFragmentChangedListener].
  */
 class NeedsRecyclerViewAdapter(
-        private val mValues: List<NeedDummyItem>,
+        private val mValues: List<Need>,
         private val mListener: OnNeedsFragmentChangedListener?)
     : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 
-    private var activeItem: NeedDummyItem
+    private var activeItem: Need
 
     init {
-        val selected = mValues.find {
-            it.isSelected
+        val active = mValues.find {
+            it.isActive
         }
-        if(selected != null) {
-            activeItem = selected
+        if(active != null) {
+            activeItem = active
         } else {
             activeItem = mValues[0]
-            activeItem.isSelected = true
+            activeItem.isActive = true
         }
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as NeedDummyItem
-            activeItem.isSelected = false
-            item.isSelected = true
+            val item = v.tag as Need
+            activeItem.isActive = false
+            item.isActive = true
             activeItem = item
             val color = Color.parseColor("#68E180")
             val lightColor = Color.argb(50, Color.red(color), Color.green(color), Color.blue(color))
@@ -61,7 +57,7 @@ class NeedsRecyclerViewAdapter(
         val item = mValues[position]
         val color = Color.parseColor("#68E180")
         val lightColor = Color.argb(50, Color.red(color), Color.green(color), Color.blue(color))
-        holder.mView.setBackgroundColor(if (item.isSelected) lightColor else Color.TRANSPARENT)
+        holder.mView.setBackgroundColor(if (item.isActive) lightColor else Color.TRANSPARENT)
         holder.mNameView.text = item.name
         with(holder.mView) {
             tag = item

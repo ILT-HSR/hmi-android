@@ -3,7 +3,6 @@ package ch.hsr.ifs.gcs.ui.fragments.needs
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -11,9 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-
-import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent
-import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent.NeedDummyItem
+import ch.hsr.ifs.gcs.model.CallIn
+import ch.hsr.ifs.gcs.model.Need
+import ch.hsr.ifs.gcs.model.RadiationMap
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
@@ -44,7 +43,7 @@ class NeedsFragment : Fragment() {
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = NeedsRecyclerViewAdapter(NeedsDummyContent.NEED_ITEMS, listener)
+                adapter = NeedsRecyclerViewAdapter(arrayListOf(CallIn(), RadiationMap()), listener)
             }
         }
         return view
@@ -85,7 +84,7 @@ class NeedsFragment : Fragment() {
          * defines what to do with the provided [item].
          * @param item The item that has been clicked.
          */
-        fun onNeedItemChanged(item: NeedDummyItem?)
+        fun onNeedItemChanged(item: Need?)
 
         /**
          * Called when fragment is attached to its parent. Implementation should redraw the mapView
