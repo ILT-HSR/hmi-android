@@ -50,10 +50,6 @@ class ChooseTargetTask : Task<GeoPoint> {
         }
     }
 
-    override fun cleanup(context: MainActivity) {
-        val mapView = context.findViewById<MapView>(map)
-        mapView.overlays.clear()
-        mapView.invalidate()
-    }
+    override fun cleanup(context: MainActivity) {}
 
 }
