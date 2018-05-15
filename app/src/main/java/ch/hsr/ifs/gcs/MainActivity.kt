@@ -32,8 +32,6 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
     private var drone: Platform? = null
     private var locationManager : LocationManager? = null
 
-    private var initialLocationDetermined = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -154,12 +152,8 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
 
     private val locationListener: LocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            if(!initialLocationDetermined) {
-                initialLocationDetermined = true
-                map.controller.setCenter(GeoPoint(location))
-                map.invalidate()
-                locationManager?.removeUpdates(this)
-            }
+            map.controller.setCenter(GeoPoint(location))
+            map.invalidate()
         }
         override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
         override fun onProviderEnabled(provider: String) {}
