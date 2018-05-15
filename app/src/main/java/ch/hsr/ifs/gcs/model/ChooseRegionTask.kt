@@ -14,14 +14,4 @@ class ChooseRegionTask: Task<List<GeoPoint>> {
 
     override var isCompleted = false
 
-    override fun completeTask() {
-        // TODO: Replace dummy data
-        val upperLeft = GeoPoint(47.223231, 8.816547)
-        val lowerLeft = GeoPoint(47.222231, 8.816547)
-        val upperRight = GeoPoint(47.223231, 8.819000)
-        val lowerRight = GeoPoint(47.222231, 8.819000)
-        val pointList = arrayListOf(upperLeft, upperRight, lowerLeft, lowerRight)
-        result = pointList
-    }
-
 }

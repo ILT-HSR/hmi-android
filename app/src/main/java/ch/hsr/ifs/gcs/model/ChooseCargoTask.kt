@@ -12,9 +12,4 @@ class ChooseCargoTask : Task<String> {
 
     override var isCompleted = false
 
-    override fun completeTask() {
-        // TODO: Replace dummy data
-        result = "Medkit"
-    }
-
 }

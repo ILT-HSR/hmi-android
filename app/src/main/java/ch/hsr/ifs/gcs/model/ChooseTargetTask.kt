@@ -14,11 +14,4 @@ class ChooseTargetTask : Task<GeoPoint> {
 
     override var isCompleted = false
 
-    override fun completeTask() {
-        // TODO: Replace dummy data
-        val chosenPoint = GeoPoint(47.223231, 8.816547)
-        result = chosenPoint
-        isCompleted = true
-    }
-
 }

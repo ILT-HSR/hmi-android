@@ -12,9 +12,4 @@ class ChooseAltitudeTask: Task<Int> {
 
     override var isCompleted = false
 
-    override fun completeTask() {
-        // TODO: Replace dummy data
-        result = 5
-    }
-
 }

@@ -12,9 +12,4 @@ class ChooseModeTask: Task<String> {
 
     override var isCompleted = false
 
-    override fun completeTask() {
-        // TODO: Replace dummy data
-        result = "Autonomous"
-    }
-
 }

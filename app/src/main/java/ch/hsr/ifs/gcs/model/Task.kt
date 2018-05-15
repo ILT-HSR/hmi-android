@@ -30,9 +30,4 @@ interface Task<Result> {
      */
     var isCompleted: Boolean
 
-    /**
-     * Must provide the steps necessary to obtain the result of the task
-     */
-    fun completeTask()
-
 }
