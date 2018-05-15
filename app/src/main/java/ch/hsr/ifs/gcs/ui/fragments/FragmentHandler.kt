@@ -17,7 +17,7 @@ enum class FragmentType(val fragment: Fragment) {
     MISSION_RESULTS_FRAGMENT(MissionResultsFragment()),
     MISSION_STATUSES_FRAGMENT(MissionStatusesFragment()),
     NEEDS_FRAGMENT(NeedsFragment()),
-    NEED_INSTRUCTION_FRAGMENT(NeedInstructionFragment())
+    NEED_INSTRUCTION_FRAGMENT(NeedInstructionFragment()),
 }
 
 class FragmentHandler(val activity: Activity, val map: MapView) {

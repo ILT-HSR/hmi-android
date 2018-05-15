@@ -26,10 +26,10 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
     private val TAG = MainActivity::class.java.simpleName
 
     var fragmentHandler: FragmentHandler? = null
+    var locationService: LocationService? = null
 
     private var controls: HandheldControls? = null
     private var drone: Platform? = null
-    private var locationService: LocationService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

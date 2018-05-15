@@ -13,12 +13,6 @@ class NeedInstructionRecyclerViewAdapter(
         private val mValues: List<Task<Any>>
     ) : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>() {
 
-    private var activeItem: Task<Any> = mValues[0]
-
-    init {
-        mValues[0].isActive = true
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_need_instruction, parent, false)
         return ViewHolder(view)
@@ -31,6 +25,7 @@ class NeedInstructionRecyclerViewAdapter(
             holder.mCheckBoxView.background = context.getDrawable(R.drawable.checkbox_active_incomplete)
         } else if(item.isCompleted) {
             holder.mCheckBoxView.background = context.getDrawable(R.drawable.checkbox_active_complete)
+            holder.mResultView.text = item.resultToString()
         } else {
             holder.mCheckBoxView.background =  context.getDrawable(R.drawable.checkbox_inactive)
         }
@@ -42,6 +37,7 @@ class NeedInstructionRecyclerViewAdapter(
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mInstructionView: TextView = mView.instruction
         val mCheckBoxView: View = mView.checkBoxView
+        val mResultView: TextView = mView.result
         override fun toString(): String {
             return super.toString() + " '" + mInstructionView.text + "'"
         }

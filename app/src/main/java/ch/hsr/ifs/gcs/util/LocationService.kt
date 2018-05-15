@@ -25,6 +25,10 @@ class LocationService(val context: Context, private val listener: OnLocationChan
         }
     }
 
+    fun getCurrentLocation(): Location? {
+        return currentLocation
+    }
+
     override fun onLocationChanged(location: Location) {
         currentLocation = location
         listener?.onCurrentLocationChanged(location)

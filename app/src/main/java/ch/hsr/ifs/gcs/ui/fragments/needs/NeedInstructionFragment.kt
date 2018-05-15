@@ -1,7 +1,10 @@
 package ch.hsr.ifs.gcs.ui.fragments.needs
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.support.annotation.ColorInt
+import android.support.annotation.ColorRes
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -12,6 +15,7 @@ import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.model.Need
+import ch.hsr.ifs.gcs.model.Task
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
@@ -20,6 +24,8 @@ import kotlinx.android.synthetic.main.fragment_need_instruction_list.view.*
 class NeedInstructionFragment : Fragment() {
 
     var activeNeed: Need? = null
+    var activeTaskList: List<Task<Any>>? = null
+    private var currentTaskId = 0
 
     private val TAG = NeedInstructionFragment::class.java.simpleName
 
@@ -41,7 +47,7 @@ class NeedInstructionFragment : Fragment() {
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = NeedInstructionRecyclerViewAdapter(activeNeed!!.taskList)
+                adapter = NeedInstructionRecyclerViewAdapter(activeTaskList!!)
             }
         }
         view.titleText.text = "New ${activeNeed!!.name}"
@@ -52,12 +58,26 @@ class NeedInstructionFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val context = context
         if(context is MainActivity) {
-            needNavigationButton.setOnClickListener {
-                Log.d(TAG, "Start Mission Pressed")
-            }
             activity.leftButton.setOnClickListener {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+            }
+            activeTaskList!![currentTaskId]!!.setup(context)
+            activeTaskList!![currentTaskId]!!.isActive = true
+            needNavigationButton.setOnClickListener {
+                activeTaskList!![currentTaskId]!!.isActive = false
+                activeTaskList!![currentTaskId]!!.isCompleted = true
+                activeTaskList!![currentTaskId]!!.cleanup(context)
+                if(currentTaskId < activeTaskList!!.size - 1) {
+                    currentTaskId += 1
+                    activeTaskList!![currentTaskId]!!.setup(context)
+                    activeTaskList!![currentTaskId]!!.isActive = true
+                } else {
+                    needNavigationButton.text = "Start Mission"
+                    needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
+                    // TODO: start mission with gathered results
+                }
+                view!!.instructionList.adapter.notifyDataSetChanged()
             }
         }
     }
