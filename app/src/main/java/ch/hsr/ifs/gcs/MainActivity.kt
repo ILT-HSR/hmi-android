@@ -2,6 +2,9 @@ package ch.hsr.ifs.gcs
 
 import android.content.Context
 import android.hardware.usb.UsbManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
@@ -27,6 +30,9 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
 
     private var controls: HandheldControls? = null
     private var drone: Platform? = null
+    private var locationManager : LocationManager? = null
+
+    private var initialLocationDetermined = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,11 +49,17 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
 
         map.setTileSource(TileSourceFactory.MAPNIK)
         val mapController = map.controller
-        mapController.setZoom(18.0)
-        //TODO: Get location from device to find center coordinates
-        val startPoint = GeoPoint(47.223231, 8.816547)
+        mapController.setZoom(19.0)
+
+        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?
+        try {
+            locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener)
+            locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, locationListener)
+        } catch(e: SecurityException) {
+            Log.e(TAG, e.message)
+        }
+
         map.setBuiltInZoomControls(true)
-        mapController.setCenter(startPoint)
 
         val mUsbManager = getSystemService(Context.USB_SERVICE) as UsbManager
         UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).forEach {
@@ -138,6 +150,20 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
                     or View.SYSTEM_UI_FLAG_FULLSCREEN
                     or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
         }
+    }
+
+    private val locationListener: LocationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+            if(!initialLocationDetermined) {
+                initialLocationDetermined = true
+                map.controller.setCenter(GeoPoint(location))
+                map.invalidate()
+                locationManager?.removeUpdates(this)
+            }
+        }
+        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
+        override fun onProviderEnabled(provider: String) {}
+        override fun onProviderDisabled(provider: String) {}
     }
 
 }
