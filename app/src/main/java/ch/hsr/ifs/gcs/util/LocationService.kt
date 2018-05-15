@@ -8,7 +8,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 
-class LocationService(val context: Context, private val listener: OnLocationChangedListener) : LocationListener {
+class LocationService(val context: Context, private val listener: OnLocationChangedListener?) : LocationListener {
 
     private val TAG = LocationService::class.java.simpleName
 
@@ -27,7 +27,7 @@ class LocationService(val context: Context, private val listener: OnLocationChan
 
     override fun onLocationChanged(location: Location) {
         currentLocation = location
-        listener.onCurrentLocationChanged(location)
+        listener?.onCurrentLocationChanged(location)
     }
 
     override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
