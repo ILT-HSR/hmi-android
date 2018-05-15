@@ -3,8 +3,6 @@ package ch.hsr.ifs.gcs
 import android.content.Context
 import android.hardware.usb.UsbManager
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
@@ -16,13 +14,14 @@ import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.input.HandheldControls
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.util.LocationService
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 
-class MainActivity : AppCompatActivity(), HandheldControls.Listener {
+class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationService.OnLocationChangedListener {
 
     private val TAG = MainActivity::class.java.simpleName
 
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
 
     private var controls: HandheldControls? = null
     private var drone: Platform? = null
-    private var locationManager : LocationManager? = null
+    private var locationService: LocationService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,16 +47,9 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
         map.setTileSource(TileSourceFactory.MAPNIK)
         val mapController = map.controller
         mapController.setZoom(19.0)
-
-        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?
-        try {
-            locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener)
-            locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, locationListener)
-        } catch(e: SecurityException) {
-            Log.e(TAG, e.message)
-        }
-
         map.setBuiltInZoomControls(true)
+
+        locationService = LocationService(this, this)
 
         val mUsbManager = getSystemService(Context.USB_SERVICE) as UsbManager
         UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).forEach {
@@ -150,14 +142,9 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
         }
     }
 
-    private val locationListener: LocationListener = object : LocationListener {
-        override fun onLocationChanged(location: Location) {
-            map.controller.setCenter(GeoPoint(location))
-            map.invalidate()
-        }
-        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
-        override fun onProviderEnabled(provider: String) {}
-        override fun onProviderDisabled(provider: String) {}
+    override fun onCurrentLocationChanged(location: Location) {
+        map.controller.setCenter(GeoPoint(location))
+        map.invalidate()
     }
 
 }
