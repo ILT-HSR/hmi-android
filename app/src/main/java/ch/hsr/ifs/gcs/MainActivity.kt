@@ -6,6 +6,7 @@ import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import ch.hsr.ifs.gcs.comm.protocol.GPSPosition
 import ch.hsr.ifs.gcs.driver.AerialVehicle
@@ -78,12 +79,12 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
             HandheldControls.Button.DPAD_LEFT -> {
                 (drone as? MAVLinkCommonPlatform)?.disarm()
                 fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-                leftButton.background = applicationContext.getDrawable(R.drawable.ic_cancel_black_24dp)
+                leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
             }
             HandheldControls.Button.DPAD_RIGHT -> {
                 (drone as? MAVLinkCommonPlatform)?.arm()
                 fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
-                leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
+                leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
             }
             HandheldControls.Button.DPAD_UP -> {
                 (drone as? AerialVehicle)?.takeOff(AerialVehicle.Altitude(1.0))
