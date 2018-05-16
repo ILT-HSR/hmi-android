@@ -6,22 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <org.osmdroid.views.MapView
-        android:id="@+id/map"
+    <FrameLayout
+        android:id="@+id/mapholder"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="200dp" />
+        app:layout_constraintGuide_percent="0.75" />
 
     <FrameLayout
         android:id="@+id/menuholder"

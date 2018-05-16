@@ -3,9 +3,9 @@ package ch.hsr.ifs.gcs.ui.fragments.missionresults
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +15,6 @@ import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent
 import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent.MissionResultDummyItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
-import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
@@ -27,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
  */
 class MissionResultsFragment : Fragment() {
 
-    private var columnCount = 1
+    private val TAG = MissionResultsFragment::class.java.simpleName
 
     private var listener: OnResultsFragmentChangedListener? = null
 
@@ -40,27 +39,20 @@ class MissionResultsFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_missionresults_list, container, false)
+        return inflater.inflate(R.layout.fragment_missionresults_list, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val list = view.list
         if (list is RecyclerView) {
             with(list) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
+                layoutManager = LinearLayoutManager(context)
                 adapter = MissionResultsRecyclerViewAdapter(MissionResultsDummyContent.MISSION_RESULT_ITEMS, listener)
             }
         }
-        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -70,7 +62,10 @@ class MissionResultsFragment : Fragment() {
             if(context is MainActivity) {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
             }
-            activity.leftButton.visibility = View.INVISIBLE
+            activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+        }
+        activity.leftButton.setOnClickListener {
+            Log.d(TAG, "Refresh Mission Pressed")
         }
     }
 
@@ -102,19 +97,6 @@ class MissionResultsFragment : Fragment() {
          * @param items The list of all items of the fragment.
          */
         fun refreshResultsMapView(items: List<MissionResultDummyItem>)
-
-    }
-
-    companion object {
-
-        const val ARG_COLUMN_COUNT = "column-count"
-
-        @JvmStatic
-        fun newInstance(columnCount: Int) = MissionResultsFragment().apply {
-            arguments = Bundle().apply {
-                putInt(ARG_COLUMN_COUNT, columnCount)
-            }
-        }
 
     }
 

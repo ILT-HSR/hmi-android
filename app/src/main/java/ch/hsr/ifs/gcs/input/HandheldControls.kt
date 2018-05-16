@@ -24,7 +24,7 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
         DPAD_RIGHT(0x2),
         DPAD_UP(0x3),
         DPAD_DOWN(0x4),
-        BTN_NEED(0xA),
+        BTN_LEFT(0xA),
     }
 
     interface Listener {
@@ -77,7 +77,7 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
         Button.DPAD_LEFT.value -> Button.DPAD_LEFT
         Button.DPAD_RIGHT.value -> Button.DPAD_RIGHT
         Button.DPAD_UP.value -> Button.DPAD_UP
-        Button.BTN_NEED.value -> Button.BTN_NEED
+        Button.BTN_LEFT.value -> Button.BTN_LEFT
         else -> null
     }
 

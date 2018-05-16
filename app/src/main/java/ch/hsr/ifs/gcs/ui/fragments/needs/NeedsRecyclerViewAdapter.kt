@@ -1,36 +1,49 @@
 package ch.hsr.ifs.gcs.ui.fragments.needs
 
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.R
-
-
+import ch.hsr.ifs.gcs.model.Need
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedListener
-import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent.NeedDummyItem
-
 import kotlinx.android.synthetic.main.fragment_need.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [NeedDummyItem] and makes a call to the
+ * [RecyclerView.Adapter] that can display a [Need] and makes a call to the
  * specified [OnNeedsFragmentChangedListener].
- * TODO: Replace the implementation with code for your data type.
  */
 class NeedsRecyclerViewAdapter(
-        private val mValues: List<NeedDummyItem>,
+        private val mValues: List<Need>,
         private val mListener: OnNeedsFragmentChangedListener?)
     : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 
+    private var activeItem: Need
+
     init {
+        val active = mValues.find {
+            it.isActive
+        }
+        if(active != null) {
+            activeItem = active
+        } else {
+            activeItem = mValues[0]
+            activeItem.isActive = true
+        }
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as NeedDummyItem
-            // Notify the active callbacks interface (the activity, if the fragment is attached to
-            // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item)
+            val item = v.tag as Need
+            activeItem.isActive = false
+            item.isActive = true
+            activeItem = item
+            val color = Color.parseColor("#68E180")
+            val lightColor = Color.argb(50, Color.red(color), Color.green(color), Color.blue(color))
+            v.setBackgroundColor(lightColor)
+            notifyDataSetChanged()
+            mListener?.onNeedItemChanged(item)
         }
     }
 
@@ -42,9 +55,10 @@ class NeedsRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mIdView.text = item.id
-        holder.mContentView.text = item.content
-
+        val color = Color.parseColor("#68E180")
+        val lightColor = Color.argb(50, Color.red(color), Color.green(color), Color.blue(color))
+        holder.mView.setBackgroundColor(if (item.isActive) lightColor else Color.TRANSPARENT)
+        holder.mNameView.text = item.name
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
@@ -54,11 +68,10 @@ class NeedsRecyclerViewAdapter(
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.item_number
-        val mContentView: TextView = mView.content
-
+        val mNameView: TextView = mView.need_name
         override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
+            return super.toString() + " '" + mNameView.text + "'"
         }
     }
+
 }

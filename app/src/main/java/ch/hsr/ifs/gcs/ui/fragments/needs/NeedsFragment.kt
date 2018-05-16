@@ -3,7 +3,6 @@ package ch.hsr.ifs.gcs.ui.fragments.needs
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -11,11 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-
-import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent
-import ch.hsr.ifs.gcs.ui.dummydata.NeedsDummyContent.NeedDummyItem
-import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
+import ch.hsr.ifs.gcs.model.CallIn
+import ch.hsr.ifs.gcs.model.Need
+import ch.hsr.ifs.gcs.model.RadiationMap
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
 import kotlinx.android.synthetic.main.fragment_need_list.view.*
@@ -26,8 +24,6 @@ import kotlinx.android.synthetic.main.fragment_need_list.view.*
  * [NeedsFragment.OnNeedsFragmentChangedListener] interface.
  */
 class NeedsFragment : Fragment() {
-
-    private var columnCount = 1
 
     private var listener: OnNeedsFragmentChangedListener? = null
 
@@ -40,24 +36,14 @@ class NeedsFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_need_list, container, false)
         val list = view.list
         if (list is RecyclerView) {
             with(list) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = NeedsRecyclerViewAdapter(NeedsDummyContent.NEED_ITEMS, listener)
+                layoutManager = LinearLayoutManager(context)
+                adapter = NeedsRecyclerViewAdapter(arrayListOf(CallIn()/*, RadiationMap()*/), listener)
             }
         }
         return view
@@ -65,12 +51,16 @@ class NeedsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        cancelButton.setOnClickListener {
-            val context = context
-            if(context is MainActivity) {
-                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, context.fragmentHandler!!.previousFragment)
+        val context = context
+        if(context is MainActivity) {
+            selectButton.setOnClickListener {
+                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
             }
-            activity.leftButton.visibility = View.VISIBLE
+            activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+            activity.leftButton.setOnClickListener {
+                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
+            }
         }
     }
 
@@ -94,26 +84,13 @@ class NeedsFragment : Fragment() {
          * defines what to do with the provided [item].
          * @param item The item that has been clicked.
          */
-        fun onListFragmentInteraction(item: NeedDummyItem?)
+        fun onNeedItemChanged(item: Need?)
 
         /**
          * Called when fragment is attached to its parent. Implementation should redraw the mapView
          * according to the use case of this fragment.
          */
         fun refreshNeedsMapView()
-
-    }
-
-    companion object {
-
-        const val ARG_COLUMN_COUNT = "column-count"
-
-        @JvmStatic
-        fun newInstance(columnCount: Int) = NeedsFragment().apply {
-            arguments = Bundle().apply {
-                putInt(ARG_COLUMN_COUNT, columnCount)
-            }
-        }
 
     }
 

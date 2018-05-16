@@ -1,35 +1,35 @@
 package ch.hsr.ifs.gcs.ui.fragments.needs
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
+import android.support.annotation.ColorInt
+import android.support.annotation.ColorRes
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import ch.hsr.ifs.gcs.model.Need
+import ch.hsr.ifs.gcs.model.Task
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
+import kotlinx.android.synthetic.main.fragment_need_instruction_list.view.*
 
 class NeedInstructionFragment : Fragment() {
 
-    private var param1: String? = null
-    private var param2: String? = null
+    var activeNeed: Need? = null
+    var activeTaskList: List<Task<Any>>? = null
+    private var currentTaskId = 0
+
+    private val TAG = NeedInstructionFragment::class.java.simpleName
+
     private var listener: OnNeedInstructionFragmentListener? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_need_instruction, container, false)
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -37,6 +37,48 @@ class NeedInstructionFragment : Fragment() {
             listener = context.fragmentHandler!!.needInstructionListener
         } else {
             throw RuntimeException(context.toString() + " must implement OnNeedInstructionFragmentListener")
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view =  inflater.inflate(R.layout.fragment_need_instruction_list, container, false)
+        val list = view.instructionList
+        if (list is RecyclerView) {
+            with(list) {
+                layoutManager = LinearLayoutManager(context)
+                adapter = NeedInstructionRecyclerViewAdapter(activeTaskList!!)
+            }
+        }
+        view.titleText.text = "New ${activeNeed!!.name}"
+        return view
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val context = context
+        if(context is MainActivity) {
+            activity.leftButton.setOnClickListener {
+                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+            }
+            activeTaskList!![currentTaskId]!!.setup(context)
+            activeTaskList!![currentTaskId]!!.isActive = true
+            needNavigationButton.setOnClickListener {
+                activeTaskList!![currentTaskId]!!.isActive = false
+                activeTaskList!![currentTaskId]!!.isCompleted = true
+                activeTaskList!![currentTaskId]!!.cleanup(context)
+                if(currentTaskId < activeTaskList!!.size - 1) {
+                    currentTaskId += 1
+                    activeTaskList!![currentTaskId]!!.setup(context)
+                    activeTaskList!![currentTaskId]!!.isActive = true
+                } else {
+                    needNavigationButton.text = "Start Mission"
+                    needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
+                    // TODO: start mission with gathered results
+                }
+                view!!.instructionList.adapter.notifyDataSetChanged()
+            }
         }
     }
 
@@ -54,18 +96,6 @@ class NeedInstructionFragment : Fragment() {
          * TODO: Implement behaviour of fragment
          */
         fun onNeedInstructionFragmentChanged()
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) = NeedInstructionFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARG_PARAM1, param1)
-                putString(ARG_PARAM2, param2)
-            }
-        }
-
     }
 
 }
