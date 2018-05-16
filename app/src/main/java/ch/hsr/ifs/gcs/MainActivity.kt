@@ -6,11 +6,12 @@ import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
+import ch.hsr.ifs.gcs.comm.protocol.GPSPosition
+import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
-import ch.hsr.ifs.gcs.driver.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ifs.gcs.driver.internal.MAVLinkPlatformPixhawkPX4
 import ch.hsr.ifs.gcs.input.HandheldControls
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
@@ -55,8 +56,8 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
         UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).forEach {
             if (it.device.manufacturerName.equals("Arduino LLC")) {
                 controls = HandheldControls(this, this, it.ports[0])
-            } else if (it.device.manufacturerName.equals("FTDI")) {
-                drone = MAVLinkCommonPlatform.create(this, it.ports[0])
+            } else { // if (it.device.manufacturerName.equals("FTDI")) {
+                drone = MAVLinkCommonPlatform.create(::MAVLinkPlatformPixhawkPX4, this, it.ports[0])
             }
         }
     }
@@ -75,36 +76,26 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
     override fun onButton(button: HandheldControls.Button) {
         when (button) {
             HandheldControls.Button.DPAD_LEFT -> {
-                when(fragmentHandler?.activeFragment) {
-                    FragmentType.MISSION_STATUSES_FRAGMENT, FragmentType.MISSION_RESULTS_FRAGMENT -> {
-                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
-                    }
-                    FragmentType.NEEDS_FRAGMENT -> {
-                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
-                    }
-                    FragmentType.NEED_INSTRUCTION_FRAGMENT -> {
-                        Log.d(TAG, "Start Mission Pressed")
-                    }
-                }
-                leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
+                (drone as? MAVLinkCommonPlatform)?.disarm()
+                fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                leftButton.background = applicationContext.getDrawable(R.drawable.ic_cancel_black_24dp)
             }
             HandheldControls.Button.DPAD_RIGHT -> {
-                when(fragmentHandler?.activeFragment) {
-                    FragmentType.MISSION_STATUSES_FRAGMENT -> {
-                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
-                        leftButton.background = applicationContext.getDrawable(R.drawable.refresh_mission)
-                    }
-                    FragmentType.MISSION_RESULTS_FRAGMENT -> {
-                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-                        leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
-                    }
-                }
+                (drone as? MAVLinkCommonPlatform)?.arm()
+                fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
+                leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
             }
             HandheldControls.Button.DPAD_UP -> {
-                (drone as? MAVLinkPlatform)?.arm()
+                (drone as? AerialVehicle)?.takeOff(AerialVehicle.Altitude(1.0))
             }
             HandheldControls.Button.DPAD_DOWN -> {
-                (drone as? MAVLinkPlatform)?.disarm()
+                (drone as? AerialVehicle)?.moveTo(GPSPosition(47.222885, 8.819488, 420.0))
+                Thread.sleep(20000)
+                (drone as? AerialVehicle)?.changeAltitude(AerialVehicle.Altitude(2.0))
+                Thread.sleep(20000)
+                (drone as? AerialVehicle)?.returnToLaunch()
+                Thread.sleep(20000)
+                (drone as? AerialVehicle)?.land()
             }
             HandheldControls.Button.BTN_LEFT -> {
                 when(fragmentHandler?.activeFragment) {
