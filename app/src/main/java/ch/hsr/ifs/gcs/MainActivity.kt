@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import ch.hsr.ifs.gcs.comm.protocol.GPSPosition
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.Platform
@@ -83,13 +84,18 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener {
                 leftButton.background = applicationContext.getDrawable(R.drawable.ic_autorenew_black_24dp)
             }
             HandheldControls.Button.DPAD_UP -> {
-                (drone as? MAVLinkCommonPlatform)?.takeOff(AerialVehicle.Altitude(1.0))
+                (drone as? AerialVehicle)?.takeOff(AerialVehicle.Altitude(1.0))
             }
             HandheldControls.Button.DPAD_DOWN -> {
-                (drone as? MAVLinkCommonPlatform)?.land()
+                (drone as? AerialVehicle)?.moveTo(GPSPosition(47.222885, 8.819488, 420.0))
+                Thread.sleep(20000)
+                (drone as? AerialVehicle)?.changeAltitude(AerialVehicle.Altitude(2.0))
+                Thread.sleep(20000)
+                (drone as? AerialVehicle)?.returnToLaunch()
+                Thread.sleep(20000)
+                (drone as? AerialVehicle)?.land()
             }
             HandheldControls.Button.BTN_NEED -> {
-                (drone as? MAVLinkCommonPlatform)?.changeAltitude(AerialVehicle.Altitude(2.0)) // Move
                 fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 leftButton.visibility = View.INVISIBLE
             }

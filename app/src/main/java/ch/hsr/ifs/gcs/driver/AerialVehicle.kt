@@ -55,6 +55,13 @@ interface AerialVehicle : Platform {
     fun changeAltitude(altitude: Altitude)
 
     /**
+     * Instruct the vehicle to return to its launch position
+     *
+     * @since 1.0.0
+     */
+    fun returnToLaunch()
+
+    /**
      * Access the current position of the vehicle
      *
      * The returned position shall be `null` if no position has yet been determined

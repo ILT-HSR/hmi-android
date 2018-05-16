@@ -3,11 +3,12 @@ package ch.hsr.ifs.gcs.comm.protocol
 import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 
-private const val MESSAGE_HEARTBEAT = "HEARTBEAT"
-private const val MESSAGE_COMMAND_LONG = "COMMAND_LONG"
-private const val MESSAGE_SET_MODE = "SET_MODE"
+const val MESSAGE_HEARTBEAT = "HEARTBEAT"
+const val MESSAGE_COMMAND_LONG = "COMMAND_LONG"
+const val MESSAGE_SET_MODE = "SET_MODE"
 
 enum class MAVLinkLongCommand(val value: Int) {
+    NAV_RETURN_TO_LAUNCH(20),
     NAV_LAND(21),
     NAV_TAKEOFF(22),
     DO_SET_MODE(176),
@@ -313,7 +314,7 @@ fun createDoRepositionMessage(sender: MAVLinkSystem, target: MAVLinkSystem, sche
     msg.set("param4", Float.NaN)
     msg.set("param5", position.latitude)
     msg.set("param6", position.longitude)
-    msg.set("param7", position.altitude.toFloat() / 10e3F)
+    msg.set("param7", position.altitude.toFloat() / 1e3F)
 
     return msg
 }
@@ -408,5 +409,19 @@ fun createDoLandMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MA
     msg.set("param6", Float.NaN) // longitude
     msg.set("param7", Float.NaN) // altitude
 
+    return msg
+}
+
+/**
+ * Create a new MAVLink 'Return to Launch' message
+ *
+ * @param sender The sender system
+ * @param target The target system
+ * @param schema The message schema
+ *
+ * @return a new MAVLink 'Long Command' message containing a 'Return to Launch' command
+ */
+fun createReturnToLaunchMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage {
+    val msg = createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.NAV_RETURN_TO_LAUNCH)
     return msg
 }

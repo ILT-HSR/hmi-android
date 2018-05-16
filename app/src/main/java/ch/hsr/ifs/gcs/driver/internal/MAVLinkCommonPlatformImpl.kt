@@ -8,6 +8,8 @@ import me.drton.jmavlib.mavlink.MAVLinkProducts
 import me.drton.jmavlib.mavlink.MAVLinkStream
 import me.drton.jmavlib.mavlink.MAVLinkVendors
 import java.nio.channels.ByteChannel
+import java.time.Duration
+import java.time.Instant
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -22,6 +24,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
 
     companion object {
         private val LOG_TAG = MAVLinkCommonPlatformImpl::class.simpleName
+        private val TIMEOUT_COMMAND_ACK = Duration.ofMillis(1000)
     }
 
     private val fSender = MAVLinkSystem(8, 250)
@@ -48,7 +51,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
         /**
          * The GCS local time of the last received vehicle heartbeat in milliseconds
          */
-        var lastHeartbeat: Long = 0
+        var lastHeartbeat = Instant.ofEpochSecond(0)
 
         /**
          * The vehicle controller vendor
@@ -91,6 +94,23 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
         }
     }
 
+    /**
+     * A state object to handle the 'Long Command' retransmissions
+     */
+    private val fCommandState = object {
+
+        /**
+         * The last 'Long Command' that was sent to the vehicle
+         */
+        var command: MAVLinkMessage? = null
+
+        /**
+         * The time of the last transmission in milliseconds
+         */
+        var transmittedAt = Instant.ofEpochSecond(0)
+
+    }
+
     init {
         registerBasicHandlers()
         beginSerialIO()
@@ -100,7 +120,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
 
     override val driverId get() = DRIVER_MAVLINK_COMMON
 
-    override val isAlive get() = (System.currentTimeMillis() - fVehicleState.lastHeartbeat) < maximumExpectedHeartbeatInterval
+    override val isAlive get() = Instant.now() < fVehicleState.lastHeartbeat + maximumExpectedHeartbeatInterval
 
     override val name
         get() = fVehicleState.vendor?.let {
@@ -122,6 +142,10 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
 
     override fun changeAltitude(altitude: AerialVehicle.Altitude) = Unit
 
+    override fun returnToLaunch() {
+        enqueueCommand(createReturnToLaunchMessage(fSender, fTarget, schema))
+    }
+
     /**
      * Enqueue a single command into the internal command queue
      *
@@ -136,7 +160,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      *
      * @since 1.0.0
      */
-    protected  fun enqueueCommands(vararg messages: MAVLinkMessage) {
+    protected fun enqueueCommands(vararg messages: MAVLinkMessage) {
         fMessageQueue.addAll(messages)
     }
 
@@ -159,7 +183,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      *
      * @since 1.0.0
      */
-    protected val maximumExpectedHeartbeatInterval = 10000
+    protected val maximumExpectedHeartbeatInterval = Duration.ofSeconds(10)
 
     /**
      * Add a listener for a specific [message type][MAVLinkPlatform.MessageID]
@@ -187,6 +211,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
         addListener(MAVLinkPlatform.MessageID.HEARTBEAT, this::handleHeartbeat)
         addListener(MAVLinkPlatform.MessageID.AUTOPILOT_VERSION, this::handleVersion)
         addListener(MAVLinkPlatform.MessageID.GLOBAL_POSITION_INT, this::handlePosition)
+        addListener(MAVLinkPlatform.MessageID.COMMAND_ACK, this::handleCommandAcknowledgement)
     }
 
     /**
@@ -197,11 +222,15 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      */
     private fun beginSerialIO() {
         fExecutors.io.scheduleAtFixedRate({
-            while (true) {
-                fMessageStream.read()?.let(this::dispatch)
+            fMessageStream.read()?.let(this::dispatch)
 
-                fMessageQueue.poll()?.let {
-                    fMessageStream.write(it)
+//            Log.d(LOG_TAG, "Command queue has a length of ${fMessageQueue.size}")
+//            Log.d(LOG_TAG, "Head message is ${fMessageQueue.peek()}")
+
+            fMessageQueue.peek()?.let {
+                when (it.msgName) {
+                    MESSAGE_COMMAND_LONG -> sendLongCommand(it)
+                    else -> sendCommand(it)
                 }
             }
         }, 0, 138, TimeUnit.MICROSECONDS)
@@ -223,24 +252,14 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      * in order to be able to make certain decisions.
      */
     private fun requestVehicleCapabilities() {
-        enqueueOnLowFrequencyScheduler {
-            fVehicleState.vendor ?: fMessageQueue.offer(fPeriodicMessages.capabilities)
-        }.let { f ->
-            addListener(MAVLinkPlatform.MessageID.AUTOPILOT_VERSION, object : (MAVLinkMessage) -> Unit {
-                override fun invoke(msg: MAVLinkMessage) {
-                    if (!f.isCancelled) {
-                        f.cancel(false)
-                        fMessageListeners[MAVLinkPlatform.MessageID.AUTOPILOT_VERSION]!!.remove(this)
-                    }
-                }
-            })
-        }
+        fMessageQueue.offer(fPeriodicMessages.capabilities)
     }
 
     /**
      * Dispatch a received MAVLink message to the associated listener(s)
      */
     private fun dispatch(message: MAVLinkMessage) {
+        Log.d(LOG_TAG, "Dispatching message: $message")
         when (MAVLinkPlatform.MessageID.from(message.msgName)) {
             null -> Log.d(LOG_TAG, "Unsupported message '$message'")
             else -> {
@@ -257,9 +276,9 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      * Process a `Heartbeat` message received on the link
      */
     private fun handleHeartbeat(message: MAVLinkMessage) {
-        fVehicleState.lastHeartbeat = System.currentTimeMillis()
-        Log.i(LOG_TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
-        Log.i(LOG_TAG, "Current mode: ${message["base_mode"]}:${message["custom_mode"]} status: ${message["system_status"]}")
+        fVehicleState.lastHeartbeat = Instant.now()
+//        Log.i(LOG_TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
+//        Log.i(LOG_TAG, "Current mode: ${message["base_mode"]}:${message["custom_mode"]} status: ${message["system_status"]}")
     }
 
     /**
@@ -279,6 +298,51 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
         fVehicleState.groundSpeed.north = message.getInt("vx")
         fVehicleState.groundSpeed.east = message.getInt("vy")
         fVehicleState.groundSpeed.up = message.getInt("vz")
+    }
+
+    /**
+     * Process a 'Command Long ACK' message on the link.
+     */
+    private fun handleCommandAcknowledgement(message: MAVLinkMessage) {
+        Log.i(LOG_TAG, "Received ACK: $message")
+        fCommandState.command?.let {
+            if (message["command"] == it["command"]) {
+                fCommandState.command = null
+                fMessageQueue.remove()
+            }
+        }
+    }
+
+    /**
+     * Send a 'Command Long' message.
+     *
+     * We need special handling here, since we need to make sure to 'wait' for the ACK
+     */
+    private fun sendLongCommand(message: MAVLinkMessage) {
+        when (fCommandState.command) {
+            message -> {
+                if (fCommandState.transmittedAt + (TIMEOUT_COMMAND_ACK) < Instant.now()) {
+                    message["confirmation"] = (message["confirmation"] as Int + 1) % 256
+                    Log.i(LOG_TAG, "Retransmitting $message")
+                    fMessageStream.write(fCommandState.command)
+                    fCommandState.transmittedAt = Instant.now()
+                }
+            }
+            else -> {
+                fCommandState.command = message
+                Log.i(LOG_TAG, "Transmitting $message")
+                fMessageStream.write(fCommandState.command)
+                fCommandState.transmittedAt = Instant.now()
+            }
+        }
+    }
+
+    /**
+     * Send a regular command
+     */
+    private fun sendCommand(message: MAVLinkMessage) {
+        fMessageStream.write(message)
+        fMessageQueue.remove()
     }
 
     /**

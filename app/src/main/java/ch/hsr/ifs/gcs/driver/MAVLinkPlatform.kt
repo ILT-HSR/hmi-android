@@ -18,7 +18,8 @@ interface MAVLinkPlatform : AerialVehicle {
     enum class MessageID {
         HEARTBEAT,
         AUTOPILOT_VERSION,
-        GLOBAL_POSITION_INT;
+        GLOBAL_POSITION_INT,
+        COMMAND_ACK;
 
         companion object {
 

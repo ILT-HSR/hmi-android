@@ -1,9 +1,6 @@
 package ch.hsr.ifs.gcs.driver.internal
 
-import ch.hsr.ifs.gcs.comm.protocol.MAVLinkMode
-import ch.hsr.ifs.gcs.comm.protocol.createDoLandMessage
-import ch.hsr.ifs.gcs.comm.protocol.createDoSetModeMessage
-import ch.hsr.ifs.gcs.comm.protocol.createDoTakeoffMessage
+import ch.hsr.ifs.gcs.comm.protocol.*
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.DRIVER_MAVLINK_PIXHAWK_PX4
 import ch.hsr.ifs.gcs.driver.Platform
@@ -59,4 +56,13 @@ internal class MAVLinkPlatformPixhawkPX4(channel: ByteChannel) : MAVLinkCommonPl
                     createDoLandMessage(senderSystem, targetSystem, schema)
             )
 
+    override fun changeAltitude(altitude: AerialVehicle.Altitude) {
+        currentPosition?.let {
+            val pos = GPSPosition(it.latitude, it.longitude, it.altitude + altitude.meters.toFloat())
+            enqueueCommands(
+                    createDoSetModeMessage(senderSystem, targetSystem, schema, MAVLinkMode.GUIDED_ARMED),
+                    createDoRepositionMessage(senderSystem, targetSystem, schema, WGS89Position(pos))
+            )
+        }
+    }
 }
