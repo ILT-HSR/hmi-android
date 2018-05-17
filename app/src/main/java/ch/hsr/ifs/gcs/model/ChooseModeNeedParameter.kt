@@ -2,16 +2,23 @@ package ch.hsr.ifs.gcs.model
 
 import ch.hsr.ifs.gcs.MainActivity
 
+/**
+ * This [NeedParameter] implementation is used to configure the mode of the vehicle while
+ * carrying out a need.
+ *
+ * @since 1.0.0
+ * @author IFS Institute for Software
+ */
 class ChooseModeNeedParameter: NeedParameter<String> {
 
-    override val name get() = "Mode"
+    override val name = "Mode"
 
-    override val description get() = "Choose the mode for your vehicle."
+    override val description = "Choose the mode for your vehicle."
 
     override var result: String? = ""
 
     override fun resultToString(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return result!!
     }
 
     override var isActive = false
@@ -19,11 +26,11 @@ class ChooseModeNeedParameter: NeedParameter<String> {
     override var isCompleted = false
 
     override fun setup(context: MainActivity) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override fun cleanup(context: MainActivity) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
 }
