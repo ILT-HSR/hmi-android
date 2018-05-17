@@ -59,6 +59,7 @@ class NeedInstructionFragment : Fragment() {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
             }
+            currentTaskId = 0
             activeNeedParameterList?.get(currentTaskId)?.let {
                 it.setup(context)
                 it.isActive = true
