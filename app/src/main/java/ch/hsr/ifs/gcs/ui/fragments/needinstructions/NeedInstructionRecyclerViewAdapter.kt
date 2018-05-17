@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments.needs
+package ch.hsr.ifs.gcs.ui.fragments.needinstructions
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater

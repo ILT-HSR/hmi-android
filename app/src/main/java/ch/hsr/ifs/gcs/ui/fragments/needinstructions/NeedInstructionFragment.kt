@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments.needs
+package ch.hsr.ifs.gcs.ui.fragments.needinstructions
 
 import android.content.Context
 import android.graphics.Color
