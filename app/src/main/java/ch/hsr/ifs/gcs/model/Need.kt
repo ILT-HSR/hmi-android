@@ -22,8 +22,8 @@ interface Need {
 
     /**
      * Translate the need into a list of [Task] instances.
-     * @return A list of [Task] instances.
+     * @return A list of [Task] instances or null, if parameters are not completed.
      */
-    fun translateToFunctionList(): List<Task>
+    fun getTasks(): List<Task>?
 
 }
