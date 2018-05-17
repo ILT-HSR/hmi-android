@@ -14,7 +14,7 @@ data class CapabilityDescriptor(val id: String, val type: String)
 /**
  * Capabilities provide a way to filter resources based on what they can do
  *
- * @param descriptor The [capability descriptor][CapabilityDescriptor] describing this resource
+ * @param descriptor The [capability descriptor][CapabilityDescriptor] describing this capability
  * @param value The value of this capability
  *
  * @since 1.0.0
