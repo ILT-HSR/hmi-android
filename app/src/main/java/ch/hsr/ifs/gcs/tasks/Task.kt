@@ -13,6 +13,8 @@ interface Task {
     /**
      * Execute this task with the given [resource].
      * @param resource The resource with which the task should be executed.
+     *
+     * @since 1.0.0
      */
     fun executeOn(resource: Resource)
 
