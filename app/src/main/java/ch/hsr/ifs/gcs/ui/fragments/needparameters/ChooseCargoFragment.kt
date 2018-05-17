@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments
+package ch.hsr.ifs.gcs.ui.fragments.needparameters
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

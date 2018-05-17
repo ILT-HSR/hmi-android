@@ -2,6 +2,9 @@ package ch.hsr.ifs.gcs.model
 
 /**
  * Interface representing the base structure of a need.
+ *
+ * @since 1.0.0
+ * @author IFS Institute for Software
  */
 interface Need {
 
@@ -11,7 +14,7 @@ interface Need {
     val name: String
 
     /**
-     * The list of tasks necessary to fulfill the need.
+     * The list of tasks necessary to fulfill the need. This is needed for the recycler view.
      */
     val needParameterList: List<NeedParameter<*>>
 
@@ -22,7 +25,7 @@ interface Need {
 
     /**
      * Translate the need into a list of [Task] instances.
-     * @return A list of [Task] instances or null, if parameters are not completed.
+     * @return A list of [Task] instances or null, if the need parameters are not completed.
      */
     fun getTasks(): List<Task>?
 

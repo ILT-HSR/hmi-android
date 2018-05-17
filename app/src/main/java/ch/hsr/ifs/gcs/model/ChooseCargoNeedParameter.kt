@@ -2,13 +2,22 @@ package ch.hsr.ifs.gcs.model
 
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.fragments.ChooseCargoFragment
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.needparameters.ChooseCargoFragment
 
+/**
+ * This [NeedParameter] implementation is used to configure the desired cargo of the vehicle.
+ *
+ * @since 1.0.0
+ * @author IFS Institute for Software
+ */
 class ChooseCargoNeedParameter : NeedParameter<String> {
 
-    override val name get() = "Cargo"
+    private val fragment = ChooseCargoFragment()
 
-    override val description get() = "Select the cargo involved in your mission."
+    override val name = "Cargo"
+
+    override val description = "Select the cargo involved in your mission."
 
     override var result: String? = ""
 
@@ -20,19 +29,13 @@ class ChooseCargoNeedParameter : NeedParameter<String> {
 
     override var isCompleted = false
 
-    val fragment = ChooseCargoFragment()
-
     override fun setup(context: MainActivity) {
         fragment.task = this
-        val transaction = context.supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.mapholder, fragment)
-        transaction.commit()
+        context.fragmentHandler?.performFragmentTransaction(R.id.mapholder, fragment)
     }
 
     override fun cleanup(context: MainActivity) {
-        val transaction = context.supportFragmentManager.beginTransaction()
-        transaction.remove(fragment)
-        transaction.commit()
+        context.fragmentHandler?.removeFragment(fragment)
     }
 
 }

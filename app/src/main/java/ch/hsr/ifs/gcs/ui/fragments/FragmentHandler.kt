@@ -7,6 +7,7 @@ import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesListener
+import ch.hsr.ifs.gcs.ui.fragments.needparameters.ChooseCargoFragment
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedInstructionListener
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
@@ -18,12 +19,13 @@ enum class FragmentType(val fragment: Fragment) {
     MISSION_STATUSES_FRAGMENT(MissionStatusesFragment()),
     NEEDS_FRAGMENT(NeedsFragment()),
     NEED_INSTRUCTION_FRAGMENT(NeedInstructionFragment()),
+    CHOOSE_CARGO_FRAGMENT(ChooseCargoFragment()),
 }
 
 class FragmentHandler(val activity: Activity, val map: MapView) {
 
-    var activeFragment =  FragmentType.MISSION_RESULTS_FRAGMENT
-    var previousFragment = FragmentType.MISSION_RESULTS_FRAGMENT
+    var activeFragment =  FragmentType.MISSION_RESULTS_FRAGMENT.fragment
+    var previousFragment = FragmentType.MISSION_RESULTS_FRAGMENT.fragment
 
     val missionResultsListener = MissionResultsListener(activity, map)
     val missionStatusesListener = MissionStatusesListener(activity, map)
@@ -35,7 +37,21 @@ class FragmentHandler(val activity: Activity, val map: MapView) {
         val transaction = (activity as MainActivity).supportFragmentManager.beginTransaction()
         transaction.replace(holderId, fragmentType.fragment)
         transaction.commit()
-        activeFragment = fragmentType
+        activeFragment = fragmentType.fragment
+    }
+
+    fun performFragmentTransaction(holderId: Int, fragment: Fragment) {
+        val transaction = (activity as MainActivity).supportFragmentManager.beginTransaction()
+        transaction.replace(holderId, fragment)
+        transaction.commit()
+        activeFragment = fragment
+    }
+
+    fun removeFragment(fragment: Fragment) {
+        val transaction = (activity as MainActivity).supportFragmentManager.beginTransaction()
+        transaction.remove(fragment)
+        transaction.commit()
+        activeFragment = previousFragment
     }
 
 }

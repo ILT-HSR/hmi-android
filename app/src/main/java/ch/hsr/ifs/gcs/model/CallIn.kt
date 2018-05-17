@@ -24,7 +24,7 @@ class CallIn : Need {
             val targetLocation = targetParameter.result
             val cargo = cargoParameter.result
             return ArrayList()
-            // TODO: Generate list of tasks
+            TODO("task implementations not ready") //Fill task list
         } else {
             return null
         }
