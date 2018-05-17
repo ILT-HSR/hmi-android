@@ -1,8 +1,8 @@
-package ch.hsr.ifs.gcs.needs
+package ch.hsr.ifs.gcs.needs.parameters
 
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.fragments.needparameters.ChooseCargoFragment
+import ch.hsr.ifs.gcs.ui.fragments.needparameters.CargoFragment
 
 /**
  * This [NeedParameter] implementation is used to configure the desired cargo of the vehicle.
@@ -10,9 +10,9 @@ import ch.hsr.ifs.gcs.ui.fragments.needparameters.ChooseCargoFragment
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class ChooseCargoNeedParameter : NeedParameter<String> {
+class CargoNeedParameter : NeedParameter<String> {
 
-    private val fragment = ChooseCargoFragment()
+    private val fragment = CargoFragment()
 
     override val name = "Cargo"
 

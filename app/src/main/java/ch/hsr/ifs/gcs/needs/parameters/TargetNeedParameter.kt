@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.needs
+package ch.hsr.ifs.gcs.needs.parameters
 
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R.id.map
@@ -13,7 +13,7 @@ import org.osmdroid.views.overlay.Marker.OnMarkerDragListener
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class ChooseTargetNeedParameter : NeedParameter<GeoPoint> {
+class TargetNeedParameter : NeedParameter<GeoPoint> {
 
     override val name = "Target"
 

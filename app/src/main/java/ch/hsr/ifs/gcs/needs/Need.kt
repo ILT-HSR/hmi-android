@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.needs
 
+import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
 import ch.hsr.ifs.gcs.tasks.Task
 
 /**

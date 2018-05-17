@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.needs
+package ch.hsr.ifs.gcs.needs.parameters
 
 import ch.hsr.ifs.gcs.MainActivity
 

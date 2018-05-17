@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.needs
+package ch.hsr.ifs.gcs.needs.parameters
 
 import ch.hsr.ifs.gcs.MainActivity
 import org.osmdroid.util.GeoPoint
@@ -9,7 +9,7 @@ import org.osmdroid.util.GeoPoint
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class ChooseRegionNeedParameter: NeedParameter<List<GeoPoint>> {
+class RegionNeedParameter: NeedParameter<List<GeoPoint>> {
 
     override val name = "Region"
 

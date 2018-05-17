@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.needs
+package ch.hsr.ifs.gcs.needs.parameters
 
 import ch.hsr.ifs.gcs.MainActivity
 
@@ -9,7 +9,7 @@ import ch.hsr.ifs.gcs.MainActivity
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class ChooseModeNeedParameter: NeedParameter<String> {
+class ModeNeedParameter: NeedParameter<String> {
 
     override val name = "Mode"
 

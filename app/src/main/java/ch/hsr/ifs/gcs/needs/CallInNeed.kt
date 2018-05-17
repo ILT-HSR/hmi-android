@@ -1,5 +1,8 @@
 package ch.hsr.ifs.gcs.needs
 
+import ch.hsr.ifs.gcs.needs.parameters.CargoNeedParameter
+import ch.hsr.ifs.gcs.needs.parameters.TargetNeedParameter
+import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
 import ch.hsr.ifs.gcs.tasks.Task
 
 /**
@@ -10,8 +13,8 @@ import ch.hsr.ifs.gcs.tasks.Task
  */
 class CallInNeed : Need {
 
-    private val targetParameter = ChooseTargetNeedParameter()
-    private val cargoParameter = ChooseCargoNeedParameter()
+    private val targetParameter = TargetNeedParameter()
+    private val cargoParameter = CargoNeedParameter()
 
     override val name = "Call-in"
 

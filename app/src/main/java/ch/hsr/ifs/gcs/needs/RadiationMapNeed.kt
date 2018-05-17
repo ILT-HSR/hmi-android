@@ -1,5 +1,9 @@
 package ch.hsr.ifs.gcs.needs
 
+import ch.hsr.ifs.gcs.needs.parameters.AltitudeNeedParameter
+import ch.hsr.ifs.gcs.needs.parameters.ModeNeedParameter
+import ch.hsr.ifs.gcs.needs.parameters.RegionNeedParameter
+import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
 import ch.hsr.ifs.gcs.tasks.Task
 
 /**
@@ -11,9 +15,9 @@ import ch.hsr.ifs.gcs.tasks.Task
  */
 class RadiationMapNeed : Need {
 
-    private val regionParameter = ChooseRegionNeedParameter()
-    private val altitudeParameter = ChooseAltitudeNeedParameter()
-    private val modeParameter = ChooseModeNeedParameter()
+    private val regionParameter = RegionNeedParameter()
+    private val altitudeParameter = AltitudeNeedParameter()
+    private val modeParameter = ModeNeedParameter()
 
     override val name = "Radiation Map"
 

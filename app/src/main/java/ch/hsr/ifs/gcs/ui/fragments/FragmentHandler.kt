@@ -7,7 +7,7 @@ import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesListener
-import ch.hsr.ifs.gcs.ui.fragments.needparameters.ChooseCargoFragment
+import ch.hsr.ifs.gcs.ui.fragments.needparameters.CargoFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionListener
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
@@ -19,7 +19,7 @@ enum class FragmentType(val fragment: Fragment) {
     MISSION_STATUSES_FRAGMENT(MissionStatusesFragment()),
     NEEDS_FRAGMENT(NeedsFragment()),
     NEED_INSTRUCTION_FRAGMENT(NeedInstructionFragment()),
-    CHOOSE_CARGO_FRAGMENT(ChooseCargoFragment()),
+    CHOOSE_CARGO_FRAGMENT(CargoFragment()),
 }
 
 class FragmentHandler(val activity: Activity, val map: MapView) {
