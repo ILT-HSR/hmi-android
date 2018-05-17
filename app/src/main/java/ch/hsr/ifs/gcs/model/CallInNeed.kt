@@ -23,8 +23,8 @@ class CallInNeed : Need {
         if(targetParameter.isCompleted && cargoParameter.isCompleted) {
             val targetLocation = targetParameter.result
             val cargo = cargoParameter.result
-            return ArrayList()
             TODO("task implementations not ready") //Fill task list
+            return ArrayList()
         } else {
             return null
         }
