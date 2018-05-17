@@ -7,11 +7,17 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Marker.OnMarkerDragListener
 
+/**
+ * This [NeedParameter] implementation is used to configure the target of the vehicle.
+ *
+ * @since 1.0.0
+ * @author IFS Institute for Software
+ */
 class ChooseTargetNeedParameter : NeedParameter<GeoPoint> {
 
-    override val name get() = "Target"
+    override val name = "Target"
 
-    override val description get() = "Choose a single target on the map."
+    override val description = "Choose a single target on the map."
 
     override var result: GeoPoint? = null
 
