@@ -18,9 +18,19 @@ interface Resource {
      */
     enum class Status {
         /**
+         * The resource is not available, e.g. its platform is not connected
+         */
+        UNAVAILABLE,
+
+        /**
          * The resource is running and available for use
          */
         AVAILABLE,
+
+        /**
+         * The resource has been acquired for a task
+         */
+        ACQUIRED,
 
         /**
          * The resource is running but currently busy performing a mission
@@ -32,6 +42,13 @@ interface Resource {
          */
         FAILED
     }
+
+    /**
+     * The status of the resource
+     *
+     * @since 1.0.0
+     */
+    val status: Status
 
     /**
      * The unique identification of a resource
