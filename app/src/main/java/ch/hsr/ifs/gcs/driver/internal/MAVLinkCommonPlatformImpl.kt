@@ -45,7 +45,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
         val capabilities = createRequestAutopilotCapabilitiesMessage(fSender, fTarget, schema)
     }
 
-    private val fMessageListeners = HashMap<MAVLinkPlatform.MessageID, MutableList<(MAVLinkMessage) -> Unit>>()
+    private val fMessageListeners = HashMap<MessageID, MutableList<(MAVLinkMessage) -> Unit>>()
 
     private val fVehicleState = object {
         /**
@@ -190,7 +190,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      *
      * @since 1.0.0
      */
-    protected fun addListener(messageName: MAVLinkPlatform.MessageID, handler: (MAVLinkMessage) -> Unit) {
+    protected fun addListener(messageName: MessageID, handler: (MAVLinkMessage) -> Unit) {
         val listeners = fMessageListeners[messageName]
         if (listeners != null) {
             listeners.add(handler)
@@ -208,10 +208,10 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      * vehicle's position, heading, etc.
      */
     private fun registerBasicHandlers() {
-        addListener(MAVLinkPlatform.MessageID.HEARTBEAT, this::handleHeartbeat)
-        addListener(MAVLinkPlatform.MessageID.AUTOPILOT_VERSION, this::handleVersion)
-        addListener(MAVLinkPlatform.MessageID.GLOBAL_POSITION_INT, this::handlePosition)
-        addListener(MAVLinkPlatform.MessageID.COMMAND_ACK, this::handleCommandAcknowledgement)
+        addListener(MessageID.HEARTBEAT, this::handleHeartbeat)
+        addListener(MessageID.AUTOPILOT_VERSION, this::handleVersion)
+        addListener(MessageID.GLOBAL_POSITION_INT, this::handlePosition)
+        addListener(MessageID.COMMAND_ACK, this::handleCommandAcknowledgement)
     }
 
     /**
@@ -260,10 +260,10 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      */
     private fun dispatch(message: MAVLinkMessage) {
         Log.d(LOG_TAG, "Dispatching message: $message")
-        when (MAVLinkPlatform.MessageID.from(message.msgName)) {
+        when (MessageID.from(message.msgName)) {
             null -> Log.d(LOG_TAG, "Unsupported message '$message'")
             else -> {
-                MAVLinkPlatform.MessageID.from(message.msgName)?.let {
+                MessageID.from(message.msgName)?.let {
                     fMessageListeners[it]?.forEach {
                         it(message)
                     }

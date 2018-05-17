@@ -11,36 +11,6 @@ import me.drton.jmavlib.mavlink.MAVLinkSchema
 interface MAVLinkPlatform : AerialVehicle {
 
     /**
-     * An enum of messages IDs commonly used by MAVLink vehicles
-     *
-     * @since 1.0.0
-     */
-    enum class MessageID {
-        HEARTBEAT,
-        AUTOPILOT_VERSION,
-        GLOBAL_POSITION_INT,
-        COMMAND_ACK;
-
-        companion object {
-
-            /**
-             * Try to create a [MessageID] with the given name
-             *
-             * @param name The name of a MAVLink message
-             * @return The corresponding [MessageID] if it exists, `null` otherwise
-             * @since 1.0.0
-             * @author IFS Institute for Software
-             */
-            fun from(name: String) = try {
-                MessageID.valueOf(name)
-            } catch (e: Exception) {
-                null
-            }
-
-        }
-    }
-
-    /**
      * The MAVLink message schema associated with this platform
      *
      * @since 1.0.0
