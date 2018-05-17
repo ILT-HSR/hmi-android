@@ -1,0 +1,50 @@
+package ch.hsr.ifs.gcs.resources
+
+/**
+ * A resource is an abstract representation of a platform.
+ *
+ * Each resource provides a unique identification, a list of capabilities, and information about
+ * the status of the resource.
+ *
+ * @since 1.0.0
+ * @author IFS Institute for Software
+ */
+interface Resource {
+
+    /**
+     * A [resource][Resource] can be in one of several states, allowing for further filtering
+     *
+     * @since 1.0.0
+     */
+    enum class Status {
+        /**
+         * The resource is running and available for use
+         */
+        AVAILABLE,
+
+        /**
+         * The resource is running but currently busy performing a mission
+         */
+        BUSY,
+
+        /**
+         * The resource has failed and is not available for use
+         */
+        FAILED
+    }
+
+    /**
+     * The unique identification of a resource
+     *
+     * @since 1.0.0
+     */
+    val id: String
+
+    /**
+     * The list of capabilities of this resource
+     *
+     * @since 1.0.0
+     */
+    val capabilites: List<Capability<*>>
+
+}
