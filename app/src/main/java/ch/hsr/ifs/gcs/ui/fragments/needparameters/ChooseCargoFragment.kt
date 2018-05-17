@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.model.ChooseCargoNeedParameter
+import ch.hsr.ifs.gcs.needs.ChooseCargoNeedParameter
 import kotlinx.android.synthetic.main.fragment_choose_cargo.*
 
 class ChooseCargoFragment : Fragment() {

@@ -1,4 +1,6 @@
-package ch.hsr.ifs.gcs.model
+package ch.hsr.ifs.gcs.needs
+
+import ch.hsr.ifs.gcs.tasks.Task
 
 /**
  * Interface representing the base structure of a need.

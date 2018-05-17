@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.model.NeedParameter
+import ch.hsr.ifs.gcs.needs.NeedParameter
 import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
 
 class NeedInstructionRecyclerViewAdapter(

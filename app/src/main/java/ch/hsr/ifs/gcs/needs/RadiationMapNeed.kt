@@ -1,4 +1,6 @@
-package ch.hsr.ifs.gcs.model
+package ch.hsr.ifs.gcs.needs
+
+import ch.hsr.ifs.gcs.tasks.Task
 
 /**
  * This [Need] implementation represents the need to generate a heat map for radiation in a

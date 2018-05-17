@@ -3,7 +3,7 @@ package ch.hsr.ifs.gcs.ui.fragments.needs
 import android.app.Activity
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.model.Need
+import ch.hsr.ifs.gcs.needs.Need
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import kotlinx.android.synthetic.main.activity_main.*

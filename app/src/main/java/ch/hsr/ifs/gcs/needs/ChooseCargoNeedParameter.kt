@@ -1,8 +1,7 @@
-package ch.hsr.ifs.gcs.model
+package ch.hsr.ifs.gcs.needs
 
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needparameters.ChooseCargoFragment
 
 /**

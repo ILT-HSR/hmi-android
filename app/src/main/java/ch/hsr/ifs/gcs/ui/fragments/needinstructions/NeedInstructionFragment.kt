@@ -11,8 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.model.Need
-import ch.hsr.ifs.gcs.model.NeedParameter
+import ch.hsr.ifs.gcs.needs.Need
+import ch.hsr.ifs.gcs.needs.NeedParameter
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
