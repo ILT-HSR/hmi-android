@@ -59,20 +59,26 @@ class NeedInstructionFragment : Fragment() {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
             }
-            activeNeedParameterList!![currentTaskId]!!.setup(context)
-            activeNeedParameterList!![currentTaskId]!!.isActive = true
+            activeNeedParameterList?.get(currentTaskId)?.let {
+                it.setup(context)
+                it.isActive = true
+            }
             needNavigationButton.setOnClickListener {
-                activeNeedParameterList!![currentTaskId]!!.isActive = false
-                activeNeedParameterList!![currentTaskId]!!.isCompleted = true
-                activeNeedParameterList!![currentTaskId]!!.cleanup(context)
+                activeNeedParameterList?.get(currentTaskId)?.let {
+                    it.isActive = false
+                    it.isCompleted = true
+                    it.cleanup(context)
+                }
                 if(currentTaskId < activeNeedParameterList!!.size - 1) {
                     currentTaskId += 1
-                    activeNeedParameterList!![currentTaskId]!!.setup(context)
-                    activeNeedParameterList!![currentTaskId]!!.isActive = true
+                    activeNeedParameterList?.get(currentTaskId)?.let {
+                        it.setup(context)
+                        it.isActive = true
+                    }
                 } else {
                     needNavigationButton.text = "Start Mission"
                     needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
-                    // TODO: start mission with gathered results
+                    TODO("Resources not available") // Start mission with gathered results
                 }
                 view!!.instructionList.adapter.notifyDataSetChanged()
             }
