@@ -10,9 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.model.CallIn
+import ch.hsr.ifs.gcs.model.CallInNeed
 import ch.hsr.ifs.gcs.model.Need
-import ch.hsr.ifs.gcs.model.RadiationMap
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
@@ -43,7 +42,7 @@ class NeedsFragment : Fragment() {
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = NeedsRecyclerViewAdapter(arrayListOf(CallIn()/*, RadiationMap()*/), listener)
+                adapter = NeedsRecyclerViewAdapter(arrayListOf(CallInNeed()/*, RadiationMapNeed()*/), listener)
             }
         }
         return view

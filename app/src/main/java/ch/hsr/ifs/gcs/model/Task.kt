@@ -12,6 +12,8 @@ interface Task {
      * Execute this task with the given [resource].
      * @param resource The resource with which the task should be executed.
      */
-    fun executeOn(/*TODO: Add resource parameter*/)
+    fun executeOn() {
+        TODO("Add resource parameter")
+    }
 
 }

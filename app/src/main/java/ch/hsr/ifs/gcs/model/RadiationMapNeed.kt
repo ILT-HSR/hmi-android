@@ -7,7 +7,7 @@ package ch.hsr.ifs.gcs.model
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class RadiationMap : Need {
+class RadiationMapNeed : Need {
 
     private val regionParameter = ChooseRegionNeedParameter()
     private val altitudeParameter = ChooseAltitudeNeedParameter()

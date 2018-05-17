@@ -6,7 +6,7 @@ package ch.hsr.ifs.gcs.model
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class CallIn : Need {
+class CallInNeed : Need {
 
     private val targetParameter = ChooseTargetNeedParameter()
     private val cargoParameter = ChooseCargoNeedParameter()
