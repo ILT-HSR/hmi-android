@@ -13,11 +13,17 @@ interface Need {
     /**
      * The list of tasks necessary to fulfill the need.
      */
-    val taskList: List<Task<Any>>
+    val needParameterList: List<NeedParameter<Any>>
 
     /**
      * A need is set to active, if it is selected via touch or button navigation.
      */
     var isActive: Boolean
+
+    /**
+     * Translate the need into a list of [Task] instances.
+     * @return A list of [Task] instances.
+     */
+    fun translateToFunctionList(): List<Task>
 
 }

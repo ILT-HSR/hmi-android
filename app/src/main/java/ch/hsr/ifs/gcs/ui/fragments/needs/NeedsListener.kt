@@ -14,7 +14,7 @@ class NeedsListener(val activity: Activity, val map: MapView) : NeedsFragment.On
         if(activity is MainActivity) {
             val needInstructionFragmentType = FragmentType.NEED_INSTRUCTION_FRAGMENT
             (needInstructionFragmentType.fragment as NeedInstructionFragment).activeNeed = item
-            needInstructionFragmentType.fragment.activeTaskList = item!!.taskList
+            needInstructionFragmentType.fragment.activeNeedParameterList = item!!.needParameterList
             activity.fragmentHandler?.performFragmentTransaction(R.id.menuholder, needInstructionFragmentType)
             activity.leftButton.background = activity.applicationContext.getDrawable(R.drawable.cancel_action)
         }

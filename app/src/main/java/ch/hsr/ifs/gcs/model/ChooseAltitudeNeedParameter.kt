@@ -2,13 +2,13 @@ package ch.hsr.ifs.gcs.model
 
 import ch.hsr.ifs.gcs.MainActivity
 
-class ChooseModeTask: Task<String> {
+class ChooseAltitudeNeedParameter: NeedParameter<Int> {
 
-    override val name get() = "Mode"
+    override val name get() = "Altitude"
 
-    override val description get() = "Choose the mode for your vehicle."
+    override val description get() = "Choose the altitude for your vehicle."
 
-    override var result: String? = ""
+    override var result: Int? = 0
 
     override fun resultToString(): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

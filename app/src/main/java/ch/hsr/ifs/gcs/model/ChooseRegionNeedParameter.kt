@@ -3,7 +3,7 @@ package ch.hsr.ifs.gcs.model
 import ch.hsr.ifs.gcs.MainActivity
 import org.osmdroid.util.GeoPoint
 
-class ChooseRegionTask: Task<List<GeoPoint>> {
+class ChooseRegionNeedParameter: NeedParameter<List<GeoPoint>> {
 
     override val name get() = "Region"
 

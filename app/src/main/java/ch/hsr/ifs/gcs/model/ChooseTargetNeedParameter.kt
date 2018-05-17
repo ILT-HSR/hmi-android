@@ -7,7 +7,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Marker.OnMarkerDragListener
 
-class ChooseTargetTask : Task<GeoPoint> {
+class ChooseTargetNeedParameter : NeedParameter<GeoPoint> {
 
     override val name get() = "Target"
 

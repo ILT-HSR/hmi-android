@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.model.ChooseCargoTask
+import ch.hsr.ifs.gcs.model.ChooseCargoNeedParameter
 import kotlinx.android.synthetic.main.fragment_choose_cargo.*
 
 class ChooseCargoFragment : Fragment() {
 
-    var task: ChooseCargoTask? = null
+    var task: ChooseCargoNeedParameter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

@@ -4,7 +4,7 @@ import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.fragments.ChooseCargoFragment
 
-class ChooseCargoTask : Task<String> {
+class ChooseCargoNeedParameter : NeedParameter<String> {
 
     override val name get() = "Cargo"
 
