@@ -4,6 +4,7 @@ import ch.hsr.ifs.gcs.needs.parameters.AltitudeNeedParameter
 import ch.hsr.ifs.gcs.needs.parameters.ModeNeedParameter
 import ch.hsr.ifs.gcs.needs.parameters.RegionNeedParameter
 import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
+import ch.hsr.ifs.gcs.resources.Resource
 import ch.hsr.ifs.gcs.tasks.Task
 
 /**
@@ -13,7 +14,7 @@ import ch.hsr.ifs.gcs.tasks.Task
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class RadiationMapNeed : Need {
+class RadiationMapNeed(override val resource: Resource?) : Need {
 
     private val regionParameter = RegionNeedParameter()
     private val altitudeParameter = AltitudeNeedParameter()

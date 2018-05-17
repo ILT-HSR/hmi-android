@@ -42,7 +42,7 @@ class NeedsFragment : Fragment() {
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = NeedsRecyclerViewAdapter(arrayListOf(CallInNeed()/*, RadiationMapNeed()*/), listener)
+                adapter = NeedsRecyclerViewAdapter(arrayListOf(CallInNeed(null)/*, RadiationMapNeed()*/), listener)
             }
         }
         return view

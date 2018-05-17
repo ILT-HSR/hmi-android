@@ -3,6 +3,7 @@ package ch.hsr.ifs.gcs.needs
 import ch.hsr.ifs.gcs.needs.parameters.CargoNeedParameter
 import ch.hsr.ifs.gcs.needs.parameters.TargetNeedParameter
 import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
+import ch.hsr.ifs.gcs.resources.Resource
 import ch.hsr.ifs.gcs.tasks.Task
 
 /**
@@ -11,7 +12,7 @@ import ch.hsr.ifs.gcs.tasks.Task
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class CallInNeed : Need {
+class CallInNeed(override val resource: Resource?) : Need {
 
     private val targetParameter = TargetNeedParameter()
     private val cargoParameter = CargoNeedParameter()

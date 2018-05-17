@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.needs
 
 import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
+import ch.hsr.ifs.gcs.resources.Resource
 import ch.hsr.ifs.gcs.tasks.Task
 
 /**
@@ -24,6 +25,13 @@ interface Need {
      * @since 1.0.0
      */
     val needParameterList: List<NeedParameter<*>>
+
+    /**
+     * The resource associated with the need.
+     *
+     * @since 1.0.0
+     */
+    val resource: Resource?
 
     /**
      * A need is set to active, if it is selected via touch or button navigation.
