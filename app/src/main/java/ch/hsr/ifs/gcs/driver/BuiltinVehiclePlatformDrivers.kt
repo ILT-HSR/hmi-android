@@ -6,7 +6,7 @@ package ch.hsr.ifs.gcs.driver
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-const val DRIVER_MAVLINK_COMMON = "ch.hsr.ifs.gcs.driver.generic.MAVLinkCommonPlatform"
+const val DRIVER_MAVLINK_COMMON = "ch.hsr.ifs.gcs.driver.platform.MAVLinkCommonPlatform"
 
 /**
  * The driver ID of the builtin [MAVLinkPlatform] implementation for Pixhawk PX4 controllers
@@ -14,4 +14,4 @@ const val DRIVER_MAVLINK_COMMON = "ch.hsr.ifs.gcs.driver.generic.MAVLinkCommonPl
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-const val DRIVER_MAVLINK_PIXHAWK_PX4 = "ch.hsr.ifs.gcs.driver.specific.PixhawkPX4"
+const val DRIVER_MAVLINK_PIXHAWK_PX4 = "ch.hsr.ifs.gcs.driver.platform.PixhawkPX4"
