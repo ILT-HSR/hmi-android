@@ -7,16 +7,16 @@ package ch.hsr.ifs.gcs.resources
  * @author IFS Institute for Software
  */
 val CAPABILITY_VERTICAL_TAKEOFF = CapabilityDescriptor(
-        "ch.hsr.if.gcs.capability.verticalTakeoff",
+        "ch.hsr.ifs.gcs.capability.verticalTakeoff",
         "boolean"
 )
 
 /**
- * This list of builtin capabilities
+ * This map of builtin capabilities
  *
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-val BUILTIN_CAPABILITIES = listOf(
-        CAPABILITY_VERTICAL_TAKEOFF
+val BUILTIN_CAPABILITIES = mapOf(
+        CAPABILITY_VERTICAL_TAKEOFF.id to CAPABILITY_VERTICAL_TAKEOFF
 )

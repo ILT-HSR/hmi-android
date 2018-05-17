@@ -45,6 +45,6 @@ interface Resource {
      *
      * @since 1.0.0
      */
-    val capabilites: List<Capability<*>>
+    val capabilities: List<Capability<*>>
 
 }

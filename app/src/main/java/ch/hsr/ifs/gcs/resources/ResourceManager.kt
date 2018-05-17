@@ -17,5 +17,7 @@ object ResourceManager : ResourceNode {
     override fun add(resource: Resource) {
         fLocalResources += resource
     }
+
+    operator fun plusAssign(resource: Resource) = add(resource)
     
 }
