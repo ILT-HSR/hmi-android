@@ -3,16 +3,22 @@ package ch.hsr.ifs.gcs.model
 import ch.hsr.ifs.gcs.MainActivity
 import org.osmdroid.util.GeoPoint
 
+/**
+ * This [NeedParameter] implementation is used to define a region in which a need has to take place.
+ *
+ * @since 1.0.0
+ * @author IFS Institute for Software
+ */
 class ChooseRegionNeedParameter: NeedParameter<List<GeoPoint>> {
 
-    override val name get() = "Region"
+    override val name = "Region"
 
-    override val description get() = "Choose the region your mission should be carried out."
+    override val description = "Choose the region your mission should be carried out."
 
     override var result: List<GeoPoint>? = ArrayList()
 
     override fun resultToString(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override var isActive = false
@@ -20,11 +26,11 @@ class ChooseRegionNeedParameter: NeedParameter<List<GeoPoint>> {
     override var isCompleted = false
 
     override fun setup(context: MainActivity) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override fun cleanup(context: MainActivity) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
 }
