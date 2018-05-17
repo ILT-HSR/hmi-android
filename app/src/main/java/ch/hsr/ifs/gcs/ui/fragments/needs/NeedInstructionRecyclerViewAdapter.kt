@@ -10,7 +10,7 @@ import ch.hsr.ifs.gcs.model.NeedParameter
 import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
 
 class NeedInstructionRecyclerViewAdapter(
-        private val mValues: List<NeedParameter<Any>>
+        private val mValues: List<NeedParameter<*>>
     ) : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

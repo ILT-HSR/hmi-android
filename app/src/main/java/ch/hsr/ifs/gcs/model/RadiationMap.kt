@@ -15,11 +15,10 @@ class RadiationMap : Need {
 
     override val name = "Radiation Map"
 
-    override val needParameterList: List<NeedParameter<Any>> = arrayListOf(
-            regionParameter as NeedParameter<Any>,
-            altitudeParameter as NeedParameter<Any>,
-            modeParameter as NeedParameter<Any>
-    )
+    override val needParameterList: List<NeedParameter<*>> = arrayListOf(
+            regionParameter,
+            altitudeParameter,
+            modeParameter)
 
     override var isActive = false
 

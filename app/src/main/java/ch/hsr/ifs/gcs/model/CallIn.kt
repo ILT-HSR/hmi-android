@@ -13,10 +13,9 @@ class CallIn : Need {
 
     override val name = "Call-in"
 
-    override val needParameterList: List<NeedParameter<Any>> = arrayListOf(
-            targetParameter as NeedParameter<Any>,
-            cargoParameter as NeedParameter<Any>
-    )
+    override val needParameterList: List<NeedParameter<*>> = arrayListOf(
+            targetParameter,
+            cargoParameter)
 
     override var isActive = false
 

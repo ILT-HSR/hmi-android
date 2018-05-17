@@ -13,7 +13,7 @@ interface Need {
     /**
      * The list of tasks necessary to fulfill the need.
      */
-    val needParameterList: List<NeedParameter<Any>>
+    val needParameterList: List<NeedParameter<*>>
 
     /**
      * A need is set to active, if it is selected via touch or button navigation.

@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_need_instruction_list.view.*
 class NeedInstructionFragment : Fragment() {
 
     var activeNeed: Need? = null
-    var activeNeedParameterList: List<NeedParameter<Any>>? = null
+    var activeNeedParameterList: List<NeedParameter<*>>? = null
     private var currentTaskId = 0
 
     private val TAG = NeedInstructionFragment::class.java.simpleName
