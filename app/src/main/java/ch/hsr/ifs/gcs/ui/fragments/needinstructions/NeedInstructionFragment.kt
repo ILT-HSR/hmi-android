@@ -78,7 +78,7 @@ class NeedInstructionFragment : Fragment() {
                 } else {
                     needNavigationButton.text = "Start Mission"
                     needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
-                    TODO("Resources not available") // Start mission with gathered results
+                    // TODO("Resources not available") // Start mission with gathered results
                 }
                 view!!.instructionList.adapter.notifyDataSetChanged()
             }
