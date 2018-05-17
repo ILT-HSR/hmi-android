@@ -10,4 +10,6 @@ class SimpleResource(override val id: String, override val capabilities: List<Ca
     override val status: Resource.Status
         get() = fStatus
 
+    override fun has(capability: Capability<*>) = capabilities.contains(capability)
+
 }

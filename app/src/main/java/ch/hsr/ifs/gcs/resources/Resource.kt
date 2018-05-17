@@ -64,4 +64,13 @@ interface Resource {
      */
     val capabilities: List<Capability<*>>
 
+    /**
+     * Check if the resource has the given capability
+     *
+     * @param capability The desired capability
+     * @return `true` iff. the resource has the desired capability, `false` otherwise
+     *
+     * @since 1.0.0
+     */
+    fun has(capability: Capability<*>): Boolean
 }

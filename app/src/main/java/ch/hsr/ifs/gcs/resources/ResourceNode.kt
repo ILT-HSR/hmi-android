@@ -26,4 +26,11 @@ interface ResourceNode {
      */
     fun add(resource: Resource)
 
+    /**
+     * Get a resource with the desired capabilities
+     *
+     * @since 1.0.0
+     *
+     */
+    operator fun get(vararg capabilities: Capability<*>): Resource?
 }

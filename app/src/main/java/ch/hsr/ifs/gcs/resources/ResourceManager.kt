@@ -12,12 +12,20 @@ object ResourceManager : ResourceNode {
 
     private val fLocalResources = ArrayList<Resource>()
 
-    override val resources = emptyList<Resource>()
+    override val resources = fLocalResources.filter {
+        it.status != Resource.Status.UNAVAILABLE
+    }
 
     override fun add(resource: Resource) {
         fLocalResources += resource
     }
 
     operator fun plusAssign(resource: Resource) = add(resource)
-    
+
+    override operator fun get(vararg capabilities: Capability<*>) =
+            resources.asSequence()
+                    .filter { it.status == Resource.Status.AVAILABLE }
+                    .filter { capabilities.all(it::has) }
+                    .firstOrNull();
+
 }
