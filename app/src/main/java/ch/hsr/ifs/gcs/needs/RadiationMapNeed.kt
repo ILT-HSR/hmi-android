@@ -23,9 +23,10 @@ class RadiationMapNeed(override val resource: Resource?) : Need {
     override val name = "Radiation Map"
 
     override val needParameterList: List<NeedParameter<*>> = arrayListOf(
-            regionParameter,
-            altitudeParameter,
-            modeParameter)
+            regionParameter//,
+            //altitudeParameter,
+            //modeParameter
+    )
 
     override var isActive = false
 

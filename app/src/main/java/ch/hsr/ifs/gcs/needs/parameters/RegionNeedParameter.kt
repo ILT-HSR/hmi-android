@@ -25,7 +25,18 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
     override var result: List<GeoPoint>? = ArrayList()
 
     override fun resultToString(): String {
-        TODO("not implemented")
+        var string = ""
+        result?.let {
+            it.forEach {
+                var latitude = "${it.latitude}"
+                latitude = latitude.dropLast(latitude.length - 4)
+                var longitude = "${it.longitude}"
+                longitude = longitude.dropLast(longitude.length - 4)
+                string = "$string; $latitude, $longitude"
+            }
+            string = string.drop(1)
+        }
+        return string
     }
 
     override var isActive = false
@@ -36,9 +47,8 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
         val mapView = context.findViewById<MapView>(R.id.map)
         val zoomLevel = mapView.zoomLevelDouble
         var polygon = createInitialPolygon(context, zoomLevel)
-        result = polygon?.points
+        result = region.getPolygonPoints()
         mapView.overlays.add(polygon)
-
         region.getRegionPoints().forEach {
             val marker = Marker(mapView)
             marker.isDraggable = true
@@ -52,6 +62,7 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
                     it.latitude = marker.position.latitude
                     it.longitude = marker.position.longitude
                     polygon?.points = region.getPolygonPoints()
+                    result = region.getPolygonPoints()
                     mapView.invalidate()
                 }
             })
@@ -79,7 +90,13 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
     }
 
     override fun cleanup(context: MainActivity) {
-        TODO("not implemented")
+        val mapView = context.findViewById<MapView>(R.id.map)
+        mapView.overlays.forEach {
+            if(it is Marker) {
+                it.isDraggable = false
+                it.setOnMarkerClickListener { _, _ -> true } // needed to prevent info box pop up
+            }
+        }
     }
 
     data class Region(private val upperLeft: GeoPoint, private val lowerRight: GeoPoint) {
