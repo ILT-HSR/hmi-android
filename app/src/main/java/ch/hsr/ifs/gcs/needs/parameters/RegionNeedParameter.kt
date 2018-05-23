@@ -16,6 +16,8 @@ import java.util.*
  */
 class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
 
+    private lateinit var region: Region
+
     override val name = "Region"
 
     override val description = "Choose the region your mission should be carried out in."
@@ -36,7 +38,8 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
         var polygon = createInitialPolygon(context, zoomLevel)
         result = polygon?.points
         mapView.overlays.add(polygon)
-        polygon?.points?.forEach {
+
+        region.getRegionPoints().forEach {
             val marker = Marker(mapView)
             marker.isDraggable = true
             marker.position = it
@@ -48,7 +51,7 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
                 override fun onMarkerDrag(marker: Marker) {
                     it.latitude = marker.position.latitude
                     it.longitude = marker.position.longitude
-                    polygon.points = polygon.points.toList()
+                    polygon?.points = region.getPolygonPoints()
                     mapView.invalidate()
                 }
             })
@@ -64,12 +67,11 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
             val latitudeDiff = (0.00007 / 2) * zoomLevel
             val longitudeDiff = (0.0001 / 2) * zoomLevel
             val polygon = Polygon()
-            val pointList = arrayListOf(
-                    GeoPoint(currentLatitude - latitudeDiff, currentLongitude - longitudeDiff),
-                    GeoPoint(currentLatitude - latitudeDiff, currentLongitude + longitudeDiff),
-                    GeoPoint(currentLatitude + latitudeDiff, currentLongitude + longitudeDiff),
-                    GeoPoint(currentLatitude + latitudeDiff, currentLongitude - longitudeDiff)
+            region = Region(
+                    GeoPoint(currentLatitude + latitudeDiff, currentLongitude - longitudeDiff),
+                    GeoPoint(currentLatitude - latitudeDiff, currentLongitude + longitudeDiff)
             )
+            val pointList = region.getPolygonPoints()
             polygon.points = pointList
             return polygon
         }
@@ -78,6 +80,22 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
 
     override fun cleanup(context: MainActivity) {
         TODO("not implemented")
+    }
+
+    data class Region(private val upperLeft: GeoPoint, private val lowerRight: GeoPoint) {
+
+        fun getPolygonPoints() = listOf(
+                upperLeft,
+                GeoPoint(upperLeft.latitude, lowerRight.longitude),
+                lowerRight,
+                GeoPoint(lowerRight.latitude, upperLeft.longitude)
+        )
+
+        fun getRegionPoints() = listOf(
+                upperLeft,
+                lowerRight
+        )
+
     }
 
 }
