@@ -16,16 +16,22 @@ class CargoFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_choose_cargo, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        cargoSelectionView.setOnClickListener {} // needed to shadow events on underlying map view
+        setDefaultResult()
         cargoButton.setOnClickListener {
-            task!!.result = "Medkit"
+            task?.result = "Medkit"
             itemCheckedView.background = context.getDrawable(R.drawable.checkbox_active_complete)
         }
+    }
+
+    private fun setDefaultResult() {
+        task?.result = "Medkit"
+        itemCheckedView.background = context.getDrawable(R.drawable.checkbox_active_complete)
     }
 
 }

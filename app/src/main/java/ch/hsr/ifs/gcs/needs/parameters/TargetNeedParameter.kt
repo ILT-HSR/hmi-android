@@ -74,6 +74,9 @@ class TargetNeedParameter : NeedParameter<GeoPoint> {
     override fun cleanup(context: MainActivity) {
         val mapView = context.findViewById<MapView>(map)
         mapView.overlays.removeAt(mapView.overlays.size - 1)
+        val posMarker = mapView.overlays[0] as Marker
+        posMarker.isDraggable = false
+        posMarker.setOnMarkerClickListener { _, _ -> true } // needed to prevent info box pop up
     }
 
 }

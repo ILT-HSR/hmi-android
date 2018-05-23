@@ -3,6 +3,7 @@ package ch.hsr.ifs.gcs.needs.parameters
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.fragments.needparameters.CargoFragment
+import org.osmdroid.views.MapView
 
 /**
  * This [NeedParameter] implementation is used to configure the desired cargo of the vehicle.
@@ -29,11 +30,15 @@ class CargoNeedParameter : NeedParameter<String> {
     override var isCompleted = false
 
     override fun setup(context: MainActivity) {
+        val mapView = context.findViewById<MapView>(R.id.map)
+        mapView.setBuiltInZoomControls(false)
         fragment.task = this
         context.fragmentHandler?.performFragmentTransaction(R.id.mapholder, fragment)
     }
 
     override fun cleanup(context: MainActivity) {
+        val mapView = context.findViewById<MapView>(R.id.map)
+        mapView.setBuiltInZoomControls(true)
         context.fragmentHandler?.removeFragment(fragment)
     }
 
