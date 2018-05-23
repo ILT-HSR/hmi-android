@@ -12,6 +12,7 @@ import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.needs.CallInNeed
 import ch.hsr.ifs.gcs.needs.Need
+import ch.hsr.ifs.gcs.needs.RadiationMapNeed
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
@@ -42,7 +43,7 @@ class NeedsFragment : Fragment() {
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = NeedsRecyclerViewAdapter(arrayListOf(CallInNeed(null)/*, RadiationMapNeed()*/), listener)
+                adapter = NeedsRecyclerViewAdapter(arrayListOf(CallInNeed(null), RadiationMapNeed(null)), listener)
             }
         }
         return view
