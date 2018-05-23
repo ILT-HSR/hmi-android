@@ -45,8 +45,8 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
 
     override fun setup(context: MainActivity) {
         val mapView = context.findViewById<MapView>(R.id.map)
-        val zoomLevel = mapView.zoomLevelDouble
-        var polygon = createInitialPolygon(context, zoomLevel)
+
+        var polygon = createInitialPolygon(context, mapView)
         result = region.getPolygonPoints()
         mapView.overlays.add(polygon)
         region.getRegionPoints().forEach {
@@ -70,29 +70,27 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
         mapView.invalidate()
     }
 
-    private fun createInitialPolygon(context: MainActivity, zoomLevel: Double): Polygon? {
-        context.locationService?.getCurrentLocation()?.let {
-            val currentGeoPoint = GeoPoint(it)
-            val currentLatitude = currentGeoPoint.latitude
-            val currentLongitude = currentGeoPoint.longitude
-            val latitudeDiff = (0.00007 / 2) * zoomLevel
-            val longitudeDiff = (0.0001 / 2) * zoomLevel
-            val polygon = Polygon()
-            region = Region(
-                    GeoPoint(currentLatitude + latitudeDiff, currentLongitude - longitudeDiff),
-                    GeoPoint(currentLatitude - latitudeDiff, currentLongitude + longitudeDiff)
-            )
-            val pointList = region.getPolygonPoints()
-            polygon.points = pointList
-            return polygon
-        }
-        return null
+    private fun createInitialPolygon(context: MainActivity, mapView: MapView): Polygon {
+        val zoomLevel = mapView.zoomLevelDouble
+        val currentGeoPoint = mapView.mapCenter
+        val currentLatitude = currentGeoPoint.latitude
+        val currentLongitude = currentGeoPoint.longitude
+        val latitudeDiff = (0.00007 / 2) * zoomLevel
+        val longitudeDiff = (0.0001 / 2) * zoomLevel
+        val polygon = Polygon()
+        region = Region(
+                GeoPoint(currentLatitude + latitudeDiff, currentLongitude - longitudeDiff),
+                GeoPoint(currentLatitude - latitudeDiff, currentLongitude + longitudeDiff)
+        )
+        val pointList = region.getPolygonPoints()
+        polygon.points = pointList
+        return polygon
     }
 
     override fun cleanup(context: MainActivity) {
         val mapView = context.findViewById<MapView>(R.id.map)
         mapView.overlays.forEach {
-            if(it is Marker) {
+            if (it is Marker) {
                 it.isDraggable = false
                 it.setOnMarkerClickListener { _, _ -> true } // needed to prevent info box pop up
             }
