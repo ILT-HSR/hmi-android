@@ -1,11 +1,14 @@
 package ch.hsr.ifs.gcs.needs.parameters
 
+import android.graphics.Canvas
+import android.view.MotionEvent
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R.id.map
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Marker.OnMarkerDragListener
+import org.osmdroid.views.overlay.Overlay
 
 /**
  * This [NeedParameter] implementation is used to configure the target of the vehicle.
@@ -53,9 +56,24 @@ class TargetNeedParameter : NeedParameter<GeoPoint> {
                 }
                 override fun onMarkerDrag(marker: Marker) {}
             })
+            mapView.overlays.add(object : Overlay(context) {
+                override fun draw(c: Canvas?, osmv: MapView?, shadow: Boolean) {}
+                override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
+                    val proj = mapView.projection
+                    val geoPoint = proj.fromPixels(e.x.toInt(), e.y.toInt()) as GeoPoint
+                    posMarker.position = geoPoint
+                    mapView.invalidate()
+                    result = geoPoint
+                    return true
+                }
+            })
+
         }
     }
 
-    override fun cleanup(context: MainActivity) {}
+    override fun cleanup(context: MainActivity) {
+        val mapView = context.findViewById<MapView>(map)
+        mapView.overlays.removeAt(mapView.overlays.size - 1)
+    }
 
 }
