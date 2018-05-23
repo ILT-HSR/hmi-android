@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.model.Need
+import ch.hsr.ifs.gcs.needs.Need
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedListener
 import kotlinx.android.synthetic.main.fragment_need.view.*
 

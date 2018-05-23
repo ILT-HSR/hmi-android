@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments.needs
+package ch.hsr.ifs.gcs.ui.fragments.needinstructions
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.model.Task
+import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
 import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
 
 class NeedInstructionRecyclerViewAdapter(
-        private val mValues: List<Task<Any>>
+        private val mValues: List<NeedParameter<*>>
     ) : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
