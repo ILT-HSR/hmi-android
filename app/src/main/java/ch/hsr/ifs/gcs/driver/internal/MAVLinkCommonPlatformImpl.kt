@@ -346,7 +346,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
     }
 
     /**
-     * Enqueue a task on the high frequency scheduler
+     * Enqueue a needParameter on the high frequency scheduler
      *
      * The high frequency scheduler repeats its tasks at a rate of 10 times per second. This is
      * useful for messages that need to be 'spammed' to the vehicle, for example when 'killing' the
@@ -357,7 +357,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
 
 
     /**
-     * Enqueue a task on the high frequency scheduler
+     * Enqueue a needParameter on the high frequency scheduler
      *
      * The high frequency scheduler repeats its tasks at a rate of 1 time per 5 seconds. This is
      * useful for messages that request status information that needs to be updates regularly but

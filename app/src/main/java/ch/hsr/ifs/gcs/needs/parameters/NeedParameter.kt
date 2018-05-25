@@ -3,26 +3,26 @@ package ch.hsr.ifs.gcs.needs.parameters
 import ch.hsr.ifs.gcs.MainActivity
 
 /**
- * Interface representing the base structure of a single task of a need to be configured.
+ * Interface representing the base structure of a single need parameter of a need to be configured.
  */
 interface NeedParameter<Result> {
 
     /**
-     * The name of the task. This is shown in the user interface.
+     * The name of the need parameter. This is shown in the user interface.
      *
      * @since 1.0.0
      */
     val name: String
 
     /**
-     * A short description of what the user needs to do to complete this task.
+     * A short description of what the user needs to do to complete this need parameter.
      *
      * @since 1.0.0
      */
     val description: String
 
     /**
-     * The result of the task when completed.
+     * The result of the need parameter when completed.
      *
      * @since 1.0.0
      */
@@ -36,14 +36,15 @@ interface NeedParameter<Result> {
     fun resultToString(): String
 
     /**
-     * A task is set to active, if previous task are completed, and the current task is not.
+     * A needParameter is set to active, if previous needParameter are completed, and the
+     * current needParameter is not.
      *
      * @since 1.0.0
      */
     var isActive: Boolean
 
     /**
-     * A task is set to completed, if a result has been computed.
+     * A need parameter is set to completed, if a result has been computed.
      *
      * @since 1.0.0
      */

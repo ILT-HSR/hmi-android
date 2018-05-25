@@ -27,14 +27,7 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
     override fun resultToString(): String {
         var string = ""
         result?.let {
-            it.forEach {
-                var latitude = "${it.latitude}"
-                latitude = latitude.dropLast(latitude.length - 4)
-                var longitude = "${it.longitude}"
-                longitude = longitude.dropLast(longitude.length - 4)
-                string = "$string; $latitude, $longitude"
-            }
-            string = string.drop(1)
+            string = "${it.size} Waypoints"
         }
         return string
     }

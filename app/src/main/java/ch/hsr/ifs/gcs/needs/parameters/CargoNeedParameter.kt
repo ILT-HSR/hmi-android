@@ -32,7 +32,7 @@ class CargoNeedParameter : NeedParameter<String> {
     override fun setup(context: MainActivity) {
         val mapView = context.findViewById<MapView>(R.id.map)
         mapView.setBuiltInZoomControls(false)
-        fragment.task = this
+        fragment.needParameter = this
         context.fragmentHandler?.performFragmentTransaction(R.id.mapholder, fragment)
     }
 

@@ -7,30 +7,30 @@ import android.view.View
 import android.view.ViewGroup
 
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.needs.parameters.CargoNeedParameter
-import kotlinx.android.synthetic.main.fragment_choose_cargo.*
+import ch.hsr.ifs.gcs.needs.parameters.ModeNeedParameter
+import kotlinx.android.synthetic.main.fragment_choose_mode.*
 
-class CargoFragment : Fragment() {
+class ModeFragment : Fragment() {
 
-    var needParameter: CargoNeedParameter? = null
+    var needParameter: ModeNeedParameter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_choose_cargo, container, false)
+        return inflater.inflate(R.layout.fragment_choose_mode, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        cargoSelectionView.setOnClickListener {} // needed to shadow events on underlying map view
+        modeSelectionView.setOnClickListener {} // needed to shadow events on underlying map view
         setDefaultResult()
-        cargoButton.setOnClickListener {
-            needParameter?.result = "Medkit"
+        modeButton.setOnClickListener {
+            needParameter?.result = "Autonomous"
             itemCheckedView.background = context.getDrawable(R.drawable.checkbox_active_complete)
         }
     }
 
     private fun setDefaultResult() {
-        needParameter?.result = "Medkit"
+        needParameter?.result = "Autonomous"
         itemCheckedView.background = context.getDrawable(R.drawable.checkbox_active_complete)
     }
 
