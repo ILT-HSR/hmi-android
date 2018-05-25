@@ -11,31 +11,27 @@
         android:id="@+id/modeSelectionView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black" />
+        android:background="@android:color/white" />
 
-    <ImageButton
+    <Button
         android:id="@+id/modeButton"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="319dp"
+        android:layout_height="220dp"
         android:layout_marginBottom="50dp"
         android:layout_marginEnd="50dp"
         android:layout_marginStart="50dp"
         android:layout_marginTop="50dp"
+        android:background="@drawable/autonomous"
         android:contentDescription="Choose Autonomous Mode"
-        android:src="@drawable/autonomous"
-        android:background="@android:color/black"
+        android:gravity="top|left"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:text="@string/chooseButtonText"
+        android:textAllCaps="false"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/itemCheckedView"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="174dp"
-        android:layout_marginTop="174dp"
-        app:layout_constraintStart_toStartOf="@+id/modeButton"
-        app:layout_constraintTop_toTopOf="@+id/modeButton" />
 
 </android.support.constraint.ConstraintLayout>

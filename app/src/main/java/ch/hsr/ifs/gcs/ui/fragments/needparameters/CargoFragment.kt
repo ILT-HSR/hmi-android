@@ -22,16 +22,15 @@ class CargoFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         cargoSelectionView.setOnClickListener {} // needed to shadow events on underlying map view
+        cargoButton.text = "Medkit"
         setDefaultResult()
         cargoButton.setOnClickListener {
             needParameter?.result = "Medkit"
-            itemCheckedView.background = context.getDrawable(R.drawable.checkbox_active_complete)
         }
     }
 
     private fun setDefaultResult() {
         needParameter?.result = "Medkit"
-        itemCheckedView.background = context.getDrawable(R.drawable.checkbox_active_complete)
     }
 
 }

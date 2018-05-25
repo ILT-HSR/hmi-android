@@ -22,16 +22,15 @@ class ModeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         modeSelectionView.setOnClickListener {} // needed to shadow events on underlying map view
+        modeButton.text = "Autonomous"
         setDefaultResult()
         modeButton.setOnClickListener {
             needParameter?.result = "Autonomous"
-            itemCheckedView.background = context.getDrawable(R.drawable.checkbox_active_complete)
         }
     }
 
     private fun setDefaultResult() {
         needParameter?.result = "Autonomous"
-        itemCheckedView.background = context.getDrawable(R.drawable.checkbox_active_complete)
     }
 
 }
