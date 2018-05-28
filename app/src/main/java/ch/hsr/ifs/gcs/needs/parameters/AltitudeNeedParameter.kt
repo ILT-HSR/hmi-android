@@ -2,7 +2,9 @@ package ch.hsr.ifs.gcs.needs.parameters
 
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needparameters.AltitudeFragment
+import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.views.MapView
 
 /**
@@ -34,6 +36,10 @@ class AltitudeNeedParameter: NeedParameter<Int> {
         mapView.setBuiltInZoomControls(false)
         fragment.needParameter = this
         context.fragmentHandler?.performFragmentTransaction(R.id.mapholder, fragment)
+        context.leftButton.setOnClickListener {
+            cleanup(context)
+            context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+        }
     }
 
     override fun cleanup(context: MainActivity) {

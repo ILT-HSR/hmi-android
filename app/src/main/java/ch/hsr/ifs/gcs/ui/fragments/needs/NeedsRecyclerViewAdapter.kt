@@ -22,7 +22,7 @@ class NeedsRecyclerViewAdapter(
 
     private val mOnClickListener: View.OnClickListener
 
-    private var activeItem: Need
+    var activeItem: Need
 
     init {
         val active = mValues.find {
