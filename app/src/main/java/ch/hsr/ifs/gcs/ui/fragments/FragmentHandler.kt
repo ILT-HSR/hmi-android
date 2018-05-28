@@ -10,6 +10,7 @@ import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesListener
 import ch.hsr.ifs.gcs.ui.fragments.needparameters.CargoFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionListener
+import ch.hsr.ifs.gcs.ui.fragments.needparameters.ModeFragment
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsListener
 import org.osmdroid.views.MapView
@@ -20,6 +21,7 @@ enum class FragmentType(val fragment: Fragment) {
     NEEDS_FRAGMENT(NeedsFragment()),
     NEED_INSTRUCTION_FRAGMENT(NeedInstructionFragment()),
     CHOOSE_CARGO_FRAGMENT(CargoFragment()),
+    CHOOSE_MODE_FRAGMENT(ModeFragment())
 }
 
 class FragmentHandler(val activity: Activity, val map: MapView) {

@@ -12,7 +12,9 @@ import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.needs.CallInNeed
 import ch.hsr.ifs.gcs.needs.Need
+import ch.hsr.ifs.gcs.needs.RadiationMapNeed
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
 import kotlinx.android.synthetic.main.fragment_need_list.view.*
@@ -42,7 +44,7 @@ class NeedsFragment : Fragment() {
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = NeedsRecyclerViewAdapter(arrayListOf(CallInNeed(null)/*, RadiationMapNeed()*/), listener)
+                adapter = NeedsRecyclerViewAdapter(arrayListOf(CallInNeed(null), RadiationMapNeed(null)), listener)
             }
         }
         return view
@@ -53,7 +55,12 @@ class NeedsFragment : Fragment() {
         val context = context
         if(context is MainActivity) {
             selectButton.setOnClickListener {
+                val needInstructionFragmentType = FragmentType.NEED_INSTRUCTION_FRAGMENT
+                val item = (view?.list?.adapter as NeedsRecyclerViewAdapter).activeItem
+                (needInstructionFragmentType.fragment as NeedInstructionFragment).activeNeed = item
+                needInstructionFragmentType.fragment.activeNeedParameterList = item.needParameterList
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
+
             }
             activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
             activity.leftButton.setOnClickListener {

@@ -11,4 +11,9 @@
     <string name="mission_status_title">Status</string>
     <string name="mission_result_title">Result</string>
     <string name="default_need_name">Default Need Name</string>
+    <string name="chooseButtonText">Default Option</string>
+    <string name="altitude_box_title">Altitude</string>
+    <string name="altitude_value_text">0m</string>
+    <string name="increase_button_text">+</string>
+    <string name="decrease_button_text">-</string>
 </resources>

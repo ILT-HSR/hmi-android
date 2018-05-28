@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
 
     private var controls: HandheldControls? = null
     private var drone: Platform? = null
+    private var location: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,8 +136,11 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
     }
 
     override fun onCurrentLocationChanged(location: Location) {
-        map.controller.setCenter(GeoPoint(location))
-        map.invalidate()
+        if(this.location == null) {
+            this.location = location
+            map.controller.setCenter(GeoPoint(location))
+            map.invalidate()
+        }
     }
 
 }

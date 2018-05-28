@@ -32,15 +32,19 @@
 
     <TextView
         android:id="@+id/result"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/text_margin"
         android:layout_marginBottom="5dp"
+        android:layout_marginEnd="15dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text=""
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="8sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/checkBoxView"
         app:layout_constraintTop_toBottomOf="@+id/instruction" />
 

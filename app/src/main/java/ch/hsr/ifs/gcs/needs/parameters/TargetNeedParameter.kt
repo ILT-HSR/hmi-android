@@ -40,35 +40,33 @@ class TargetNeedParameter : NeedParameter<GeoPoint> {
     override var isCompleted = false
 
     override fun setup(context: MainActivity) {
-        context.locationService?.getCurrentLocation()?.let {
-            result = GeoPoint(it)
-            val mapView = context.findViewById<MapView>(map)
-            val posMarker = Marker(mapView)
-            posMarker.position = GeoPoint(it)
-            posMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            mapView.overlays.add(posMarker)
-            mapView.invalidate()
-            posMarker.isDraggable = true
-            posMarker.setOnMarkerDragListener(object : OnMarkerDragListener {
-                override fun onMarkerDragStart(marker: Marker) {}
-                override fun onMarkerDragEnd(marker: Marker) {
-                    result = GeoPoint(marker.position)
-                }
-                override fun onMarkerDrag(marker: Marker) {}
-            })
-            mapView.overlays.add(object : Overlay(context) {
-                override fun draw(c: Canvas?, osmv: MapView?, shadow: Boolean) {}
-                override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
-                    val proj = mapView.projection
-                    val geoPoint = proj.fromPixels(e.x.toInt(), e.y.toInt()) as GeoPoint
-                    posMarker.position = geoPoint
-                    mapView.invalidate()
-                    result = geoPoint
-                    return true
-                }
-            })
+        val mapView = context.findViewById<MapView>(map)
+        result = mapView.mapCenter as GeoPoint?
+        val posMarker = Marker(mapView)
+        posMarker.position = mapView.mapCenter as GeoPoint?
+        posMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        mapView.overlays.add(posMarker)
+        mapView.invalidate()
+        posMarker.isDraggable = true
+        posMarker.setOnMarkerDragListener(object : OnMarkerDragListener {
+            override fun onMarkerDragStart(marker: Marker) {}
+            override fun onMarkerDragEnd(marker: Marker) {
+                result = GeoPoint(marker.position)
+            }
 
-        }
+            override fun onMarkerDrag(marker: Marker) {}
+        })
+        mapView.overlays.add(object : Overlay(context) {
+            override fun draw(c: Canvas?, osmv: MapView?, shadow: Boolean) {}
+            override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
+                val proj = mapView.projection
+                val geoPoint = proj.fromPixels(e.x.toInt(), e.y.toInt()) as GeoPoint
+                posMarker.position = geoPoint
+                mapView.invalidate()
+                result = geoPoint
+                return true
+            }
+        })
     }
 
     override fun cleanup(context: MainActivity) {
