@@ -9,7 +9,7 @@ import java.io.IOException
 import java.lang.Exception
 import java.util.concurrent.Executors
 
-class HandheldControls(context: Context, private val fListener: Listener, private val fPort: UsbSerialPort) : SerialInputOutputManager.Listener {
+class HandheldControls(context: Context, private val fPort: UsbSerialPort) : SerialInputOutputManager.Listener {
 
     private val TAG = HandheldControls::class.simpleName
 
@@ -18,6 +18,7 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
 
     private val fBuffer = ByteArray(4)
     private var fBuffered = 0
+    private val fListeners = ArrayList<Listener>()
 
     enum class Button(val value: Byte) {
         DPAD_LEFT(0x1),
@@ -53,6 +54,14 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
         }
     }
 
+    fun addListener(listener: Listener) {
+        fListeners.add(listener)
+    }
+
+    fun removeListener(listener: Listener) {
+        fListeners.remove(listener)
+    }
+
     override fun onNewData(data: ByteArray) {
         var message = ""
         data.forEach {
@@ -69,8 +78,10 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
             fBuffer[fBuffered++] = data[i]
 
             if (fBuffered == 4) {
-                decode()?.let {
-                    fListener.onButton(it)
+                decode()?.let { button ->
+                    fListeners.forEach {
+                        it.onButton(button)
+                    }
                 }
                 fBuffered = 0
             }

@@ -57,7 +57,8 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
         val mUsbManager = getSystemService(Context.USB_SERVICE) as UsbManager
         UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).forEach {
             if (it.device.manufacturerName.equals("Arduino LLC")) {
-                controls = HandheldControls(this, this, it.ports[0])
+                controls = HandheldControls(this, it.ports[0])
+                controls?.addListener(this)
             } else { // if (it.device.manufacturerName.equals("FTDI")) {
                 drone = MAVLinkCommonPlatform.create(::MAVLinkPlatformPixhawkPX4, this, it.ports[0])
             }
