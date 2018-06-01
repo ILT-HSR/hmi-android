@@ -28,9 +28,9 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
     private val TAG = MainActivity::class.java.simpleName
 
     var fragmentHandler: FragmentHandler? = null
+    var controls: HandheldControls? = null
     private var locationService: LocationService? = null
 
-    private var controls: HandheldControls? = null
     private var drone: Platform? = null
     private var location: Location? = null
 
@@ -93,17 +93,13 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
                 Log.d(TAG, "DPAD_DOWN pressed")
             }
             HandheldControls.Button.UPDATE_ABORT -> {
-                Log.d(TAG, "NEED_START pressed")
+                Log.d(TAG, "UPDATE_ABORT pressed")
                 when(fragmentHandler?.activeFragment) {
                     FragmentType.MISSION_STATUSES_FRAGMENT.fragment -> {
                         Log.d(TAG, "Cancel Mission Pressed")
                     }
                     FragmentType.MISSION_RESULTS_FRAGMENT.fragment -> {
                         Log.d(TAG, "Refresh Mission Pressed")
-                    }
-                    FragmentType.NEEDS_FRAGMENT.fragment -> {
-                        fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-                        leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
                     }
                     FragmentType.NEED_INSTRUCTION_FRAGMENT.fragment -> {
                         fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)

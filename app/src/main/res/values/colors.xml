@@ -3,4 +3,6 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="activeListItem">#DEF5E5</color>
+    <color name="buttonSelect">#68E180</color>
 </resources>

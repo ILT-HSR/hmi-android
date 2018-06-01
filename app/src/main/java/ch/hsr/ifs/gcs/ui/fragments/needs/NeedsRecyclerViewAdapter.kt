@@ -2,13 +2,18 @@ package ch.hsr.ifs.gcs.ui.fragments.needs
 
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.input.HandheldControls
 import ch.hsr.ifs.gcs.needs.Need
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedListener
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need.view.*
 
 /**
@@ -17,35 +22,28 @@ import kotlinx.android.synthetic.main.fragment_need.view.*
  */
 class NeedsRecyclerViewAdapter(
         private val mValues: List<Need>,
-        private val mListener: OnNeedsFragmentChangedListener?)
-    : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>() {
+        private val mListener: OnNeedsFragmentChangedListener?,
+        private val mRecyclerView: RecyclerView,
+        private val mContext: MainActivity)
+    : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>(), HandheldControls.Listener {
 
     private val mOnClickListener: View.OnClickListener
 
     var activeItem: Need
 
     init {
-        val active = mValues.find {
-            it.isActive
-        }
-        if(active != null) {
-            activeItem = active
-        } else {
-            activeItem = mValues[0]
-            activeItem.isActive = true
-        }
+        activeItem = mValues[0]
+        activeItem.isActive = true
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as Need
-            activeItem.isActive = false
-            item.isActive = true
-            activeItem = item
-            val color = Color.parseColor("#68E180")
-            val lightColor = Color.argb(50, Color.red(color), Color.green(color), Color.blue(color))
-            v.setBackgroundColor(lightColor)
-            notifyDataSetChanged()
+            activateItem(item)
+            mContext.controls?.removeListener(this)
             mListener?.onNeedItemChanged(item)
         }
+        mContext.controls?.addListener(this)
     }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -55,9 +53,12 @@ class NeedsRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        val color = Color.parseColor("#68E180")
-        val lightColor = Color.argb(50, Color.red(color), Color.green(color), Color.blue(color))
-        holder.mView.setBackgroundColor(if (item.isActive) lightColor else Color.TRANSPARENT)
+        holder.mView.setBackgroundColor(
+                if(item.isActive) {
+                    mContext.resources.getColor(R.color.activeListItem, null)
+                } else {
+                    Color.TRANSPARENT
+                })
         holder.mNameView.text = item.name
         with(holder.mView) {
             tag = item
@@ -65,7 +66,52 @@ class NeedsRecyclerViewAdapter(
         }
     }
 
+    override fun onViewDetachedFromWindow(holder: ViewHolder?) {
+        super.onViewDetachedFromWindow(holder)
+        mContext.controls?.removeListener(this)
+    }
+
+    override fun onButton(button: HandheldControls.Button) {
+        when (button) {
+            HandheldControls.Button.DPAD_UP -> {
+                activatePreviousItem()
+            }
+            HandheldControls.Button.DPAD_DOWN -> {
+                activateNextItem()
+            }
+            HandheldControls.Button.UPDATE_ABORT -> {
+                mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                mContext.leftButton.background = mContext.getDrawable(R.drawable.abort_mission)
+            }
+            HandheldControls.Button.NEED_START -> {
+                mListener?.onNeedItemChanged(activeItem)
+            }
+        }
+    }
+
     override fun getItemCount(): Int = mValues.size
+
+    private fun activateNextItem() {
+        val newIndex = mValues.indexOf(activeItem) + 1
+        if (newIndex < mValues.size) {
+            activateItem(mValues[newIndex])
+        }
+    }
+
+    private fun activatePreviousItem() {
+        val newIndex = mValues.indexOf(activeItem) - 1
+        if (newIndex >= 0) {
+            activateItem(mValues[newIndex])
+        }
+    }
+
+    private fun activateItem(item: Need) {
+        activeItem.isActive = false
+        mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(Color.TRANSPARENT)
+        activeItem = item
+        activeItem.isActive = true
+        mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(mContext.resources.getColor(R.color.activeListItem, null))
+    }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mNameView: TextView = mView.need_name
