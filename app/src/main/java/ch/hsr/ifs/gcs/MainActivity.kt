@@ -88,31 +88,25 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
                 leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
             }
             HandheldControls.Button.DPAD_UP -> {
-                (drone as? AerialVehicle)?.takeOff(AerialVehicle.Altitude(1.0))
+                Log.d(TAG, "DPAD_UP pressed")
             }
             HandheldControls.Button.DPAD_DOWN -> {
-                (drone as? AerialVehicle)?.moveTo(GPSPosition(47.222885, 8.819488, 420.0))
-                Thread.sleep(20000)
-                (drone as? AerialVehicle)?.changeAltitude(AerialVehicle.Altitude(2.0))
-                Thread.sleep(20000)
-                (drone as? AerialVehicle)?.returnToLaunch()
-                Thread.sleep(20000)
-                (drone as? AerialVehicle)?.land()
+                Log.d(TAG, "DPAD_DOWN pressed")
             }
-            HandheldControls.Button.BTN_LEFT -> {
+            HandheldControls.Button.UPDATE_ABORT -> {
+                Log.d(TAG, "NEED_START pressed")
                 when(fragmentHandler?.activeFragment) {
-                    FragmentType.MISSION_STATUSES_FRAGMENT -> {
+                    FragmentType.MISSION_STATUSES_FRAGMENT.fragment -> {
                         Log.d(TAG, "Cancel Mission Pressed")
                     }
-                    FragmentType.MISSION_RESULTS_FRAGMENT -> {
+                    FragmentType.MISSION_RESULTS_FRAGMENT.fragment -> {
                         Log.d(TAG, "Refresh Mission Pressed")
                     }
-                    FragmentType.NEEDS_FRAGMENT -> {
-                        val previousFragment = fragmentHandler!!.previousFragment
+                    FragmentType.NEEDS_FRAGMENT.fragment -> {
                         fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                         leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
                     }
-                    FragmentType.NEED_INSTRUCTION_FRAGMENT -> {
+                    FragmentType.NEED_INSTRUCTION_FRAGMENT.fragment -> {
                         fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                         leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
                     }
