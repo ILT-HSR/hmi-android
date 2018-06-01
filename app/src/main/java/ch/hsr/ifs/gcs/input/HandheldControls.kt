@@ -24,7 +24,12 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
         DPAD_RIGHT(0x2),
         DPAD_UP(0x3),
         DPAD_DOWN(0x4),
-        BTN_LEFT(0xA),
+        NEED_START(0xA),
+        UPDATE_ABORT(0xB),
+        SHOW_ALL(0xD),
+        SHOW_MENU(0xE),
+        ZOOM_IN(0x10),
+        ZOOM_OUT(0x11)
     }
 
     interface Listener {
@@ -77,7 +82,12 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
         Button.DPAD_LEFT.value -> Button.DPAD_LEFT
         Button.DPAD_RIGHT.value -> Button.DPAD_RIGHT
         Button.DPAD_UP.value -> Button.DPAD_UP
-        Button.BTN_LEFT.value -> Button.BTN_LEFT
+        Button.NEED_START.value -> Button.NEED_START
+        Button.UPDATE_ABORT.value -> Button.UPDATE_ABORT
+        Button.SHOW_ALL.value -> Button.SHOW_ALL
+        Button.SHOW_MENU.value -> Button.SHOW_MENU
+        Button.ZOOM_IN.value -> Button.ZOOM_IN
+        Button.ZOOM_OUT.value -> Button.ZOOM_OUT
         else -> null
     }
 
