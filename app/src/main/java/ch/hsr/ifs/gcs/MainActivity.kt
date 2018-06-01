@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
     private val TAG = MainActivity::class.java.simpleName
 
     var fragmentHandler: FragmentHandler? = null
-    var locationService: LocationService? = null
+    private var locationService: LocationService? = null
 
     private var controls: HandheldControls? = null
     private var drone: Platform? = null
@@ -78,12 +78,10 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
     override fun onButton(button: HandheldControls.Button) {
         when (button) {
             HandheldControls.Button.DPAD_LEFT -> {
-                (drone as? MAVLinkCommonPlatform)?.disarm()
                 fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                 leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
             }
             HandheldControls.Button.DPAD_RIGHT -> {
-                (drone as? MAVLinkCommonPlatform)?.arm()
                 fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
                 leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
             }
