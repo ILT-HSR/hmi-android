@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 class MissionStatusesRecyclerViewAdapter(
         private val mValues: List<MissionStatusDummyItem>,
         private val mListener: OnStatusesFragmentChangedListener?,
+        private val mRecyclerView: RecyclerView,
         private val mContext: MainActivity)
     : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(), HandheldControls.Listener {
 
@@ -33,12 +34,14 @@ class MissionStatusesRecyclerViewAdapter(
 
     private val mOnClickListener: View.OnClickListener
 
+    var activeItem: MissionStatusDummyItem
+
     init {
+        activeItem = mValues[0]
+        activeItem.isSelected = true
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as MissionStatusDummyItem
-            item.isSelected = !item.isSelected
-            val lightColor = Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
-            v.setBackgroundColor(if (item.isSelected) lightColor else Color.TRANSPARENT)
+            activateItem(item)
             mListener?.onStatusItemChanged(item)
         }
         mContext.controls?.addListener(this)
@@ -52,8 +55,12 @@ class MissionStatusesRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        val lightColor = Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
-        holder.mView.setBackgroundColor(if (item.isSelected) lightColor else Color.TRANSPARENT)
+        holder.mView.setBackgroundColor(
+                if (item.isSelected) {
+                    Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
+                } else {
+                    Color.TRANSPARENT
+                })
         holder.mMissionName.text = "Status"
         with(holder.mView) {
             tag = item
@@ -63,6 +70,12 @@ class MissionStatusesRecyclerViewAdapter(
 
     override fun onButton(button: HandheldControls.Button) {
         when(button) {
+            HandheldControls.Button.DPAD_UP -> {
+                activatePreviousItem()
+            }
+            HandheldControls.Button.DPAD_DOWN -> {
+                activateNextItem()
+            }
             HandheldControls.Button.DPAD_RIGHT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.refresh_mission)
@@ -80,6 +93,30 @@ class MissionStatusesRecyclerViewAdapter(
     }
 
     override fun getItemCount(): Int = mValues.size
+
+    private fun activateNextItem() {
+        val newIndex = mValues.indexOf(activeItem) + 1
+        if(newIndex < mValues.size) {
+            activateItem(mValues[newIndex])
+        }
+    }
+
+    private fun activatePreviousItem() {
+        val newIndex = mValues.indexOf(activeItem) - 1
+        if(newIndex >= 0) {
+            activateItem(mValues[newIndex])
+        }
+    }
+
+    private fun activateItem(item: MissionStatusDummyItem) {
+        activeItem.isSelected = false
+        mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(Color.TRANSPARENT)
+        mListener?.onStatusItemChanged(activeItem)
+        activeItem = item
+        activeItem.isSelected = true
+        mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color)))
+        mListener?.onStatusItemChanged(item)
+    }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mMissionName: TextView = mView.mission_name

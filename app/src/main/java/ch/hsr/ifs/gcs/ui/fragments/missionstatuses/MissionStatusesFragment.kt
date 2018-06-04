@@ -53,6 +53,7 @@ class MissionStatusesFragment : Fragment() {
                 adapter = MissionStatusesRecyclerViewAdapter(
                         MissionStatusesDummyContent.MISSION_STATUS_ITEMS,
                         listener,
+                        this,
                         context as MainActivity
                 )
             }

@@ -110,6 +110,7 @@ class MissionResultsRecyclerViewAdapter(
     private fun activateItem(item: MissionResultDummyItem) {
         activeItem.isSelected = false
         mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(Color.TRANSPARENT)
+        mListener?.onResultItemChanged(activeItem)
         activeItem = item
         activeItem.isSelected = true
         mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color)))
