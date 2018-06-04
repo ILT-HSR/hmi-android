@@ -26,6 +26,7 @@ import org.osmdroid.util.GeoPoint
 class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationService.OnLocationChangedListener {
 
     private val TAG = MainActivity::class.java.simpleName
+    // private var menuVisible = true
 
     var fragmentHandler: FragmentHandler? = null
     var controls: HandheldControls? = null
@@ -106,8 +107,22 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
                         leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
                     }
                 }
-
             }
+            /*
+            HandheldControls.Button.SHOW_MENU -> {
+                Log.d(TAG, "Show Menu Pressed")
+                runOnUiThread {
+                    if(menuVisible) {
+                        guideline.setGuidelinePercent(100f)
+                    } else {
+                        guideline.setGuidelinePercent(75f)
+                    }
+                    menuVisible = !menuVisible
+                    mainLayout.invalidate()
+                    map.invalidate()
+                }
+            }
+            */
         }
     }
 
