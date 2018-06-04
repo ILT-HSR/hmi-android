@@ -72,7 +72,7 @@ class NeedsRecyclerViewAdapter(
     }
 
     override fun onButton(button: HandheldControls.Button) {
-        when (button) {
+        when(button) {
             HandheldControls.Button.DPAD_UP -> {
                 activatePreviousItem()
             }

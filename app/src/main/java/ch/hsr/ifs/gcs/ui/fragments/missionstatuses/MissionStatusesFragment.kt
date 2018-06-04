@@ -50,7 +50,11 @@ class MissionStatusesFragment : Fragment() {
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = MissionStatusesRecyclerViewAdapter(MissionStatusesDummyContent.MISSION_STATUS_ITEMS, listener)
+                adapter = MissionStatusesRecyclerViewAdapter(
+                        MissionStatusesDummyContent.MISSION_STATUS_ITEMS,
+                        listener,
+                        context as MainActivity
+                )
             }
         }
     }

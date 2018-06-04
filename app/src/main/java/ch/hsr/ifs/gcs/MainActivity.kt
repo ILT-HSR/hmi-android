@@ -8,8 +8,6 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import ch.hsr.ifs.gcs.comm.protocol.GPSPosition
-import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.internal.MAVLinkPlatformPixhawkPX4
@@ -78,14 +76,10 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
     }
 
     override fun onButton(button: HandheldControls.Button) {
-        when (button) {
+        when(button) {
             HandheldControls.Button.DPAD_LEFT -> {
                 fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                 leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
-            }
-            HandheldControls.Button.DPAD_RIGHT -> {
-                fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
-                leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
             }
             HandheldControls.Button.DPAD_UP -> {
                 Log.d(TAG, "DPAD_UP pressed")
@@ -96,9 +90,6 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
             HandheldControls.Button.UPDATE_ABORT -> {
                 Log.d(TAG, "UPDATE_ABORT pressed")
                 when(fragmentHandler?.activeFragment) {
-                    FragmentType.MISSION_STATUSES_FRAGMENT.fragment -> {
-                        Log.d(TAG, "Cancel Mission Pressed")
-                    }
                     FragmentType.MISSION_RESULTS_FRAGMENT.fragment -> {
                         Log.d(TAG, "Refresh Mission Pressed")
                     }

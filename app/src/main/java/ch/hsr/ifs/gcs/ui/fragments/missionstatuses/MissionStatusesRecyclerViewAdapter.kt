@@ -2,15 +2,20 @@ package ch.hsr.ifs.gcs.ui.fragments.missionstatuses
 
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.input.HandheldControls
 
 
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.MissionStatusDummyItem
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import kotlinx.android.synthetic.main.activity_main.*
 
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 
@@ -20,8 +25,11 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
  */
 class MissionStatusesRecyclerViewAdapter(
         private val mValues: List<MissionStatusDummyItem>,
-        private val mListener: OnStatusesFragmentChangedListener?)
-    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>() {
+        private val mListener: OnStatusesFragmentChangedListener?,
+        private val mContext: MainActivity)
+    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(), HandheldControls.Listener {
+
+    private val TAG = MissionStatusesRecyclerViewAdapter::class.java.simpleName
 
     private val mOnClickListener: View.OnClickListener
 
@@ -33,6 +41,7 @@ class MissionStatusesRecyclerViewAdapter(
             v.setBackgroundColor(if (item.isSelected) lightColor else Color.TRANSPARENT)
             mListener?.onStatusItemChanged(item)
         }
+        mContext.controls?.addListener(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,6 +58,23 @@ class MissionStatusesRecyclerViewAdapter(
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
+        }
+    }
+
+    override fun onViewDetachedFromWindow(holder: ViewHolder?) {
+        super.onViewDetachedFromWindow(holder)
+        mContext.controls?.removeListener(this)
+    }
+
+    override fun onButton(button: HandheldControls.Button) {
+        when(button) {
+            HandheldControls.Button.UPDATE_ABORT -> {
+                Log.d(TAG, "Cancel Mission Pressed")
+            }
+            HandheldControls.Button.NEED_START -> {
+                mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
+                mContext.leftButton.background = mContext.getDrawable(R.drawable.abort_mission)
+            }
         }
     }
 
