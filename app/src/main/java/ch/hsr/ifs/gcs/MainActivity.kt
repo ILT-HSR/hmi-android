@@ -77,10 +77,6 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
 
     override fun onButton(button: HandheldControls.Button) {
         when(button) {
-            HandheldControls.Button.DPAD_LEFT -> {
-                fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-                leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)
-            }
             HandheldControls.Button.DPAD_UP -> {
                 Log.d(TAG, "DPAD_UP pressed")
             }
@@ -90,9 +86,6 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
             HandheldControls.Button.UPDATE_ABORT -> {
                 Log.d(TAG, "UPDATE_ABORT pressed")
                 when(fragmentHandler?.activeFragment) {
-                    FragmentType.MISSION_RESULTS_FRAGMENT.fragment -> {
-                        Log.d(TAG, "Refresh Mission Pressed")
-                    }
                     FragmentType.NEED_INSTRUCTION_FRAGMENT.fragment -> {
                         fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                         leftButton.background = applicationContext.getDrawable(R.drawable.cancel_action)

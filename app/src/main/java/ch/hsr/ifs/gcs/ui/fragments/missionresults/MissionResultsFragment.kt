@@ -50,7 +50,11 @@ class MissionResultsFragment : Fragment() {
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = MissionResultsRecyclerViewAdapter(MissionResultsDummyContent.MISSION_RESULT_ITEMS, listener)
+                adapter = MissionResultsRecyclerViewAdapter(
+                        MissionResultsDummyContent.MISSION_RESULT_ITEMS,
+                        listener,
+                        context as MainActivity
+                )
             }
         }
     }
