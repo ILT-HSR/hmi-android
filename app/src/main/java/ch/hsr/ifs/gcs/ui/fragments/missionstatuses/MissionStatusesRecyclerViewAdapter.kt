@@ -61,20 +61,17 @@ class MissionStatusesRecyclerViewAdapter(
         }
     }
 
-    override fun onViewDetachedFromWindow(holder: ViewHolder?) {
-        super.onViewDetachedFromWindow(holder)
-        mContext.controls?.removeListener(this)
-    }
-
     override fun onButton(button: HandheldControls.Button) {
         when(button) {
             HandheldControls.Button.DPAD_RIGHT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
-                mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
+                mContext.leftButton.background = mContext.getDrawable(R.drawable.refresh_mission)
+                mContext.controls?.removeListener(this)
             }
             HandheldControls.Button.NEED_START -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
+                mContext.controls?.removeListener(this)
             }
             HandheldControls.Button.UPDATE_ABORT -> {
                 Log.d(TAG, "Cancel Mission Pressed")

@@ -66,11 +66,6 @@ class NeedsRecyclerViewAdapter(
         }
     }
 
-    override fun onViewDetachedFromWindow(holder: ViewHolder?) {
-        super.onViewDetachedFromWindow(holder)
-        mContext.controls?.removeListener(this)
-    }
-
     override fun onButton(button: HandheldControls.Button) {
         when(button) {
             HandheldControls.Button.DPAD_UP -> {
@@ -82,9 +77,11 @@ class NeedsRecyclerViewAdapter(
             HandheldControls.Button.UPDATE_ABORT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.abort_mission)
+                mContext.controls?.removeListener(this)
             }
             HandheldControls.Button.NEED_START -> {
                 mListener?.onNeedItemChanged(activeItem)
+                mContext.controls?.removeListener(this)
             }
         }
     }

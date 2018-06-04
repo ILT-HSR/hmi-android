@@ -43,16 +43,12 @@ class NeedInstructionRecyclerViewAdapter(
         holder.mInstructionView.text = item.name
     }
 
-    override fun onViewDetachedFromWindow(holder: ViewHolder?) {
-        super.onViewDetachedFromWindow(holder)
-        mContext.controls?.removeListener(this)
-    }
-
     override fun onButton(button: HandheldControls.Button) {
         when(button) {
             HandheldControls.Button.UPDATE_ABORT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
+                mContext.controls?.removeListener(this)
             }
         }
     }
