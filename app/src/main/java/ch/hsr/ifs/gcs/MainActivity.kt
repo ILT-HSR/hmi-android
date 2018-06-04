@@ -47,8 +47,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
         fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
 
         map.setTileSource(TileSourceFactory.MAPNIK)
-        val mapController = map.controller
-        mapController.setZoom(19.0)
+        map.controller.setZoom(19.0)
         map.setBuiltInZoomControls(true)
 
         locationService = LocationService(this, this)
@@ -77,6 +76,16 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
 
     override fun onButton(button: HandheldControls.Button) {
         when(button) {
+            HandheldControls.Button.ZOOM_IN -> {
+                runOnUiThread {
+                    map.controller.zoomIn()
+                }
+            }
+            HandheldControls.Button.ZOOM_OUT -> {
+                runOnUiThread {
+                    map.controller.zoomOut()
+                }
+            }
             /*
             HandheldControls.Button.SHOW_MENU -> {
                 Log.d(TAG, "Show Menu Pressed")
