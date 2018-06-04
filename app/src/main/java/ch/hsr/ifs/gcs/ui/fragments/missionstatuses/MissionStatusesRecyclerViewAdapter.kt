@@ -70,7 +70,11 @@ class MissionStatusesRecyclerViewAdapter(
         when(button) {
             HandheldControls.Button.DPAD_RIGHT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
-                mContext.leftButton.background = mContext.getDrawable(R.drawable.abort_mission)
+                mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
+            }
+            HandheldControls.Button.NEED_START -> {
+                mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
             }
             HandheldControls.Button.UPDATE_ABORT -> {
                 Log.d(TAG, "Cancel Mission Pressed")
