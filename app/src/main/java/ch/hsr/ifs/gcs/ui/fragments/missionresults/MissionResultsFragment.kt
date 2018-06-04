@@ -53,6 +53,7 @@ class MissionResultsFragment : Fragment() {
                 adapter = MissionResultsRecyclerViewAdapter(
                         MissionResultsDummyContent.MISSION_RESULT_ITEMS,
                         listener,
+                        this,
                         context as MainActivity
                 )
             }

@@ -90,14 +90,14 @@ class NeedsRecyclerViewAdapter(
 
     private fun activateNextItem() {
         val newIndex = mValues.indexOf(activeItem) + 1
-        if (newIndex < mValues.size) {
+        if(newIndex < mValues.size) {
             activateItem(mValues[newIndex])
         }
     }
 
     private fun activatePreviousItem() {
         val newIndex = mValues.indexOf(activeItem) - 1
-        if (newIndex >= 0) {
+        if(newIndex >= 0) {
             activateItem(mValues[newIndex])
         }
     }
