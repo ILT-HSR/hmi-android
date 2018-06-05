@@ -44,10 +44,7 @@ class NeedsFragment : Fragment() {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = NeedsRecyclerViewAdapter(
-                        NeedsManager.needs.mapNotNull {
-                            ResourceManager.get(*it.value.second.toTypedArray())?.let {res ->
-                                NeedsManager.instantiate(it.key, res)
-                        }}.toList(),
+                        NeedsManager.needs,
                         listener,
                         list,
                         context as MainActivity
