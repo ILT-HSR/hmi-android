@@ -1,6 +1,15 @@
 package ch.hsr.ifs.gcs.resources
 
+import android.content.Context
+import android.hardware.usb.UsbManager
+import android.util.Log
+import ch.hsr.ifs.gcs.driver.DRIVER_MAVLINK_PIXHAWK_PX4
+import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
+import ch.hsr.ifs.gcs.driver.internal.MAVLinkPlatformPixhawkPX4
 import ch.hsr.ifs.gcs.resources.Resource.Status
+import com.hoho.android.usbserial.driver.UsbSerialProber
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * The resource manager provides an abstract interface to the distributed resource management system
@@ -21,6 +30,12 @@ object ResourceManager : ResourceNode {
     private val fLocalResources = ArrayList<Resource>()
 
     var listener: OnResourceAvailabilityChangedListener? = null
+
+    private val fScanExecutor = Executors.newSingleThreadScheduledExecutor()
+
+    fun startScanning(context: Context) {
+        fScanExecutor.scheduleAtFixedRate({ scan(context) }, 0, 100, TimeUnit.MILLISECONDS)
+    }
 
     override val availableResources
         get() = synchronized(fLocalResources) {
@@ -60,5 +75,26 @@ object ResourceManager : ResourceNode {
 
     override fun acquire(resource: Resource): Boolean {
         TODO("Implement")
+    }
+
+    private fun scan(context: Context) {
+        val mUsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
+        UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).filter {
+            it.device.manufacturerName != "Arduino LLC"
+        }.forEach { dev ->
+            synchronized(fLocalResources) {
+                fLocalResources.filter { it.status == Status.UNAVAILABLE }.forEach {
+                    when(it.driverId) {
+                        DRIVER_MAVLINK_PIXHAWK_PX4 -> {
+                            val platform = MAVLinkCommonPlatform.create(::MAVLinkPlatformPixhawkPX4, context, dev.ports[0])
+                            if(platform != null) {
+                                it.markAs(Status.AVAILABLE)
+                                it.plaform = platform
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

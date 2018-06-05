@@ -59,7 +59,7 @@ class BuiltinResourceProvider : ContentProvider() {
                         }
                         .toList()
 
-                SimpleResource(id, capabilities) as Resource
+                SimpleResource(id, res["platform"].asJsonObject["driver"].asString, capabilities) as Resource
             }
 
 }

@@ -17,12 +17,10 @@ import ch.hsr.ifs.gcs.tasks.TriggerPayloadTask
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class CallInNeed : Need {
+class CallInNeed(override val resource: Resource) : Need {
 
     private val targetParameter = TargetNeedParameter()
     private val cargoParameter = CargoNeedParameter()
-
-    private lateinit var associatedResource: Resource
 
     override val name = "Call-in"
 
@@ -31,8 +29,6 @@ class CallInNeed : Need {
             cargoParameter)
 
     override var isActive = false
-
-    override val resource = associatedResource
 
     override fun getTasks(): List<Task>? {
         if(targetParameter.isCompleted && cargoParameter.isCompleted) {

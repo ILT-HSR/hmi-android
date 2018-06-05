@@ -12,6 +12,7 @@ import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.internal.MAVLinkPlatformPixhawkPX4
 import ch.hsr.ifs.gcs.input.HandheldControls
+import ch.hsr.ifs.gcs.resources.ResourceManager
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.util.LocationService
@@ -57,10 +58,10 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
             if (it.device.manufacturerName.equals("Arduino LLC")) {
                 controls = HandheldControls(this, it.ports[0])
                 controls?.addListener(this)
-            } else { // if (it.device.manufacturerName.equals("FTDI")) {
-                drone = MAVLinkCommonPlatform.create(::MAVLinkPlatformPixhawkPX4, this, it.ports[0])
             }
         }
+
+        ResourceManager.startScanning(this)
     }
 
     override fun onResume() {

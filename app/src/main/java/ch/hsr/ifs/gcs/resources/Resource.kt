@@ -1,5 +1,7 @@
 package ch.hsr.ifs.gcs.resources
 
+import ch.hsr.ifs.gcs.driver.Platform
+
 /**
  * A resource is an abstract representation of a platform.
  *
@@ -58,11 +60,25 @@ interface Resource {
     val id: String
 
     /**
+     * The driver id of a resource
+     *
+     * @since 1.0.0
+     */
+    val driverId: String
+
+    /**
      * The list of capabilities of this resource
      *
      * @since 1.0.0
      */
     val capabilities: List<Capability<*>>
+
+    /**
+     * The platform of this resource
+     *
+     * @since 1.0.0
+     */
+    var plaform: Platform
 
     /**
      * Check if the resource has the given capability

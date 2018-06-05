@@ -16,17 +16,13 @@ import ch.hsr.ifs.gcs.tasks.Task
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class RadiationMapNeed : Need {
+class RadiationMapNeed(override val resource: Resource) : Need {
 
     private val regionParameter = RegionNeedParameter()
     private val altitudeParameter = AltitudeNeedParameter()
     private val modeParameter = ModeNeedParameter()
 
-    private lateinit var associatedResource: Resource
-
     override val name = "Radiation Map"
-
-    override val resource = associatedResource
 
     override val needParameterList: List<NeedParameter<*>> = arrayListOf(
             regionParameter,
