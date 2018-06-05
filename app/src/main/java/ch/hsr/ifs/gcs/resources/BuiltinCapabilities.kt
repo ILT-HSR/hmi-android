@@ -1,7 +1,7 @@
 package ch.hsr.ifs.gcs.resources
 
 /**
- * This capability should be attached to resources supporting vertical takeoff
+ * This capability should be attached to availableResources supporting vertical takeoff
  *
  * @since 1.0.0
  * @author IFS Institute for Software
@@ -12,7 +12,7 @@ val CAPABILITY_VERTICAL_TAKEOFF = CapabilityDescriptor(
 )
 
 /**
- * This capability should be attached to resources that can fly
+ * This capability should be attached to availableResources that can fly
  *
  * Platforms acquired through a resource with this capability can be safely cast into
  * [AerialVehicle][ch.hsr.ifs.gcs.driver.AerialVehicle]
@@ -26,7 +26,7 @@ val CAPABILITY_CAN_FLY = CapabilityDescriptor(
 )
 
 /**
- * This capability should be attached to resources that can move
+ * This capability should be attached to availableResources that can move
  *
  * @since 1.0.0
  * @author IFS Institute for Software

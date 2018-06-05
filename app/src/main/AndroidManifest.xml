@@ -31,7 +31,7 @@
         </activity>
 
         <provider
-            android:authorities="${applicationId}.builtinResourceProvder"
+            android:authorities="${applicationId}.builtinResourceProvider"
             android:name=".resources.BuiltinResourceProvider"
             android:exported="false"
             android:enabled="true"/>

@@ -73,4 +73,9 @@ interface Resource {
      * @since 1.0.0
      */
     fun has(capability: Capability<*>): Boolean
+
+    /**
+     * Change the status of the resource to the given status
+     */
+    fun markAs(status: Status)
 }
