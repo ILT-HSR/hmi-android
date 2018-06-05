@@ -9,7 +9,7 @@ import java.io.IOException
 import java.lang.Exception
 import java.util.concurrent.Executors
 
-class HandheldControls(context: Context, private val fListener: Listener, private val fPort: UsbSerialPort) : SerialInputOutputManager.Listener {
+class HandheldControls(context: Context, private val fPort: UsbSerialPort) : SerialInputOutputManager.Listener {
 
     private val TAG = HandheldControls::class.simpleName
 
@@ -18,13 +18,19 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
 
     private val fBuffer = ByteArray(4)
     private var fBuffered = 0
+    private val fListeners = ArrayList<Listener>()
 
     enum class Button(val value: Byte) {
         DPAD_LEFT(0x1),
         DPAD_RIGHT(0x2),
         DPAD_UP(0x3),
         DPAD_DOWN(0x4),
-        BTN_LEFT(0xA),
+        NEED_START(0xA),
+        UPDATE_ABORT(0xB),
+        SHOW_ALL(0xD),
+        SHOW_MENU(0xE),
+        ZOOM_IN(0x10),
+        ZOOM_OUT(0x11)
     }
 
     interface Listener {
@@ -48,6 +54,14 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
         }
     }
 
+    fun addListener(listener: Listener) {
+        fListeners.add(listener)
+    }
+
+    fun removeListener(listener: Listener) {
+        fListeners.remove(listener)
+    }
+
     override fun onNewData(data: ByteArray) {
         var message = ""
         data.forEach {
@@ -64,8 +78,10 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
             fBuffer[fBuffered++] = data[i]
 
             if (fBuffered == 4) {
-                decode()?.let {
-                    fListener.onButton(it)
+                decode()?.let { button ->
+                    fListeners.forEach {
+                        it.onButton(button)
+                    }
                 }
                 fBuffered = 0
             }
@@ -77,7 +93,12 @@ class HandheldControls(context: Context, private val fListener: Listener, privat
         Button.DPAD_LEFT.value -> Button.DPAD_LEFT
         Button.DPAD_RIGHT.value -> Button.DPAD_RIGHT
         Button.DPAD_UP.value -> Button.DPAD_UP
-        Button.BTN_LEFT.value -> Button.BTN_LEFT
+        Button.NEED_START.value -> Button.NEED_START
+        Button.UPDATE_ABORT.value -> Button.UPDATE_ABORT
+        Button.SHOW_ALL.value -> Button.SHOW_ALL
+        Button.SHOW_MENU.value -> Button.SHOW_MENU
+        Button.ZOOM_IN.value -> Button.ZOOM_IN
+        Button.ZOOM_OUT.value -> Button.ZOOM_OUT
         else -> null
     }
 

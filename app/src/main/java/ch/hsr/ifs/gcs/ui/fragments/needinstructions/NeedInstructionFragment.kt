@@ -44,7 +44,10 @@ class NeedInstructionFragment : Fragment() {
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = NeedInstructionRecyclerViewAdapter(activeNeedParameterList!!)
+                adapter = NeedInstructionRecyclerViewAdapter(
+                        activeNeedParameterList!!,
+                        context as MainActivity
+                )
             }
         }
         view.titleText.text = "New ${activeNeed!!.name}"
