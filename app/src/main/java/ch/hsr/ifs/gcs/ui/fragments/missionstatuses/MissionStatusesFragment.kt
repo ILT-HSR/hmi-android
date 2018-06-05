@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
  * additional needs. The context containing this fragment must implement the
  * [MissionStatusesFragment.OnStatusesFragmentChangedListener] interface.
  */
-class MissionStatusesFragment : Fragment() {
+class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChangedListener {
 
     private val TAG = MissionStatusesFragment::class.java.simpleName
 
@@ -34,6 +34,7 @@ class MissionStatusesFragment : Fragment() {
         super.onAttach(context)
         if (context is MainActivity) {
             listener = context.fragmentHandler?.missionStatusesListener
+            NeedsManager += this
         } else {
             throw RuntimeException(context.toString() + " must implement OnStatusesFragmentChangedListener")
         }
@@ -83,6 +84,13 @@ class MissionStatusesFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         listener = null
+        NeedsManager -= this
+    }
+
+    override fun onNeedsAvailabilityChanged(availability: Boolean) {
+        (context as MainActivity).runOnUiThread {
+            statusesAddButton.isEnabled = availability
+        }
     }
 
     /**

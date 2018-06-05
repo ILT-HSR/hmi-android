@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
  * additional needs. The context containing this fragment must implement the
  * [MissionResultsFragment.OnResultsFragmentChangedListener] interface.
  */
-class MissionResultsFragment : Fragment() {
+class MissionResultsFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChangedListener {
 
     private val TAG = MissionResultsFragment::class.java.simpleName
 
@@ -35,6 +35,7 @@ class MissionResultsFragment : Fragment() {
         super.onAttach(context)
         if (context is MainActivity) {
             listener = context.fragmentHandler!!.missionResultsListener
+            NeedsManager += this
         } else {
             throw RuntimeException(context.toString() + " must implement OnResultsFragmentChangedListener")
         }
@@ -84,6 +85,13 @@ class MissionResultsFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         listener = null
+        NeedsManager -= this
+    }
+
+    override fun onNeedsAvailabilityChanged(availability: Boolean) {
+        (context as MainActivity).runOnUiThread {
+            resultsAddButton.isEnabled = availability
+        }
     }
 
     /**

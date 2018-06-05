@@ -12,7 +12,15 @@ import ch.hsr.ifs.gcs.resources.Resource.Status
  */
 object ResourceManager : ResourceNode {
 
+    interface OnResourceAvailabilityChangedListener {
+
+        fun onResourceAvailabilityChanged()
+
+    }
+
     private val fLocalResources = ArrayList<Resource>()
+
+    var listener: OnResourceAvailabilityChangedListener? = null
 
     override val availableResources
         get() = synchronized(fLocalResources) {
