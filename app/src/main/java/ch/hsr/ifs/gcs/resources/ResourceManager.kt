@@ -51,5 +51,6 @@ object ResourceManager : ResourceNode {
     }
 
     override fun acquire(resource: Resource): Boolean {
+        TODO("Implement")
     }
 }
