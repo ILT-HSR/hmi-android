@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.mission.Scheduler
 import ch.hsr.ifs.gcs.needs.Need
 import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
@@ -82,7 +83,9 @@ class NeedInstructionFragment : Fragment() {
                 } else {
                     needNavigationButton.text = "Start Mission"
                     needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
-                    // TODO("Resources not available") // Start mission with gathered results
+                    activeNeed?.let{ Scheduler.submit(it) }
+                    context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                    activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
                 }
                 view!!.instructionList.adapter.notifyDataSetChanged()
             }

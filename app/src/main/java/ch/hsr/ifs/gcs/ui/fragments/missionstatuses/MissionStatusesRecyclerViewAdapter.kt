@@ -10,6 +10,7 @@ import android.widget.TextView
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.input.HandheldControls
+import ch.hsr.ifs.gcs.mission.Mission
 
 
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
@@ -24,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
  * specified [OnStatusesFragmentChangedListener].
  */
 class MissionStatusesRecyclerViewAdapter(
-        private val mValues: List<MissionStatusDummyItem>,
+        private val mValues: List<Mission>,
         private val mListener: OnStatusesFragmentChangedListener?,
         private val mRecyclerView: RecyclerView,
         private val mContext: MainActivity)
@@ -34,13 +35,13 @@ class MissionStatusesRecyclerViewAdapter(
 
     private val mOnClickListener: View.OnClickListener
 
-    var activeItem: MissionStatusDummyItem
+    lateinit var activeItem: Mission
 
     init {
-        activeItem = mValues[0]
-        activeItem.isSelected = true
+//        activeItem = mValues[0]
+        //activeItem.isSelected = true
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as MissionStatusDummyItem
+            val item = v.tag as Mission
             activateItem(item)
             mListener?.onStatusItemChanged(item)
         }
@@ -55,13 +56,13 @@ class MissionStatusesRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mView.setBackgroundColor(
-                if (item.isSelected) {
-                    Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
-                } else {
-                    Color.TRANSPARENT
-                })
-        holder.mMissionName.text = "Status"
+//        holder.mView.setBackgroundColor(
+//                if (item.isSelected) {
+//                    Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
+//                } else {
+//                    Color.TRANSPARENT
+//                })
+        holder.mMissionName.text = item.getStatus()
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
@@ -108,13 +109,15 @@ class MissionStatusesRecyclerViewAdapter(
         }
     }
 
-    private fun activateItem(item: MissionStatusDummyItem) {
-        activeItem.isSelected = false
-        mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(Color.TRANSPARENT)
-        mListener?.onStatusItemChanged(activeItem)
+    private fun activateItem(item: Mission) {
+        //activeItem.isSelected = false
+//        mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(Color.TRANSPARENT)
+        if(this::activeItem.isInitialized) {
+            mListener?.onStatusItemChanged(activeItem)
+        }
         activeItem = item
-        activeItem.isSelected = true
-        mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color)))
+        //activeItem.isSelected = true
+ //       mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color)))
         mListener?.onStatusItemChanged(item)
     }
 

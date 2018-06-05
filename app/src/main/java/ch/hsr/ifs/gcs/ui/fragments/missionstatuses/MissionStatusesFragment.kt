@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.mission.Mission
+import ch.hsr.ifs.gcs.mission.Scheduler
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.MissionStatusDummyItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
@@ -52,7 +54,7 @@ class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChan
             with(list) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = MissionStatusesRecyclerViewAdapter(
-                        MissionStatusesDummyContent.MISSION_STATUS_ITEMS,
+                        Scheduler.missions,
                         listener,
                         this,
                         context as MainActivity
@@ -78,7 +80,7 @@ class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChan
 
     override fun onStart() {
         super.onStart()
-        listener?.refreshStatusesMapView(MissionStatusesDummyContent.MISSION_STATUS_ITEMS)
+        listener?.refreshStatusesMapView(Scheduler.missions)
     }
 
     override fun onDetach() {
@@ -103,14 +105,14 @@ class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChan
          * defines what to do with the provided [item].
          * @param item The item that has been clicked.
          */
-        fun onStatusItemChanged(item: MissionStatusDummyItem?)
+        fun onStatusItemChanged(item: Mission?)
 
         /**
          * Called when fragment is attached to its parent. Implementation should redraw the mapView
          * according to the use case of this fragment.
          * @param items The list of all items of the fragment.
          */
-        fun refreshStatusesMapView(items: List<MissionStatusDummyItem>)
+        fun refreshStatusesMapView(items: List<Mission>)
 
     }
 
