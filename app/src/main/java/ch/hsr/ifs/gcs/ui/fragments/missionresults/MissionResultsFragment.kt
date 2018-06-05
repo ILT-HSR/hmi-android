@@ -15,6 +15,7 @@ import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent
 import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent.MissionResultDummyItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
@@ -62,13 +63,14 @@ class MissionResultsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        resultsAddButton.setOnClickListener {
-            val context = context
-            if(context is MainActivity) {
-                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+            resultsAddButton.setOnClickListener {
+                val context = context
+                if (context is MainActivity) {
+                    context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                }
+                activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
             }
-            activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
-        }
+        resultsAddButton.isEnabled = !NeedsManager.needs.isEmpty()
         activity.leftButton.setOnClickListener {
             Log.d(TAG, "Refresh Mission Pressed")
         }

@@ -11,10 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent
 import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.MissionStatusDummyItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
@@ -64,11 +64,12 @@ class MissionStatusesFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         statusesAddButton.setOnClickListener {
             val context = context
-            if(context is MainActivity) {
+            if (context is MainActivity) {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
             }
             activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
         }
+        statusesAddButton.isEnabled = !NeedsManager.needs.isEmpty()
         activity.leftButton.setOnClickListener {
             Log.d(TAG, "Cancel Mission Pressed")
         }
