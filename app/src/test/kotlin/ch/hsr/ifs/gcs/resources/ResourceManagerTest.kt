@@ -5,6 +5,7 @@ import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.hasSize
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildContentProvider
@@ -37,11 +38,12 @@ class ResourceManagerTest {
         assertThat(ResourceManager.allResources, hasSize(1))
     }
 
+    @Ignore
     @Test
     fun `After marking a resource as available, the ResourceManager has one more resource available`() {
         val originalNumberOfAvailableResources = ResourceManager.availableResources.size
         val resource = ResourceManager.allResources.take(1)
-        ResourceManager.acquire(resource)
+        ResourceManager.acquire(resource[0])
 
     }
 

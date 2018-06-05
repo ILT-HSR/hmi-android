@@ -2,8 +2,10 @@ package ch.hsr.ifs.gcs.needs
 
 import android.location.Location
 import ch.hsr.ifs.gcs.needs.parameters.CargoNeedParameter
-import ch.hsr.ifs.gcs.needs.parameters.TargetNeedParameter
 import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
+import ch.hsr.ifs.gcs.needs.parameters.TargetNeedParameter
+import ch.hsr.ifs.gcs.resources.CAPABILITY_CAN_MOVE
+import ch.hsr.ifs.gcs.resources.Capability
 import ch.hsr.ifs.gcs.resources.Resource
 import ch.hsr.ifs.gcs.tasks.MoveToTask
 import ch.hsr.ifs.gcs.tasks.Task
@@ -15,10 +17,12 @@ import ch.hsr.ifs.gcs.tasks.TriggerPayloadTask
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class CallInNeed(override val resource: Resource?) : Need {
+class CallInNeed : Need {
 
     private val targetParameter = TargetNeedParameter()
     private val cargoParameter = CargoNeedParameter()
+
+    private lateinit var associatedResource: Resource
 
     override val name = "Call-in"
 
@@ -27,6 +31,8 @@ class CallInNeed(override val resource: Resource?) : Need {
             cargoParameter)
 
     override var isActive = false
+
+    override val resource = associatedResource
 
     override fun getTasks(): List<Task>? {
         if(targetParameter.isCompleted && cargoParameter.isCompleted) {
@@ -40,5 +46,10 @@ class CallInNeed(override val resource: Resource?) : Need {
             return null
         }
     }
+
+    override val requirements: List<Capability<*>>
+        get() = listOf(
+                Capability(CAPABILITY_CAN_MOVE, true)
+        )
 
 }

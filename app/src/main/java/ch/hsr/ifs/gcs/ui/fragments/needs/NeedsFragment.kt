@@ -10,9 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.needs.CallInNeed
 import ch.hsr.ifs.gcs.needs.Need
-import ch.hsr.ifs.gcs.needs.RadiationMapNeed
+import ch.hsr.ifs.gcs.resources.ResourceManager
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -44,8 +43,11 @@ class NeedsFragment : Fragment() {
         if (list is RecyclerView) {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = NeedsRecyclerViewAdapter(arrayListOf(
-                        CallInNeed(null), RadiationMapNeed(null)),
+                adapter = NeedsRecyclerViewAdapter(
+                        NeedsManager.needs.mapNotNull {
+                            ResourceManager.get(*it.value.second.toTypedArray())?.let {res ->
+                                NeedsManager.instantiate(it.key, res)
+                        }}.toList(),
                         listener,
                         list,
                         context as MainActivity
@@ -58,7 +60,7 @@ class NeedsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val context = context
-        if(context is MainActivity) {
+        if (context is MainActivity) {
             selectButton.setOnClickListener {
                 val needInstructionFragmentType = FragmentType.NEED_INSTRUCTION_FRAGMENT
                 val item = (view?.list?.adapter as NeedsRecyclerViewAdapter).activeItem

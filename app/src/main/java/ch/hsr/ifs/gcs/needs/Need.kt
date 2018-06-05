@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.needs
 
 import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
+import ch.hsr.ifs.gcs.resources.Capability
 import ch.hsr.ifs.gcs.resources.Resource
 import ch.hsr.ifs.gcs.tasks.Task
 
@@ -31,7 +32,7 @@ interface Need {
      *
      * @since 1.0.0
      */
-    val resource: Resource?
+    val resource: Resource
 
     /**
      * A need is set to active, if it is selected via touch or button navigation.
@@ -47,5 +48,12 @@ interface Need {
      * @since 1.0.0
      */
     fun getTasks(): List<Task>?
+
+    /**
+     * The capabilities required by the concrete need
+     *
+     * @since 1.0.0
+     */
+    val requirements: List<Capability<*>>
 
 }
