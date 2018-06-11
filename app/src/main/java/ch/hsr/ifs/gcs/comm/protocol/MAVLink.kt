@@ -3,10 +3,6 @@ package ch.hsr.ifs.gcs.comm.protocol
 import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 
-const val MESSAGE_HEARTBEAT = "HEARTBEAT"
-const val MESSAGE_COMMAND_LONG = "COMMAND_LONG"
-const val MESSAGE_SET_MODE = "SET_MODE"
-
 enum class MAVLinkLongCommand(val value: Int) {
     NAV_RETURN_TO_LAUNCH(20),
     NAV_LAND(21),
@@ -24,6 +20,8 @@ enum class MAVLinkLongCommand(val value: Int) {
  */
 enum class MessageID {
     HEARTBEAT,
+    COMMAND_LONG,
+    SET_MODE,
     AUTOPILOT_VERSION,
     GLOBAL_POSITION_INT,
     COMMAND_ACK;
@@ -207,15 +205,28 @@ data class WGS89Position(val latitude: Int, val longitude: Int, val altitude: In
  *
  * Create a new MAVLink message
  *
- * @param name The MAVLink ID of the message (e.g. "HEARTBEAT")
- * @param system The sender system ID
- * @param component The sender component ID
+ * @param name The MAVLink name of the message (e.g. "HEARTBEAT")
+ * @param sender The sender system ID
  * @param schema The message schema
  *
  * @return A new, empty MAVLink message
  */
 internal fun createMAVLinkMessage(name: String, sender: MAVLinkSystem, schema: MAVLinkSchema) =
         MAVLinkMessage(schema, name, sender.id, sender.component)
+
+/**
+ * @internal
+ *
+ * Create a new MAVLink message
+ *
+ * @param id The MAVLink ID of the message (e.g. [MessageID.HEARTBEAT])
+ * @param sender The sender system ID
+ * @param schema The message schema
+ *
+ * @return A new, empty MAVLink message
+ */
+internal fun createMAVLinkMessage(id: MessageID, sender: MAVLinkSystem, schema: MAVLinkSchema) =
+        createMAVLinkMessage(id.name, sender, schema)
 
 /**
  * @internal
@@ -230,7 +241,7 @@ internal fun createMAVLinkMessage(name: String, sender: MAVLinkSystem, schema: M
  * @return A new, empty MAVLink 'Long Command' message
  */
 internal fun createLongCommandMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, command: MAVLinkLongCommand): MAVLinkMessage {
-    val msg = createMAVLinkMessage(MESSAGE_COMMAND_LONG, sender, schema)
+    val msg = createMAVLinkMessage(MessageID.COMMAND_LONG, sender, schema)
 
     msg.set("target_system", target.id)
     msg.set("target_component", target.component)
@@ -249,7 +260,7 @@ internal fun createLongCommandMessage(sender: MAVLinkSystem, target: MAVLinkSyst
  * @return A new MAVLink 'Heartbeat' message
  */
 fun createHeartbeatMessage(sender: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage {
-    val heartbeat = createMAVLinkMessage(MESSAGE_HEARTBEAT, sender, schema)
+    val heartbeat = createMAVLinkMessage(MessageID.HEARTBEAT, sender, schema)
 
     heartbeat.set("type", 6)
     heartbeat.set("autopilot", 0)
@@ -385,7 +396,7 @@ fun createDoSetModeMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema:
  */
 @Deprecated("This function creates a deprecated message. Please consider using createDoSetMode.")
 fun createLegacySetModeMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, base: Int, custom: Int = 0): MAVLinkMessage {
-    val msg = createMAVLinkMessage(MESSAGE_SET_MODE, sender, schema)
+    val msg = createMAVLinkMessage(MessageID.SET_MODE, sender, schema)
 
     msg.set("target_system", target.id)
     msg.set("base_mode", base)
@@ -451,7 +462,5 @@ fun createDoLandMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MA
  *
  * @return a new MAVLink 'Long Command' message containing a 'Return to Launch' command
  */
-fun createReturnToLaunchMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage {
-    val msg = createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.NAV_RETURN_TO_LAUNCH)
-    return msg
-}
+fun createReturnToLaunchMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema) =
+        createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.NAV_RETURN_TO_LAUNCH)

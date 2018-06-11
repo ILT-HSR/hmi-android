@@ -233,7 +233,7 @@ internal open class MAVLinkCommonPlatformImpl(channel: ByteChannel) : MAVLinkCom
             fMessageStream.read()?.let(this::dispatch)
             fMessageQueue.peek()?.let {
                 when (it.msgName) {
-                    MESSAGE_COMMAND_LONG -> sendLongCommand(it)
+                    MessageID.COMMAND_LONG.name -> sendLongCommand(it)
                     else -> sendCommand(it)
                 }
             }
