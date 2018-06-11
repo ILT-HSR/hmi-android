@@ -11,8 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.mission.Mission
-import ch.hsr.ifs.gcs.mission.Scheduler
+import ch.hsr.ifs.gcs.ui.data.Missions
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -52,7 +51,6 @@ class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChan
             with(list) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = MissionStatusesRecyclerViewAdapter(
-                        Scheduler.missions,
                         listener,
                         this,
                         context as MainActivity
@@ -78,7 +76,7 @@ class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChan
 
     override fun onStart() {
         super.onStart()
-        listener?.refreshStatusesMapView(Scheduler.missions)
+        listener?.refreshStatusesMapView()
     }
 
     override fun onDetach() {
@@ -103,14 +101,14 @@ class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChan
          * defines what to do with the provided [item].
          * @param item The item that has been clicked.
          */
-        fun onStatusItemChanged(item: Mission?)
+        fun onStatusItemChanged(item: Missions.Item?)
 
         /**
          * Called when fragment is attached to its parent. Implementation should redraw the mapView
          * according to the use case of this fragment.
          * @param items The list of all items of the fragment.
          */
-        fun refreshStatusesMapView(items: List<Mission>)
+        fun refreshStatusesMapView()
 
     }
 

@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.data.MissionResultItem
+import ch.hsr.ifs.gcs.ui.data.Results
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -51,7 +51,6 @@ class MissionResultsFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChang
             with(list) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = MissionResultsRecyclerViewAdapter(
-                        emptyList(),
                         listener,
                         this,
                         context as MainActivity
@@ -77,7 +76,7 @@ class MissionResultsFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChang
 
     override fun onStart() {
         super.onStart()
-        listener?.refreshResultsMapView(emptyList())
+        listener?.refreshResultsMapView()
     }
 
     override fun onDetach() {
@@ -102,14 +101,14 @@ class MissionResultsFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChang
          * defines what to do with the provided [item].
          * @param item The item that has been clicked.
          */
-        fun onResultItemChanged(item: MissionResultItem?)
+        fun onResultItemChanged(item: Results.Item?)
 
         /**
          * Called when fragment is attached to its parent. Implementation should redraw the mapView
          * according to the use case of this fragment.
          * @param items The list of all items of the fragment.
          */
-        fun refreshResultsMapView(items: List<MissionResultItem>)
+        fun refreshResultsMapView()
 
     }
 
