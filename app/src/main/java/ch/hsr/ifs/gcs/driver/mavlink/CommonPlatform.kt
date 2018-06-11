@@ -1,16 +1,13 @@
-package ch.hsr.ifs.gcs.driver.internal
+package ch.hsr.ifs.gcs.driver.mavlink
 
 import android.util.Log
 import ch.hsr.ifs.gcs.comm.protocol.*
-import ch.hsr.ifs.gcs.driver.*
-import me.drton.jmavlib.mavlink.MAVLinkMessage
-import me.drton.jmavlib.mavlink.MAVLinkProducts
-import me.drton.jmavlib.mavlink.MAVLinkStream
-import me.drton.jmavlib.mavlink.MAVLinkVendors
+import ch.hsr.ifs.gcs.driver.AerialVehicle
+import ch.hsr.ifs.gcs.driver.DRIVER_MAVLINK_COMMON
+import me.drton.jmavlib.mavlink.*
 import java.nio.channels.ByteChannel
 import java.time.Duration
 import java.time.Instant
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -18,17 +15,28 @@ import java.util.concurrent.TimeUnit
 typealias MessageHandler = (MAVLinkMessage) -> Unit
 
 /**
- * Concrete implementation of the [platform driver interface][Platform] for MAVLink vehicles
+ * This class provides a basic [platform][Platform] implementation for the MAVLink **common**
+ * schema. Specific platform drivers for vehicles implementing the **common** schema should be
+ * derived from this class.
  *
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-internal open class MAVLinkCommonPlatformImpl(channel: ByteChannel) : MAVLinkCommonPlatform {
+abstract class MAVLinkCommonPlatform(channel: ByteChannel) : MAVLinkPlatform {
 
     companion object {
-        private val LOG_TAG = MAVLinkCommonPlatformImpl::class.simpleName
+        /**
+         * The log prefix for log entries emitted by this implementation
+         */
+        private val LOG_TAG = MAVLinkCommonPlatform::class.simpleName
+
+        /**
+         * The timeout used to determine if a command was received by the vehicle
+         */
         private val TIMEOUT_COMMAND_ACK = Duration.ofMillis(1000)
     }
+
+    final override val schema = MAVLinkSchemaRegistry["common"]!!
 
     private val fSender = MAVLinkSystem(8, 250)
     private val fTarget = MAVLinkSystem(1, 1)
@@ -39,8 +47,6 @@ internal open class MAVLinkCommonPlatformImpl(channel: ByteChannel) : MAVLinkCom
     private val fExecutors = object {
         val io = Executors.newSingleThreadScheduledExecutor()
         val heartbeat = Executors.newSingleThreadScheduledExecutor()
-        val lowFrequency = Executors.newSingleThreadScheduledExecutor()
-        val highFrequency = Executors.newSingleThreadScheduledExecutor()
     }
 
     private val fPeriodicMessages = object {
@@ -194,7 +200,7 @@ internal open class MAVLinkCommonPlatformImpl(channel: ByteChannel) : MAVLinkCom
     protected val maximumExpectedHeartbeatInterval: Duration = Duration.ofSeconds(10)
 
     /**
-     * Add a listener for a specific [message type][MAVLinkPlatform.MessageID]
+     * Add a listener for a specific [message type][MessageID]
      *
      * @since 1.0.0
      */
@@ -208,7 +214,7 @@ internal open class MAVLinkCommonPlatformImpl(channel: ByteChannel) : MAVLinkCom
     }
 
     /**
-     * Register the listeners for the [message types][MAVLinkPlatform.MessageID] constituting the
+     * Register the listeners for the [message types][MessageID] constituting the
      * basic information source of the vehicle.
      *
      * MAVLink vehicles send out certain 'data streams' consisting of different message types
@@ -278,6 +284,7 @@ internal open class MAVLinkCommonPlatformImpl(channel: ByteChannel) : MAVLinkCom
     /**
      * Process a `Heartbeat` message received on the link
      */
+    @Suppress("UNUSED_PARAMETER")
     private fun handleHeartbeat(message: MAVLinkMessage): Unit = synchronized(fVehicleState) {
         fVehicleState.lastHeartbeat = Instant.now()
     }
@@ -346,24 +353,4 @@ internal open class MAVLinkCommonPlatformImpl(channel: ByteChannel) : MAVLinkCom
         fMessageQueue.remove()
     }
 
-    /**
-     * Enqueue a needParameter on the high frequency scheduler
-     *
-     * The high frequency scheduler repeats its tasks at a rate of 10 times per second. This is
-     * useful for messages that need to be 'spammed' to the vehicle, for example when 'killing' the
-     * vehicle by sending it disarm messages.
-     */
-    private fun enqueueOnHighFrequencyScheduler(task: () -> Unit) =
-            fExecutors.highFrequency.scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS)
-
-
-    /**
-     * Enqueue a needParameter on the high frequency scheduler
-     *
-     * The high frequency scheduler repeats its tasks at a rate of 1 time per 5 seconds. This is
-     * useful for messages that request status information that needs to be updates regularly but
-     * not often.
-     */
-    private fun enqueueOnLowFrequencyScheduler(task: () -> Unit) =
-            fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 5000, TimeUnit.MILLISECONDS)
 }

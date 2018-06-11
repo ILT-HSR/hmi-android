@@ -6,11 +6,8 @@ import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
-import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.Platform
-import ch.hsr.ifs.gcs.driver.internal.MAVLinkPlatformPixhawkPX4
 import ch.hsr.ifs.gcs.input.HandheldControls
 import ch.hsr.ifs.gcs.resources.ResourceManager
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler

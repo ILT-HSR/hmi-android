@@ -1,5 +1,7 @@
-package ch.hsr.ifs.gcs.driver
+package ch.hsr.ifs.gcs.driver.mavlink
 
+import ch.hsr.ifs.gcs.driver.AerialVehicle
+import ch.hsr.ifs.gcs.driver.SerialPlatform
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 
 /**
@@ -8,7 +10,7 @@ import me.drton.jmavlib.mavlink.MAVLinkSchema
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-interface MAVLinkPlatform : AerialVehicle {
+interface MAVLinkPlatform : AerialVehicle, SerialPlatform {
 
     /**
      * The MAVLink message schema associated with this platform

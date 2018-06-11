@@ -1,8 +1,9 @@
-package ch.hsr.ifs.gcs.driver.internal
+package ch.hsr.ifs.gcs.driver.mavlink.internal
 
 import ch.hsr.ifs.gcs.comm.protocol.*
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.DRIVER_MAVLINK_PIXHAWK_PX4
+import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.Platform
 import java.nio.channels.ByteChannel
 
@@ -10,13 +11,13 @@ import java.nio.channels.ByteChannel
  * Concrete  implementation of the [platform driver interface][Platform] for Pixhawk PX4 vehicles
  *
  * Pixhawk PX4 controllers have certain quirks, that need special handling. For example, in order
- * to take-off with a PX4 controller, it is required to switch into the 'Take-Off' submode of the
+ * to take-off with a PX4 controller, it is required to switch into the 'Take-Off' sub-mode of the
  * 'Automatic' custom mode.
  *
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-internal class MAVLinkPlatformPixhawkPX4(channel: ByteChannel) : MAVLinkCommonPlatformImpl(channel) {
+internal class PixhawkPX4(channel: ByteChannel) : MAVLinkCommonPlatform(channel) {
 
     enum class PX4CustomMode(val id: Int) {
         MANUAL(1),

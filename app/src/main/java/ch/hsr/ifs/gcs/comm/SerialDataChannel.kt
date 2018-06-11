@@ -43,7 +43,24 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
             }
         }
 
+        /**
+         * Create a new channel on the given port with the given [configuration][Configuration]
+         *
+         * @param context The application context to use with the port
+         * @param port The USB-Serial port to attach to the channel
+         * @param configuration The USB-Serial configuration for the channel
+         */
+        fun create(context: Context, port: UsbSerialPort, configuration: Configuration) =
+                create(context, port, configuration.baudRate, configuration.dataBits, configuration. stopBits, configuration.parity)
+
     }
+
+    data class Configuration(
+            val baudRate: Int = 57600,
+            val dataBits: Int = 8,
+            val stopBits: Int = 1,
+            val parity: Parity = Parity.NONE
+    )
 
     /**
      * A type for representing serial parity styles

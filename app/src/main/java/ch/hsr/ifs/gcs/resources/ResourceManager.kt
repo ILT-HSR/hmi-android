@@ -2,10 +2,7 @@ package ch.hsr.ifs.gcs.resources
 
 import android.content.Context
 import android.hardware.usb.UsbManager
-import android.util.Log
-import ch.hsr.ifs.gcs.driver.DRIVER_MAVLINK_PIXHAWK_PX4
-import ch.hsr.ifs.gcs.driver.MAVLinkCommonPlatform
-import ch.hsr.ifs.gcs.driver.internal.MAVLinkPlatformPixhawkPX4
+import ch.hsr.ifs.gcs.driver.PlatformProvider
 import ch.hsr.ifs.gcs.resources.Resource.Status
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import java.util.concurrent.Executors
@@ -61,7 +58,7 @@ object ResourceManager : ResourceNode {
                 availableResources.asSequence()
                         .filter { it.status == Status.AVAILABLE }
                         .filter { capabilities.all(it::has) }
-                        .firstOrNull();
+                        .firstOrNull()
             }
 
     override fun reset() {
@@ -81,7 +78,7 @@ object ResourceManager : ResourceNode {
      */
     override fun acquire(resource: Resource): Boolean =
             synchronized(fLocalResources) {
-                if(resource.status != Status.AVAILABLE) {
+                if (resource.status != Status.AVAILABLE) {
                     false
                 } else {
                     resource.markAs(Status.ACQUIRED)
@@ -100,14 +97,10 @@ object ResourceManager : ResourceNode {
             it.device.manufacturerName != "Arduino LLC"
         }.forEach { dev ->
             synchronized(fLocalResources) {
-                fLocalResources.filter { it.status == Status.UNAVAILABLE }.forEach {res ->
-                    when(res.driverId) {
-                        DRIVER_MAVLINK_PIXHAWK_PX4 -> {
-                            MAVLinkCommonPlatform.create(::MAVLinkPlatformPixhawkPX4, context, dev.ports[0])?.let{
-                                res.markAs(Status.AVAILABLE)
-                                res.plaform = it
-                            }
-                        }
+                fLocalResources.filter { it.status == Status.UNAVAILABLE }.forEach {
+                    PlatformProvider.instantiate(it.driverId, context, dev.ports[0])?.apply {
+                        it.markAs(Status.AVAILABLE)
+                        it.plaform = this
                     }
                 }
             }

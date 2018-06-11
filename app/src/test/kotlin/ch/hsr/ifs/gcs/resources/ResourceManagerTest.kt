@@ -24,6 +24,9 @@ class ResourceManagerTest {
 
     @After
     fun resetResourceManager() {
+        for (resource in ResourceManager.allResources) {
+            resource.markAs(Resource.Status.UNAVAILABLE)
+        }
         contentProvider.shutdown()
         ResourceManager.reset()
     }
@@ -38,18 +41,22 @@ class ResourceManagerTest {
         assertThat(ResourceManager.allResources, hasSize(1))
     }
 
-    @Ignore
     @Test
     fun `After marking a resource as available, the ResourceManager has one more resource available`() {
         val originalNumberOfAvailableResources = ResourceManager.availableResources.size
-        val resource = ResourceManager.allResources.take(1)
-        ResourceManager.acquire(resource[0])
+        val resource = ResourceManager.allResources.take(1)[0]
+        resource.markAs(Resource.Status.AVAILABLE)
 
+        assertThat(ResourceManager.availableResources, hasSize(originalNumberOfAvailableResources + 1))
     }
 
     @Test
     fun `After acquiring a resource, the ResourceManager has one less resource available`() {
+        val resource = ResourceManager.allResources.take(1)[0]
+        resource.markAs(Resource.Status.AVAILABLE)
         val originalNumberOfAvailableResources = ResourceManager.availableResources.size
+        ResourceManager.acquire(resource)
 
+        assertThat(ResourceManager.availableResources, hasSize(originalNumberOfAvailableResources - 1))
     }
 }
