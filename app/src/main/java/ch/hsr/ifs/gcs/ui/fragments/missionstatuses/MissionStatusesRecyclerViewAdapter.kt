@@ -62,7 +62,7 @@ class MissionStatusesRecyclerViewAdapter(
 //                } else {
 //                    Color.TRANSPARENT
 //                })
-        holder.mMissionName.text = item.getStatus()
+        holder.mMissionName.text = item.status
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)

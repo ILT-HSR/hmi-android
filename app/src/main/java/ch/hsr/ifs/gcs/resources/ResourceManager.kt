@@ -73,23 +73,39 @@ object ResourceManager : ResourceNode {
         }
     }
 
-    override fun acquire(resource: Resource): Boolean {
-        TODO("Implement")
-    }
+    /**
+     * Acquire the given resource, making it unavailable for other missions
+     *
+     * @return `true` iff. the resource was available, `false` otherwise
+     * @since 1.0.0
+     */
+    override fun acquire(resource: Resource): Boolean =
+            synchronized(fLocalResources) {
+                if(resource.status != Status.AVAILABLE) {
+                    false
+                } else {
+                    resource.markAs(Status.ACQUIRED)
+                    true
+                }
+            }
 
+    /**
+     * Scan the connected telemetry interfaces for available vehicles
+     *
+     * @since 1.0.0
+     */
     private fun scan(context: Context) {
         val mUsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
         UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).filter {
             it.device.manufacturerName != "Arduino LLC"
         }.forEach { dev ->
             synchronized(fLocalResources) {
-                fLocalResources.filter { it.status == Status.UNAVAILABLE }.forEach {
-                    when(it.driverId) {
+                fLocalResources.filter { it.status == Status.UNAVAILABLE }.forEach {res ->
+                    when(res.driverId) {
                         DRIVER_MAVLINK_PIXHAWK_PX4 -> {
-                            val platform = MAVLinkCommonPlatform.create(::MAVLinkPlatformPixhawkPX4, context, dev.ports[0])
-                            if(platform != null) {
-                                it.markAs(Status.AVAILABLE)
-                                it.plaform = platform
+                            MAVLinkCommonPlatform.create(::MAVLinkPlatformPixhawkPX4, context, dev.ports[0])?.let{
+                                res.markAs(Status.AVAILABLE)
+                                res.plaform = it
                             }
                         }
                     }
