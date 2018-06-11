@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.util
+package ch.hsr.ifs.gcs.geo
 
 /**
  * A simple value type to hold GPS floating point coordinates

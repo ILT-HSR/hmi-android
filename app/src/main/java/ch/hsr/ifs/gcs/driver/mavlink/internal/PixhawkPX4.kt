@@ -5,8 +5,8 @@ import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.DRIVER_MAVLINK_PIXHAWK_PX4
 import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommonPlatform
-import ch.hsr.ifs.gcs.util.GPSPosition
-import ch.hsr.ifs.gcs.util.WGS89Position
+import ch.hsr.ifs.gcs.geo.GPSPosition
+import ch.hsr.ifs.gcs.geo.WGS89Position
 import java.nio.channels.ByteChannel
 
 /**

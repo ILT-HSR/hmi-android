@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.comm.protocol
 
-import ch.hsr.ifs.gcs.util.WGS89Position
+import ch.hsr.ifs.gcs.geo.WGS89Position
 import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 

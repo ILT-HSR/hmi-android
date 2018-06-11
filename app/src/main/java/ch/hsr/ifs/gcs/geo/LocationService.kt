@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.util
+package ch.hsr.ifs.gcs.geo
 
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
