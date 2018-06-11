@@ -8,12 +8,13 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ifs.gcs.geo.LocationService
 import ch.hsr.ifs.gcs.input.HandheldControls
 import ch.hsr.ifs.gcs.resources.ResourceManager
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
-import ch.hsr.ifs.gcs.geo.LocationService
 import com.hoho.android.usbserial.driver.UsbSerialProber
+import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
