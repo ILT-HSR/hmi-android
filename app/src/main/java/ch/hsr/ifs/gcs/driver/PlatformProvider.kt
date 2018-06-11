@@ -7,11 +7,9 @@ import ch.hsr.ifs.gcs.driver.mavlink.internal.PixhawkPX4
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import java.nio.channels.ByteChannel
 
-typealias SerialPlatformConstructor = (ByteChannel) -> SerialPlatform
-
 object PlatformProvider {
 
-    private val fSerialDrivers = mutableMapOf<String, SerialPlatformConstructor>(
+    private val fSerialDrivers = mutableMapOf<String, (ByteChannel) -> SerialPlatform>(
             DRIVER_MAVLINK_PIXHAWK_PX4 to ::PixhawkPX4
     )
 
