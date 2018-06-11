@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Scheduler
-import ch.hsr.ifs.gcs.needs.Need
-import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
+import ch.hsr.ifs.gcs.need.Need
+import ch.hsr.ifs.gcs.need.parameter.Parameter
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_need_instruction_list.view.*
 class NeedInstructionFragment : Fragment() {
 
     var activeNeed: Need? = null
-    var activeNeedParameterList: List<NeedParameter<*>>? = null
+    var activeParameterList: List<Parameter<*>>? = null
     private var currentTaskId = 0
 
     private val TAG = NeedInstructionFragment::class.java.simpleName
@@ -46,7 +46,7 @@ class NeedInstructionFragment : Fragment() {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = NeedInstructionRecyclerViewAdapter(
-                        activeNeedParameterList!!,
+                        activeParameterList!!,
                         context as MainActivity
                 )
             }
@@ -64,19 +64,19 @@ class NeedInstructionFragment : Fragment() {
                 activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
             }
             currentTaskId = 0
-            activeNeedParameterList?.get(currentTaskId)?.let {
+            activeParameterList?.get(currentTaskId)?.let {
                 it.setup(context)
                 it.isActive = true
             }
             needNavigationButton.setOnClickListener {
-                activeNeedParameterList?.get(currentTaskId)?.let {
+                activeParameterList?.get(currentTaskId)?.let {
                     it.isActive = false
                     it.isCompleted = true
                     it.cleanup(context)
                 }
-                if(currentTaskId < activeNeedParameterList!!.size - 1) {
+                if(currentTaskId < activeParameterList!!.size - 1) {
                     currentTaskId += 1
-                    activeNeedParameterList?.get(currentTaskId)?.let {
+                    activeParameterList?.get(currentTaskId)?.let {
                         it.setup(context)
                         it.isActive = true
                     }

@@ -1,25 +1,26 @@
-package ch.hsr.ifs.gcs.needs.parameters
+package ch.hsr.ifs.gcs.need.parameter
 
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
-import ch.hsr.ifs.gcs.ui.fragments.needparameters.CargoFragment
+import ch.hsr.ifs.gcs.ui.fragments.needparameters.ModeFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.views.MapView
 
 /**
- * This [NeedParameter] implementation is used to configure the desired cargo of the vehicle.
+ * This [Parameter] implementation is used to configure the mode of the vehicle while
+ * carrying out a need.
  *
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class CargoNeedParameter : NeedParameter<String> {
+class Mode: Parameter<String> {
 
-    private val fragment = CargoFragment()
+    private val fragment = ModeFragment()
 
-    override val name = "Cargo"
+    override val name = "Mode"
 
-    override val description = "Select the cargo involved in your mission."
+    override val description = "Choose the mode for your vehicle."
 
     override var result: String? = ""
 

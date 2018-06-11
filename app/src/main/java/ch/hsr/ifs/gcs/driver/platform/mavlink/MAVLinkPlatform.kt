@@ -1,7 +1,7 @@
-package ch.hsr.ifs.gcs.driver.mavlink
+package ch.hsr.ifs.gcs.driver.platform.mavlink
 
-import ch.hsr.ifs.gcs.driver.AerialVehicle
-import ch.hsr.ifs.gcs.driver.SerialPlatform
+import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
+import ch.hsr.ifs.gcs.driver.platform.SerialPlatform
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 
 /**

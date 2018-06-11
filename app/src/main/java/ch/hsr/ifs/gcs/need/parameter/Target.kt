@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.needs.parameters
+package ch.hsr.ifs.gcs.need.parameter
 
 import android.graphics.Canvas
 import android.view.MotionEvent
@@ -11,12 +11,12 @@ import org.osmdroid.views.overlay.Marker.OnMarkerDragListener
 import org.osmdroid.views.overlay.Overlay
 
 /**
- * This [NeedParameter] implementation is used to configure the target of the vehicle.
+ * This [Parameter] implementation is used to configure the target of the vehicle.
  *
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class TargetNeedParameter : NeedParameter<GeoPoint> {
+class Target : Parameter<GeoPoint> {
 
     override val name = "Target"
 

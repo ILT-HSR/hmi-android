@@ -1,7 +1,7 @@
 package ch.hsr.ifs.gcs.mission
 
 import android.util.Log
-import ch.hsr.ifs.gcs.needs.Need
+import ch.hsr.ifs.gcs.need.Need
 import ch.hsr.ifs.gcs.resources.ResourceManager
 
 object Scheduler {

@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.needs.Need
+import ch.hsr.ifs.gcs.need.Need
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -61,7 +61,7 @@ class NeedsFragment : Fragment() {
                 val needInstructionFragmentType = FragmentType.NEED_INSTRUCTION_FRAGMENT
                 val item = (view?.list?.adapter as NeedsRecyclerViewAdapter).activeItem
                 (needInstructionFragmentType.fragment as NeedInstructionFragment).activeNeed = item
-                needInstructionFragmentType.fragment.activeNeedParameterList = item.needParameterList
+                needInstructionFragmentType.fragment.activeParameterList = item.parameterList
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
 
             }

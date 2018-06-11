@@ -1,9 +1,9 @@
-package ch.hsr.ifs.gcs.needs
+package ch.hsr.ifs.gcs.need
 
-import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
+import ch.hsr.ifs.gcs.need.parameter.Parameter
 import ch.hsr.ifs.gcs.resources.Capability
 import ch.hsr.ifs.gcs.resources.Resource
-import ch.hsr.ifs.gcs.task.Task
+import ch.hsr.ifs.gcs.need.task.Task
 
 /**
  * Interface representing the base structure of a need.
@@ -25,7 +25,7 @@ interface Need {
      *
      * @since 1.0.0
      */
-    val needParameterList: List<NeedParameter<*>>
+    val parameterList: List<Parameter<*>>
 
     /**
      * The resource associated with the need.
@@ -47,7 +47,7 @@ interface Need {
      *
      * @since 1.0.0
      */
-    fun getTasks(): List<Task>?
+    val tasks: List<Task>?
 
     /**
      * The capabilities required by the concrete need

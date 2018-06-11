@@ -3,9 +3,25 @@ package ch.hsr.ifs.gcs.driver
 import android.content.Context
 import ch.hsr.ifs.gcs.comm.SerialDataChannel
 import ch.hsr.ifs.gcs.comm.SerialDataChannel.Configuration
-import ch.hsr.ifs.gcs.driver.mavlink.internal.PixhawkPX4
+import ch.hsr.ifs.gcs.driver.platform.SerialPlatform
+import ch.hsr.ifs.gcs.driver.platform.mavlink.PixhawkPX4
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import java.nio.channels.ByteChannel
+
+/**
+ * The driver ID of the builtin [MAVLinkCommonPlatform] implementation
+ *
+ * @since 1.0.0
+ * @author IFS Institute for Software
+ */
+const val DRIVER_MAVLINK_COMMON = "ch.hsr.ifs.gcs.driver.platform.MAVLinkCommonPlatform"
+/**
+ * The driver ID of the builtin [MAVLinkPlatform] implementation for Pixhawk PX4 controllers
+ *
+ * @since 1.0.0
+ * @author IFS Institute for Software
+ */
+const val DRIVER_MAVLINK_PIXHAWK_PX4 = "ch.hsr.ifs.gcs.driver.platform.PixhawkPX4"
 
 object PlatformProvider {
 

@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import ch.hsr.ifs.gcs.driver.Input
+import ch.hsr.ifs.gcs.driver.Input.Button
 import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ifs.gcs.driver.input.HandheldControls
 import ch.hsr.ifs.gcs.geo.LocationService
-import ch.hsr.ifs.gcs.input.HandheldControls
 import ch.hsr.ifs.gcs.resources.ResourceManager
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
@@ -19,10 +21,9 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 
-class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationService.OnLocationChangedListener {
+class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLocationChangedListener {
 
     private val TAG = MainActivity::class.java.simpleName
-    // private var menuVisible = true
 
     var fragmentHandler: FragmentHandler? = null
     var controls: HandheldControls? = null
@@ -72,34 +73,19 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
         finish()
     }
 
-    override fun onButton(button: HandheldControls.Button) {
+    override fun onButton(button: Button) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
-        when(button) {
-            HandheldControls.Button.ZOOM_IN -> {
+        when (button) {
+            Button.ZOOM_IN -> {
                 runOnUiThread {
                     map.controller.zoomIn()
                 }
             }
-            HandheldControls.Button.ZOOM_OUT -> {
+            Button.ZOOM_OUT -> {
                 runOnUiThread {
                     map.controller.zoomOut()
                 }
             }
-            /*
-            HandheldControls.Button.SHOW_MENU -> {
-                Log.d(TAG, "Show Menu Pressed")
-                runOnUiThread {
-                    if(menuVisible) {
-                        guideline.setGuidelinePercent(100f)
-                    } else {
-                        guideline.setGuidelinePercent(75f)
-                    }
-                    menuVisible = !menuVisible
-                    mainLayout.invalidate()
-                    map.invalidate()
-                }
-            }
-            */
         }
     }
 
@@ -117,7 +103,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
     }
 
     override fun onCurrentLocationChanged(location: Location) {
-        if(this.location == null) {
+        if (this.location == null) {
             this.location = location
             map.controller.setCenter(GeoPoint(location))
             map.invalidate()

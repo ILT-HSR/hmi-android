@@ -10,7 +10,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.input.HandheldControls
+import ch.hsr.ifs.gcs.driver.Input
+import ch.hsr.ifs.gcs.driver.Input.Button
 import ch.hsr.ifs.gcs.ui.data.Missions
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
@@ -25,7 +26,7 @@ class MissionStatusesRecyclerViewAdapter(
         private val mListener: OnStatusesFragmentChangedListener?,
         private val mRecyclerView: RecyclerView,
         private val mContext: MainActivity)
-    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(), HandheldControls.Listener {
+    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(), Input.Listener {
 
     private val TAG = MissionStatusesRecyclerViewAdapter::class.java.simpleName
 
@@ -69,26 +70,26 @@ class MissionStatusesRecyclerViewAdapter(
         }
     }
 
-    override fun onButton(button: HandheldControls.Button) {
+    override fun onButton(button: Button) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
         when (button) {
-            HandheldControls.Button.DPAD_UP -> {
+            Button.DPAD_UP -> {
                 activatePreviousItem()
             }
-            HandheldControls.Button.DPAD_DOWN -> {
+            Button.DPAD_DOWN -> {
                 activateNextItem()
             }
-            HandheldControls.Button.DPAD_RIGHT -> {
+            Button.DPAD_RIGHT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.refresh_mission)
                 mContext.controls?.removeListener(this)
             }
-            HandheldControls.Button.NEED_START -> {
+            Button.NEED_START -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
                 mContext.controls?.removeListener(this)
             }
-            HandheldControls.Button.UPDATE_ABORT -> {
+            Button.UPDATE_ABORT -> {
                 Log.d(TAG, "Cancel Mission Pressed")
             }
         }

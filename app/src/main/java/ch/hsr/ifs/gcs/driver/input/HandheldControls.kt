@@ -1,15 +1,18 @@
-package ch.hsr.ifs.gcs.input
+package ch.hsr.ifs.gcs.driver.input
 
 import android.content.Context
 import android.hardware.usb.UsbManager
 import android.util.Log
+import ch.hsr.ifs.gcs.driver.Input
+import ch.hsr.ifs.gcs.driver.Input.Button
+import ch.hsr.ifs.gcs.driver.Input.Listener
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.util.SerialInputOutputManager
 import java.io.IOException
 import java.lang.Exception
 import java.util.concurrent.Executors
 
-class HandheldControls(context: Context, private val fPort: UsbSerialPort) : SerialInputOutputManager.Listener {
+class HandheldControls(context: Context, private val fPort: UsbSerialPort) : SerialInputOutputManager.Listener, Input {
 
     private val TAG = HandheldControls::class.simpleName
 
@@ -20,45 +23,27 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
     private var fBuffered = 0
     private val fListeners = ArrayList<Listener>()
 
-    enum class Button(val value: Byte) {
-        DPAD_LEFT(0x1),
-        DPAD_RIGHT(0x2),
-        DPAD_UP(0x3),
-        DPAD_DOWN(0x4),
-        NEED_START(0xA),
-        UPDATE_ABORT(0xB),
-        SHOW_ALL(0xD),
-        SHOW_MENU(0xE),
-        ZOOM_IN(0x10),
-        ZOOM_OUT(0x11)
-    }
-
-    interface Listener {
-
-        fun onButton(button: Button)
-
-    }
-
     init {
-        val manager = context.getSystemService(Context.USB_SERVICE) as UsbManager
-        manager.openDevice(fPort.driver.device)?.let {
-            try {
-                fPort.open(it)
-                fPort.dtr = true
-                fPort.setParameters(9600, 8, 1, UsbSerialPort.PARITY_NONE)
-                fIOManager = SerialInputOutputManager(fPort, this)
-                fIOExecutor.submit(fIOManager)
-            } catch (e: IOException) {
-                Log.e(TAG, "Failed to open control port", e)
+        with(context.getSystemService(Context.USB_SERVICE) as UsbManager) {
+            openDevice(fPort.driver.device)?.let {
+                try {
+                    fPort.open(it)
+                    fPort.dtr = true
+                    fPort.setParameters(9600, 8, 1, UsbSerialPort.PARITY_NONE)
+                    fIOManager = SerialInputOutputManager(fPort, this@HandheldControls)
+                    fIOExecutor.submit(fIOManager)
+                } catch (e: IOException) {
+                    Log.e(TAG, "Failed to open control port", e)
+                }
             }
         }
     }
 
-    fun addListener(listener: Listener) {
+    override fun addListener(listener: Listener) {
         fListeners.add(listener)
     }
 
-    fun removeListener(listener: Listener) {
+    override fun removeListener(listener: Listener) {
         fListeners.remove(listener)
     }
 

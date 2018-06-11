@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.needs.parameters.AltitudeNeedParameter
+import ch.hsr.ifs.gcs.need.parameter.Altitude
 import kotlinx.android.synthetic.main.fragment_choose_altitude.*
 
 class AltitudeFragment : Fragment() {
 
-    var needParameter: AltitudeNeedParameter? = null
+    var needParameter: Altitude? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

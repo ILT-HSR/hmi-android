@@ -7,16 +7,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.input.HandheldControls
-import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
+import ch.hsr.ifs.gcs.driver.Input
+import ch.hsr.ifs.gcs.driver.Input.Button
+import ch.hsr.ifs.gcs.need.parameter.Parameter
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
 
 class NeedInstructionRecyclerViewAdapter(
-        private val mValues: List<NeedParameter<*>>,
+        private val mValues: List<Parameter<*>>,
         private val mContext: MainActivity)
-    : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>(), HandheldControls.Listener {
+    : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>(), Input.Listener {
 
     private val TAG = NeedInstructionRecyclerViewAdapter::class.java.simpleName
 
@@ -32,21 +33,21 @@ class NeedInstructionRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
         val context = holder.mView.context.applicationContext
-        if(item.isActive && !item.isCompleted) {
+        if (item.isActive && !item.isCompleted) {
             holder.mCheckBoxView.background = context.getDrawable(R.drawable.checkbox_active_incomplete)
-        } else if(item.isCompleted) {
+        } else if (item.isCompleted) {
             holder.mCheckBoxView.background = context.getDrawable(R.drawable.checkbox_active_complete)
             holder.mResultView.text = item.resultToString()
         } else {
-            holder.mCheckBoxView.background =  context.getDrawable(R.drawable.checkbox_inactive)
+            holder.mCheckBoxView.background = context.getDrawable(R.drawable.checkbox_inactive)
         }
         holder.mInstructionView.text = item.name
     }
 
-    override fun onButton(button: HandheldControls.Button) {
+    override fun onButton(button: Button) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
-        when(button) {
-            HandheldControls.Button.UPDATE_ABORT -> {
+        when (button) {
+            Button.UPDATE_ABORT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
                 mContext.controls?.removeListener(this)

@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.needs.parameters
+package ch.hsr.ifs.gcs.need.parameter
 
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
@@ -8,12 +8,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.views.MapView
 
 /**
- * This [NeedParameter] implementation is used to configure the desired altitude of the vehicle.
+ * This [Parameter] implementation is used to configure the desired altitude of the vehicle.
  *
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class AltitudeNeedParameter: NeedParameter<Int> {
+class Altitude: Parameter<Int> {
 
     private val fragment = AltitudeFragment()
 

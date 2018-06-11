@@ -1,11 +1,11 @@
-package ch.hsr.ifs.gcs.needs.parameters
+package ch.hsr.ifs.gcs.need.parameter
 
 import ch.hsr.ifs.gcs.MainActivity
 
 /**
  * Interface representing the base structure of a single need parameter of a need to be configured.
  */
-interface NeedParameter<Result> {
+interface Parameter<Result> {
 
     /**
      * The name of the need parameter. This is shown in the user interface.

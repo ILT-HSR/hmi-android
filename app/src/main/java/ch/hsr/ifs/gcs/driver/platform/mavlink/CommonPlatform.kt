@@ -1,8 +1,8 @@
-package ch.hsr.ifs.gcs.driver.mavlink
+package ch.hsr.ifs.gcs.driver.platform.mavlink
 
 import android.util.Log
 import ch.hsr.ifs.gcs.comm.protocol.*
-import ch.hsr.ifs.gcs.driver.AerialVehicle
+import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
 import ch.hsr.ifs.gcs.driver.DRIVER_MAVLINK_COMMON
 import ch.hsr.ifs.gcs.geo.GPSPosition
 import ch.hsr.ifs.gcs.geo.WGS89Position

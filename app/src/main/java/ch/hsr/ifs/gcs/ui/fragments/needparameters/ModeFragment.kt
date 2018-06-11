@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.needs.parameters.ModeNeedParameter
+import ch.hsr.ifs.gcs.need.parameter.Mode
 import kotlinx.android.synthetic.main.fragment_choose_mode.*
 
 class ModeFragment : Fragment() {
 
-    var needParameter: ModeNeedParameter? = null
+    var needParameter: Mode? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

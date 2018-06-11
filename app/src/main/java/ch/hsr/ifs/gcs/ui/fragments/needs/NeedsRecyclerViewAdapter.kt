@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.input.HandheldControls
-import ch.hsr.ifs.gcs.needs.Need
+import ch.hsr.ifs.gcs.driver.Input
+import ch.hsr.ifs.gcs.driver.Input.Button
+import ch.hsr.ifs.gcs.need.Need
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,7 +25,7 @@ class NeedsRecyclerViewAdapter(
         private val mListener: OnNeedsFragmentChangedListener?,
         private val mRecyclerView: RecyclerView,
         private val mContext: MainActivity)
-    : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>(), HandheldControls.Listener {
+    : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>(), Input.Listener {
 
     private val mOnClickListener: View.OnClickListener
 
@@ -43,7 +44,6 @@ class NeedsRecyclerViewAdapter(
     }
 
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.fragment_need, parent, false)
@@ -53,7 +53,7 @@ class NeedsRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
         holder.mView.setBackgroundColor(
-                if(item.isActive) {
+                if (item.isActive) {
                     mContext.resources.getColor(R.color.activeListItem, null)
                 } else {
                     Color.TRANSPARENT
@@ -65,21 +65,21 @@ class NeedsRecyclerViewAdapter(
         }
     }
 
-    override fun onButton(button: HandheldControls.Button) {
+    override fun onButton(button: Button) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
-        when(button) {
-            HandheldControls.Button.DPAD_UP -> {
+        when (button) {
+            Button.DPAD_UP -> {
                 activatePreviousItem()
             }
-            HandheldControls.Button.DPAD_DOWN -> {
+            Button.DPAD_DOWN -> {
                 activateNextItem()
             }
-            HandheldControls.Button.UPDATE_ABORT -> {
+            Button.UPDATE_ABORT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.abort_mission)
                 mContext.controls?.removeListener(this)
             }
-            HandheldControls.Button.NEED_START -> {
+            Button.NEED_START -> {
                 mListener?.onNeedItemChanged(activeItem)
                 mContext.controls?.removeListener(this)
             }
@@ -90,14 +90,14 @@ class NeedsRecyclerViewAdapter(
 
     private fun activateNextItem() {
         val newIndex = mValues.indexOf(activeItem) + 1
-        if(newIndex < mValues.size) {
+        if (newIndex < mValues.size) {
             activateItem(mValues[newIndex])
         }
     }
 
     private fun activatePreviousItem() {
         val newIndex = mValues.indexOf(activeItem) - 1
-        if(newIndex >= 0) {
+        if (newIndex >= 0) {
             activateItem(mValues[newIndex])
         }
     }

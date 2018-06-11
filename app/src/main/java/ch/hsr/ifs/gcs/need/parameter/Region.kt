@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.needs.parameters
+package ch.hsr.ifs.gcs.need.parameter
 
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
@@ -9,12 +9,12 @@ import org.osmdroid.views.overlay.Polygon
 import java.util.*
 
 /**
- * This [NeedParameter] implementation is used to define a region in which a need has to take place.
+ * This [Parameter] implementation is used to define a region in which a need has to take place.
  *
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
+class Region : Parameter<List<GeoPoint>> {
 
     private lateinit var region: Region
 

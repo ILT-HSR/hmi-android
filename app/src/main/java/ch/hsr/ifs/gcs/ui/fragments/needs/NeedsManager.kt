@@ -1,8 +1,8 @@
 package ch.hsr.ifs.gcs.ui.fragments.needs
 
-import ch.hsr.ifs.gcs.needs.CallInNeed
-import ch.hsr.ifs.gcs.needs.Need
-import ch.hsr.ifs.gcs.needs.RadiationMapNeed
+import ch.hsr.ifs.gcs.need.CallIn
+import ch.hsr.ifs.gcs.need.Need
+import ch.hsr.ifs.gcs.need.RadiationMap
 import ch.hsr.ifs.gcs.resources.*
 import kotlin.reflect.full.primaryConstructor
 
@@ -17,8 +17,8 @@ object NeedsManager : ResourceManager.OnResourceAvailabilityChangedListener {
     private val listeners = mutableListOf<OnNeedsAvailabilityChangedListener>()
 
     private val knownNeeds = kotlin.collections.mutableMapOf(
-            "ch.hsr.ifs.gcs.need.callIn" to Pair(CallInNeed::class, listOf(Capability(CAPABILITY_CAN_MOVE, true))),
-            "ch.hsr.ifs.gcs.need.radiationMap" to Pair(RadiationMapNeed::class, listOf(Capability(CAPABILITY_CAN_FLY, true)))
+            "ch.hsr.ifs.gcs.need.callIn" to Pair(CallIn::class, listOf(Capability(CAPABILITY_CAN_MOVE, true))),
+            "ch.hsr.ifs.gcs.need.radiationMap" to Pair(RadiationMap::class, listOf(Capability(CAPABILITY_CAN_FLY, true)))
     )
 
     init {
