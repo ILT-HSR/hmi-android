@@ -44,6 +44,7 @@ class NeedInstructionRecyclerViewAdapter(
     }
 
     override fun onButton(button: HandheldControls.Button) {
+        @Suppress("NON_EXHAUSTIVE_WHEN")
         when(button) {
             HandheldControls.Button.UPDATE_ABORT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)

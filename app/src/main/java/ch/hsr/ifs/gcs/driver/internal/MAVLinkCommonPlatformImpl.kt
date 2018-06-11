@@ -277,8 +277,8 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      */
     private fun handleHeartbeat(message: MAVLinkMessage) {
         fVehicleState.lastHeartbeat = Instant.now()
-//        Log.i(LOG_TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
-//        Log.i(LOG_TAG, "Current mode: ${message["base_mode"]}:${message["custom_mode"]} status: ${message["system_status"]}")
+        Log.i(LOG_TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
+        Log.i(LOG_TAG, "Current mode: ${message["base_mode"]}:${message["custom_mode"]} status: ${message["system_status"]}")
     }
 
     /**

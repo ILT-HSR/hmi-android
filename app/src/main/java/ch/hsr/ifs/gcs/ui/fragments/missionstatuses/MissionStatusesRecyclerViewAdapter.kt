@@ -70,6 +70,7 @@ class MissionStatusesRecyclerViewAdapter(
     }
 
     override fun onButton(button: HandheldControls.Button) {
+        @Suppress("NON_EXHAUSTIVE_WHEN")
         when(button) {
             HandheldControls.Button.DPAD_UP -> {
                 activatePreviousItem()

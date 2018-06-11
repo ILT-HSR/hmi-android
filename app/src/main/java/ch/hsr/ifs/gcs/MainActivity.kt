@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity(), HandheldControls.Listener, LocationSer
     }
 
     override fun onButton(button: HandheldControls.Button) {
+        @Suppress("NON_EXHAUSTIVE_WHEN")
         when(button) {
             HandheldControls.Button.ZOOM_IN -> {
                 runOnUiThread {

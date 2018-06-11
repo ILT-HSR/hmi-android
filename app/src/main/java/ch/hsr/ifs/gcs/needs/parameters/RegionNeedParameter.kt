@@ -39,7 +39,7 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
     override fun setup(context: MainActivity) {
         val mapView = context.findViewById<MapView>(R.id.map)
 
-        var polygon = createInitialPolygon(context, mapView)
+        val polygon = createInitialPolygon(mapView)
         result = region.getPolygonPoints()
         mapView.overlays.add(polygon)
         region.getRegionPoints().forEach {
@@ -54,7 +54,7 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
                 override fun onMarkerDrag(marker: Marker) {
                     it.latitude = marker.position.latitude
                     it.longitude = marker.position.longitude
-                    polygon?.points = region.getPolygonPoints()
+                    polygon.points = region.getPolygonPoints()
                     result = region.getPolygonPoints()
                     mapView.invalidate()
                 }
@@ -63,7 +63,7 @@ class RegionNeedParameter : NeedParameter<List<GeoPoint>> {
         mapView.invalidate()
     }
 
-    private fun createInitialPolygon(context: MainActivity, mapView: MapView): Polygon {
+    private fun createInitialPolygon(mapView: MapView): Polygon {
         val zoomLevel = mapView.zoomLevelDouble
         val currentGeoPoint = mapView.mapCenter
         val currentLatitude = currentGeoPoint.latitude

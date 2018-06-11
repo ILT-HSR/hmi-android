@@ -56,7 +56,7 @@ class TargetNeedParameter : NeedParameter<GeoPoint> {
 
             override fun onMarkerDrag(marker: Marker) {}
         })
-        mapView.overlays.add(object : Overlay(context) {
+        mapView.overlays.add(object : Overlay() {
             override fun draw(c: Canvas?, osmv: MapView?, shadow: Boolean) {}
             override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
                 val proj = mapView.projection

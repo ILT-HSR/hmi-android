@@ -33,8 +33,8 @@ class CallInNeed(override val resource: Resource) : Need {
     override fun getTasks(): List<Task>? {
         if(targetParameter.isCompleted && cargoParameter.isCompleted) {
             val location = Location("")
-            location.latitude = targetParameter.result!!.latitudeE6 / 1E6
-            location.longitude = targetParameter.result!!.longitudeE6 / 1E6
+            location.latitude = targetParameter.result!!.latitude
+            location.longitude = targetParameter.result!!.longitude
             val moveToTask = MoveToTask(location)
             val triggerPayloadTask = TriggerPayloadTask(cargoParameter.result!!)
             return arrayListOf(moveToTask, triggerPayloadTask)
