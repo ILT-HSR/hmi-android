@@ -7,9 +7,9 @@ import ch.hsr.ifs.gcs.needs.parameters.TargetNeedParameter
 import ch.hsr.ifs.gcs.resources.CAPABILITY_CAN_MOVE
 import ch.hsr.ifs.gcs.resources.Capability
 import ch.hsr.ifs.gcs.resources.Resource
-import ch.hsr.ifs.gcs.tasks.MoveToTask
-import ch.hsr.ifs.gcs.tasks.Task
-import ch.hsr.ifs.gcs.tasks.TriggerPayloadTask
+import ch.hsr.ifs.gcs.task.MoveToPosition
+import ch.hsr.ifs.gcs.task.Task
+import ch.hsr.ifs.gcs.task.TriggerPayload
 
 /**
  * This [Need] implementation represents the need to drop a cargo at a chosen location.
@@ -35,8 +35,8 @@ class CallInNeed(override val resource: Resource) : Need {
             val location = Location("")
             location.latitude = targetParameter.result!!.latitude
             location.longitude = targetParameter.result!!.longitude
-            val moveToTask = MoveToTask(location)
-            val triggerPayloadTask = TriggerPayloadTask(cargoParameter.result!!)
+            val moveToTask = MoveToPosition(location)
+            val triggerPayloadTask = TriggerPayload(cargoParameter.result!!)
             return arrayListOf(moveToTask, triggerPayloadTask)
         } else {
             return null

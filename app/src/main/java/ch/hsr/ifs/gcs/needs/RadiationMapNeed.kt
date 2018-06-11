@@ -7,7 +7,7 @@ import ch.hsr.ifs.gcs.needs.parameters.RegionNeedParameter
 import ch.hsr.ifs.gcs.resources.CAPABILITY_CAN_FLY
 import ch.hsr.ifs.gcs.resources.Capability
 import ch.hsr.ifs.gcs.resources.Resource
-import ch.hsr.ifs.gcs.tasks.Task
+import ch.hsr.ifs.gcs.task.Task
 
 /**
  * This [Need] implementation represents the need to generate a heat map for radiation in a

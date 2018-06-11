@@ -32,12 +32,12 @@ object Scheduler {
             return
         }
 
-        with(Mission(need)) {
-            fMissions.add(this)
-            fListeners.forEach{
-                it.onNewMissionAvailable(this)
-            }
-        }
+//        with(Mission(need)) {
+//            fMissions.add(this)
+//            fListeners.forEach{
+//                it.onNewMissionAvailable(this)
+//            }
+//        }
     }
 
 }

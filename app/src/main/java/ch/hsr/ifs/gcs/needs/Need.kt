@@ -3,7 +3,7 @@ package ch.hsr.ifs.gcs.needs
 import ch.hsr.ifs.gcs.needs.parameters.NeedParameter
 import ch.hsr.ifs.gcs.resources.Capability
 import ch.hsr.ifs.gcs.resources.Resource
-import ch.hsr.ifs.gcs.tasks.Task
+import ch.hsr.ifs.gcs.task.Task
 
 /**
  * Interface representing the base structure of a need.

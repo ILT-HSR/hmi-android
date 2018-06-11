@@ -1,8 +1,8 @@
-package ch.hsr.ifs.gcs.tasks
+package ch.hsr.ifs.gcs.task
 
 import ch.hsr.ifs.gcs.resources.Resource
 
-class TriggerPayloadTask(val payload: String) : Task {
+class TriggerPayload(val payload: String) : Task {
 
     override fun executeOn(resource: Resource) {
         TODO("not implemented")
