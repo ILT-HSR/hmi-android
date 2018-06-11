@@ -7,9 +7,9 @@ import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesListener
-import ch.hsr.ifs.gcs.ui.fragments.needparameters.CargoFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionListener
+import ch.hsr.ifs.gcs.ui.fragments.needparameters.CargoFragment
 import ch.hsr.ifs.gcs.ui.fragments.needparameters.ModeFragment
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsListener

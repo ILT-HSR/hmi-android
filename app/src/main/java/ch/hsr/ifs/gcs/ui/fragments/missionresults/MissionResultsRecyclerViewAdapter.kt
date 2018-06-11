@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.ui.fragments.missionresults
 
+
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -10,13 +11,10 @@ import android.widget.TextView
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.input.HandheldControls
-
-
-import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment.OnResultsFragmentChangedListener
-import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent.MissionResultDummyItem
+import ch.hsr.ifs.gcs.ui.data.MissionResultItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment.OnResultsFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
-
 import kotlinx.android.synthetic.main.fragment_missionresults.view.*
 
 /**
@@ -24,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_missionresults.view.*
  * specified [OnResultsFragmentChangedListener].
  */
 class MissionResultsRecyclerViewAdapter(
-        private val mValues: List<MissionResultDummyItem>,
+        private val mValues: List<MissionResultItem>,
         private val mListener: OnResultsFragmentChangedListener?,
         private val mRecyclerView: RecyclerView,
         private val mContext: MainActivity)
@@ -34,13 +32,13 @@ class MissionResultsRecyclerViewAdapter(
 
     private val mOnClickListener: View.OnClickListener
 
-    var activeItem: MissionResultDummyItem
+    var activeItem: MissionResultItem
 
     init {
         activeItem = mValues[0]
         activeItem.isSelected = true
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as MissionResultDummyItem
+            val item = v.tag as MissionResultItem
             activateItem(item)
             mListener?.onResultItemChanged(item)
         }
@@ -108,7 +106,7 @@ class MissionResultsRecyclerViewAdapter(
         }
     }
 
-    private fun activateItem(item: MissionResultDummyItem) {
+    private fun activateItem(item: MissionResultItem) {
         activeItem.isSelected = false
         mRecyclerView.findViewHolderForLayoutPosition(mValues.indexOf(activeItem)).itemView.setBackgroundColor(Color.TRANSPARENT)
         mListener?.onResultItemChanged(activeItem)

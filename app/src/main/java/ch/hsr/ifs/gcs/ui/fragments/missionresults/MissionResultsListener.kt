@@ -1,12 +1,12 @@
 package ch.hsr.ifs.gcs.ui.fragments.missionresults
 
 import android.app.Activity
-import ch.hsr.ifs.gcs.ui.dummydata.MissionResultsDummyContent
+import ch.hsr.ifs.gcs.ui.data.MissionResultItem
 import org.osmdroid.views.MapView
 
 class MissionResultsListener(val activity: Activity, val map: MapView) : MissionResultsFragment.OnResultsFragmentChangedListener {
 
-    override fun onResultItemChanged(item: MissionResultsDummyContent.MissionResultDummyItem?) {
+    override fun onResultItemChanged(item: MissionResultItem?) {
         activity.runOnUiThread({
             item?.let {
                 if(it.isSelected) {
@@ -19,7 +19,7 @@ class MissionResultsListener(val activity: Activity, val map: MapView) : Mission
         })
     }
 
-    override fun refreshResultsMapView(items: List<MissionResultsDummyContent.MissionResultDummyItem>) {
+    override fun refreshResultsMapView(items: List<MissionResultItem>) {
         activity.runOnUiThread({
             map.overlays.clear()
             items.forEach {

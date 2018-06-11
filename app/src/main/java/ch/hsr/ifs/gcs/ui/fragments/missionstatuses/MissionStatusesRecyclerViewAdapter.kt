@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.ui.fragments.missionstatuses
 
-import android.graphics.Color
+
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,13 +11,9 @@ import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.input.HandheldControls
 import ch.hsr.ifs.gcs.mission.Mission
-
-
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
-import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent.MissionStatusDummyItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
-
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 
 /**

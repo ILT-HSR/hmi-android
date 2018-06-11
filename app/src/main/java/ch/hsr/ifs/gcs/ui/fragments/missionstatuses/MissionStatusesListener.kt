@@ -2,7 +2,6 @@ package ch.hsr.ifs.gcs.ui.fragments.missionstatuses
 
 import android.app.Activity
 import ch.hsr.ifs.gcs.mission.Mission
-import ch.hsr.ifs.gcs.ui.dummydata.MissionStatusesDummyContent
 import org.osmdroid.views.MapView
 
 class MissionStatusesListener(val activity: Activity, val map: MapView) : MissionStatusesFragment.OnStatusesFragmentChangedListener {

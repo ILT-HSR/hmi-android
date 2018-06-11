@@ -3,8 +3,8 @@ package ch.hsr.ifs.gcs.driver.mavlink.internal
 import ch.hsr.ifs.gcs.comm.protocol.*
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.DRIVER_MAVLINK_PIXHAWK_PX4
-import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommonPlatform
 import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommonPlatform
 import java.nio.channels.ByteChannel
 
 /**
