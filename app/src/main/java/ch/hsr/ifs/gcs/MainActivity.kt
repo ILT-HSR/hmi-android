@@ -1,7 +1,5 @@
 package ch.hsr.ifs.gcs
 
-import android.content.Context
-import android.hardware.usb.UsbManager
 import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -9,13 +7,11 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Button
-import ch.hsr.ifs.gcs.driver.Platform
-import ch.hsr.ifs.gcs.driver.input.HandheldControls
+import ch.hsr.ifs.gcs.driver.InputProvider
 import ch.hsr.ifs.gcs.geo.LocationService
 import ch.hsr.ifs.gcs.resources.ResourceManager
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
-import com.hoho.android.usbserial.driver.UsbSerialProber
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -23,13 +19,10 @@ import org.osmdroid.util.GeoPoint
 
 class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLocationChangedListener {
 
-    private val TAG = MainActivity::class.java.simpleName
-
     var fragmentHandler: FragmentHandler? = null
-    var controls: HandheldControls? = null
+    var controls: Input? = null
     private var locationService: LocationService? = null
 
-    private var drone: Platform? = null
     private var location: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,12 +44,9 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
 
         locationService = LocationService(this, this)
 
-        val mUsbManager = getSystemService(Context.USB_SERVICE) as UsbManager
-        UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).forEach {
-            if (it.device.manufacturerName.equals("Arduino LLC")) {
-                controls = HandheldControls(this, it.ports[0])
-                controls?.addListener(this)
-            }
+        InputProvider.instantiate(this)?.apply {
+            controls = this
+            addListener(this@MainActivity)
         }
 
         ResourceManager.startScanning(this)
