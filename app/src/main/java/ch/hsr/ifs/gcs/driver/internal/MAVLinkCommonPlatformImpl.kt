@@ -10,9 +10,12 @@ import me.drton.jmavlib.mavlink.MAVLinkVendors
 import java.nio.channels.ByteChannel
 import java.time.Duration
 import java.time.Instant
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+
+typealias MessageHandler = (MAVLinkMessage) -> Unit
 
 /**
  * Concrete implementation of the [platform driver interface][Platform] for MAVLink vehicles
@@ -20,7 +23,7 @@ import java.util.concurrent.TimeUnit
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) : MAVLinkCommonPlatform {
+internal open class MAVLinkCommonPlatformImpl(channel: ByteChannel) : MAVLinkCommonPlatform {
 
     companion object {
         private val LOG_TAG = MAVLinkCommonPlatformImpl::class.simpleName
@@ -45,7 +48,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
         val capabilities = createRequestAutopilotCapabilitiesMessage(fSender, fTarget, schema)
     }
 
-    private val fMessageListeners = HashMap<MessageID, MutableList<(MAVLinkMessage) -> Unit>>()
+    private val fMessageListeners = mutableMapOf<MessageID, MutableList<MessageHandler>>()
 
     private val fVehicleState = object {
         /**
@@ -120,15 +123,20 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
 
     override val driverId get() = DRIVER_MAVLINK_COMMON
 
-    override val isAlive get() = Instant.now() < fVehicleState.lastHeartbeat + maximumExpectedHeartbeatInterval
+    override val isAlive
+        get() = synchronized(fVehicleState) {
+            Instant.now() < fVehicleState.lastHeartbeat + maximumExpectedHeartbeatInterval
+        }
 
     override val name
-        get() = fVehicleState.vendor?.let {
-            "${fVehicleState.vendor} ${fVehicleState.product}"
-        } ?: "<unknown>"
+        get() = synchronized(fVehicleState) {
+            fVehicleState.vendor?.let {
+                "${fVehicleState.vendor} ${fVehicleState.product}"
+            } ?: "<unknown>"
+        }
 
     override val currentPosition: GPSPosition?
-        get() = fVehicleState.position
+        get() = synchronized(fVehicleState) { fVehicleState.position }
 
     override fun arm() = enqueueCommand(createArmMessage(fSender, fTarget, schema))
 
@@ -183,14 +191,14 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      *
      * @since 1.0.0
      */
-    protected val maximumExpectedHeartbeatInterval = Duration.ofSeconds(10)
+    protected val maximumExpectedHeartbeatInterval: Duration = Duration.ofSeconds(10)
 
     /**
      * Add a listener for a specific [message type][MAVLinkPlatform.MessageID]
      *
      * @since 1.0.0
      */
-    protected fun addListener(messageName: MessageID, handler: (MAVLinkMessage) -> Unit) {
+    protected fun addListener(messageName: MessageID, handler: MessageHandler) {
         val listeners = fMessageListeners[messageName]
         if (listeners != null) {
             listeners.add(handler)
@@ -223,10 +231,6 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
     private fun beginSerialIO() {
         fExecutors.io.scheduleAtFixedRate({
             fMessageStream.read()?.let(this::dispatch)
-
-//            Log.d(LOG_TAG, "Command queue has a length of ${fMessageQueue.size}")
-//            Log.d(LOG_TAG, "Head message is ${fMessageQueue.peek()}")
-
             fMessageQueue.peek()?.let {
                 when (it.msgName) {
                     MESSAGE_COMMAND_LONG -> sendLongCommand(it)
@@ -259,7 +263,6 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      * Dispatch a received MAVLink message to the associated listener(s)
      */
     private fun dispatch(message: MAVLinkMessage) {
-        Log.d(LOG_TAG, "Dispatching message: $message")
         when (MessageID.from(message.msgName)) {
             null -> Log.d(LOG_TAG, "Unsupported message '$message'")
             else -> {
@@ -275,16 +278,14 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
     /**
      * Process a `Heartbeat` message received on the link
      */
-    private fun handleHeartbeat(message: MAVLinkMessage) {
+    private fun handleHeartbeat(message: MAVLinkMessage): Unit = synchronized(fVehicleState) {
         fVehicleState.lastHeartbeat = Instant.now()
-        Log.i(LOG_TAG, "Heartbeat from ${message.systemID}:${message.componentID} at ${fVehicleState.lastHeartbeat}")
-        Log.i(LOG_TAG, "Current mode: ${message["base_mode"]}:${message["custom_mode"]} status: ${message["system_status"]}")
     }
 
     /**
      * Process a `Autopilot Version` message received on the link
      */
-    private fun handleVersion(message: MAVLinkMessage) {
+    private fun handleVersion(message: MAVLinkMessage): Unit = synchronized(fVehicleState) {
         fVehicleState.vendor = MAVLinkVendors[message["vendor_id"] as? Int ?: 0]
         fVehicleState.product = MAVLinkProducts[message["product_id"] as? Int ?: 0]
     }
@@ -292,7 +293,7 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
     /**
      * Process a `Global Position INT` message received on the link
      */
-    private fun handlePosition(message: MAVLinkMessage) {
+    private fun handlePosition(message: MAVLinkMessage): Unit = synchronized(fVehicleState) {
         fVehicleState.timeSinceBoot = message.getInt("time_boot_ms")
         fVehicleState.position = GPSPosition(WGS89Position(message.getInt("lat"), message.getInt("lon"), message.getInt("alt")))
         fVehicleState.groundSpeed.north = message.getInt("vx")
@@ -365,5 +366,4 @@ internal open class MAVLinkCommonPlatformImpl constructor(channel: ByteChannel) 
      */
     private fun enqueueOnLowFrequencyScheduler(task: () -> Unit) =
             fExecutors.lowFrequency.scheduleAtFixedRate(task, 0, 5000, TimeUnit.MILLISECONDS)
-
 }
