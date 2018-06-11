@@ -4,6 +4,8 @@ import android.util.Log
 import ch.hsr.ifs.gcs.comm.protocol.*
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.DRIVER_MAVLINK_COMMON
+import ch.hsr.ifs.gcs.util.GPSPosition
+import ch.hsr.ifs.gcs.util.WGS89Position
 import me.drton.jmavlib.mavlink.*
 import java.nio.channels.ByteChannel
 import java.time.Duration

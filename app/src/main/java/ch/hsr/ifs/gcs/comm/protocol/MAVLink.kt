@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.comm.protocol
 
+import ch.hsr.ifs.gcs.util.WGS89Position
 import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 
@@ -152,53 +153,6 @@ private val Boolean.int get() = if (this) 1 else 0
  * @author IFS Institute for Software
  */
 data class MAVLinkSystem(val id: Int, val component: Int)
-
-/**
- * A simple value type to hold GPS floating point coordinates
- *
- * @param latitude The latitude of the point (degrees)
- * @param longitude The longitude of the point (degrees)
- * @param altitude The altitude of the point (meters)
- *
- * @since 1.0.0
- * @author IFS Institute for Software
- */
-data class GPSPosition(val latitude: Double, val longitude: Double, val altitude: Double) {
-
-    /**
-     * Convert a #WGS89Position into a #GPSPosition
-     *
-     * @since 1.0.0
-     */
-    constructor(position: WGS89Position) : this(
-            position.latitude.toFloat() / 1e7,
-            position.longitude.toFloat() / 1e7,
-            position.altitude.toFloat() / 1e3)
-
-}
-
-/**
- * A simple value type to hold scaled WGS89 integer coordinates
- *
- * @param latitude The latitude of the point (degrees * 10e7)
- * @param longitude The longitude of the point (degrees * 10e7)
- * @param altitude The altitude of the point (meters * 10e3)
- *
- * @since 1.0.0
- * @author IFS Institute for Software
- */
-data class WGS89Position(val latitude: Int, val longitude: Int, val altitude: Int) {
-
-    /**
-     * Convert a #GPSPosition into a #WGS89Position
-     *
-     * @since 1.0.0
-     */
-    constructor(position: GPSPosition) : this(
-            (position.latitude * 1e7).toInt(),
-            (position.longitude * 1e7).toInt(),
-            (position.altitude * 1e3).toInt())
-}
 
 /**
  * @internal

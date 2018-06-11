@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.driver
 
-import ch.hsr.ifs.gcs.comm.protocol.GPSPosition
+import ch.hsr.ifs.gcs.util.GPSPosition
 
 /**
  * The interface of drivers for aerial vehicles
