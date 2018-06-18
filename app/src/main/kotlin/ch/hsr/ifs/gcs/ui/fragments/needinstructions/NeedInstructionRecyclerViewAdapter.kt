@@ -13,6 +13,7 @@ import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
+import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
 
 class NeedInstructionRecyclerViewAdapter(
         private val mValues: List<Parameter<*>>,
@@ -51,6 +52,12 @@ class NeedInstructionRecyclerViewAdapter(
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
                 mContext.controls?.removeListener(this)
+            }
+            Button.NEED_START -> {
+                mContext.needNavigationButton.performClick()
+            }
+            Button.UPDATE_ABORT -> {
+                mContext.leftButton.performClick()
             }
         }
     }
