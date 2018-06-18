@@ -27,8 +27,8 @@ open class CommonPlatform(channel: ByteChannel) : BasicPlatform(channel, MAVLink
 
     private inner class NativeMissionExecution(tasks: List<Task>) : Execution(tasks) {
 
-        override fun tick() {
-            TODO("not implemented")
+        override fun tick() : Status {
+            return Status.FAILURE
         }
 
     }
