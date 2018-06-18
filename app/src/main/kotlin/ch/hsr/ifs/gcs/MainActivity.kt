@@ -4,9 +4,10 @@ import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.driver.Input.Button
+import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.driver.access.InputProvider
 import ch.hsr.ifs.gcs.support.geo.LocationService
 import ch.hsr.ifs.gcs.resource.access.ResourceManager
@@ -63,20 +64,25 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         finish()
     }
 
-    override fun onButton(button: Button) {
+    override fun onButton(control: Control) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
-        when (button) {
-            Button.ZOOM_IN -> {
+        when (control) {
+            Control.ZOOM_IN -> {
                 runOnUiThread {
                     map.controller.zoomIn()
                 }
             }
-            Button.ZOOM_OUT -> {
+            Control.ZOOM_OUT -> {
                 runOnUiThread {
                     map.controller.zoomOut()
                 }
             }
+
         }
+    }
+
+    override fun onJoystick(control: Control, value: Byte) {
+        Log.d("JOYSTICK", "Not implemented yet")
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

@@ -8,7 +8,7 @@ import android.widget.TextView
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.driver.Input.Button
+import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
@@ -45,18 +45,18 @@ class NeedInstructionRecyclerViewAdapter(
         holder.mInstructionView.text = item.name
     }
 
-    override fun onButton(button: Button) {
+    override fun onButton(control: Control) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
-        when (button) {
-            Button.UPDATE_ABORT -> {
+        when (control) {
+            Control.UPDATE_ABORT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
                 mContext.controls?.removeListener(this)
             }
-            Button.NEED_START -> {
+            Control.NEED_START -> {
                 mContext.needNavigationButton.performClick()
             }
-            Button.UPDATE_ABORT -> {
+            Control.UPDATE_ABORT -> {
                 mContext.leftButton.performClick()
             }
         }
