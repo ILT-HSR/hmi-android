@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver.platform.mavlink
 
 import ch.hsr.ifs.gcs.mission.Execution
+import ch.hsr.ifs.gcs.mission.need.task.Task
 import me.drton.jmavlib.mavlink.MAVLinkSchemaRegistry
 import java.nio.channels.ByteChannel
 
@@ -24,9 +25,16 @@ open class CommonPlatform(channel: ByteChannel) : BasicPlatform(channel, MAVLink
         const val DRIVER_MAVLINK_COMMON = "ch.hsr.ifs.gcs.driver.platform.mavlink.CommonPlatform"
     }
 
+    private inner class NativeMissionExecution(tasks: List<Task>) : Execution(tasks) {
+
+        override fun tick() {
+            TODO("not implemented")
+        }
+
+    }
+
     override val driverId get() = DRIVER_MAVLINK_COMMON
 
-    override val execution: Execution
-        get() = TODO("not implemented")
+    override fun getExecutionFor(tasks: List<Task>) = NativeMissionExecution(tasks) as Execution
 
 }

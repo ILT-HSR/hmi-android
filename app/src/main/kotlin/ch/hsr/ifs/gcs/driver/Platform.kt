@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver
 
 import ch.hsr.ifs.gcs.mission.Execution
+import ch.hsr.ifs.gcs.mission.need.task.Task
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 
 /**
@@ -46,7 +47,7 @@ interface Platform {
      *
      * @since 1.0.0
      */
-    val execution: Execution
+    fun getExecutionFor(tasks: List<Task>): Execution
 
     /**
      * Access the current position of the vehicle
