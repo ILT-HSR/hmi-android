@@ -11,7 +11,7 @@ import android.widget.TextView
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.driver.Input.Button
+import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.ui.data.Missions
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
@@ -70,26 +70,26 @@ class MissionStatusesRecyclerViewAdapter(
         }
     }
 
-    override fun onButton(button: Button) {
+    override fun onButton(control: Control) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
-        when (button) {
-            Button.DPAD_UP -> {
+        when (control) {
+            Control.DPAD_UP -> {
                 activatePreviousItem()
             }
-            Button.DPAD_DOWN -> {
+            Control.DPAD_DOWN -> {
                 activateNextItem()
             }
-            Button.DPAD_RIGHT -> {
+            Control.DPAD_RIGHT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.refresh_mission)
                 mContext.controls?.removeListener(this)
             }
-            Button.NEED_START -> {
+            Control.NEED_START -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
                 mContext.controls?.removeListener(this)
             }
-            Button.UPDATE_ABORT -> {
+            Control.UPDATE_ABORT -> {
                 Log.d(TAG, "Cancel Mission Pressed")
             }
         }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.hardware.usb.UsbManager
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.driver.Input.Button
+import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.driver.Input.Listener
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.util.SerialInputOutputManager
@@ -63,9 +63,14 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
             fBuffer[fBuffered++] = data[i]
 
             if (fBuffered == 4) {
-                decode()?.let { button ->
+                decode()?.let { control ->
                     fListeners.forEach {
-                        it.onButton(button)
+                        if(!(control == Control.JOYSTICK_X_AXIS ||
+                                control == Control.JOYSTICK_Y_AXIS)) {
+                            it.onButton(control)
+                        } else {
+                            it.onJoystick(control, fBuffer[2])
+                        }
                     }
                 }
                 fBuffered = 0
@@ -73,17 +78,19 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
         }
     }
 
-    private fun decode(): Button? = when (fBuffer[1]) {
-        Button.DPAD_DOWN.value -> Button.DPAD_DOWN
-        Button.DPAD_LEFT.value -> Button.DPAD_LEFT
-        Button.DPAD_RIGHT.value -> Button.DPAD_RIGHT
-        Button.DPAD_UP.value -> Button.DPAD_UP
-        Button.NEED_START.value -> Button.NEED_START
-        Button.UPDATE_ABORT.value -> Button.UPDATE_ABORT
-        Button.SHOW_ALL.value -> Button.SHOW_ALL
-        Button.SHOW_MENU.value -> Button.SHOW_MENU
-        Button.ZOOM_IN.value -> Button.ZOOM_IN
-        Button.ZOOM_OUT.value -> Button.ZOOM_OUT
+    private fun decode(): Control? = when (fBuffer[1]) {
+        Control.DPAD_DOWN.value -> Control.DPAD_DOWN
+        Control.DPAD_LEFT.value -> Control.DPAD_LEFT
+        Control.DPAD_RIGHT.value -> Control.DPAD_RIGHT
+        Control.DPAD_UP.value -> Control.DPAD_UP
+        Control.NEED_START.value -> Control.NEED_START
+        Control.UPDATE_ABORT.value -> Control.UPDATE_ABORT
+        Control.SHOW_ALL.value -> Control.SHOW_ALL
+        Control.SHOW_MENU.value -> Control.SHOW_MENU
+        Control.ZOOM_IN.value -> Control.ZOOM_IN
+        Control.ZOOM_OUT.value -> Control.ZOOM_OUT
+        Control.JOYSTICK_X_AXIS.value -> Control.JOYSTICK_X_AXIS
+        Control.JOYSTICK_Y_AXIS.value -> Control.JOYSTICK_Y_AXIS
         else -> null
     }
 

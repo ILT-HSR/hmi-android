@@ -4,11 +4,13 @@ interface Input {
 
     interface Listener {
 
-        fun onButton(button: Button)
+        fun onButton(control: Control)
+
+        fun onJoystick(control: Control, value: Byte) {}
 
     }
 
-    enum class Button(val value: Byte) {
+    enum class Control(val value: Byte) {
         DPAD_LEFT(0x1),
         DPAD_RIGHT(0x2),
         DPAD_UP(0x3),
@@ -18,7 +20,9 @@ interface Input {
         SHOW_ALL(0xD),
         SHOW_MENU(0xE),
         ZOOM_IN(0x10),
-        ZOOM_OUT(0x11)
+        ZOOM_OUT(0x11),
+        JOYSTICK_X_AXIS(0x81.toByte()),
+        JOYSTICK_Y_AXIS(0x82.toByte())
     }
 
     fun addListener(listener: Listener)

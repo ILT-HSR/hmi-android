@@ -9,7 +9,7 @@ import android.widget.TextView
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.driver.Input.Button
+import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.mission.need.Need
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedListener
@@ -65,21 +65,21 @@ class NeedsRecyclerViewAdapter(
         }
     }
 
-    override fun onButton(button: Button) {
+    override fun onButton(control: Control) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
-        when (button) {
-            Button.DPAD_UP -> {
+        when (control) {
+            Control.DPAD_UP -> {
                 activatePreviousItem()
             }
-            Button.DPAD_DOWN -> {
+            Control.DPAD_DOWN -> {
                 activateNextItem()
             }
-            Button.UPDATE_ABORT -> {
+            Control.UPDATE_ABORT -> {
                 mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.abort_mission)
                 mContext.controls?.removeListener(this)
             }
-            Button.NEED_START -> {
+            Control.NEED_START -> {
                 mListener?.onNeedItemChanged(activeItem)
                 mContext.controls?.removeListener(this)
             }
