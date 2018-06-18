@@ -41,8 +41,8 @@ apply plugin: 'org.jetbrains.dokka-android'
 
 dokka {
     moduleName = "$rootProject.name"
-    outputDirectory = "dokka"
-    outputFormat = "javadoc"
+    outputDirectory = "javadoc"
+    outputFormat = "html"
     processConfigurations = []
 
     sourceDirs = files(subprojects.findAll { !it.name.contains("test") }.collect {
