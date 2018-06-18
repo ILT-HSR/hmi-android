@@ -32,7 +32,7 @@
 
         <provider
             android:authorities="${applicationId}.builtinResourceProvider"
-            android:name=".resources.BuiltinResourceProvider"
+            android:name=".resource.internal.BuiltinResourceProvider"
             android:exported="false"
             android:enabled="true"/>
 
