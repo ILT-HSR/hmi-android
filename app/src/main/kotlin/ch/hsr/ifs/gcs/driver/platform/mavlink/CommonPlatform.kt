@@ -1,8 +1,8 @@
 package ch.hsr.ifs.gcs.driver.platform.mavlink
 
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
 import ch.hsr.ifs.gcs.driver.access.DRIVER_MAVLINK_COMMON
+import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import me.drton.jmavlib.mavlink.*
@@ -16,9 +16,9 @@ import java.util.concurrent.TimeUnit
 typealias MessageHandler = (MAVLinkMessage) -> Unit
 
 /**
- * This class provides a basic [platform][Platform] implementation for the MAVLink **common**
- * schema. Specific platform drivers for vehicles implementing the **common** schema should be
- * derived from this class.
+ * This class provides a basic [platform][ch.hsr.ifs.gcs.driver.Platform] implementation for the
+ * MAVLink **common** schema. Specific platform drivers for vehicles implementing the **common**
+ * schema should be derived from this class.
  *
  * @since 1.0.0
  * @author IFS Institute for Software

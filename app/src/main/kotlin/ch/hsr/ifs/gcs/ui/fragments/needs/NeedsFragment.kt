@@ -65,10 +65,12 @@ class NeedsFragment : Fragment() {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
 
             }
-            activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
-            activity.leftButton.setOnClickListener {
-                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-                activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
+            activity?.apply {
+                leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+                leftButton.setOnClickListener {
+                    context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                    leftButton.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
+                }
             }
         }
     }
@@ -89,7 +91,7 @@ class NeedsFragment : Fragment() {
     interface OnNeedsFragmentChangedListener {
 
         /**
-         * Called when a [NeedDummyItem] is clicked in the [RecyclerView]. Implementation
+         * Called when a [Need] is clicked in the [RecyclerView]. Implementation
          * defines what to do with the provided [item].
          * @param item The item that has been clicked.
          */

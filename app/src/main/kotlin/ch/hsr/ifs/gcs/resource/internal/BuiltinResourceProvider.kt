@@ -54,8 +54,8 @@ class BuiltinResourceProvider : ContentProvider() {
                         .mapNotNull { obj ->
                             BUILTIN_CAPABILITIES[obj["id"].asString]?.let { cap ->
                                 when (cap.type) {
-                                    "boolean" -> Capability<Boolean>(cap, obj["value"].asBoolean)
-                                    "number" -> Capability<Number>(cap, obj["value"].asNumber)
+                                    "boolean" -> Capability(cap, obj["value"].asBoolean)
+                                    "number" -> Capability(cap, obj["value"].asNumber)
                                     else -> null
                                 }
                             }

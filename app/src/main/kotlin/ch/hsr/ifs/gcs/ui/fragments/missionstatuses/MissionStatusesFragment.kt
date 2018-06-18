@@ -66,10 +66,10 @@ class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChan
             if (context is MainActivity) {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
             }
-            activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+            activity?.leftButton?.background = context?.applicationContext?.getDrawable(R.drawable.cancel_action)
         }
         statusesAddButton.isEnabled = !NeedsManager.needs.isEmpty()
-        activity.leftButton.setOnClickListener {
+        activity?.leftButton?.setOnClickListener {
             Log.d(TAG, "Cancel Mission Pressed")
         }
     }
@@ -97,7 +97,7 @@ class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChan
     interface OnStatusesFragmentChangedListener {
 
         /**
-         * Called when a [MissionSatusDummmyItem] is clicked in the [RecyclerView]. Implementation
+         * Called when a [Missions.Item] is clicked in the [RecyclerView]. Implementation
          * defines what to do with the provided [item].
          * @param item The item that has been clicked.
          */
@@ -106,7 +106,6 @@ class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChan
         /**
          * Called when fragment is attached to its parent. Implementation should redraw the mapView
          * according to the use case of this fragment.
-         * @param items The list of all items of the fragment.
          */
         fun refreshStatusesMapView()
 

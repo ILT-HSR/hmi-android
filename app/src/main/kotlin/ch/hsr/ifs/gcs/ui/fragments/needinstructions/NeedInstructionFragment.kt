@@ -59,35 +59,37 @@ class NeedInstructionFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         val context = context
         if(context is MainActivity) {
-            activity.leftButton.setOnClickListener {
-                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
-                activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
-            }
-            currentTaskId = 0
-            activeParameterList?.get(currentTaskId)?.let {
-                it.setup(context)
-                it.isActive = true
-            }
-            needNavigationButton.setOnClickListener {
+            activity?.apply {
+                leftButton.setOnClickListener {
+                    context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                    leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+                }
+                currentTaskId = 0
                 activeParameterList?.get(currentTaskId)?.let {
-                    it.isActive = false
-                    it.isCompleted = true
-                    it.cleanup(context)
+                    it.setup(context)
+                    it.isActive = true
                 }
-                if(currentTaskId < activeParameterList!!.size - 1) {
-                    currentTaskId += 1
+                needNavigationButton.setOnClickListener {
                     activeParameterList?.get(currentTaskId)?.let {
-                        it.setup(context)
-                        it.isActive = true
+                        it.isActive = false
+                        it.isCompleted = true
+                        it.cleanup(context)
                     }
-                } else {
-                    needNavigationButton.text = "Start Mission"
-                    needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
-                    activeNeed?.let{ Scheduler.submit(it) }
-                    context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-                    activity.leftButton.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
+                    if(currentTaskId < activeParameterList!!.size - 1) {
+                        currentTaskId += 1
+                        activeParameterList?.get(currentTaskId)?.let {
+                            it.setup(context)
+                            it.isActive = true
+                        }
+                    } else {
+                        needNavigationButton.text = "Start Mission"
+                        needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
+                        activeNeed?.let{ Scheduler.submit(it) }
+                        context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                        activity?.leftButton?.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
+                    }
+                    view!!.instructionList.adapter.notifyDataSetChanged()
                 }
-                view!!.instructionList.adapter.notifyDataSetChanged()
             }
         }
     }

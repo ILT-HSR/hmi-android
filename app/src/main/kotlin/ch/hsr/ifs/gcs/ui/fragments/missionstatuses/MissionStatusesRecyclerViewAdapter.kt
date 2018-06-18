@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [MissionStatusDummyItem] and makes a call to the
+ * [RecyclerView.Adapter] that can display a [Missions.Item] and makes a call to the
  * specified [OnStatusesFragmentChangedListener].
  */
 class MissionStatusesRecyclerViewAdapter(

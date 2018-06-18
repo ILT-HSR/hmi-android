@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionresults.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [MissionResultDummyItem] and makes a call to the
+ * [RecyclerView.Adapter] that can display a [Results.Item] and makes a call to the
  * specified [OnResultsFragmentChangedListener].
  */
 class MissionResultsRecyclerViewAdapter(

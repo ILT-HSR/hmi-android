@@ -9,14 +9,14 @@ import com.hoho.android.usbserial.driver.UsbSerialPort
 import java.nio.channels.ByteChannel
 
 /**
- * The driver ID of the builtin [MAVLinkCommonPlatform] implementation
+ * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.platform.mavlink.MAVLinkCommonPlatform] implementation
  *
  * @since 1.0.0
  * @author IFS Institute for Software
  */
 const val DRIVER_MAVLINK_COMMON = "ch.hsr.ifs.gcs.driver.platform.MAVLinkCommonPlatform"
 /**
- * The driver ID of the builtin [MAVLinkPlatform] implementation for Pixhawk PX4 controllers
+ * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.platform.mavlink.MAVLinkPlatform] implementation for Pixhawk PX4 controllers
  *
  * @since 1.0.0
  * @author IFS Institute for Software
