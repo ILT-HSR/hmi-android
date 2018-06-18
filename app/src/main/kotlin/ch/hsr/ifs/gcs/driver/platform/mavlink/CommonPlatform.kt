@@ -1,7 +1,6 @@
 package ch.hsr.ifs.gcs.driver.platform.mavlink
 
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.access.DRIVER_MAVLINK_COMMON
 import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
@@ -13,8 +12,6 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-typealias MessageHandler = (MAVLinkMessage) -> Unit
-
 /**
  * This class provides a basic [platform][ch.hsr.ifs.gcs.driver.Platform] implementation for the
  * MAVLink **common** schema. Specific platform drivers for vehicles implementing the **common**
@@ -23,18 +20,26 @@ typealias MessageHandler = (MAVLinkMessage) -> Unit
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-abstract class MAVLinkCommonPlatform(channel: ByteChannel) : MAVLinkPlatform {
+open class CommonPlatform(channel: ByteChannel) : MAVLinkPlatform {
 
     companion object {
         /**
          * The log prefix for log entries emitted by this implementation
          */
-        private val LOG_TAG = MAVLinkCommonPlatform::class.simpleName
+        private val LOG_TAG = CommonPlatform::class.simpleName
 
         /**
          * The timeout used to determine if a command was received by the vehicle
          */
         private val TIMEOUT_COMMAND_ACK = Duration.ofMillis(1000)
+
+        /**
+         * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.platform.mavlink.CommonPlatform] implementation
+         *
+         * @since 1.0.0
+         * @author IFS Institute for Software
+         */
+        const val DRIVER_MAVLINK_COMMON = "ch.hsr.ifs.gcs.driver.platform.mavlink.CommonPlatform"
     }
 
     final override val schema = MAVLinkSchemaRegistry["common"]!!
@@ -55,7 +60,7 @@ abstract class MAVLinkCommonPlatform(channel: ByteChannel) : MAVLinkPlatform {
         val capabilities = createRequestAutopilotCapabilitiesMessage(fSender, fTarget, schema)
     }
 
-    private val fMessageListeners = mutableMapOf<MessageID, MutableList<MessageHandler>>()
+    private val fMessageListeners = mutableMapOf<MessageID, MutableList<(MAVLinkMessage) -> Unit>>()
 
     private val fVehicleState = object {
         /**
@@ -205,7 +210,7 @@ abstract class MAVLinkCommonPlatform(channel: ByteChannel) : MAVLinkPlatform {
      *
      * @since 1.0.0
      */
-    protected fun addListener(messageName: MessageID, handler: MessageHandler) {
+    protected fun addListener(messageName: MessageID, handler: (MAVLinkMessage) -> Unit) {
         val listeners = fMessageListeners[messageName]
         if (listeners != null) {
             listeners.add(handler)

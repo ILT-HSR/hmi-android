@@ -4,29 +4,18 @@ import android.content.Context
 import ch.hsr.ifs.gcs.driver.support.SerialDataChannel
 import ch.hsr.ifs.gcs.driver.support.SerialDataChannel.Configuration
 import ch.hsr.ifs.gcs.driver.platform.SerialPlatform
+import ch.hsr.ifs.gcs.driver.platform.mavlink.CommonPlatform
+import ch.hsr.ifs.gcs.driver.platform.mavlink.CommonPlatform.Companion.DRIVER_MAVLINK_COMMON
 import ch.hsr.ifs.gcs.driver.platform.mavlink.PixhawkPX4
+import ch.hsr.ifs.gcs.driver.platform.mavlink.PixhawkPX4.Companion.DRIVER_MAVLINK_PIXHAWK_PX4
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import java.nio.channels.ByteChannel
-
-/**
- * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.platform.mavlink.MAVLinkCommonPlatform] implementation
- *
- * @since 1.0.0
- * @author IFS Institute for Software
- */
-const val DRIVER_MAVLINK_COMMON = "ch.hsr.ifs.gcs.driver.platform.MAVLinkCommonPlatform"
-/**
- * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.platform.mavlink.MAVLinkPlatform] implementation for Pixhawk PX4 controllers
- *
- * @since 1.0.0
- * @author IFS Institute for Software
- */
-const val DRIVER_MAVLINK_PIXHAWK_PX4 = "ch.hsr.ifs.gcs.driver.platform.PixhawkPX4"
 
 object PlatformProvider {
 
     private val fSerialDrivers = mutableMapOf<String, (ByteChannel) -> SerialPlatform>(
-            DRIVER_MAVLINK_PIXHAWK_PX4 to ::PixhawkPX4
+            DRIVER_MAVLINK_PIXHAWK_PX4 to ::PixhawkPX4,
+            DRIVER_MAVLINK_COMMON to ::CommonPlatform
     )
 
     /**

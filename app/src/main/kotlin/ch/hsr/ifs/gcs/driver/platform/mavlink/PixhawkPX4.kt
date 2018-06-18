@@ -1,7 +1,6 @@
 package ch.hsr.ifs.gcs.driver.platform.mavlink
 
 import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
-import ch.hsr.ifs.gcs.driver.access.DRIVER_MAVLINK_PIXHAWK_PX4
 import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
@@ -17,7 +16,7 @@ import java.nio.channels.ByteChannel
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-internal class PixhawkPX4(channel: ByteChannel) : MAVLinkCommonPlatform(channel) {
+internal class PixhawkPX4(channel: ByteChannel) : CommonPlatform(channel) {
 
     enum class PX4CustomMode(val id: Int) {
         MANUAL(1),
@@ -40,6 +39,16 @@ internal class PixhawkPX4(channel: ByteChannel) : MAVLinkCommonPlatform(channel)
         LAND(6),
         RETURN_TO_GROUND_STATION(7),
         FOLLOW_TARGET(8)
+    }
+
+    companion object {
+        /**
+         * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.platform.mavlink.MAVLinkPlatform] implementation for Pixhawk PX4 controllers
+         *
+         * @since 1.0.0
+         * @author IFS Institute for Software
+         */
+        const val DRIVER_MAVLINK_PIXHAWK_PX4 = "ch.hsr.ifs.gcs.driver.platform.mavlink.PixhawkPX4"
     }
 
     override val driverId get() = DRIVER_MAVLINK_PIXHAWK_PX4
