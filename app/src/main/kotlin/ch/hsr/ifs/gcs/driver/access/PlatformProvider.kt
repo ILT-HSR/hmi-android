@@ -1,13 +1,13 @@
 package ch.hsr.ifs.gcs.driver.access
 
 import android.content.Context
-import ch.hsr.ifs.gcs.driver.support.SerialDataChannel
-import ch.hsr.ifs.gcs.driver.support.SerialDataChannel.Configuration
 import ch.hsr.ifs.gcs.driver.platform.SerialPlatform
 import ch.hsr.ifs.gcs.driver.platform.mavlink.CommonPlatform
 import ch.hsr.ifs.gcs.driver.platform.mavlink.CommonPlatform.Companion.DRIVER_MAVLINK_COMMON
 import ch.hsr.ifs.gcs.driver.platform.mavlink.PixhawkPX4
 import ch.hsr.ifs.gcs.driver.platform.mavlink.PixhawkPX4.Companion.DRIVER_MAVLINK_PIXHAWK_PX4
+import ch.hsr.ifs.gcs.driver.support.SerialDataChannel
+import ch.hsr.ifs.gcs.driver.support.SerialDataChannel.Configuration
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import java.nio.channels.ByteChannel
 

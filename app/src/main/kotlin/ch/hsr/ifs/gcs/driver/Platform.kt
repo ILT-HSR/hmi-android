@@ -1,5 +1,8 @@
 package ch.hsr.ifs.gcs.driver
 
+import ch.hsr.ifs.gcs.mission.Execution
+import ch.hsr.ifs.gcs.support.geo.GPSPosition
+
 /**
  * The interface of drivers for a given 'Platform'
  *
@@ -37,4 +40,20 @@ interface Platform {
      * @since 1.0.0
      */
     val isAlive: Boolean
+
+    /**
+     * Get the mission execution strategy for the specific platform implementation
+     *
+     * @since 1.0.0
+     */
+    val execution: Execution
+
+    /**
+     * Access the current position of the vehicle
+     *
+     * The returned position shall be `null` if no position has yet been determined
+     *
+     * @since 1.0.0
+     */
+    val currentPosition: GPSPosition?
 }
