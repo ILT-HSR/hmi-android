@@ -7,6 +7,7 @@ enum class LongCommand(val value: Int) {
     NAV_TAKEOFF(22),
     NAV_LAST(95),
     DO_SET_MODE(176),
+    DO_SET_SERVO(183),
     DO_REPOSITION(192),
     COMPONENT_ARM_DISARM(400),
     REQUEST_AUTOPILOT_CAPABILITIES(520),
