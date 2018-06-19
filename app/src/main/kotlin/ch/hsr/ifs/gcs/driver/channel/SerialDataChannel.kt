@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.driver.support
+package ch.hsr.ifs.gcs.driver.channel
 
 import android.content.Context
 import android.hardware.usb.UsbManager

@@ -2,8 +2,8 @@ package ch.hsr.ifs.gcs.resource.access
 
 import android.content.Context
 import android.hardware.usb.UsbManager
-import ch.hsr.ifs.gcs.driver.access.PayloadProvider
 import ch.hsr.ifs.gcs.driver.access.PlatformProvider
+import ch.hsr.ifs.gcs.driver.channel.SerialDataChannelFactory
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.Resource.Status
@@ -102,7 +102,8 @@ object ResourceManager : ResourceNode {
         }.forEach { dev ->
             synchronized(fLocalResources) {
                 fLocalResources.filter { it.status == Status.UNAVAILABLE }.forEach {
-                    PlatformProvider.instantiate(it.driverId, context, dev.ports[0], it.payloadDriverId)?.apply {
+                    val parameters = SerialDataChannelFactory.Parameters(context, dev.ports[0])
+                    PlatformProvider.instantiate(it.driverId, SerialDataChannelFactory, parameters, it.payloadDriverId)?.apply {
                         it.markAs(Status.AVAILABLE)
                         it.plaform = this
                     }
