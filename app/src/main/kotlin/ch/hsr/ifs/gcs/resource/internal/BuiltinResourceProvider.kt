@@ -70,7 +70,7 @@ class BuiltinResourceProvider : ContentProvider() {
 
                 SimpleResource(
                         id,
-                        platformDescriptor["platform"].asJsonObject["driver"].asString,
+                        platformDescriptor["driver"].asString,
                         payloadDriver,
                         capabilities
                 ) as Resource
