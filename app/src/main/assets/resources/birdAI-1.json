@@ -13,7 +13,7 @@
   ],
   "platform": {
     "id": "ch.hsr.ilt.platform.birdAI1",
-    "driver": "ch.hsr.ifs.gcs.driver.platform.mavlink.PixhawkPX4",
+    "driver": "ch.hsr.ifs.gcs.driver.mavlink.platform.PixhawkPX4",
     "type": "aerialVehicle",
     "payload": {
       "type": "ch.hsr.ilt.gripper",

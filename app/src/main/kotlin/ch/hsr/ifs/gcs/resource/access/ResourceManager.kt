@@ -102,7 +102,7 @@ object ResourceManager : ResourceNode {
         }.forEach { dev ->
             synchronized(fLocalResources) {
                 fLocalResources.filter { it.status == Status.UNAVAILABLE }.forEach {
-                    PlatformProvider.instantiate(it.driverId, context, dev.ports[0], it.driverId)?.apply {
+                    PlatformProvider.instantiate(it.driverId, context, dev.ports[0], it.payloadDriverId)?.apply {
                         it.markAs(Status.AVAILABLE)
                         it.plaform = this
                     }
