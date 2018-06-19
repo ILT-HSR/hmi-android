@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.driver.platform.mavlink
 
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
+import ch.hsr.ifs.gcs.driver.platform.mavlink.support.*
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import me.drton.jmavlib.mavlink.*

@@ -1,147 +1,8 @@
-package ch.hsr.ifs.gcs.driver.platform.mavlink
+package ch.hsr.ifs.gcs.driver.platform.mavlink.support
 
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkSchema
-
-enum class MAVLinkLongCommand(val value: Int) {
-    NAV_RETURN_TO_LAUNCH(20),
-    NAV_LAND(21),
-    NAV_TAKEOFF(22),
-    DO_SET_MODE(176),
-    DO_REPOSITION(192),
-    COMPONENT_ARM_DISARM(400),
-    REQUEST_AUTOPILOT_CAPABILITIES(520),
-}
-
-/**
- * An enumeration of messages IDs commonly used by MAVLink vehicles
- *
- * @since 1.0.0
- */
-enum class MessageID {
-    HEARTBEAT,
-    COMMAND_LONG,
-    SET_MODE,
-    AUTOPILOT_VERSION,
-    GLOBAL_POSITION_INT,
-    COMMAND_ACK,
-    MISSION_COUNT,
-    MISSION_REQUEST;
-
-    companion object {
-
-        /**
-         * Try to create a [MessageID] with the given name
-         *
-         * @param name The name of a MAVLink message
-         * @return The corresponding [MessageID] if it exists, `null` otherwise
-         * @since 1.0.0
-         * @author IFS Institute for Software
-         */
-        fun from(name: String) = try {
-            MessageID.valueOf(name)
-        } catch (e: Exception) {
-            null
-        }
-
-    }
-}
-
-/**
- * This enumeration describes the modes a MAVLink vehicle can be in.
- *
- * @since 1.0.0
- * @author IFS Institute for Software
- */
-enum class MAVLinkMode(val id: Int) {
-    /**
-     * System is not ready to fly
-     */
-    PREFLIGHT(0),
-
-    /**
-     * The system is:
-     *   - disarmed
-     *   - allowed to be active
-     *   - under manual RC control without stabilization
-     *
-     */
-    MANUAL_DISARMED(64),
-
-    /**
-     * The system is:
-     *   - armed
-     *   - allowed to be active
-     *   - under manual RC control without stabilization
-     *
-     */
-    MANUAL_ARMED(MANUAL_DISARMED.id + 128),
-
-    /**
-     * The system is:
-     *   - disarmed
-     *   - in an undefined/developer mode
-     */
-    TEST_DISARMED(66),
-
-    /**
-     * The system is:
-     *   - armed
-     *   - in an undefined/developer mode
-     */
-    TEST_ARMED(TEST_DISARMED.id + 128),
-
-    /**
-     * The system is:
-     *   - disarmed
-     *   - allowed to be active
-     *   - under manual RC control with stabilization
-     */
-    STABILIZE_DISARMED(80),
-
-    /**
-     * The system is:
-     *   - armed
-     *   - allowed to be active
-     *   - under manual RC control with stabilization
-     */
-    STABILIZE_ARMED(STABILIZE_DISARMED.id + 128),
-
-    /**
-     * The system is:
-     *   - disarmed
-     *   - allowed to be active
-     *   - under autonomous control with manual setpoint
-     */
-    GUIDED_DISARMED(88),
-
-    /**
-     * The system is:
-     *   - armed
-     *   - allowed to be active
-     *   - under autonomous control with manual setpoint
-     */
-    GUIDED_ARMED(GUIDED_DISARMED.id + 128),
-
-    /**
-     * The system is:
-     *   - disarmed
-     *   - under autonomous control and navigation
-     *
-     * The system's trajectory is decided onboard and not pre-programmed by waypoints
-     */
-    AUTO_DISARMED(92),
-
-    /**
-     * The system is:
-     *   - armed
-     *   - under autonomous control and navigation
-     *
-     * The system's trajectory is decided onboard and not pre-programmed by waypoints
-     */
-    AUTO_ARMED(AUTO_DISARMED.id + 128),
-}
 
 private val Boolean.int get() = if (this) 1 else 0
 
@@ -196,7 +57,7 @@ internal fun createMAVLinkMessage(id: MessageID, sender: MAVLinkSystem, schema: 
  *
  * @return A new, empty MAVLink 'Long Command' message
  */
-internal fun createLongCommandMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, command: MAVLinkLongCommand): MAVLinkMessage {
+internal fun createLongCommandMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, command: LongCommand): MAVLinkMessage {
     val msg = createMAVLinkMessage(MessageID.COMMAND_LONG, sender, schema)
 
     msg.set("target_system", target.id)
@@ -239,7 +100,7 @@ fun createHeartbeatMessage(sender: MAVLinkSystem, schema: MAVLinkSchema): MAVLin
  * @return A new MAVLink 'Long Command' containing a partially configured 'Arm/Disarm' command
  */
 internal fun newArmDisarmMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema) =
-        createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.COMPONENT_ARM_DISARM)
+        createLongCommandMessage(sender, target, schema, LongCommand.COMPONENT_ARM_DISARM)
 
 /**
  * Create a new MAVLink 'Arm' message
@@ -285,7 +146,7 @@ fun createDisarmMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MA
  * @return a new MAVLink 'Long Command' message containing a 'Request Autopilot Capabilities' command
  */
 fun createRequestAutopilotCapabilitiesMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage {
-    val msg = createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.REQUEST_AUTOPILOT_CAPABILITIES)
+    val msg = createLongCommandMessage(sender, target, schema, LongCommand.REQUEST_AUTOPILOT_CAPABILITIES)
 
     msg.set("param1", true.int)
 
@@ -303,7 +164,7 @@ fun createRequestAutopilotCapabilitiesMessage(sender: MAVLinkSystem, target: MAV
  * @return a new MAVLink 'Long Command' message containing a 'Do Reposition' command
  */
 fun createDoRepositionMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, position: WGS89Position): MAVLinkMessage {
-    val msg = createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.DO_REPOSITION)
+    val msg = createLongCommandMessage(sender, target, schema, LongCommand.DO_REPOSITION)
 
     msg.set("param1", -1)
     msg.set("param2", 1)
@@ -328,8 +189,8 @@ fun createDoRepositionMessage(sender: MAVLinkSystem, target: MAVLinkSystem, sche
  *
  * @return a new MAVLink 'Long Command' message containing a 'Do Set Mode' command
  */
-fun createDoSetModeMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, base: MAVLinkMode, custom: Int = 0, customSubmode: Int = 0): MAVLinkMessage {
-    val msg = createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.DO_SET_MODE)
+fun createDoSetModeMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, base: VehicleMode, custom: Int = 0, customSubmode: Int = 0): MAVLinkMessage {
+    val msg = createLongCommandMessage(sender, target, schema, LongCommand.DO_SET_MODE)
 
     msg.set("param1", base.id)
     msg.set("param2", custom)
@@ -376,7 +237,7 @@ fun createLegacySetModeMessage(sender: MAVLinkSystem, target: MAVLinkSystem, sch
  * @return a new MAVLink 'Long Command' message containing a 'Do Take-off' command
  */
 fun createDoTakeoffMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, altitude: Float = Float.NaN): MAVLinkMessage {
-    val msg = createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.NAV_TAKEOFF)
+    val msg = createLongCommandMessage(sender, target, schema, LongCommand.NAV_TAKEOFF)
 
     msg.set("param1", Float.NaN) // minimum pitch
     msg.set("param4", Float.NaN) // yaw angle
@@ -397,7 +258,7 @@ fun createDoTakeoffMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema:
  * @return a new MAVLink 'Long Command' message containing a 'Do Land' command
  */
 fun createDoLandMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage {
-    val msg = createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.NAV_LAND)
+    val msg = createLongCommandMessage(sender, target, schema, LongCommand.NAV_LAND)
 
     msg.set("param1", Float.NaN) // AbortAlt
     msg.set("param1", Float.NaN) // precision landing mode
@@ -419,4 +280,4 @@ fun createDoLandMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MA
  * @return a new MAVLink 'Long Command' message containing a 'Return to Launch' command
  */
 fun createReturnToLaunchMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema) =
-        createLongCommandMessage(sender, target, schema, MAVLinkLongCommand.NAV_RETURN_TO_LAUNCH)
+        createLongCommandMessage(sender, target, schema, LongCommand.NAV_RETURN_TO_LAUNCH)
