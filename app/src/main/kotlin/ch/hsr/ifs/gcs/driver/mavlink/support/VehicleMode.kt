@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.driver.platform.mavlink.support
+package ch.hsr.ifs.gcs.driver.mavlink.support
 
 /**
  * This enumeration describes the modes a MAVLink vehicle can be in.

@@ -1,10 +1,11 @@
-package ch.hsr.ifs.gcs.driver.platform.mavlink
+package ch.hsr.ifs.gcs.driver.mavlink.platform
 
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.payload.mavlink.BasicPayload
-import ch.hsr.ifs.gcs.driver.payload.mavlink.MAVLinkPayload
-import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
-import ch.hsr.ifs.gcs.driver.platform.mavlink.support.*
+import ch.hsr.ifs.gcs.driver.AerialVehicle
+import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPayload
+import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
+import ch.hsr.ifs.gcs.driver.mavlink.payload.BasicPayload
+import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.mission.need.task.Task
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
@@ -192,7 +193,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             NativeMissionExecution(targetSystem, tasks) as Execution
 
     override val payload: MAVLinkPayload
-    get() = TODO("Implement")
+        get() = TODO("Implement")
 
     // AerialVehicle implementation
 

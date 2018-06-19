@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.driver.platform.mavlink.support
+package ch.hsr.ifs.gcs.driver.mavlink.support
 
 data class CommandDescriptor(
         val id: LongCommand,

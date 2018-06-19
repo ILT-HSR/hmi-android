@@ -1,7 +1,7 @@
-package ch.hsr.ifs.gcs.driver.platform.mavlink.support
+package ch.hsr.ifs.gcs.driver.mavlink.support
 
-import ch.hsr.ifs.gcs.driver.payload.mavlink.MAVLinkPayload
-import ch.hsr.ifs.gcs.driver.platform.mavlink.MAVLinkPlatform
+import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPayload
+import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
 import ch.hsr.ifs.gcs.mission.need.task.MoveToPosition
 import ch.hsr.ifs.gcs.mission.need.task.Task
 import ch.hsr.ifs.gcs.mission.need.task.TriggerPayload

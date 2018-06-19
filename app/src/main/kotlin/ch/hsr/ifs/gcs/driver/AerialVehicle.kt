@@ -1,6 +1,5 @@
-package ch.hsr.ifs.gcs.driver.platform
+package ch.hsr.ifs.gcs.driver
 
-import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 
 /**

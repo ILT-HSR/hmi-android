@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.driver.platform.mavlink.support
+package ch.hsr.ifs.gcs.driver.mavlink.support
 
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import me.drton.jmavlib.mavlink.MAVLinkMessage

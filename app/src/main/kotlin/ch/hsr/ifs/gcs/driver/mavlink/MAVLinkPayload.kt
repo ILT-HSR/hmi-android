@@ -1,7 +1,7 @@
-package ch.hsr.ifs.gcs.driver.payload.mavlink
+package ch.hsr.ifs.gcs.driver.mavlink
 
 import ch.hsr.ifs.gcs.driver.Payload
-import ch.hsr.ifs.gcs.driver.platform.mavlink.support.CommandDescriptor
+import ch.hsr.ifs.gcs.driver.mavlink.support.CommandDescriptor
 
 interface MAVLinkPayload : Payload {
 

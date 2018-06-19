@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.driver.platform.mavlink.support
+package ch.hsr.ifs.gcs.driver.mavlink.support
 
 enum class LongCommand(val value: Int) {
     NAV_WAYPOINT(16),

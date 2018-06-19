@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.driver.platform.mavlink.support
+package ch.hsr.ifs.gcs.driver.mavlink.support
 
 /**
  * An enumeration of messages IDs commonly used by MAVLink vehicles

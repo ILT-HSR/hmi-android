@@ -65,8 +65,8 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
             if (fBuffered == 4) {
                 decode()?.let { control ->
                     fListeners.forEach {
-                        if(!(control == Control.JOYSTICK_X_AXIS ||
-                                control == Control.JOYSTICK_Y_AXIS)) {
+                        if (!(control == Control.JOYSTICK_X_AXIS ||
+                                        control == Control.JOYSTICK_Y_AXIS)) {
                             it.onButton(control)
                         } else {
                             it.onJoystick(control, fBuffer[2])

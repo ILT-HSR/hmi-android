@@ -1,8 +1,8 @@
-package ch.hsr.ifs.gcs.driver.platform.mavlink
+package ch.hsr.ifs.gcs.driver.mavlink.platform
 
-import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
+import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Platform
-import ch.hsr.ifs.gcs.driver.platform.mavlink.support.*
+import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import java.nio.channels.ByteChannel
@@ -49,7 +49,7 @@ internal class PixhawkPX4(channel: ByteChannel) : CommonPlatform(channel) {
          * @since 1.0.0
          * @author IFS Institute for Software
          */
-        const val DRIVER_MAVLINK_PIXHAWK_PX4 = "ch.hsr.ifs.gcs.driver.platform.mavlink.PixhawkPX4"
+        const val DRIVER_MAVLINK_PIXHAWK_PX4 = "ch.hsr.ifs.gcs.driver.mavlink.platform.PixhawkPX4"
     }
 
     override val driverId get() = DRIVER_MAVLINK_PIXHAWK_PX4

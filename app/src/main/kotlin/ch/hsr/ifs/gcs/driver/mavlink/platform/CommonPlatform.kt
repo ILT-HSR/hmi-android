@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.driver.platform.mavlink
+package ch.hsr.ifs.gcs.driver.mavlink.platform
 
 import me.drton.jmavlib.mavlink.MAVLinkSchemaRegistry
 import java.nio.channels.ByteChannel
@@ -20,7 +20,7 @@ open class CommonPlatform(channel: ByteChannel) : BasicPlatform(channel, MAVLink
          * @since 1.0.0
          * @author IFS Institute for Software
          */
-        const val DRIVER_MAVLINK_COMMON = "ch.hsr.ifs.gcs.driver.platform.mavlink.CommonPlatform"
+        const val DRIVER_MAVLINK_COMMON = "ch.hsr.ifs.gcs.driver.mavlink.platform.CommonPlatform"
     }
 
     override val driverId get() = DRIVER_MAVLINK_COMMON

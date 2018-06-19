@@ -51,7 +51,7 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
          * @param configuration The USB-Serial configuration for the channel
          */
         fun create(context: Context, port: UsbSerialPort, configuration: Configuration) =
-                create(context, port, configuration.baudRate, configuration.dataBits, configuration. stopBits, configuration.parity)
+                create(context, port, configuration.baudRate, configuration.dataBits, configuration.stopBits, configuration.parity)
 
     }
 
@@ -102,10 +102,10 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
     override fun isOpen() = fIsOpen
 
     override fun write(src: ByteBuffer?): Int {
-        return when(src) {
+        return when (src) {
             null -> 0
             else -> {
-                when(src.remaining()) {
+                when (src.remaining()) {
                     0 -> 0
                     else -> {
                         val data = ByteArray(src.remaining())
@@ -123,7 +123,7 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
     }
 
     override fun read(dst: ByteBuffer?): Int {
-        return when(dst) {
+        return when (dst) {
             null -> 0
             else -> {
                 try {
