@@ -1,8 +1,12 @@
 package ch.hsr.ifs.gcs.driver.platform.mavlink
 
 import android.util.Log
+import ch.hsr.ifs.gcs.driver.payload.mavlink.BasicPayload
+import ch.hsr.ifs.gcs.driver.payload.mavlink.MAVLinkPayload
 import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
 import ch.hsr.ifs.gcs.driver.platform.mavlink.support.*
+import ch.hsr.ifs.gcs.mission.Execution
+import ch.hsr.ifs.gcs.mission.need.task.Task
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import me.drton.jmavlib.mavlink.*
@@ -33,6 +37,11 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
          * The timeout used to determine if a command was received by the vehicle
          */
         private val TIMEOUT_COMMAND_ACK = Duration.ofMillis(1000)
+
+        /**
+         * The component id of the onboard MAVLink mission planner
+         */
+        private const val COMPONENT_MISSION_PLANNER = 190
     }
 
     private val fSender = MAVLinkSystem(8, 250)
@@ -126,6 +135,42 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         requestVehicleCapabilities()
     }
 
+    protected enum class ExecutionState {
+        CREATED,
+        UPLOADING
+    }
+
+    protected open inner class NativeMissionExecution(target: MAVLinkSystem, tasks: List<Task>) : Execution(tasks) {
+
+        private val fMissionPlanner = MAVLinkSystem(target.id, COMPONENT_MISSION_PLANNER)
+        private var fState = ExecutionState.CREATED
+
+        private fun initiateUpload(): Unit = with(createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fMissionPlanner, schema)) {
+            set("count", tasks.size)
+            awaitResponse(this, MessageID.MISSION_REQUEST, 1, TimeUnit.SECONDS) {
+                it?.apply { transmitItem(getInt("seq")) } ?: initiateUpload()
+            }
+        }
+
+        private fun transmitItem(index: Int) {
+            val command = tasks[index].asMAVLinkCommandDescriptor(this@BasicPlatform, this@BasicPlatform.payload as BasicPayload)
+        }
+
+        private fun upload() {
+            fState = ExecutionState.UPLOADING
+            initiateUpload()
+        }
+
+        override fun tick() = when (fState) {
+            ExecutionState.CREATED -> {
+                upload()
+                Status.PREPARING
+            }
+            ExecutionState.UPLOADING -> Status.PREPARING
+        }
+
+    }
+
     // Platform implementation
 
     override val name
@@ -142,6 +187,12 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     override val currentPosition: GPSPosition?
         get() = synchronized(fVehicleState) { fVehicleState.position }
+
+    override fun getExecutionFor(tasks: List<Task>) =
+            NativeMissionExecution(targetSystem, tasks) as Execution
+
+    override val payload: MAVLinkPayload
+    get() = TODO("Implement")
 
     // AerialVehicle implementation
 
@@ -186,14 +237,14 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      *
      * @since 1.0.0
      */
-    protected val senderSystem get() = fSender
+    override val senderSystem get() = fSender
 
     /**
      * Get the target system
      *
      * @since 1.0.0
      */
-    protected val targetSystem get() = fTarget
+    override val targetSystem get() = fTarget
 
     /**
      * The maximum time between 'Heartbeats' for a vehicle to be considered alive (in ms)

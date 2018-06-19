@@ -23,7 +23,7 @@ data class MAVLinkSystem(val id: Int, val component: Int)
  * Create a new MAVLink message
  *
  * @param name The MAVLink name of the message (e.g. "HEARTBEAT")
- * @param sender The sender system ID
+ * @param sender The sender system
  * @param schema The message schema
  *
  * @return A new, empty MAVLink message
@@ -37,13 +37,47 @@ internal fun createMAVLinkMessage(name: String, sender: MAVLinkSystem, schema: M
  * Create a new MAVLink message
  *
  * @param id The MAVLink ID of the message (e.g. [MessageID.HEARTBEAT])
- * @param sender The sender system ID
+ * @param sender The sender system
  * @param schema The message schema
  *
  * @return A new, empty MAVLink message
  */
 internal fun createMAVLinkMessage(id: MessageID, sender: MAVLinkSystem, schema: MAVLinkSchema) =
         createMAVLinkMessage(id.name, sender, schema)
+
+/**
+ * @internal
+ *
+ * Create a new targeted MAVLink message
+ *
+ * @param name The name of the MAVLink message (e.g. "HEARTBEAT")
+ * @param sender The sender system
+ * @param target The target system
+ * @param schema The message schema
+ *
+ * @return A new, empty MAVLink message
+ */
+internal fun createTargetedMAVLinkMessage(name: String, sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema) =
+        with(createMAVLinkMessage(name, sender, schema)) {
+            set("target_system", target.id)
+            set("target_component", target.component)
+            this
+        }
+
+/**
+ * @internal
+ *
+ * Create a new targeted MAVLink message
+ *
+ * @param id The MAVLink ID of the message (e.g. [MessageID.HEARTBEAT])
+ * @param sender The sender system
+ * @param target The target system
+ * @param schema The message schema
+ *
+ * @return A new, empty MAVLink message
+ */
+internal fun createTargetedMAVLinkMessage(id: MessageID, sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema) =
+        createTargetedMAVLinkMessage(id.name, sender, target, schema)
 
 /**
  * @internal
@@ -58,10 +92,8 @@ internal fun createMAVLinkMessage(id: MessageID, sender: MAVLinkSystem, schema: 
  * @return A new, empty MAVLink 'Long Command' message
  */
 internal fun createLongCommandMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, command: LongCommand): MAVLinkMessage {
-    val msg = createMAVLinkMessage(MessageID.COMMAND_LONG, sender, schema)
+    val msg = createTargetedMAVLinkMessage(MessageID.COMMAND_LONG, sender, target, schema)
 
-    msg.set("target_system", target.id)
-    msg.set("target_component", target.component)
     msg.set("command", command.value)
     msg.set("confirmation", 0)
 

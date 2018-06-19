@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.driver.platform.mavlink
 
 import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
 import ch.hsr.ifs.gcs.driver.platform.SerialPlatform
+import ch.hsr.ifs.gcs.driver.platform.mavlink.support.MAVLinkSystem
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 
 /**
@@ -33,4 +34,17 @@ interface MAVLinkPlatform : AerialVehicle, SerialPlatform {
      */
     fun disarm()
 
+    /**
+     * The MAVLink system identifying the GCS
+     *
+     * @since 1.0.0
+     */
+    val senderSystem: MAVLinkSystem
+
+    /**
+     * The MAVLink system identifying the Vehicle
+     *
+     * @since 1.0.0
+     */
+    val targetSystem: MAVLinkSystem
 }

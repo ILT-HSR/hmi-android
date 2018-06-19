@@ -43,13 +43,6 @@ interface Platform {
     val isAlive: Boolean
 
     /**
-     * Get the mission execution strategy for the specific platform implementation
-     *
-     * @since 1.0.0
-     */
-    fun getExecutionFor(tasks: List<Task>): Execution
-
-    /**
      * Access the current position of the vehicle
      *
      * The returned position shall be `null` if no position has yet been determined
@@ -57,4 +50,19 @@ interface Platform {
      * @since 1.0.0
      */
     val currentPosition: GPSPosition?
+
+    /**
+     * Get the payload attached to the vehicle
+     *
+     * @since 1.0.0
+     */
+    val payload: Payload
+
+    /**
+     * Get the mission execution strategy for the specific platform implementation
+     *
+     * @since 1.0.0
+     */
+    fun getExecutionFor(tasks: List<Task>): Execution
+
 }

@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver.platform.mavlink.support
 
 enum class LongCommand(val value: Int) {
+    NAV_WAYPOINT(16),
     NAV_RETURN_TO_LAUNCH(20),
     NAV_LAND(21),
     NAV_TAKEOFF(22),
