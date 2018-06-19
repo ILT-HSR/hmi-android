@@ -44,11 +44,7 @@ object Scheduler {
         fExecutions[execution] = fExecutionRunner.scheduleAtFixedRate({
             val result = execution.tick()
             when(result) {
-                Execution.Status.FAILURE -> {
-                    fExecutions[execution]?.cancel(false)
-                    fExecutions.remove(execution)
-                }
-                Execution.Status.FINISHED -> {
+                Execution.Status.FAILURE, Execution.Status.FINISHED -> {
                     fExecutions[execution]?.cancel(false)
                     fExecutions.remove(execution)
                 }
