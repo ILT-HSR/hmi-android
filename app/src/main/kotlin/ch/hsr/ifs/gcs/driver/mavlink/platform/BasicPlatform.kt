@@ -2,9 +2,11 @@ package ch.hsr.ifs.gcs.driver.mavlink.platform
 
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.AerialVehicle
-import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPayload
+import ch.hsr.ifs.gcs.driver.Payload
+import ch.hsr.ifs.gcs.driver.access.PayloadProvider
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.mavlink.payload.BasicPayload
+import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.mission.need.task.Task
@@ -26,7 +28,7 @@ import java.util.concurrent.TimeUnit
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-abstract class BasicPlatform(channel: ByteChannel, final override val schema: MAVLinkSchema) : MAVLinkPlatform {
+abstract class BasicPlatform(channel: ByteChannel, final override val schema: MAVLinkSchema, private val fPayloadDriverId: String?) : MAVLinkPlatform {
 
     companion object {
         /**
@@ -141,10 +143,13 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         UPLOADING
     }
 
-    protected open inner class NativeMissionExecution(target: MAVLinkSystem, tasks: List<Task>) : Execution(tasks) {
-
+    protected open inner class NativeMissionExecution(target: MAVLinkSystem, tasks: List<Task>) : Execution(tasks), MAVLinkExecution {
         private val fMissionPlanner = MAVLinkSystem(target.id, COMPONENT_MISSION_PLANNER)
         private var fState = ExecutionState.CREATED
+
+        override fun add(command: CommandDescriptor) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
 
         private fun initiateUpload(): Unit = with(createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fMissionPlanner, schema)) {
             set("count", tasks.size)
@@ -189,11 +194,11 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     override val currentPosition: GPSPosition?
         get() = synchronized(fVehicleState) { fVehicleState.position }
 
+    override val payload: Payload
+        get() = fPayloadDriverId?.let { PayloadProvider.instantiate(it, this) } ?: NullPayload(this)
+
     override fun getExecutionFor(tasks: List<Task>) =
             NativeMissionExecution(targetSystem, tasks) as Execution
-
-    override val payload: MAVLinkPayload
-        get() = TODO("Implement")
 
     // AerialVehicle implementation
 

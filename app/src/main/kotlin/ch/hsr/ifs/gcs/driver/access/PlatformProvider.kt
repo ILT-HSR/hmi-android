@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver.access
 
 import android.content.Context
+import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.SerialPlatform
 import ch.hsr.ifs.gcs.driver.mavlink.platform.CommonPlatform
 import ch.hsr.ifs.gcs.driver.mavlink.platform.CommonPlatform.Companion.DRIVER_MAVLINK_COMMON
@@ -13,7 +14,7 @@ import java.nio.channels.ByteChannel
 
 object PlatformProvider {
 
-    private val fSerialDrivers = mutableMapOf<String, (ByteChannel) -> SerialPlatform>(
+    private val fSerialDrivers = mutableMapOf<String, (ByteChannel, String?) -> SerialPlatform>(
             DRIVER_MAVLINK_PIXHAWK_PX4 to ::PixhawkPX4,
             DRIVER_MAVLINK_COMMON to ::CommonPlatform
     )
@@ -32,8 +33,10 @@ object PlatformProvider {
      * @return A new instance of platform driver if a vehicle was detected on the
      * provided port, `null` otherwise.
      */
-    fun instantiate(driverId: String, context: Context, port: UsbSerialPort, configuration: Configuration = Configuration()) =
-            fSerialDrivers[driverId]?.let {
-                SerialDataChannel.create(context, port, configuration)?.let(it)
-            }
+    fun instantiate(driverId: String, context: Context, port: UsbSerialPort, payloadDriverId: String?, configuration: Configuration = Configuration()) =
+            fSerialDrivers[driverId]?.let { f ->
+                SerialDataChannel.create(context, port, configuration)?.let { c ->
+                    f(c, payloadDriverId)
+                }
+            } as Platform?
 }

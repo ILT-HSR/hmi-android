@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.resource.access
 
 import android.content.Context
 import android.hardware.usb.UsbManager
+import ch.hsr.ifs.gcs.driver.access.PayloadProvider
 import ch.hsr.ifs.gcs.driver.access.PlatformProvider
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
@@ -66,9 +67,9 @@ object ResourceManager : ResourceNode {
 
     override fun reset() {
         synchronized(fLocalResources) {
-            assert(fLocalResources.none { it.status == Status.ACQUIRED || it.status == Status.BUSY }, {
+            assert(fLocalResources.none { it.status == Status.ACQUIRED || it.status == Status.BUSY }) {
                 "Tried to reset ResourceManager with active resources"
-            })
+            }
             fLocalResources.clear()
         }
     }
@@ -101,7 +102,7 @@ object ResourceManager : ResourceNode {
         }.forEach { dev ->
             synchronized(fLocalResources) {
                 fLocalResources.filter { it.status == Status.UNAVAILABLE }.forEach {
-                    PlatformProvider.instantiate(it.driverId, context, dev.ports[0])?.apply {
+                    PlatformProvider.instantiate(it.driverId, context, dev.ports[0], it.driverId)?.apply {
                         it.markAs(Status.AVAILABLE)
                         it.plaform = this
                     }

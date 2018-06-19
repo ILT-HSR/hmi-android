@@ -1,7 +1,9 @@
 package ch.hsr.ifs.gcs.driver.mavlink.platform
 
 import ch.hsr.ifs.gcs.driver.AerialVehicle
+import ch.hsr.ifs.gcs.driver.Payload
 import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
@@ -17,7 +19,7 @@ import java.nio.channels.ByteChannel
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-internal class PixhawkPX4(channel: ByteChannel) : CommonPlatform(channel) {
+internal class PixhawkPX4(channel: ByteChannel, payloadDriverId: String?) : CommonPlatform(channel, payloadDriverId) {
 
     enum class PX4CustomMode(val id: Int) {
         MANUAL(1),

@@ -67,6 +67,13 @@ interface Resource {
     val driverId: String
 
     /**
+     * The id of the payload driver if any
+     *
+     * @since 1.0.0
+     */
+    val payloadDriverId: String?
+
+    /**
      * The list of capabilities of this resource
      *
      * @since 1.0.0

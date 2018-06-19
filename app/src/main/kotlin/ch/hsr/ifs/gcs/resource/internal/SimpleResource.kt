@@ -7,6 +7,7 @@ import ch.hsr.ifs.gcs.resource.Resource.Status
 
 class SimpleResource(override val id: String,
                      override val driverId: String,
+                     override val payloadDriverId: String?,
                      override val capabilities: List<Capability<*>>) : Resource {
 
     private lateinit var fPlatform: Platform

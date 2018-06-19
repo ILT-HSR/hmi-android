@@ -61,8 +61,19 @@ class BuiltinResourceProvider : ContentProvider() {
                             }
                         }
                         .toList()
+                val platformDescriptor = res["platform"].asJsonObject
+                val payloadDriver = if(platformDescriptor.has("payload")) {
+                    platformDescriptor["payload"].asJsonObject["driver"].asString
+                } else {
+                    null
+                }
 
-                SimpleResource(id, res["platform"].asJsonObject["driver"].asString, capabilities) as Resource
+                SimpleResource(
+                        id,
+                        platformDescriptor["platform"].asJsonObject["driver"].asString,
+                        payloadDriver,
+                        capabilities
+                ) as Resource
             }
 
 }

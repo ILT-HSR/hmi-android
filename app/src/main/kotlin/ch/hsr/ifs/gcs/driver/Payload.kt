@@ -1,3 +1,9 @@
 package ch.hsr.ifs.gcs.driver
 
-interface Payload
+import ch.hsr.ifs.gcs.mission.Execution
+
+interface Payload {
+
+    fun runDuring(execution: Execution)
+
+}
