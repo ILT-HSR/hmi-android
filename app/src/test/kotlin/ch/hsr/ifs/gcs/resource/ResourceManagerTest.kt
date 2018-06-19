@@ -14,7 +14,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.android.controller.ContentProviderController
 
 @RunWith(RobolectricTestRunner::class)
-class ResourceManagerTest {
+class `Behavioural tests of ResourceManager` {
 
     private lateinit var contentProvider: ContentProviderController<BuiltinResourceProvider>
 
