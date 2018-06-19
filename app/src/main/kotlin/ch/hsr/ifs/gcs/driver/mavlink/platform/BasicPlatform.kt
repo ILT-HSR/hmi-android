@@ -373,12 +373,14 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                                 timeout: Long,
                                 unit: TimeUnit,
                                 handler: (MAVLinkMessage?) -> Unit) = synchronized(fOneShotMessageListeners) {
-        fOneShotMessageListeners.getOrDefault(response, mutableListOf()) += handler
+        fOneShotMessageListeners.computeIfAbsent(response) {mutableListOf()} += handler
         fExecutors.await.schedule({
             synchronized(fOneShotMessageListeners) {
                 fOneShotMessageListeners[response]?.apply {
-                    forEach { it.invoke(null) }
-                    clear()
+                    forEach {
+                        it.invoke(null)
+                        this.remove(it)
+                    }
                 }
             }
         }, timeout, unit)
