@@ -10,7 +10,7 @@ import ch.hsr.ifs.gcs.support.geo.GPSPosition
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-interface AerialVehicle : Platform {
+interface AerialVehicle : Vehicle {
 
     /**
      * This class represents altitudes for aerial vehicles.
@@ -31,34 +31,29 @@ interface AerialVehicle : Platform {
      *
      * @since 1.0.0
      */
-    fun takeOff(altitude: Altitude)
+    fun takeOff(altitude: Altitude): Command<*>
 
     /**
      * Instruct the vehicle to land
      *
      * @since 1.0.0
      */
-    fun land()
-
-    /**
-     * Instruct the vehicle to move to the given GPS position
-     *
-     * @since 1.0.0
-     */
-    fun moveTo(position: GPSPosition)
+    fun land(): Command<*>
 
     /**
      * Instruct the vehicle to change its altitude to the given value
      *
      * @since 1.0.0
      */
-    fun changeAltitude(altitude: Altitude)
+    fun changeAltitude(altitude: Altitude): Command<*>
 
     /**
      * Instruct the vehicle to return to its launch position
      *
      * @since 1.0.0
      */
-    fun returnToLaunch()
+    fun returnToLaunch(): Command<*>
+
+    override fun returnToHome() = returnToLaunch()
 
 }

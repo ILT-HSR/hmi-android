@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver.mavlink
 
 import ch.hsr.ifs.gcs.driver.AerialVehicle
+import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.driver.SerialPlatform
 import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkSystem
 import me.drton.jmavlib.mavlink.MAVLinkSchema
@@ -25,14 +26,14 @@ interface MAVLinkPlatform : AerialVehicle, SerialPlatform {
      *
      * @since 1.0.0
      */
-    fun arm()
+    fun arm(): Command<*>
 
     /**
      * Disarm the vehicle, preventing takeoff
      *
      * @since 1.0.0
      */
-    fun disarm()
+    fun disarm(): Command<*>
 
     /**
      * The MAVLink system identifying the GCS

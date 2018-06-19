@@ -54,26 +54,27 @@ internal class PixhawkPX4(channel: ByteChannel, payloadDriverId: String?) : Comm
 
     override val driverId get() = DRIVER_MAVLINK_PIXHAWK_PX4
 
-    override fun takeOff(altitude: AerialVehicle.Altitude) =
-            enqueueCommands(
-                    createDoSetModeMessage(senderSystem, targetSystem, schema, VehicleMode.GUIDED_ARMED),
-                    createDoTakeoffMessage(senderSystem, targetSystem, schema, currentPosition?.let { (it.altitude + altitude.meters).toFloat() }
-                            ?: Float.NaN)
-            )
-
-    override fun land() =
-            enqueueCommands(
-                    createDoSetModeMessage(senderSystem, targetSystem, schema, VehicleMode.GUIDED_ARMED),
-                    createDoLandMessage(senderSystem, targetSystem, schema)
-            )
-
-    override fun changeAltitude(altitude: AerialVehicle.Altitude) {
-        currentPosition?.let {
-            val pos = GPSPosition(it.latitude, it.longitude, it.altitude + altitude.meters.toFloat())
-            enqueueCommands(
-                    createDoSetModeMessage(senderSystem, targetSystem, schema, VehicleMode.GUIDED_ARMED),
-                    createDoRepositionMessage(senderSystem, targetSystem, schema, WGS89Position(pos))
-            )
-        }
-    }
+//    override fun takeOff(altitude: AerialVehicle.Altitude) =
+//            enqueueCommands(
+//                    createDoSetModeMessage(senderSystem, targetSystem, schema, VehicleMode.GUIDED_ARMED),
+//                    createDoTakeoffMessage(senderSystem, targetSystem, schema, currentPosition?.let { (it.altitude + altitude.meters).toFloat() }
+//                            ?: Float.NaN)
+//            )
+//
+//    override fun land() =
+//            enqueueCommands(
+//                    createDoSetModeMessage(senderSystem, targetSystem, schema, VehicleMode.GUIDED_ARMED),
+//                    createDoLandMessage(senderSystem, targetSystem, schema)
+//            )
+//
+//    override fun changeAltitude(altitude: AerialVehicle.Altitude) {
+//        currentPosition?.let {
+//            val pos = GPSPosition(it.latitude, it.longitude, it.altitude + altitude.meters.toFloat())
+//            enqueueCommands(
+//                    createDoSetModeMessage(senderSystem, targetSystem, schema, VehicleMode.GUIDED_ARMED),
+//                    createDoRepositionMessage(senderSystem, targetSystem, schema, WGS89Position(pos))
+//            )
+//        }
+//    }
+    
 }

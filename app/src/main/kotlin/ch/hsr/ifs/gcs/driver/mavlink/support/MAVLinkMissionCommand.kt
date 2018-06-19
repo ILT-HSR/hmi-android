@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.driver.mavlink.support
 
-data class CommandDescriptor(
+data class MAVLinkMissionCommand(
         val id: LongCommand,
         val param1: Float = 0.0f,
         val param2: Float = 0.0f,

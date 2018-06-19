@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.mission.need.task
 
+import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.resource.Resource
 
 /**
@@ -16,6 +17,6 @@ interface Task {
      *
      * @since 1.0.0
      */
-    fun executeOn(resource: Resource)
+    fun executeOn(resource: Resource): Command<*>
 
 }

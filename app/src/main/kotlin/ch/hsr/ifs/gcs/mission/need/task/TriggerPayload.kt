@@ -4,8 +4,7 @@ import ch.hsr.ifs.gcs.resource.Resource
 
 class TriggerPayload(val payload: String) : Task {
 
-    override fun executeOn(resource: Resource) {
-        TODO("not implemented")
-    }
+    override fun executeOn(resource: Resource) =
+            resource.plaform.payload.trigger()
 
 }

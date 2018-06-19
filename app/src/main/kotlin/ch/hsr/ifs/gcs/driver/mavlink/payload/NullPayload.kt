@@ -1,15 +1,15 @@
 package ch.hsr.ifs.gcs.driver.mavlink.payload
 
-import ch.hsr.ifs.gcs.driver.Platform
-import ch.hsr.ifs.gcs.driver.mavlink.support.CommandDescriptor
+import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.LongCommand
+import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkMissionCommand
 
-class NullPayload(platform: Platform) : BasicPayload(platform) {
+class NullPayload : MAVLinkPayload {
 
     companion object {
         const val DRIVER_ID = "ch.hsr.ifs.gcs.driver.mavlink.payload.null"
     }
 
-    override val commandDescriptor = CommandDescriptor(LongCommand.NAV_LAST)
+    override val commandDescriptor = MAVLinkMissionCommand(LongCommand.NAV_LAST)
 
 }

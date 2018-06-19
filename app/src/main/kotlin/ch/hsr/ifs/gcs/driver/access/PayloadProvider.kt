@@ -7,7 +7,7 @@ import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 
 object PayloadProvider {
 
-    private val fDrivers = mutableMapOf<String, (Platform) -> Payload>(
+    private val fDrivers = mutableMapOf<String, () -> Payload>(
             NullPayload.DRIVER_ID to ::NullPayload,
             Gripper.DRIVER_ID to ::Gripper
     )
@@ -20,7 +20,7 @@ object PayloadProvider {
      *
      * @return A new instance of the payload driver or null of no driver was found
      */
-    fun instantiate(id: String, platform: Platform) =
-            fDrivers[id]?.invoke(platform)
+    fun instantiate(id: String) =
+            fDrivers[id]?.invoke()
 
 }

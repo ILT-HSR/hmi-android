@@ -1,9 +1,12 @@
 package ch.hsr.ifs.gcs.driver.mavlink.platform
 
+import android.location.Location
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.AerialVehicle
+import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.driver.Payload
 import ch.hsr.ifs.gcs.driver.access.PayloadProvider
+import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommand
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
@@ -138,45 +141,66 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     protected enum class ExecutionState {
         CREATED,
-        UPLOADING
+        UPLOADING,
+        RUNNING,
     }
 
-    protected open inner class NativeMissionExecution(target: MAVLinkSystem/*, tasks: List<Task>*/) : Execution(), MAVLinkExecution {
+    protected open inner class NativeMissionExecution(target: MAVLinkSystem) : Execution(), MAVLinkExecution {
         private val fMissionPlanner = MAVLinkSystem(target.id, COMPONENT_MISSION_PLANNER)
         private var fState = ExecutionState.CREATED
-        private val fCommands = mutableListOf<CommandDescriptor>()
 
-//        init {
-//            tasks.forEach {
-//                when(it) {
-//                    is MoveToPosition -> {
-//                        fCommands += CommandDescriptor(
-//                                LongCommand.NAV_WAYPOINT,
-//                                x = it.targetLocation.latitude.toFloat(),
-//                                y = it.targetLocation.longitude.toFloat(),
-//                                z = it.targetLocation.altitude.toFloat()
-//                        )
-//                    }
-//                    is TriggerPayload -> {
-//                        payload.runDuring(this)
-//                    }
-//                }
-//            }
-//        }
-
-        override fun add(command: CommandDescriptor) {
-            fCommands += command
+        override  operator fun plusAssign(command: Command<*>) {
+            assert(command is MAVLinkCommand)
+            super.plusAssign(command)
         }
 
         private fun initiateUpload(): Unit = with(createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fMissionPlanner, schema)) {
-            //            set("count", fCommands.size)
-//            awaitResponse(this, MessageID.MISSION_REQUEST, 1, TimeUnit.SECONDS) {
-//                it?.apply { transmitItem(getInt("seq")) } ?: initiateUpload()
-//            }
+            set("count", fCommands.size)
+            awaitResponse(this, MessageID.MISSION_REQUEST, 1, TimeUnit.SECONDS) {
+                it?.apply { transmitItem(getInt("seq")) } ?: initiateUpload()
+            }
         }
 
         private fun transmitItem(index: Int) {
-//            val command = fCommands[index]
+            val nativeCommand = fCommands[index].nativeCommand as MAVLinkMissionCommand
+            with(createTargetedMAVLinkMessage(MessageID.MISSION_ITEM, senderSystem, fMissionPlanner, schema)) {
+                set("seq", index)
+                set("frame", 3)
+                set("command", nativeCommand.id)
+                set("current", index == 0)
+                set("autocontinue", true)
+                set("param1", nativeCommand.param1)
+                set("param2", nativeCommand.param2)
+                set("param3", nativeCommand.param3)
+                set("param4", nativeCommand.param4)
+                set("x", nativeCommand.x)
+                set("y", nativeCommand.y)
+                set("z", nativeCommand.z)
+
+                val expectedResponse = if(index < fCommands.size - 1){
+                    MessageID.MISSION_REQUEST
+                } else {
+                    MessageID.MISSION_ACK
+                }
+
+                awaitResponse(this, expectedResponse, 1, TimeUnit.SECONDS) {
+                    it?.apply {
+                        when(this.msgName) {
+                            MessageID.MISSION_REQUEST.name -> {
+                                transmitItem(index + 1)
+                            }
+                            MessageID.MISSION_ACK.name -> {
+                                fState = ExecutionState.RUNNING
+                                with(createLongCommandMessage(fSender, fTarget, schema, LongCommand.MISSION_START)) {
+                                    set("param1", 0)
+                                    set("param2", fCommands.size - 1)
+                                    enqueueCommand(this)
+                                }
+                            }
+                        }
+                    } ?: transmitItem(index)
+                }
+            }
         }
 
         private fun upload() {
@@ -190,8 +214,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 Status.PREPARING
             }
             ExecutionState.UPLOADING -> Status.PREPARING
+            ExecutionState.RUNNING -> Status.RUNNING
         }
-
     }
 
     // Platform implementation
@@ -212,30 +236,56 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         get() = synchronized(fVehicleState) { fVehicleState.position }
 
     override val payload: Payload
-        get() = fPayloadDriverId?.let { PayloadProvider.instantiate(it, this) } ?: NullPayload(this)
+        get() = fPayloadDriverId?.let { PayloadProvider.instantiate(it) } ?: NullPayload()
 
     override val execution: Execution
-        get() = NativeMissionExecution(targetSystem) as Execution
+        get() = NativeMissionExecution(targetSystem)
 
     // AerialVehicle implementation
 
-    override fun takeOff(altitude: AerialVehicle.Altitude) = Unit
+    override fun moveTo(position: Location) = MAVLinkCommand(MAVLinkMissionCommand(
+            LongCommand.NAV_WAYPOINT,
+            param4 = Float.NaN,
+            x = position.latitude.toFloat(),
+            y = position.longitude.toFloat(),
+            z = position.altitude.toFloat()
+    ))
 
-    override fun land() = Unit
+    override fun changeAltitude(altitude: AerialVehicle.Altitude) = MAVLinkCommand(MAVLinkMissionCommand(
+            LongCommand.NAV_LOITER_TO_ALT,
+            z = altitude.meters.toFloat()
+    ))
 
-    override fun moveTo(position: GPSPosition) = enqueueCommand(createDoRepositionMessage(fSender, fTarget, schema, WGS89Position(position)))
+    override fun returnToLaunch() = MAVLinkCommand(MAVLinkMissionCommand(
+            LongCommand.NAV_RETURN_TO_LAUNCH
+    ))
 
-    override fun changeAltitude(altitude: AerialVehicle.Altitude) = Unit
+    override fun takeOff(altitude: AerialVehicle.Altitude) = MAVLinkCommand(MAVLinkMissionCommand(
+            LongCommand.NAV_TAKEOFF,
+            x = Float.NaN,
+            y = Float.NaN,
+            z = altitude.meters.toFloat()
+    ))
 
-    override fun returnToLaunch() {
-        enqueueCommand(createReturnToLaunchMessage(fSender, fTarget, schema))
-    }
+    override fun land() = MAVLinkCommand(MAVLinkMissionCommand(
+            LongCommand.NAV_TAKEOFF,
+            x = Float.NaN,
+            y = Float.NaN,
+            z = Float.NaN
+    ))
+
 
     // MAVLinkPlatform implementation
 
-    override fun arm() = enqueueCommand(createArmMessage(fSender, fTarget, schema))
+    override fun arm() = MAVLinkCommand(MAVLinkMissionCommand(
+            LongCommand.COMPONENT_ARM_DISARM,
+            param1 = 1.toFloat()
+    ))
 
-    override fun disarm() = enqueueCommand(createDisarmMessage(fSender, fTarget, schema))
+    override fun disarm() = MAVLinkCommand(MAVLinkMissionCommand(
+            LongCommand.COMPONENT_ARM_DISARM,
+            param1 = 1.toFloat()
+    ))
 
     /**
      * Enqueue a single command into the internal command queue

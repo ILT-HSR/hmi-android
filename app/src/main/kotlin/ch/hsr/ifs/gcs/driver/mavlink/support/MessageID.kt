@@ -13,7 +13,9 @@ enum class MessageID {
     GLOBAL_POSITION_INT,
     COMMAND_ACK,
     MISSION_COUNT,
-    MISSION_REQUEST;
+    MISSION_REQUEST,
+    MISSION_ITEM,
+    MISSION_ACK;
 
     companion object {
 
