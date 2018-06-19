@@ -56,9 +56,6 @@ class NeedInstructionRecyclerViewAdapter(
             Control.NEED_START -> {
                 mContext.needNavigationButton.performClick()
             }
-            Control.UPDATE_ABORT -> {
-                mContext.leftButton.performClick()
-            }
         }
     }
 
