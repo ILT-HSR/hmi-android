@@ -16,6 +16,10 @@ object PlatformProvider {
             DRIVER_MAVLINK_COMMON to ::CommonPlatform
     )
 
+    fun registerSerialDriver(id: String, factory: (ByteChannel, String?) -> SerialPlatform) {
+        fSerialDrivers[id] = factory
+    }
+
     /**
      * Create a new driver instance for the given [port] in the given [context]
      *

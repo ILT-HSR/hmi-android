@@ -203,16 +203,17 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             }
         }
 
-        private fun upload() {
-            fState = ExecutionState.UPLOADING
-            initiateUpload()
-        }
+        private fun upload() =
+            if(fCommands.size > 0) {
+                fState = ExecutionState.UPLOADING
+                initiateUpload()
+                Status.PREPARING
+            } else {
+                Status.FAILURE
+            }
 
         override fun tick() = when (fState) {
-            ExecutionState.CREATED -> {
-                upload()
-                Status.PREPARING
-            }
+            ExecutionState.CREATED -> upload()
             ExecutionState.UPLOADING -> Status.PREPARING
             ExecutionState.RUNNING -> Status.RUNNING
         }
