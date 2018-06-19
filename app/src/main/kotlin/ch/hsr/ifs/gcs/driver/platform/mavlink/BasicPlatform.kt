@@ -2,7 +2,6 @@ package ch.hsr.ifs.gcs.driver.platform.mavlink
 
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.platform.AerialVehicle
-import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import me.drton.jmavlib.mavlink.*
@@ -44,6 +43,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     private val fExecutors = object {
         val io = Executors.newSingleThreadScheduledExecutor()
         val heartbeat = Executors.newSingleThreadScheduledExecutor()
+        val await = Executors.newSingleThreadScheduledExecutor()
     }
 
     private val fPeriodicMessages = object {
@@ -52,6 +52,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     }
 
     private val fMessageListeners = mutableMapOf<MessageID, MutableList<(MAVLinkMessage) -> Unit>>()
+    private val fOneShotMessageListeners = mutableMapOf<MessageID, MutableList<(MAVLinkMessage?) -> Unit>>()
 
     private val fVehicleState = object {
         /**
@@ -205,13 +206,58 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      *
      * @since 1.0.0
      */
-    protected fun addListener(messageName: MessageID, handler: (MAVLinkMessage) -> Unit) {
-        val listeners = fMessageListeners[messageName]
-        if (listeners != null) {
-            listeners.add(handler)
-        } else {
-            fMessageListeners[messageName] = listOf(handler).toMutableList()
-        }
+    protected fun addListener(messageName: MessageID, handler: (MAVLinkMessage) -> Unit) = synchronized(fMessageListeners) {
+        fMessageListeners.computeIfAbsent(messageName) { mutableListOf() } += handler
+    }
+
+    /**
+     * Await the reception of a message of the given [type][MessageID], executing the provided
+     * handler when the message arrives.
+     *
+     * The provided handler will be executed exactly once
+     *
+     * @param message The message to transmit
+     * @param response The message ID to listen for
+     * @param handler The handler to be called on arrival of the specified message
+     *
+     * @since 1.0.0
+     */
+    protected fun awaitResponse(message: MAVLinkMessage,
+                                response: MessageID,
+                                handler: (MAVLinkMessage?) -> Unit) = synchronized(fOneShotMessageListeners) {
+        fOneShotMessageListeners.computeIfAbsent(response) { mutableListOf() } += handler
+        enqueueCommand(message)
+    }
+
+    /**
+     * Await the reception of a response of the given [type][MessageID], executing the provided
+     * handler when the response arrives.
+     *
+     * The provided handler will be executed exactly once
+     *
+     * @param message The message to transmit
+     * @param response The response ID to listen for
+     * @param timeout How long to wait for the response
+     * @param unit The unit of the timeout
+     * @param handler The handler to be called on arrival of the specified response
+     *
+     * @since 1.0.0
+     */
+    protected fun awaitResponse(message: MAVLinkMessage,
+                                response: MessageID,
+                                timeout: Long,
+                                unit: TimeUnit,
+                                handler: (MAVLinkMessage?) -> Unit) = synchronized(fOneShotMessageListeners) {
+        fOneShotMessageListeners.getOrDefault(response, mutableListOf()) += handler
+        fExecutors.await.schedule({
+            synchronized(fOneShotMessageListeners) {
+                fOneShotMessageListeners[response]?.apply {
+                    forEach { it.invoke(null) }
+                    clear()
+                }
+            }
+        }, timeout, unit)
+        enqueueCommand(message)
     }
 
     /**
@@ -277,6 +323,10 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     fMessageListeners[it]?.forEach {
                         it(message)
                     }
+                    fOneShotMessageListeners[it]?.forEach {
+                        it(message)
+                    }
+                    fOneShotMessageListeners.clear()
                 }
             }
         }

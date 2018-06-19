@@ -25,7 +25,9 @@ enum class MessageID {
     SET_MODE,
     AUTOPILOT_VERSION,
     GLOBAL_POSITION_INT,
-    COMMAND_ACK;
+    COMMAND_ACK,
+    MISSION_COUNT,
+    MISSION_REQUEST;
 
     companion object {
 
