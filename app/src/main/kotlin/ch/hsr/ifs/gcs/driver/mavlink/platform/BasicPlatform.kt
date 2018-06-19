@@ -5,11 +5,9 @@ import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Payload
 import ch.hsr.ifs.gcs.driver.access.PayloadProvider
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
-import ch.hsr.ifs.gcs.driver.mavlink.payload.BasicPayload
 import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
-import ch.hsr.ifs.gcs.mission.need.task.Task
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import me.drton.jmavlib.mavlink.*
@@ -143,23 +141,42 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         UPLOADING
     }
 
-    protected open inner class NativeMissionExecution(target: MAVLinkSystem, tasks: List<Task>) : Execution(tasks), MAVLinkExecution {
+    protected open inner class NativeMissionExecution(target: MAVLinkSystem/*, tasks: List<Task>*/) : Execution(), MAVLinkExecution {
         private val fMissionPlanner = MAVLinkSystem(target.id, COMPONENT_MISSION_PLANNER)
         private var fState = ExecutionState.CREATED
+        private val fCommands = mutableListOf<CommandDescriptor>()
+
+//        init {
+//            tasks.forEach {
+//                when(it) {
+//                    is MoveToPosition -> {
+//                        fCommands += CommandDescriptor(
+//                                LongCommand.NAV_WAYPOINT,
+//                                x = it.targetLocation.latitude.toFloat(),
+//                                y = it.targetLocation.longitude.toFloat(),
+//                                z = it.targetLocation.altitude.toFloat()
+//                        )
+//                    }
+//                    is TriggerPayload -> {
+//                        payload.runDuring(this)
+//                    }
+//                }
+//            }
+//        }
 
         override fun add(command: CommandDescriptor) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            fCommands += command
         }
 
         private fun initiateUpload(): Unit = with(createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fMissionPlanner, schema)) {
-            set("count", tasks.size)
-            awaitResponse(this, MessageID.MISSION_REQUEST, 1, TimeUnit.SECONDS) {
-                it?.apply { transmitItem(getInt("seq")) } ?: initiateUpload()
-            }
+            //            set("count", fCommands.size)
+//            awaitResponse(this, MessageID.MISSION_REQUEST, 1, TimeUnit.SECONDS) {
+//                it?.apply { transmitItem(getInt("seq")) } ?: initiateUpload()
+//            }
         }
 
         private fun transmitItem(index: Int) {
-            val command = tasks[index].asMAVLinkCommandDescriptor(this@BasicPlatform, this@BasicPlatform.payload as BasicPayload)
+//            val command = fCommands[index]
         }
 
         private fun upload() {
@@ -197,8 +214,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     override val payload: Payload
         get() = fPayloadDriverId?.let { PayloadProvider.instantiate(it, this) } ?: NullPayload(this)
 
-    override fun getExecutionFor(tasks: List<Task>) =
-            NativeMissionExecution(targetSystem, tasks) as Execution
+    override val execution: Execution
+        get() = NativeMissionExecution(targetSystem) as Execution
 
     // AerialVehicle implementation
 

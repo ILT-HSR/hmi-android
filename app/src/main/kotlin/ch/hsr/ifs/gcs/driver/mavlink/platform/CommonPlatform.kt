@@ -1,7 +1,5 @@
 package ch.hsr.ifs.gcs.driver.mavlink.platform
 
-import ch.hsr.ifs.gcs.driver.Payload
-import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import me.drton.jmavlib.mavlink.MAVLinkSchemaRegistry
 import java.nio.channels.ByteChannel
 

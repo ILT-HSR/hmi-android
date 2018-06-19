@@ -63,6 +63,6 @@ interface Platform {
      *
      * @since 1.0.0
      */
-    fun getExecutionFor(tasks: List<Task>): Execution
+    val execution: Execution
 
 }

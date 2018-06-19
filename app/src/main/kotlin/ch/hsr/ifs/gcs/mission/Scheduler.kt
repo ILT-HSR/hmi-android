@@ -32,6 +32,8 @@ object Scheduler {
             return
         }
 
+//        val execution = need.resource.plaform.execution
+//        need.tasks?.forEach(need.tasks::add)
 //        with(Mission(need)) {
 //            fMissions.add(this)
 //            fListeners.forEach{
