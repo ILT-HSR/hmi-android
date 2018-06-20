@@ -5,6 +5,7 @@ import ch.hsr.ifs.gcs.mission.need.parameter.Cargo
 import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
 import ch.hsr.ifs.gcs.mission.need.parameter.Target
 import ch.hsr.ifs.gcs.mission.need.task.MoveToPosition
+import ch.hsr.ifs.gcs.mission.need.task.ReturnToHome
 import ch.hsr.ifs.gcs.mission.need.task.Task
 import ch.hsr.ifs.gcs.mission.need.task.TriggerPayload
 import ch.hsr.ifs.gcs.resource.Capability
@@ -34,7 +35,7 @@ class CallIn(override val resource: Resource) : Need {
                 val location = Location("")
                 location.latitude = target.result!!.latitude
                 location.longitude = target.result!!.longitude
-                listOf(MoveToPosition(location), TriggerPayload(cargo.result!!))
+                listOf(MoveToPosition(location), TriggerPayload(cargo.result!!), ReturnToHome())
             } else {
                 null
             }
