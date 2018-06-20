@@ -190,6 +190,10 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                                 transmitItem(index + 1)
                             }
                             MessageID.MISSION_ACK.name -> {
+                                enqueueCommands(
+                                        createArmMessage(fSender, fTarget, schema),
+                                        createDoTakeoffMessage(fSender, fTarget, schema)
+                                        )
                                 fState = ExecutionState.RUNNING
                                 with(createLongCommandMessage(fSender, fTarget, schema, LongCommand.MISSION_START)) {
                                     set("param1", 0)
