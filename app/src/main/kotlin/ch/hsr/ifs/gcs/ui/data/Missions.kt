@@ -7,19 +7,19 @@ import org.osmdroid.views.overlay.Overlay
 
 object Missions : Scheduler.OnSchedulerDataChangedListener {
 
-    private val fItems = mutableListOf<Item>()
+    interface Listener {
 
-    val size: Int
-        get() = fItems.size
+        fun onItemAdded(index: Int)
 
-    init {
-        Scheduler.addListener(this)
+        fun onItemRemoved(index: Int)
+
+        fun onItemUpdated(index: Int)
+
     }
 
-    class Item(val mission: Mission, val color: Int) {
+    class Item(val color: Int) {
 
-        val status: String
-            get() = mission.status
+        var status: String = ""
 
         var isSelected = false
 
@@ -27,24 +27,51 @@ object Missions : Scheduler.OnSchedulerDataChangedListener {
 
     }
 
+    private val fItems = mutableMapOf<Mission, Item>()
+    private val fListeners = mutableListOf<Listener>()
+
+    val size get() = fItems.size
+
+    init {
+        Scheduler.addListener(this)
+    }
+
+    fun addListener(listener: Listener) {
+        fListeners += listener
+    }
+
+    fun removeListener(listener: Listener) {
+        fListeners -= listener
+    }
+
     override fun onNewMissionAvailable(mission: Mission) {
-        fItems += Item(mission, createRandomColorArgb())
+        with(Item(createRandomColorArgb())) {
+            fItems[mission] = this
+            fListeners.forEach { it.onItemAdded(indexOf(this)) }
+        }
     }
 
     override fun onMissionRemoved(mission: Mission) {
-        fItems.removeIf {
-            it.mission == mission
+        val index = fItems.keys.indexOf(mission)
+        fItems.remove(mission)
+        fListeners.forEach { it.onItemRemoved(index) }
+    }
+
+    override fun onMissionStatusChanged(mission: Mission) {
+        fItems[mission]?.apply {
+            status = mission.status
+            fListeners.forEach { it.onItemUpdated(indexOf(this)) }
         }
     }
 
     fun forEach(block: (Item) -> Unit) {
-        fItems.forEach(block)
+        fItems.values.forEach(block)
     }
 
-    operator fun get(index: Int) = fItems[index]
+    operator fun get(index: Int) = fItems.values.elementAt(index)
 
     fun isNotEmpty() = fItems.isNotEmpty()
 
-    fun indexOf(item: Item) = fItems.indexOf(item)
+    fun indexOf(item: Item) = fItems.values.indexOf(item)
 
 }

@@ -17,6 +17,7 @@ import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
+import java.util.*
 
 /**
  * [RecyclerView.Adapter] that can display a [Missions.Item] and makes a call to the
@@ -26,7 +27,7 @@ class MissionStatusesRecyclerViewAdapter(
         private val mListener: OnStatusesFragmentChangedListener?,
         private val mRecyclerView: RecyclerView,
         private val mContext: MainActivity)
-    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(), Input.Listener {
+    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(), Input.Listener, Missions.Listener {
 
     private val TAG = MissionStatusesRecyclerViewAdapter::class.java.simpleName
 
@@ -47,6 +48,7 @@ class MissionStatusesRecyclerViewAdapter(
         }
 
         mContext.controls?.addListener(this)
+        Missions.addListener(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -93,6 +95,18 @@ class MissionStatusesRecyclerViewAdapter(
                 Log.d(TAG, "Cancel Mission Pressed")
             }
         }
+    }
+
+    override fun onItemAdded(index: Int) {
+        notifyItemInserted(index)
+    }
+
+    override fun onItemRemoved(index: Int) {
+        notifyItemRemoved(index)
+    }
+
+    override fun onItemUpdated(index: Int) {
+        notifyItemChanged(index)
     }
 
     override fun getItemCount(): Int = Missions.size
