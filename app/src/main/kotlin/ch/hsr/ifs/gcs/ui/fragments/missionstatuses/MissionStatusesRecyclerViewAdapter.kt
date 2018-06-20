@@ -17,7 +17,6 @@ import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
-import java.util.*
 
 /**
  * [RecyclerView.Adapter] that can display a [Missions.Item] and makes a call to the
@@ -29,11 +28,13 @@ class MissionStatusesRecyclerViewAdapter(
         private val mContext: MainActivity)
     : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(), Input.Listener, Missions.Listener {
 
-    private val TAG = MissionStatusesRecyclerViewAdapter::class.java.simpleName
+    companion object {
+        private val LOG_TAG = MissionStatusesRecyclerViewAdapter::class.java.simpleName
+    }
 
     private val mOnClickListener: View.OnClickListener
 
-    var activeItem: Missions.Item? = null
+    private var activeItem: Missions.Item? = null
 
     init {
         if (Missions.isNotEmpty()) {
@@ -92,7 +93,7 @@ class MissionStatusesRecyclerViewAdapter(
                 mContext.controls?.removeListener(this)
             }
             Control.UPDATE_ABORT -> {
-                Log.d(TAG, "Cancel Mission Pressed")
+                Log.d(LOG_TAG, "Cancel Mission Pressed")
             }
         }
     }

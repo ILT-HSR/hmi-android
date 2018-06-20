@@ -21,37 +21,25 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
     companion object {
 
         /**
-         * Create a new channel on the given port with the given parameters
-         *
-         * @param context The application context to use with the port
-         * @param port The USB-Serial port to attach to the channel
-         * @param baudRate The baud rate to use on the port
-         * @param dataBits The number of data bits used on the port
-         * @param stopBits The number of stop bits used on the port
-         * @param parity The parity style to use on the port
-         */
-        fun create(context: Context, port: UsbSerialPort, baudRate: Int, dataBits: Int, stopBits: Int, parity: Parity): SerialDataChannel? {
-            val manager = context.getSystemService(Context.USB_SERVICE) as UsbManager
-            return manager.openDevice(port.driver.device)?.let {
-                try {
-                    port.open(it)
-                    port.setParameters(baudRate, dataBits, stopBits, parity.value)
-                    SerialDataChannel(port)
-                } catch (e: IOException) {
-                    null
-                }
-            }
-        }
-
-        /**
          * Create a new channel on the given port with the given [configuration][Configuration]
          *
          * @param context The application context to use with the port
          * @param port The USB-Serial port to attach to the channel
          * @param configuration The USB-Serial configuration for the channel
          */
-        fun create(context: Context, port: UsbSerialPort, configuration: Configuration) =
-                create(context, port, configuration.baudRate, configuration.dataBits, configuration.stopBits, configuration.parity)
+        fun create(context: Context, port: UsbSerialPort, configuration: Configuration): SerialDataChannel? {
+            val manager = context.getSystemService(Context.USB_SERVICE) as UsbManager
+            return manager.openDevice(port.driver.device)?.let {
+                try {
+                    port.open(it)
+                    port.setParameters(configuration.baudRate, configuration.dataBits, configuration.stopBits, configuration.parity.value)
+                    SerialDataChannel(port)
+                } catch (e: IOException) {
+                    null
+                }
+            }
+
+        }
 
     }
 

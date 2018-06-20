@@ -10,7 +10,9 @@ import android.util.Log
 
 class LocationService(val context: Context, private val listener: OnLocationChangedListener?) : LocationListener {
 
-    private val TAG = LocationService::class.java.simpleName
+    companion object {
+        private val LOG_TAG = LocationService::class.java.simpleName
+    }
 
     private var currentLocation: Location? = null
 
@@ -21,7 +23,7 @@ class LocationService(val context: Context, private val listener: OnLocationChan
             locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, this)
             locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, this)
         } catch(e: SecurityException) {
-            Log.e(TAG, e.message)
+            Log.e(LOG_TAG, e.message)
         }
     }
 

@@ -1,7 +1,5 @@
 package ch.hsr.ifs.gcs.driver.mavlink.platform
 
-import ch.hsr.ifs.gcs.driver.AerialVehicle
-import ch.hsr.ifs.gcs.driver.Command
 import me.drton.jmavlib.mavlink.MAVLinkSchemaRegistry
 import java.nio.channels.ByteChannel
 
@@ -17,7 +15,7 @@ open class CommonPlatform(channel: ByteChannel, payloadDriverId: String?) : Basi
 
     companion object {
         /**
-         * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.platform.mavlink.BasicPlatform] implementation
+         * The driver ID of the builtin [CommonPlatform] implementation
          *
          * @since 1.0.0
          * @author IFS Institute for Software

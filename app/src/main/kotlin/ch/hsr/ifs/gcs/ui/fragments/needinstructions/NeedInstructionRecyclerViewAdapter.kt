@@ -20,8 +20,6 @@ class NeedInstructionRecyclerViewAdapter(
         private val mContext: MainActivity)
     : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>(), Input.Listener {
 
-    private val TAG = NeedInstructionRecyclerViewAdapter::class.java.simpleName
-
     init {
         mContext.controls?.addListener(this)
     }

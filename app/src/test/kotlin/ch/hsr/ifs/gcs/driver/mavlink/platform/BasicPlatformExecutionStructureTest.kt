@@ -3,7 +3,6 @@ package ch.hsr.ifs.gcs.driver.mavlink.platform
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.driver.channel.TestChannel
-import ch.hsr.ifs.gcs.mission.Execution
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`

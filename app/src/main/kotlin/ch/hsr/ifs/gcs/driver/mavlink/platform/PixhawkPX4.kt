@@ -1,10 +1,6 @@
 package ch.hsr.ifs.gcs.driver.mavlink.platform
 
-import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Platform
-import ch.hsr.ifs.gcs.driver.mavlink.support.*
-import ch.hsr.ifs.gcs.support.geo.GPSPosition
-import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import java.nio.channels.ByteChannel
 
 /**
@@ -44,7 +40,7 @@ internal class PixhawkPX4(channel: ByteChannel, payloadDriverId: String?) : Comm
 
     companion object {
         /**
-         * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.platform.mavlink.MAVLinkPlatform] implementation for Pixhawk PX4 controllers
+         * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform] implementation for Pixhawk PX4 controllers
          *
          * @since 1.0.0
          * @author IFS Institute for Software

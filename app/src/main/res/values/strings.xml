@@ -16,4 +16,7 @@
     <string name="altitude_value_text">0m</string>
     <string name="increase_button_text">+</string>
     <string name="decrease_button_text">-</string>
+    <string name="choose_medkit_cargo">Choose Medkit Cargo</string>
+    <string name="choose_autonomous_mode">Choose Autonomous Mode</string>
+    <string name="results_result_placeholder">Result</string>
 </resources>

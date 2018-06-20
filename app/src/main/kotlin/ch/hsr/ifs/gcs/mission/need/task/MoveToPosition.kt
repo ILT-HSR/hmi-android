@@ -4,7 +4,7 @@ import android.location.Location
 import ch.hsr.ifs.gcs.driver.Vehicle
 import ch.hsr.ifs.gcs.resource.Resource
 
-class MoveToPosition(val targetLocation: Location) : Task {
+class MoveToPosition(private val targetLocation: Location) : Task {
 
     override fun executeOn(resource: Resource) =
             with(resource.plaform as Vehicle) {

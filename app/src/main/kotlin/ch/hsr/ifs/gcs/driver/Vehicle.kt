@@ -1,7 +1,6 @@
 package ch.hsr.ifs.gcs.driver
 
 import android.location.Location
-import ch.hsr.ifs.gcs.support.geo.GPSPosition
 
 /**
  * The interface of drivers for vehicles

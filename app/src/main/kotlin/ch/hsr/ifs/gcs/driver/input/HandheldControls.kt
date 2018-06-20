@@ -14,7 +14,9 @@ import java.util.concurrent.Executors
 
 class HandheldControls(context: Context, private val fPort: UsbSerialPort) : SerialInputOutputManager.Listener, Input {
 
-    private val TAG = HandheldControls::class.simpleName
+    companion object {
+        private val LOG_TAG = HandheldControls::class.simpleName
+    }
 
     private val fIOExecutor = Executors.newSingleThreadExecutor()
     private lateinit var fIOManager: SerialInputOutputManager
@@ -33,7 +35,7 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
                     fIOManager = SerialInputOutputManager(fPort, this@HandheldControls)
                     fIOExecutor.submit(fIOManager)
                 } catch (e: IOException) {
-                    Log.e(TAG, "Failed to open control port", e)
+                    Log.e(LOG_TAG, "Failed to open control port", e)
                 }
             }
         }
@@ -52,7 +54,7 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
         data.forEach {
             message += String.format("0x%02x ", it)
         }
-        Log.d(TAG, "read ${data.size} bytes: $message")
+        Log.d(LOG_TAG, "read ${data.size} bytes: $message")
 
         for (i in 0 until data.size) {
             val byte = data[i]
@@ -95,7 +97,7 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
     }
 
     override fun onRunError(e: Exception?) {
-        Log.d(TAG, "read error", e)
+        Log.d(LOG_TAG, "read error", e)
     }
 
 }

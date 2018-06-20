@@ -22,10 +22,10 @@ class NeedsListener(val activity: Activity, val map: MapView) : NeedsFragment.On
     }
 
     override fun refreshNeedsMapView() {
-        activity.runOnUiThread({
+        activity.runOnUiThread {
             map.overlays.clear()
             map.invalidate()
-        })
+        }
     }
 
 }

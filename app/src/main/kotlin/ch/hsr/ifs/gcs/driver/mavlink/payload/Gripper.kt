@@ -1,9 +1,8 @@
 package ch.hsr.ifs.gcs.driver.mavlink.payload
 
-import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPayload
-import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkMissionCommand
 import ch.hsr.ifs.gcs.driver.mavlink.support.LongCommand
+import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkMissionCommand
 
 class Gripper : MAVLinkPayload {
 

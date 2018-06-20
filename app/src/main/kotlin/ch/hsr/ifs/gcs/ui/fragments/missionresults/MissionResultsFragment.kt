@@ -25,7 +25,9 @@ import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
  */
 class MissionResultsFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChangedListener {
 
-    private val TAG = MissionResultsFragment::class.java.simpleName
+    companion object {
+        private val LOG_TAG = MissionResultsFragment::class.java.simpleName
+    }
 
     private var listener: OnResultsFragmentChangedListener? = null
 
@@ -70,7 +72,7 @@ class MissionResultsFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChang
             }
         resultsAddButton.isEnabled = !NeedsManager.needs.isEmpty()
         activity?.leftButton?.setOnClickListener {
-            Log.d(TAG, "Refresh Mission Pressed")
+            Log.d(LOG_TAG, "Refresh Mission Pressed")
         }
     }
 

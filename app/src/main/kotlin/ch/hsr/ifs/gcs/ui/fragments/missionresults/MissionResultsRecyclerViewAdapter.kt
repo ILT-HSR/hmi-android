@@ -28,11 +28,13 @@ class MissionResultsRecyclerViewAdapter(
         private val mContext: MainActivity)
     : RecyclerView.Adapter<MissionResultsRecyclerViewAdapter.ViewHolder>(), Input.Listener {
 
-    private val TAG = MissionResultsRecyclerViewAdapter::class.java.simpleName
+    companion object {
+        private val LOG_TAG = MissionResultsRecyclerViewAdapter::class.java.simpleName
+    }
 
     private val mOnClickListener: View.OnClickListener
 
-    var activeItem: Results.Item? = null
+    private var activeItem: Results.Item? = null
 
     init {
         if (Results.isNotEmpty()) {
@@ -61,7 +63,7 @@ class MissionResultsRecyclerViewAdapter(
                 } else {
                     Color.TRANSPARENT
                 })
-        holder.mMissionName.text = "Result"
+        holder.mMissionName.text = mContext.getString(R.string.results_result_placeholder)
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
@@ -87,7 +89,7 @@ class MissionResultsRecyclerViewAdapter(
                 mContext.controls?.removeListener(this)
             }
             Control.UPDATE_ABORT -> {
-                Log.d(TAG, "Refresh Mission Pressed")
+                Log.d(LOG_TAG, "Refresh Mission Pressed")
             }
         }
     }

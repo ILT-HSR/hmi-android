@@ -25,7 +25,9 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
  */
 class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChangedListener {
 
-    private val TAG = MissionStatusesFragment::class.java.simpleName
+    companion object {
+        private val LOG_TAG = MissionStatusesFragment::class.java.simpleName
+    }
 
     private var listener: OnStatusesFragmentChangedListener? = null
 
@@ -70,7 +72,7 @@ class MissionStatusesFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChan
         }
         statusesAddButton.isEnabled = !NeedsManager.needs.isEmpty()
         activity?.leftButton?.setOnClickListener {
-            Log.d(TAG, "Cancel Mission Pressed")
+            Log.d(LOG_TAG, "Cancel Mission Pressed")
         }
     }
 

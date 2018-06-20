@@ -17,7 +17,7 @@ val CAPABILITY_VERTICAL_TAKEOFF = CapabilityDescriptor(
  * This capability should be attached to resources that can fly
  *
  * Platforms acquired through a resource with this capability can be safely cast into
- * [AerialVehicle][ch.hsr.ifs.gcs.driver.platform.AerialVehicle]
+ * [AerialVehicle][ch.hsr.ifs.gcs.driver.AerialVehicle]
  *
  * @since 1.0.0
  * @author IFS Institute for Software

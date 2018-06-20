@@ -1,8 +1,6 @@
 package ch.hsr.ifs.gcs.mission
 
-import android.util.Log
 import ch.hsr.ifs.gcs.mission.need.Need
-import ch.hsr.ifs.gcs.resource.Resource
 
 /**
  * A [mission][Mission] encapsulates the translation of abstract [need][Need] tasks into driver

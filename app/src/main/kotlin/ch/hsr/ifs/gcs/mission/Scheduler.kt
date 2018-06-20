@@ -4,7 +4,6 @@ import android.util.Log
 import ch.hsr.ifs.gcs.mission.need.Need
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.access.ResourceManager
-import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit

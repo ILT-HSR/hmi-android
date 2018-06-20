@@ -7,7 +7,7 @@ import org.osmdroid.views.MapView
 class MissionResultsListener(val activity: Activity, val map: MapView) : MissionResultsFragment.OnResultsFragmentChangedListener {
 
     override fun onResultItemChanged(item: Results.Item?) {
-        activity.runOnUiThread({
+        activity.runOnUiThread {
             item?.let {
                 if(it.isSelected) {
                     map.overlayManager.addAll(it.mapOverlays)
@@ -16,17 +16,17 @@ class MissionResultsListener(val activity: Activity, val map: MapView) : Mission
                 }
                 map.invalidate()
             }
-        })
+        }
     }
 
     override fun refreshResultsMapView() {
-        activity.runOnUiThread({
+        activity.runOnUiThread {
             map.overlays.clear()
             Results.forEach {
                 if (it.isSelected) map.overlayManager.addAll(it.mapOverlays)
             }
             map.invalidate()
-        })
+        }
     }
 
 }

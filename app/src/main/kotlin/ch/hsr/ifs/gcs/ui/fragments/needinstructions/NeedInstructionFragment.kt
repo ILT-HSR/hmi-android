@@ -25,8 +25,6 @@ class NeedInstructionFragment : Fragment() {
     var activeParameterList: List<Parameter<*>>? = null
     private var currentTaskId = 0
 
-    private val TAG = NeedInstructionFragment::class.java.simpleName
-
     private var listener: OnNeedInstructionFragmentListener? = null
 
     override fun onAttach(context: Context) {

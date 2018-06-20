@@ -21,15 +21,15 @@ object PlatformProvider {
     }
 
     /**
-     * Create a new driver instance for the given [port] in the given [context]
+     * Create a new driver instance using a channel provided by [factory]
      *
      * This function ensures, that the communication port is initialized correctly, as required
      * by the driver implementation.
      *
      * @param driverId The ID associated with the desired platform driver
-     * @param context The application context used for device input/output
-     * @param port The USB port to use for device communication
-     * @param configuration The USB-Serial port configuration for the given device
+     * @param factory A factory to create new channels
+     * @param parameters A parameter object used to request a new channel from the [factory]
+     * @param payloadDriverId The ID of the driver of the attached [payload][ch.hsr.ifs.gcs.driver.Payload]
      *
      * @return A new instance of platform driver if a vehicle was detected on the
      * provided port, `null` otherwise.

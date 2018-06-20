@@ -16,7 +16,6 @@ object PayloadProvider {
      * Create a new driver instance for the [platform][Platform]
      *
      * @param id The ID associated with the desired payload
-     * @param platform The platform the payload is attached to
      *
      * @return A new instance of the payload driver or null of no driver was found
      */
