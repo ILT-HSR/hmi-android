@@ -19,8 +19,10 @@ buildscript {
         junitVersion = '4.12'
         hamcrestVersion = '1.3'
         robolectricVersion = '3.8'
-    }
 
+        // Metrics
+        detektVersion = '1.0.0.RC7'
+    }
 
     repositories {
         google()
@@ -34,6 +36,9 @@ buildscript {
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokkaVersion"
+
+        // Metrics
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
     }
 }
 
@@ -49,6 +54,16 @@ dokka {
         p ->
             return new File(p.projectDir, "/src/main")
     })
+}
+
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+detekt {
+    version = "$detektVersion"
+    profile("main") {
+        input = "$projectDir/app/src/main/kotlin"
+        config = "$projectDir/detekt.yml"
+    }
 }
 
 allprojects {
