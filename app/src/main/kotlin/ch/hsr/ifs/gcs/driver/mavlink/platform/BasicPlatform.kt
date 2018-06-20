@@ -48,6 +48,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         private const val COMPONENT_MISSION_PLANNER = 190
     }
 
+
     private val fSender = MAVLinkSystem(8, 250)
     private val fTarget = MAVLinkSystem(1, 1)
 
@@ -66,7 +67,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     }
 
     private val fMessageListeners = mutableMapOf<MessageID, MutableList<(MAVLinkMessage) -> Unit>>()
-    private val fOneShotMessageListeners = mutableMapOf<MessageID, MutableList<(MAVLinkMessage?) -> Unit>>()
+    private val fOneShotMessageListeners = mutableMapOf<MessageID, MutableList<AbortableHandler>>()
 
     private val fVehicleState = object {
         /**
@@ -132,6 +133,115 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     }
 
+    private data class AbortableHandler(private val fSuccess: (MAVLinkMessage) -> Unit, private val fFailure: () -> Unit) {
+        enum class State {
+            WAITING,
+            SUCCEEDED,
+            FAILED
+        }
+
+        private var state = State.WAITING
+
+        fun invoke(message: MAVLinkMessage) = synchronized(this) {
+            if (state == State.WAITING) {
+                state = State.SUCCEEDED
+                fSuccess(message)
+            }
+        }
+
+        fun abort() = synchronized(this) {
+            if (state == State.WAITING) {
+                state = State.FAILED
+                fFailure()
+            }
+        }
+    }
+
+    protected open inner class NativeMissionExecution(target: MAVLinkSystem) : Execution(), MAVLinkExecution {
+        private val fMissionPlanner = MAVLinkSystem(target.id, COMPONENT_MISSION_PLANNER)
+        private var fState = ExecutionState.CREATED
+
+        override operator fun plusAssign(command: Command<*>) {
+            assert(command is MAVLinkCommand)
+            super.plusAssign(command)
+        }
+
+        private fun initiateUpload(): Unit = with(createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fMissionPlanner, schema)) {
+            set("count", fCommands.size)
+            awaitResponse(this, MessageID.MISSION_REQUEST, Duration.ofMillis(1000), {
+                Log.i(LOG_TAG, "initiateUpload await succeeded.")
+                transmitItem(it.getInt("seq"))
+            }) {
+                Log.i(LOG_TAG, "initiateUpload await failed.")
+                initiateUpload()
+            }
+        }
+
+        private fun transmitItem(index: Int) {
+            val nativeCommand = fCommands[index].nativeCommand as MAVLinkMissionCommand
+            with(createTargetedMAVLinkMessage(MessageID.MISSION_ITEM, senderSystem, fMissionPlanner, schema)) {
+                set("seq", index)
+                set("frame", nativeCommand.frame.ordinal)
+                set("command", nativeCommand.id.value)
+                set("current", if (index == 0) 1 else 0)
+                set("autocontinue", 1)
+                set("param1", nativeCommand.param1)
+                set("param2", nativeCommand.param2)
+                set("param3", nativeCommand.param3)
+                set("param4", nativeCommand.param4)
+                set("x", nativeCommand.x)
+                set("y", nativeCommand.y)
+                set("z", nativeCommand.z)
+
+                val expectedResponse = if (index < fCommands.size - 1) {
+                    MessageID.MISSION_REQUEST
+                } else {
+                    MessageID.MISSION_ACK
+                }
+
+                awaitResponse(this, expectedResponse, Duration.ofMillis(1000), {
+                    Log.i(LOG_TAG, "transmitItem($index) await succeeded")
+
+                    when (it.msgName) {
+                        MessageID.MISSION_REQUEST.name -> transmitItem(it.getInt("seq"))
+                        MessageID.MISSION_ACK.name -> {
+                            enqueueCommands(
+                                    createArmMessage(fSender, fTarget, schema),
+                                    createDoTakeoffMessage(fSender, fTarget, schema)
+                            )
+
+                            fState = ExecutionState.RUNNING
+
+                            with(createLongCommandMessage(fSender, fTarget, schema, LongCommand.MISSION_START)) {
+                                set("param1", 0)
+                                set("param2", fCommands.size - 1)
+                                enqueueCommand(this)
+                            }
+                        }
+                    }
+                }) {
+                    Log.i(LOG_TAG, "transmitItem($index) await failed")
+                    transmitItem(index)
+                }
+            }
+        }
+
+        private fun upload() =
+                if (fCommands.size > 0) {
+                    fState = ExecutionState.UPLOADING
+                    initiateUpload()
+                    Status.PREPARING
+                } else {
+                    Status.FAILURE
+                }
+
+        override fun tick() = when (fState) {
+            ExecutionState.CREATED -> upload()
+            ExecutionState.UPLOADING -> Status.PREPARING
+            ExecutionState.RUNNING -> Status.RUNNING
+        }
+    }
+
     init {
         registerBasicHandlers()
         beginSerialIO()
@@ -143,84 +253,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         CREATED,
         UPLOADING,
         RUNNING,
-    }
-
-    protected open inner class NativeMissionExecution(target: MAVLinkSystem) : Execution(), MAVLinkExecution {
-        private val fMissionPlanner = MAVLinkSystem(target.id, COMPONENT_MISSION_PLANNER)
-        private var fState = ExecutionState.CREATED
-
-        override  operator fun plusAssign(command: Command<*>) {
-            assert(command is MAVLinkCommand)
-            super.plusAssign(command)
-        }
-
-        private fun initiateUpload(): Unit = with(createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fMissionPlanner, schema)) {
-            set("count", fCommands.size)
-            awaitResponse(this, MessageID.MISSION_REQUEST, 1, TimeUnit.SECONDS) {
-                it?.apply { transmitItem(getInt("seq")) } ?: initiateUpload()
-            }
-        }
-
-        private fun transmitItem(index: Int) {
-            val nativeCommand = fCommands[index].nativeCommand as MAVLinkMissionCommand
-            with(createTargetedMAVLinkMessage(MessageID.MISSION_ITEM, senderSystem, fMissionPlanner, schema)) {
-                set("seq", index)
-                set("frame", 3)
-                set("command", nativeCommand.id)
-                set("current", index == 0)
-                set("autocontinue", true)
-                set("param1", nativeCommand.param1)
-                set("param2", nativeCommand.param2)
-                set("param3", nativeCommand.param3)
-                set("param4", nativeCommand.param4)
-                set("x", nativeCommand.x)
-                set("y", nativeCommand.y)
-                set("z", nativeCommand.z)
-
-                val expectedResponse = if(index < fCommands.size - 1){
-                    MessageID.MISSION_REQUEST
-                } else {
-                    MessageID.MISSION_ACK
-                }
-
-                awaitResponse(this, expectedResponse, 1, TimeUnit.SECONDS) {
-                    it?.apply {
-                        when(this.msgName) {
-                            MessageID.MISSION_REQUEST.name -> {
-                                transmitItem(index + 1)
-                            }
-                            MessageID.MISSION_ACK.name -> {
-                                enqueueCommands(
-                                        createArmMessage(fSender, fTarget, schema),
-                                        createDoTakeoffMessage(fSender, fTarget, schema)
-                                        )
-                                fState = ExecutionState.RUNNING
-                                with(createLongCommandMessage(fSender, fTarget, schema, LongCommand.MISSION_START)) {
-                                    set("param1", 0)
-                                    set("param2", fCommands.size - 1)
-                                    enqueueCommand(this)
-                                }
-                            }
-                        }
-                    } ?: transmitItem(index)
-                }
-            }
-        }
-
-        private fun upload() =
-            if(fCommands.size > 0) {
-                fState = ExecutionState.UPLOADING
-                initiateUpload()
-                Status.PREPARING
-            } else {
-                Status.FAILURE
-            }
-
-        override fun tick() = when (fState) {
-            ExecutionState.CREATED -> upload()
-            ExecutionState.UPLOADING -> Status.PREPARING
-            ExecutionState.RUNNING -> Status.RUNNING
-        }
     }
 
     // Platform implementation
@@ -250,6 +282,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     override fun moveTo(position: Location) = MAVLinkCommand(MAVLinkMissionCommand(
             LongCommand.NAV_WAYPOINT,
+            frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
             param4 = Float.NaN,
             x = position.latitude.toFloat(),
             y = position.longitude.toFloat(),
@@ -258,22 +291,26 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     override fun changeAltitude(altitude: AerialVehicle.Altitude) = MAVLinkCommand(MAVLinkMissionCommand(
             LongCommand.NAV_LOITER_TO_ALT,
+            frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
             z = altitude.meters.toFloat()
     ))
 
     override fun returnToLaunch() = MAVLinkCommand(MAVLinkMissionCommand(
-            LongCommand.NAV_RETURN_TO_LAUNCH
+            LongCommand.NAV_RETURN_TO_LAUNCH,
+            frame = NavigationFrame.MISSION
     ))
 
     override fun takeOff(altitude: AerialVehicle.Altitude) = MAVLinkCommand(MAVLinkMissionCommand(
             LongCommand.NAV_TAKEOFF,
+            frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
             x = Float.NaN,
             y = Float.NaN,
             z = altitude.meters.toFloat()
     ))
 
     override fun land() = MAVLinkCommand(MAVLinkMissionCommand(
-            LongCommand.NAV_TAKEOFF,
+            LongCommand.NAV_LAND,
+            frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
             x = Float.NaN,
             y = Float.NaN,
             z = Float.NaN
@@ -284,11 +321,13 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     override fun arm() = MAVLinkCommand(MAVLinkMissionCommand(
             LongCommand.COMPONENT_ARM_DISARM,
+            frame = NavigationFrame.MISSION,
             param1 = 1.toFloat()
     ))
 
     override fun disarm() = MAVLinkCommand(MAVLinkMissionCommand(
             LongCommand.COMPONENT_ARM_DISARM,
+            frame = NavigationFrame.MISSION,
             param1 = 1.toFloat()
     ))
 
@@ -354,10 +393,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      */
     protected fun awaitResponse(message: MAVLinkMessage,
                                 response: MessageID,
-                                handler: (MAVLinkMessage?) -> Unit) = synchronized(fOneShotMessageListeners) {
-        fOneShotMessageListeners.computeIfAbsent(response) { mutableListOf() } += handler
-        enqueueCommand(message)
-    }
+                                handler: (MAVLinkMessage) -> Unit) = awaitResponse(message, response, Duration.ZERO, handler)
 
     /**
      * Await the reception of a response of the given [type][MessageID], executing the provided
@@ -368,27 +404,26 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      * @param message The message to transmit
      * @param response The response ID to listen for
      * @param timeout How long to wait for the response
-     * @param unit The unit of the timeout
      * @param handler The handler to be called on arrival of the specified response
      *
      * @since 1.0.0
      */
     protected fun awaitResponse(message: MAVLinkMessage,
                                 response: MessageID,
-                                timeout: Long,
-                                unit: TimeUnit,
-                                handler: (MAVLinkMessage?) -> Unit) = synchronized(fOneShotMessageListeners) {
-        fOneShotMessageListeners.computeIfAbsent(response) {mutableListOf()} += handler
-        fExecutors.await.schedule({
-            synchronized(fOneShotMessageListeners) {
-                fOneShotMessageListeners[response]?.apply {
-                    forEach {
-                        it.invoke(null)
-                        this.remove(it)
-                    }
+                                timeout: Duration,
+                                success: (MAVLinkMessage) -> Unit,
+                                failure: () -> Unit = {}) = synchronized(fOneShotMessageListeners) {
+        val handler = AbortableHandler(success, failure)
+        fOneShotMessageListeners.computeIfAbsent(response) { mutableListOf() } += handler
+
+        if (!timeout.isZero) {
+            fExecutors.await.schedule({
+                synchronized(fOneShotMessageListeners) {
+                    fOneShotMessageListeners[response]?.remove(handler)
                 }
-            }
-        }, timeout, unit)
+                handler.abort()
+            }, timeout.toNanos(), TimeUnit.NANOSECONDS)
+        }
         enqueueCommand(message)
     }
 
@@ -449,18 +484,34 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      */
     private fun dispatch(message: MAVLinkMessage) {
         when (MessageID.from(message.msgName)) {
-            null -> Log.d(LOG_TAG, "Unsupported message '$message'")
+            null -> Log.v(LOG_TAG, "Unsupported message '$message'")
             else -> {
-                MessageID.from(message.msgName)?.let {
-                    fMessageListeners[it]?.forEach {
-                        it(message)
-                    }
-                    fOneShotMessageListeners[it]?.forEach {
-                        it(message)
-                    }
-                    fOneShotMessageListeners.clear()
-                }
+             //   if (message.msgName != MessageID.HEARTBEAT.name)
+                    Log.i(LOG_TAG, "Received message '$message'")
+                invokeListeners(message)
+                invokeOneShotListeners(message)
             }
+        }
+    }
+
+    private fun invokeListeners(message: MAVLinkMessage): Unit = synchronized(fMessageListeners) {
+        val id = MessageID.from(message.msgName)!!
+        fMessageListeners[id]?.forEach {
+            it.invoke(message)
+        }
+    }
+
+    private fun invokeOneShotListeners(message: MAVLinkMessage) {
+        val id = MessageID.from(message.msgName)!!
+        val handlers = synchronized(fOneShotMessageListeners) {
+            val original = fOneShotMessageListeners.getOrDefault(id, mutableListOf())
+            val result = original.toList()
+            original.clear()
+            result
+        }
+
+        handlers.forEach {
+            it.invoke(message)
         }
     }
 
@@ -495,7 +546,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      * Process a 'Command Long ACK' message on the link.
      */
     private fun handleCommandAcknowledgement(message: MAVLinkMessage) {
-        Log.i(LOG_TAG, "Received ACK: $message")
+        //      Log.i(LOG_TAG, "Received ACK: $message")
         fCommandState.command?.let {
             if (message["command"] == it["command"]) {
                 fCommandState.command = null
@@ -514,14 +565,12 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             message -> {
                 if (fCommandState.transmittedAt + (TIMEOUT_COMMAND_ACK) < Instant.now()) {
                     message["confirmation"] = (message["confirmation"] as Int + 1) % 256
-                    Log.i(LOG_TAG, "Retransmitting $message")
                     fMessageStream.write(fCommandState.command)
                     fCommandState.transmittedAt = Instant.now()
                 }
             }
             else -> {
                 fCommandState.command = message
-                Log.i(LOG_TAG, "Transmitting $message")
                 fMessageStream.write(fCommandState.command)
                 fCommandState.transmittedAt = Instant.now()
             }
@@ -532,6 +581,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      * Send a regular command
      */
     private fun sendCommand(message: MAVLinkMessage) {
+        if (message.msgName != MessageID.HEARTBEAT.name)
+            Log.i(LOG_TAG, "Transmitting '$message'")
         fMessageStream.write(message)
         fMessageQueue.remove()
     }

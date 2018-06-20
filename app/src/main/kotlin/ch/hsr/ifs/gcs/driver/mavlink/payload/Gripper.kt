@@ -3,6 +3,7 @@ package ch.hsr.ifs.gcs.driver.mavlink.payload
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.LongCommand
 import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkMissionCommand
+import ch.hsr.ifs.gcs.driver.mavlink.support.NavigationFrame
 
 class Gripper : MAVLinkPayload {
 
@@ -12,8 +13,9 @@ class Gripper : MAVLinkPayload {
 
     override val commandDescriptor = MAVLinkMissionCommand(
             LongCommand.DO_SET_SERVO,
+            NavigationFrame.MISSION,
             5.toFloat(),
-            900.toFloat()
+            1500.toFloat()
     )
 
 }
