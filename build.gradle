@@ -43,6 +43,7 @@ buildscript {
 }
 
 apply plugin: 'org.jetbrains.dokka-android'
+apply plugin: 'io.gitlab.arturbosch.detekt'
 
 dokka {
     moduleName = "$rootProject.name"
@@ -55,8 +56,6 @@ dokka {
             return new File(p.projectDir, "/src/main")
     })
 }
-
-apply plugin: 'io.gitlab.arturbosch.detekt'
 
 detekt {
     version = "$detektVersion"
