@@ -14,8 +14,8 @@ class Gripper : MAVLinkPayload {
     override val commandDescriptor = MAVLinkMissionCommand(
             LongCommand.DO_SET_SERVO,
             NavigationFrame.MISSION,
-            5.toFloat(),
-            1500.toFloat()
+            1.toFloat(),
+            2000.toFloat()
     )
 
 }

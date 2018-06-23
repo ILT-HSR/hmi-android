@@ -191,7 +191,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 set("param4", nativeCommand.param4)
                 set("x", nativeCommand.x)
                 set("y", nativeCommand.y)
-                set("z", nativeCommand.z)
+                set("z", 5.0)
 
                 val expectedResponse = if (index < fCommands.size - 1) {
                     MessageID.MISSION_REQUEST
