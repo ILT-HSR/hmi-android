@@ -15,37 +15,12 @@ import org.osmdroid.views.MapView
  */
 class Altitude: Parameter<Int> {
 
-    private val fragment = AltitudeFragment()
+    override val id = "ch.hsr.ifs.gcs.mission.need.parameter.altitude"
 
-    override val name = "Altitude"
-
-    override val description = "Choose the altitude for your vehicle."
-
-    override var result: Int? = 0
+    override var result: Int = 0
 
     override fun resultToString(): String {
         return "$result meters"
-    }
-
-    override var isActive = false
-
-    override var isCompleted = false
-
-    override fun setup(context: MainActivity) {
-        val mapView = context.findViewById<MapView>(R.id.map)
-        mapView.setBuiltInZoomControls(false)
-        fragment.needParameter = this
-        context.fragmentHandler?.performFragmentTransaction(R.id.mapholder, fragment)
-        context.leftButton.setOnClickListener {
-            cleanup(context)
-            context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
-        }
-    }
-
-    override fun cleanup(context: MainActivity) {
-        val mapView = context.findViewById<MapView>(R.id.map)
-        mapView.setBuiltInZoomControls(true)
-        context.fragmentHandler?.removeFragment(fragment)
     }
 
 }

@@ -11,21 +11,22 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.mission.Scheduler
-import ch.hsr.ifs.gcs.mission.need.Need
-import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
+import ch.hsr.ifs.gcs.mission.Mission
+import ch.hsr.ifs.gcs.mission.access.MissionProvider
+import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.view.*
 
 class NeedInstructionFragment : Fragment() {
 
-    var activeNeed: Need? = null
-    var activeParameterList: List<Parameter<*>>? = null
     private var currentTaskId = 0
-
     private var listener: OnNeedInstructionFragmentListener? = null
+
+    lateinit var activeNeed: NeedItem
+    lateinit var activeParameterList: List<ParameterItem<*>>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -44,12 +45,12 @@ class NeedInstructionFragment : Fragment() {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = NeedInstructionRecyclerViewAdapter(
-                        activeParameterList!!,
+                        activeNeed,
                         context as MainActivity
                 )
             }
         }
-        view.titleText.text = "New ${activeNeed!!.name}"
+        view.titleText.text = "New ${activeNeed.name}"
         return view
     }
 
@@ -63,30 +64,31 @@ class NeedInstructionFragment : Fragment() {
                     leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
                 }
                 currentTaskId = 0
-                activeParameterList?.get(currentTaskId)?.let {
+                activeParameterList.get(currentTaskId).let {
                     it.setup(context)
-                    it.isActive = true
+                    it.activate()
                 }
                 needNavigationButton.setOnClickListener {
-                    activeParameterList?.get(currentTaskId)?.let {
-                        it.isActive = false
-                        it.isCompleted = true
+                    activeParameterList.get(currentTaskId).let {
+                        it.deactivate()
+                        it.markComplete()
                         it.cleanup(context)
                     }
-                    if(currentTaskId < activeParameterList!!.size - 1) {
+                    if(currentTaskId < activeParameterList.size - 1) {
                         currentTaskId += 1
-                        activeParameterList?.get(currentTaskId)?.let {
+                        activeParameterList.get(currentTaskId).let {
                             it.setup(context)
-                            it.isActive = true
+                            it.activate()
                         }
                     } else {
-                        needNavigationButton.text = "Start Mission"
+                        needNavigationButton.text = getString(R.string.button_start_mission)
                         needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
-                        activeNeed?.let{ Scheduler.submit(it) }
-                        context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-                        activity?.leftButton?.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
+                        activeNeed.let{Mission(it.need)}.let(MissionProvider::submit)
+                        needNavigationButton.setOnClickListener {
+                            context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                            leftButton?.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
+                        }
                     }
-                    view!!.instructionList.adapter.notifyDataSetChanged()
                 }
             }
         }

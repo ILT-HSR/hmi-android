@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.need.Need
+import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -43,7 +44,6 @@ class NeedsFragment : Fragment() {
             with(list) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = NeedsRecyclerViewAdapter(
-                        NeedsManager.needs,
                         listener,
                         list,
                         context as MainActivity
@@ -61,7 +61,6 @@ class NeedsFragment : Fragment() {
                 val needInstructionFragmentType = FragmentType.NEED_INSTRUCTION_FRAGMENT
                 val item = (view?.list?.adapter as NeedsRecyclerViewAdapter).activeItem
                 (needInstructionFragmentType.fragment as NeedInstructionFragment).activeNeed = item
-                needInstructionFragmentType.fragment.activeParameterList = item.parameterList
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
 
             }
@@ -95,7 +94,7 @@ class NeedsFragment : Fragment() {
          * defines what to do with the provided [item].
          * @param item The item that has been clicked.
          */
-        fun onNeedItemChanged(item: Need?)
+        fun onNeedItemChanged(item: NeedItem)
 
         /**
          * Called when fragment is attached to its parent. Implementation should redraw the mapView

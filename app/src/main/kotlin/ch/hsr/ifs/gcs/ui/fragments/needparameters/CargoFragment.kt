@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.mission.need.parameter.Cargo
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.CargoItem
 import kotlinx.android.synthetic.main.fragment_choose_cargo.*
 
-class CargoFragment : Fragment() {
+class CargoFragment() : Fragment() {
 
-    var needParameter: Cargo? = null
+    lateinit var needParameter: CargoItem
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -25,12 +25,12 @@ class CargoFragment : Fragment() {
         cargoButton.text = "Medkit"
         setDefaultResult()
         cargoButton.setOnClickListener {
-            needParameter?.result = "Medkit"
+            needParameter.parameter.result = "Medkit"
         }
     }
 
     private fun setDefaultResult() {
-        needParameter?.result = "Medkit"
+        needParameter.parameter.result = "Medkit"
     }
 
 }

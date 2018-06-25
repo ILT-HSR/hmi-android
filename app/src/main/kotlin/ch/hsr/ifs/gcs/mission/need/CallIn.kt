@@ -2,7 +2,6 @@ package ch.hsr.ifs.gcs.mission.need
 
 import android.location.Location
 import ch.hsr.ifs.gcs.mission.need.parameter.Cargo
-import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
 import ch.hsr.ifs.gcs.mission.need.parameter.Target
 import ch.hsr.ifs.gcs.mission.need.task.MoveToPosition
 import ch.hsr.ifs.gcs.mission.need.task.ReturnToHome
@@ -23,22 +22,16 @@ class CallIn(override val resource: Resource) : Need {
     private val target = Target()
     private val cargo = Cargo()
 
-    override val name = "Call-in"
+    override val id = "ch.hsr.ifs.gcs.mission.need.callIn"
 
     override val parameterList = listOf(target, cargo)
 
-    override var isActive = false
-
     override val tasks: List<Task>?
-        get() =
-            if (parameterList.all(Parameter<*>::isCompleted)) {
-                val location = Location("")
-                location.latitude = target.result!!.latitude
-                location.longitude = target.result!!.longitude
-                listOf(MoveToPosition(location), TriggerPayload(cargo.result!!), ReturnToHome())
-            } else {
-                null
-            }
+        get() = with(Location("")) {
+            latitude = target.result.latitude
+            longitude = target.result.longitude
+            listOf(MoveToPosition(this), TriggerPayload(cargo.result), ReturnToHome())
+        }
 
     override val requirements: List<Capability<*>>
         get() = listOf(

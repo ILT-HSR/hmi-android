@@ -14,11 +14,11 @@ import ch.hsr.ifs.gcs.mission.need.task.Task
 interface Need {
 
     /**
-     * The name of the need. This is shown in the user interface.
+     * A unique ID for the concrete need
      *
      * @since 1.0.0
      */
-    val name: String
+    val id: String
 
     /**
      * The list of tasks necessary to fulfill the need. This is needed for the recycler view.
@@ -33,13 +33,6 @@ interface Need {
      * @since 1.0.0
      */
     val resource: Resource
-
-    /**
-     * A need is set to active, if it is selected via touch or button navigation.
-     *
-     * @since 1.0.0
-     */
-    var isActive: Boolean
 
     /**
      * Translate the need into a list of [Task] instances.

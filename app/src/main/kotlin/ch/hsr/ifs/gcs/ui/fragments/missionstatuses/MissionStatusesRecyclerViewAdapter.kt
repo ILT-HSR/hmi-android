@@ -12,45 +12,59 @@ import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
-import ch.hsr.ifs.gcs.ui.data.Missions
+import ch.hsr.ifs.gcs.mission.Mission
+import ch.hsr.ifs.gcs.mission.access.MissionProvider
+import ch.hsr.ifs.gcs.support.color.createRandomColorArgb
+import ch.hsr.ifs.gcs.ui.mission.MissionListItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [Missions.Item] and makes a call to the
+ * [RecyclerView.Adapter] that can display a [MissionProvider.Item] and makes a call to the
  * specified [OnStatusesFragmentChangedListener].
  */
 class MissionStatusesRecyclerViewAdapter(
         private val mListener: OnStatusesFragmentChangedListener?,
         private val mRecyclerView: RecyclerView,
         private val mContext: MainActivity)
-    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(), Input.Listener, Missions.Listener {
+    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(), Input.Listener, MissionProvider.Listener {
 
     companion object {
         private val LOG_TAG = MissionStatusesRecyclerViewAdapter::class.java.simpleName
     }
 
     private val mOnClickListener: View.OnClickListener
+    private val mMissionItems = mutableListOf<MissionListItem>()
+    private var activeItem: MissionListItem? = null
 
-    private var activeItem: Missions.Item? = null
+    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+        val mMissionName: TextView = mView.mission_name
+        override fun toString(): String {
+            return super.toString() + " '" + mMissionName.text + "'"
+        }
+    }
 
     init {
-        if (Missions.isNotEmpty()) {
-            activeItem = Missions[0]
+        if (mMissionItems.isNotEmpty()) {
+            activeItem = mMissionItems[0]
             activeItem!!.isSelected = true
         }
 
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as Missions.Item
+            val item = v.tag as MissionListItem
             activateItem(item)
             mListener?.onStatusItemChanged(item)
         }
 
         mContext.controls?.addListener(this)
-        Missions.addListener(this)
+        MissionProvider.addListener(this)
     }
+
+    val items get() = mMissionItems.toList()
+
+    // Adapter implementation
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -59,7 +73,7 @@ class MissionStatusesRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = Missions[position]
+        val item = mMissionItems[position]
         holder.mView.setBackgroundColor(
                 if (item.isSelected) {
                     Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color))
@@ -72,6 +86,10 @@ class MissionStatusesRecyclerViewAdapter(
             setOnClickListener(mOnClickListener)
         }
     }
+
+    override fun getItemCount(): Int = mMissionItems.size
+
+    // Input.Listener implementation
 
     override fun onButton(control: Control) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
@@ -98,42 +116,48 @@ class MissionStatusesRecyclerViewAdapter(
         }
     }
 
-    override fun onItemAdded(index: Int) {
-        notifyItemInserted(index)
+    // MissionProvider.Listener implementation
+
+    override fun onNewMissionAvailable(mission: Mission) {
+        with(MissionListItem(mission, createRandomColorArgb())) {
+            mMissionItems += this
+            notifyItemInserted(mMissionItems.indexOf(this))
+        }
     }
 
-    override fun onItemRemoved(index: Int) {
-        notifyItemRemoved(index)
+    override fun onMissionRemoved(mission: Mission) {
+        mMissionItems.find{ it.mission == mission }?.let {
+            with(mMissionItems.indexOf(it)) {
+                mMissionItems.removeAt(this)
+                notifyItemRemoved(this)
+            }
+        }
     }
 
-    override fun onItemUpdated(index: Int) {
-        notifyItemChanged(index)
-    }
-
-    override fun getItemCount(): Int = Missions.size
+    // Private functions
 
     private fun activateNextItem() {
         activeItem?.let {
-            val newIndex = Missions.indexOf(it) + 1
-            if (newIndex < Missions.size) {
-                activateItem(Missions[newIndex])
+            val newIndex = mMissionItems.indexOf(it) + 1
+            if (newIndex < mMissionItems.size) {
+                activateItem(mMissionItems[newIndex])
             }
         }
     }
 
     private fun activatePreviousItem() {
         activeItem?.let {
-            val newIndex = Missions.indexOf(it) - 1
+            val newIndex = mMissionItems.indexOf(it) - 1
             if (newIndex >= 0) {
-                activateItem(Missions[newIndex])
+                activateItem(mMissionItems[newIndex])
             }
         }
     }
 
-    private fun activateItem(item: Missions.Item) {
+    private fun activateItem(item: MissionListItem) {
         activeItem?.apply {
             isSelected = false
-            val holder = mRecyclerView.findViewHolderForLayoutPosition(Missions.indexOf(this))
+            val holder = mRecyclerView.findViewHolderForLayoutPosition(mMissionItems.indexOf(this))
             holder.itemView.setBackgroundColor(Color.TRANSPARENT)
             mListener?.onStatusItemChanged(activeItem)
         }
@@ -141,16 +165,10 @@ class MissionStatusesRecyclerViewAdapter(
         activeItem = item
         activeItem?.apply {
             isSelected = true
-            val holder = mRecyclerView.findViewHolderForLayoutPosition(Missions.indexOf(this))
+            val holder = mRecyclerView.findViewHolderForLayoutPosition(mMissionItems.indexOf(this))
             holder.itemView.setBackgroundColor(Color.argb(50, Color.red(item.color), Color.green(item.color), Color.blue(item.color)))
             mListener?.onStatusItemChanged(item)
         }
     }
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mMissionName: TextView = mView.mission_name
-        override fun toString(): String {
-            return super.toString() + " '" + mMissionName.text + "'"
-        }
-    }
 }

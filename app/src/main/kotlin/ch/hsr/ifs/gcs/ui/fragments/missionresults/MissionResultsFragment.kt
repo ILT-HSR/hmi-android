@@ -11,9 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.data.Results
+import ch.hsr.ifs.gcs.ui.mission.Results
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
-import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsManager
+import ch.hsr.ifs.gcs.mission.access.NeedProvider
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
  * additional needs. The context containing this fragment must implement the
  * [MissionResultsFragment.OnResultsFragmentChangedListener] interface.
  */
-class MissionResultsFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChangedListener {
+class MissionResultsFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChangedListener {
 
     companion object {
         private val LOG_TAG = MissionResultsFragment::class.java.simpleName
@@ -35,7 +35,7 @@ class MissionResultsFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChang
         super.onAttach(context)
         if (context is MainActivity) {
             listener = context.fragmentHandler!!.missionResultsListener
-            NeedsManager += this
+            NeedProvider += this
         } else {
             throw RuntimeException(context.toString() + " must implement OnResultsFragmentChangedListener")
         }
@@ -70,7 +70,7 @@ class MissionResultsFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChang
                 }
                 activity?.leftButton?.background = context?.applicationContext?.getDrawable(R.drawable.cancel_action)
             }
-        resultsAddButton.isEnabled = !NeedsManager.needs.isEmpty()
+        resultsAddButton.isEnabled = !NeedProvider.needs.isEmpty()
         activity?.leftButton?.setOnClickListener {
             Log.d(LOG_TAG, "Refresh Mission Pressed")
         }
@@ -84,7 +84,7 @@ class MissionResultsFragment : Fragment(), NeedsManager.OnNeedsAvailabilityChang
     override fun onDetach() {
         super.onDetach()
         listener = null
-        NeedsManager -= this
+        NeedProvider -= this
     }
 
     override fun onNeedsAvailabilityChanged(availability: Boolean) {

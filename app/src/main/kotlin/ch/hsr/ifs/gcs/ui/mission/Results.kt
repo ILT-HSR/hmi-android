@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.data
+package ch.hsr.ifs.gcs.ui.mission
 
 import org.osmdroid.views.overlay.Overlay
 

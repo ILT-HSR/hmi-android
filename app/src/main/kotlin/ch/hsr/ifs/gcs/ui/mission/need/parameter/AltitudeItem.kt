@@ -1,36 +1,20 @@
-package ch.hsr.ifs.gcs.mission.need.parameter
+package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.mission.need.parameter.Altitude
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
-import ch.hsr.ifs.gcs.ui.fragments.needparameters.ModeFragment
+import ch.hsr.ifs.gcs.ui.fragments.needparameters.AltitudeFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.views.MapView
+import kotlinx.android.synthetic.main.activity_main.view.*
 
-/**
- * This [Parameter] implementation is used to configure the mode of the vehicle while
- * carrying out a need.
- *
- * @since 1.0.0
- * @author IFS Institute for Software
- */
-class Mode: Parameter<String> {
 
-    private val fragment = ModeFragment()
+class AltitudeItem(parameter: Altitude) : BasicParameterItem<Int>(parameter) {
 
-    override val name = "Mode"
+    private val fragment = AltitudeFragment()
 
-    override val description = "Choose the mode for your vehicle."
-
-    override var result: String? = ""
-
-    override fun resultToString(): String {
-        return result!!
-    }
-
-    override var isActive = false
-
-    override var isCompleted = false
+    override val name = "Altitude"
 
     override fun setup(context: MainActivity) {
         val mapView = context.findViewById<MapView>(R.id.map)
@@ -48,5 +32,6 @@ class Mode: Parameter<String> {
         mapView.setBuiltInZoomControls(true)
         context.fragmentHandler?.removeFragment(fragment)
     }
+
 
 }

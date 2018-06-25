@@ -19,4 +19,5 @@
     <string name="choose_medkit_cargo">Choose Medkit Cargo</string>
     <string name="choose_autonomous_mode">Choose Autonomous Mode</string>
     <string name="results_result_placeholder">Result</string>
+    <string name="button_start_mission">Start Mission</string>
 </resources>

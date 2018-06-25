@@ -12,7 +12,7 @@ import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
-import ch.hsr.ifs.gcs.ui.data.Results
+import ch.hsr.ifs.gcs.ui.mission.Results
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment.OnResultsFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*

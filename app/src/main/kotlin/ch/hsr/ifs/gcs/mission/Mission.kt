@@ -11,7 +11,19 @@ import ch.hsr.ifs.gcs.mission.need.Need
  */
 class Mission(val need: Need) {
 
+    private val fPlatform = need.resource.plaform
+    private val fExecution = fPlatform.execution
+
+    init {
+        need.tasks?.apply {
+            map { it.executeOn(need.resource) }
+                    .forEach(fExecution::add)
+        }
+    }
+
     val status: String
         get() = need.resource.status.name
+
+    fun tick() = fExecution.tick()
 
 }
