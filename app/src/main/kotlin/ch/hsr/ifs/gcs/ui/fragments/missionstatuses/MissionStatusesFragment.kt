@@ -14,7 +14,7 @@ import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.mission.access.NeedProvider
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
-import ch.hsr.ifs.gcs.ui.mission.MissionListItem
+import ch.hsr.ifs.gcs.ui.mission.MissionItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
@@ -41,13 +41,13 @@ class MissionStatusesFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChan
          * defines what to do with the provided [item].
          * @param item The item that has been clicked.
          */
-        fun onStatusItemChanged(item: MissionListItem?)
+        fun onStatusItemChanged(item: MissionItem?)
 
         /**
          * Called when fragment is attached to its parent. Implementation should redraw the mapView
          * according to the use case of this fragment.
          */
-        fun refreshStatusesMapView(items: List<MissionListItem>)
+        fun refreshStatusesMapView(items: List<MissionItem>)
 
     }
 

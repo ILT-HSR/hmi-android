@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.mission.need.parameter
+package ch.hsr.ifs.gcs.ui.mission.need.parameter.item
 
 import android.graphics.Canvas
 import android.view.MotionEvent

@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments.needparameters
+package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.mission.need.parameter.CargoItem
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.item.CargoItem
 import kotlinx.android.synthetic.main.fragment_choose_cargo.*
 
-class CargoFragment() : Fragment() {
+class CargoConfigurator() : Fragment() {
 
     lateinit var needParameter: CargoItem
 

@@ -16,7 +16,7 @@ import org.osmdroid.views.overlay.Overlay
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class MissionListItem(val mission: Mission, needItemFactory: NeedItemFactory, val color: Int = createRandomColorArgb()) {
+class MissionItem(val mission: Mission, needItemFactory: NeedItemFactory, val color: Int = createRandomColorArgb()) {
 
     /**
      * A user-friendly string to describe the current mission status

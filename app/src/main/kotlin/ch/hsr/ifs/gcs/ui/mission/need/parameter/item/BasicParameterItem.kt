@@ -1,6 +1,7 @@
-package ch.hsr.ifs.gcs.ui.mission.need.parameter
+package ch.hsr.ifs.gcs.ui.mission.need.parameter.item
 
 import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItem
 
 abstract class BasicParameterItem<Result>(override val parameter: Parameter<Result>) : ParameterItem<Result> {
 

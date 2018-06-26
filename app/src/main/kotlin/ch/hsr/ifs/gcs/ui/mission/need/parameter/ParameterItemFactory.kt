@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
 import ch.hsr.ifs.gcs.mission.need.parameter.*
 import ch.hsr.ifs.gcs.mission.need.parameter.Target
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.item.*
 
 object ParameterItemFactory {
 

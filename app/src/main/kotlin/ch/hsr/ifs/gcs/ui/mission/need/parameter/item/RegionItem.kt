@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.mission.need.parameter
+package ch.hsr.ifs.gcs.ui.mission.need.parameter.item
 
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R

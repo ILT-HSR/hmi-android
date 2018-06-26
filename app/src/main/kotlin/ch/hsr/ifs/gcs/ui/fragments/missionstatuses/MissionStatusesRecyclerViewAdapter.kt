@@ -15,7 +15,7 @@ import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.support.color.createRandomColorArgb
-import ch.hsr.ifs.gcs.ui.mission.MissionListItem
+import ch.hsr.ifs.gcs.ui.mission.MissionItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
@@ -36,8 +36,8 @@ class MissionStatusesRecyclerViewAdapter(
     }
 
     private val mOnClickListener: View.OnClickListener
-    private val mMissionItems = mutableListOf<MissionListItem>()
-    private var activeItem: MissionListItem? = null
+    private val mMissionItems = mutableListOf<MissionItem>()
+    private var activeItem: MissionItem? = null
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mMissionName: TextView = mView.mission_name
@@ -53,7 +53,7 @@ class MissionStatusesRecyclerViewAdapter(
         }
 
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as MissionListItem
+            val item = v.tag as MissionItem
             activateItem(item)
             mListener?.onStatusItemChanged(item)
         }
@@ -119,7 +119,7 @@ class MissionStatusesRecyclerViewAdapter(
     // MissionProvider.Listener implementation
 
     override fun onNewMissionAvailable(mission: Mission) {
-        with(MissionListItem(mission, mContext.needItemFactory, createRandomColorArgb())) {
+        with(MissionItem(mission, mContext.needItemFactory, createRandomColorArgb())) {
             mMissionItems += this
             notifyItemInserted(mMissionItems.indexOf(this))
         }
@@ -154,7 +154,7 @@ class MissionStatusesRecyclerViewAdapter(
         }
     }
 
-    private fun activateItem(item: MissionListItem) {
+    private fun activateItem(item: MissionItem) {
         activeItem?.apply {
             isSelected = false
             val holder = mRecyclerView.findViewHolderForLayoutPosition(mMissionItems.indexOf(this))

@@ -1,16 +1,16 @@
-package ch.hsr.ifs.gcs.ui.mission.need.parameter
+package ch.hsr.ifs.gcs.ui.mission.need.parameter.item
 
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.need.parameter.Cargo
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
-import ch.hsr.ifs.gcs.ui.fragments.needparameters.CargoFragment
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator.CargoConfigurator
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.views.MapView
 
 class CargoItem(parameter: Cargo) : BasicParameterItem<String>(parameter) {
 
-    private val fragment = CargoFragment()
+    private val fragment = CargoConfigurator()
 
     override val name = "Cargo"
 

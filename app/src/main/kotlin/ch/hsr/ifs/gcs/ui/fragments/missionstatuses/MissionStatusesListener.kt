@@ -1,12 +1,12 @@
 package ch.hsr.ifs.gcs.ui.fragments.missionstatuses
 
 import android.app.Activity
-import ch.hsr.ifs.gcs.ui.mission.MissionListItem
+import ch.hsr.ifs.gcs.ui.mission.MissionItem
 import org.osmdroid.views.MapView
 
 class MissionStatusesListener(val activity: Activity, val map: MapView) : MissionStatusesFragment.OnStatusesFragmentChangedListener {
 
-    override fun onStatusItemChanged(item: MissionListItem?) {
+    override fun onStatusItemChanged(item: MissionItem?) {
         activity.runOnUiThread {
             item?.apply {
                 if (isSelected) {
@@ -19,7 +19,7 @@ class MissionStatusesListener(val activity: Activity, val map: MapView) : Missio
         }
     }
 
-    override fun refreshStatusesMapView(items: List<MissionListItem>) {
+    override fun refreshStatusesMapView(items: List<MissionItem>) {
         activity.runOnUiThread {
             map.overlays.clear()
             items.forEach {
