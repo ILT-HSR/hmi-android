@@ -1,6 +1,8 @@
 package ch.hsr.ifs.gcs.ui.mission
 
+import android.content.Context
 import ch.hsr.ifs.gcs.mission.Mission
+import ch.hsr.ifs.gcs.mission.need.Need
 import ch.hsr.ifs.gcs.support.color.createRandomColorArgb
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
 import org.osmdroid.views.overlay.Overlay
@@ -14,7 +16,7 @@ import org.osmdroid.views.overlay.Overlay
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class MissionListItem(val mission: Mission, val color: Int = createRandomColorArgb()) {
+class MissionListItem(val mission: Mission, needItemFactory: NeedItemFactory, val color: Int = createRandomColorArgb()) {
 
     /**
      * A user-friendly string to describe the current mission status
@@ -24,7 +26,7 @@ class MissionListItem(val mission: Mission, val color: Int = createRandomColorAr
     /**
      * The need-item for the need associated with the underlying mission
      */
-    val need = NeedItemFactory.instantiate(mission.need.id, mission.need)
+    val need = needItemFactory.instantiate(mission.need.id, mission.need)
 
     /**
      * Whether or not the item is currently selected in the UI

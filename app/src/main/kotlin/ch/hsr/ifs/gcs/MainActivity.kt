@@ -13,6 +13,8 @@ import ch.hsr.ifs.gcs.support.geo.LocationService
 import ch.hsr.ifs.gcs.resource.access.ResourceManager
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
+import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
     private var locationService: LocationService? = null
 
     private var location: Location? = null
+    private lateinit var fNeedItemFactory: NeedItemFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,8 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
 
         setContentView(R.layout.activity_main)
+
+        fNeedItemFactory = NeedItemFactory(this)
 
         leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
 
@@ -105,5 +110,7 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
             map.invalidate()
         }
     }
+
+    val needItemFactory get() = fNeedItemFactory
 
 }

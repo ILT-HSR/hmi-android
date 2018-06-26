@@ -119,7 +119,7 @@ class MissionStatusesRecyclerViewAdapter(
     // MissionProvider.Listener implementation
 
     override fun onNewMissionAvailable(mission: Mission) {
-        with(MissionListItem(mission, createRandomColorArgb())) {
+        with(MissionListItem(mission, mContext.needItemFactory, createRandomColorArgb())) {
             mMissionItems += this
             notifyItemInserted(mMissionItems.indexOf(this))
         }

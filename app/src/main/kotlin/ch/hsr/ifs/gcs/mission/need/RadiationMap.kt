@@ -27,9 +27,7 @@ class RadiationMap(override val resource: Resource) : Need {
     )
 
     override val tasks: List<Task>?
-        get() {
-            TODO("not implemented")
-        }
+        get() = emptyList()
 
     override val requirements: List<Capability<*>>
         get() = listOf(

@@ -1,26 +1,51 @@
 package ch.hsr.ifs.gcs.ui.mission.need
 
-import ch.hsr.ifs.gcs.mission.need.CallIn
+import android.content.Context
+import android.util.Log
 import ch.hsr.ifs.gcs.mission.need.Need
-import ch.hsr.ifs.gcs.mission.need.RadiationMap
+import com.google.gson.JsonParser
+import java.io.InputStream
+import java.io.InputStreamReader
 
-object NeedItemFactory {
+class NeedItemFactory(context: Context) {
 
-    private val NEED_ITEM_CONSTRUCTORS = mutableMapOf<String, (Need) -> NeedItem>(
-            "ch.hsr.ifs.gcs.mission.need.callIn" to { n -> CallInItem(n as CallIn) },
-            "ch.hsr.ifs.gcs.mission.need.radiationMap" to { n -> RadiationMapItem(n as RadiationMap) }
-    )
+    companion object {
 
-    fun register(id: String, constructor: (Need) -> NeedItem) {
-        if(NEED_ITEM_CONSTRUCTORS.contains(id)) {
-            throw IllegalArgumentException("Constructor for type '$id' is already registered")
-        }
+        private const val NEED_ITEM_DESCRIPTOR_DIRECTORY = "needs"
 
-        NEED_ITEM_CONSTRUCTORS[id] = constructor
+        private val LOG_TAG = this::class.simpleName
+
     }
 
-    fun instantiate(id: String, need: Need) = if(NEED_ITEM_CONSTRUCTORS.contains(id)) {
-        NEED_ITEM_CONSTRUCTORS[id]!!.invoke(need)
+    data class NeedItemDescriptor(val id: String, val name: String) {
+        companion object {
+            fun load(stream: InputStream) = with(JsonParser().parse(InputStreamReader(stream, Charsets.UTF_8)).asJsonObject) {
+                NeedItemDescriptor(
+                        id = this["id"].asString,
+                        name = this["name"].asString
+                )
+            }
+        }
+    }
+
+    private val fConstructors = mutableMapOf<String, (Need) -> NeedItem>()
+
+    init {
+        context.assets.list(NEED_ITEM_DESCRIPTOR_DIRECTORY).forEach {
+            try {
+                context.assets.open("$NEED_ITEM_DESCRIPTOR_DIRECTORY/$it")?.let {
+                    NeedItemDescriptor.load(it)
+                }?.apply {
+                    fConstructors[id] = { need -> NeedItem(need, name) }
+                }
+            } catch (e: IllegalStateException) {
+                Log.e(LOG_TAG, "Failed to read need item descriptor configuration '$NEED_ITEM_DESCRIPTOR_DIRECTORY/$it'")
+            }
+        }
+    }
+
+    fun instantiate(id: String, need: Need) = if (fConstructors.contains(id)) {
+        fConstructors[id]!!.invoke(need)
     } else {
         throw IllegalArgumentException("No constructor for $id")
     }

@@ -1,19 +1,21 @@
 package ch.hsr.ifs.gcs.ui.mission.need
 
 import ch.hsr.ifs.gcs.mission.need.Need
-import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItem
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
 
-interface NeedItem {
+class NeedItem(val need: Need, val name: String) {
 
-    val isActive: Boolean
+    private var fIsActive = false
 
-    val name: String
+    val isActive get() = fIsActive
 
-    val need: Need
+    val parameters = need.parameterList.map(ParameterItemFactory::instantiate)
 
-    val parameters: List<ParameterItem<*>>
+    fun activate() {
+        fIsActive = true
+    }
 
-    fun activate()
-
-    fun deactivate()
+    fun deactivate() {
+        fIsActive = false
+    }
 }
