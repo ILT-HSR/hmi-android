@@ -29,10 +29,8 @@ class NeedInstructionFragment : Fragment() {
      */
     interface OnNeedInstructionFragmentListener {
 
-        /**
-         * TODO: Implement behaviour of fragment
-         */
         fun onNeedInstructionFragmentChanged()
+
     }
 
     private var fCurrentParaneterId = 0
@@ -101,7 +99,7 @@ class NeedInstructionFragment : Fragment() {
     private fun setupCancelButton(context: MainActivity) {
         context.leftButton.setOnClickListener {
             context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
-            leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+            context.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
         }
     }
 
@@ -135,7 +133,7 @@ class NeedInstructionFragment : Fragment() {
         need.let { Mission(it.need) }.let(MissionProvider::submit)
         needNavigationButton.setOnClickListener {
             context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-            leftButton?.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
+            context.leftButton?.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
         }
     }
 
