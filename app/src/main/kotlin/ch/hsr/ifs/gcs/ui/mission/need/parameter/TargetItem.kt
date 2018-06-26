@@ -2,7 +2,7 @@ package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
 import android.graphics.Canvas
 import android.view.MotionEvent
-import ch.hsr.ifs.gcs.MainActivity
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R.id.map
 import ch.hsr.ifs.gcs.mission.need.parameter.Target
 import org.osmdroid.util.GeoPoint

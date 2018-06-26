@@ -1,7 +1,5 @@
 package ch.hsr.ifs.gcs.mission.need.parameter
 
-import ch.hsr.ifs.gcs.MainActivity
-
 /**
  * Interface representing the base structure of a single need parameter of a need to be configured.
  */

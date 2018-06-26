@@ -1,7 +1,7 @@
 package ch.hsr.ifs.gcs.ui.fragments.needs
 
 import android.app.Activity
-import ch.hsr.ifs.gcs.MainActivity
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType

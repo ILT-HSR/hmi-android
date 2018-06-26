@@ -1,12 +1,11 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
-import ch.hsr.ifs.gcs.MainActivity
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.need.parameter.Cargo
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needparameters.CargoFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 
 class CargoItem(parameter: Cargo) : BasicParameterItem<String>(parameter) {

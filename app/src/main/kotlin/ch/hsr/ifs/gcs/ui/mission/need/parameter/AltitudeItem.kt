@@ -1,13 +1,12 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
-import ch.hsr.ifs.gcs.MainActivity
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.need.parameter.Altitude
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needparameters.AltitudeFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.views.MapView
-import kotlinx.android.synthetic.main.activity_main.view.*
 
 
 class AltitudeItem(parameter: Altitude) : BasicParameterItem<Int>(parameter) {

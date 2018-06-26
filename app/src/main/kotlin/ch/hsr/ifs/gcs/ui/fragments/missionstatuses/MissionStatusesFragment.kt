@@ -9,7 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.hsr.ifs.gcs.MainActivity
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.mission.access.NeedProvider
@@ -89,7 +89,7 @@ class MissionStatusesFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChan
             val context = context
             if (context is MainActivity) {
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
-                context.leftButton?.background = context?.applicationContext?.getDrawable(R.drawable.cancel_action)
+                context.leftButton?.background = context.applicationContext?.getDrawable(R.drawable.cancel_action)
             }
         }
         statusesAddButton.isEnabled = !NeedProvider.needs.isEmpty()

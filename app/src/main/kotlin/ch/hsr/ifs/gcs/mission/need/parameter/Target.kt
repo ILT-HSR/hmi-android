@@ -1,14 +1,6 @@
 package ch.hsr.ifs.gcs.mission.need.parameter
 
-import android.graphics.Canvas
-import android.view.MotionEvent
-import ch.hsr.ifs.gcs.MainActivity
-import ch.hsr.ifs.gcs.R.id.map
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.Marker.OnMarkerDragListener
-import org.osmdroid.views.overlay.Overlay
 
 /**
  * This [Parameter] implementation is used to configure the target of the vehicle.

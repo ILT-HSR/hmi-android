@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
-import ch.hsr.ifs.gcs.MainActivity
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
 
 interface ParameterItem<Result> {

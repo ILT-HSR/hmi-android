@@ -2,7 +2,7 @@ package ch.hsr.ifs.gcs.ui.fragments
 
 import android.app.Activity
 import android.support.v4.app.Fragment
-import ch.hsr.ifs.gcs.MainActivity
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment

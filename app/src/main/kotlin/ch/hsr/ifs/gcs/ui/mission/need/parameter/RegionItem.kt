@@ -1,8 +1,7 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
-import ch.hsr.ifs.gcs.MainActivity
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.R.id.result
 import ch.hsr.ifs.gcs.mission.need.parameter.Region
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
