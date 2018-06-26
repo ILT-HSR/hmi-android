@@ -25,6 +25,8 @@ import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
  */
 class MissionResultsFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChangedListener {
 
+    private lateinit var fNeedProvider: NeedProvider
+
     companion object {
         private val LOG_TAG = MissionResultsFragment::class.java.simpleName
     }
@@ -35,7 +37,8 @@ class MissionResultsFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChang
         super.onAttach(context)
         if (context is MainActivity) {
             listener = context.fragmentHandler!!.missionResultsListener
-            NeedProvider += this
+            fNeedProvider = context.needProvider
+            fNeedProvider.addListener(this)
         } else {
             throw RuntimeException(context.toString() + " must implement OnResultsFragmentChangedListener")
         }
@@ -70,7 +73,7 @@ class MissionResultsFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChang
                 }
                 activity?.leftButton?.background = context?.applicationContext?.getDrawable(R.drawable.cancel_action)
             }
-        resultsAddButton.isEnabled = !NeedProvider.needs.isEmpty()
+        resultsAddButton.isEnabled = !fNeedProvider.needs.isEmpty()
         activity?.leftButton?.setOnClickListener {
             Log.d(LOG_TAG, "Refresh Mission Pressed")
         }
@@ -84,7 +87,7 @@ class MissionResultsFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChang
     override fun onDetach() {
         super.onDetach()
         listener = null
-        NeedProvider -= this
+        fNeedProvider.removeListener(this)
     }
 
     override fun onNeedsAvailabilityChanged(availability: Boolean) {

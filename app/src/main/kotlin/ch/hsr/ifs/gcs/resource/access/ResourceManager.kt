@@ -1,27 +1,26 @@
 package ch.hsr.ifs.gcs.resource.access
 
 import android.content.Context
+import android.content.res.AssetManager
 import android.hardware.usb.UsbManager
+import android.util.Log
 import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.access.PlatformProvider
 import ch.hsr.ifs.gcs.driver.channel.SerialDataChannelFactory
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
-import ch.hsr.ifs.gcs.resource.Resource.Status
 import ch.hsr.ifs.gcs.resource.ResourceNode
+import ch.hsr.ifs.gcs.resource.capability.BUILTIN_CAPABILITIES
+import ch.hsr.ifs.gcs.resource.internal.SimpleResource
+import com.google.gson.JsonElement
+import com.google.gson.JsonParser
 import com.hoho.android.usbserial.driver.UsbSerialProber
+import java.io.InputStream
+import java.io.InputStreamReader
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-/**
- * The resource manager provides an abstract interface to the distributed resource management system
- *
- * It is also a [node][ResourceNode] in the system itself, contributing it local availableResources
- *
- * @since 1.0.0
- * @author IFS Institute for Software
- */
-object ResourceManager : ResourceNode, Platform.Listener {
+class ResourceManager(val context: Context) : ResourceNode, Platform.Listener {
 
     interface Listener {
 
@@ -29,36 +28,50 @@ object ResourceManager : ResourceNode, Platform.Listener {
 
     }
 
+    companion object {
+
+        private const val RESOURCES_DIRECTORY = "resources"
+
+        private val LOG_TAG = this::class.simpleName
+
+    }
+
     private val fLocalResources = ArrayList<Resource>()
     private val fListeners = mutableListOf<Listener>()
     private val fScanExecutor = Executors.newSingleThreadScheduledExecutor()
 
-    fun startScanning(context: Context) {
-        fScanExecutor.scheduleAtFixedRate({ scan(context) }, 0, 100, TimeUnit.MILLISECONDS)
+    init {
+        context.assets.list(RESOURCES_DIRECTORY).forEach {
+            try {
+                fLocalResources += load(context.assets.open("$RESOURCES_DIRECTORY/$it", AssetManager.ACCESS_STREAMING))
+            } catch (e: IllegalStateException) {
+                Log.e(LOG_TAG, "Failed to load '$it'", e)
+            }
+        }
+        fScanExecutor.scheduleAtFixedRate(this::scan, 0, 100, TimeUnit.MILLISECONDS)
     }
+
+    fun addListener(listener: Listener) {
+        fListeners += listener
+    }
+
+    // ResourceNode implementation
 
     override val availableResources
         get() = synchronized(fLocalResources) {
             fLocalResources.filter {
                 it.status == Resource.Status.AVAILABLE
-                && it.plaform.isAlive
+                        && it.plaform.isAlive
             }
         }
 
-    override val allResources get() = synchronized(fLocalResources) { fLocalResources }
+    override val allResources
+        get() = synchronized(fLocalResources) { fLocalResources }
 
     override fun add(resource: Resource) {
         synchronized(fLocalResources) {
             fLocalResources += resource
         }
-    }
-
-    override fun onLivelinessChanged(platform: Platform) {
-        fListeners.forEach(Listener::onResourceAvailabilityChanged)
-    }
-
-    operator fun plusAssign(resource: Resource) = synchronized(fLocalResources) {
-        add(resource)
     }
 
     override fun get(vararg capabilities: Capability<*>) =
@@ -69,46 +82,34 @@ object ResourceManager : ResourceNode, Platform.Listener {
                         .firstOrNull()
             }
 
-    override fun reset() {
-        synchronized(fLocalResources) {
-            assert(fLocalResources.none { it.status == Status.ACQUIRED || it.status == Status.BUSY }) {
-                "Tried to reset ResourceManager with active resources"
-            }
-            fLocalResources.clear()
-        }
-    }
-
-    /**
-     * Acquire the given resource, making it unavailable for other missions
-     *
-     * @return `true` iff. the resource was available, `false` otherwise
-     * @since 1.0.0
-     */
     override fun acquire(resource: Resource): Boolean =
             synchronized(fLocalResources) {
-                if (resource.status != Status.AVAILABLE) {
+                if (resource.status != Resource.Status.AVAILABLE) {
                     false
                 } else {
-                    resource.markAs(Status.ACQUIRED)
+                    resource.markAs(Resource.Status.ACQUIRED)
                     true
                 }
             }
 
-    /**
-     * Scan the connected telemetry interfaces for available vehicles
-     *
-     * @since 1.0.0
-     */
-    private fun scan(context: Context) {
+    // Platform.Listener implementation
+
+    override fun onLivelinessChanged(platform: Platform) {
+        fListeners.forEach(Listener::onResourceAvailabilityChanged)
+    }
+
+    // Private implementation
+
+    private fun scan() {
         val mUsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
         UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).filter {
             it.device.manufacturerName != "Arduino LLC"
         }.forEach { dev ->
             synchronized(fLocalResources) {
-                fLocalResources.filter { it.status == Status.UNAVAILABLE }.forEach {
+                fLocalResources.filter { it.status == Resource.Status.UNAVAILABLE }.forEach {
                     val parameters = SerialDataChannelFactory.Parameters(context, dev.ports[0])
                     PlatformProvider.instantiate(it.driverId, SerialDataChannelFactory, parameters, it.payloadDriverId)?.apply {
-                        it.markAs(Status.AVAILABLE)
+                        it.markAs(Resource.Status.AVAILABLE)
                         it.plaform = this
                         addListener(this@ResourceManager)
                     }
@@ -117,8 +118,35 @@ object ResourceManager : ResourceNode, Platform.Listener {
         }
     }
 
-    fun addListener(needProvider: Listener) {
-        fListeners += needProvider
-    }
+    private fun load(stream: InputStream) =
+            JsonParser().parse(InputStreamReader(stream, Charsets.UTF_8)).asJsonObject.let { res ->
+                val id = res["id"].asString
+                val capabilities = res["capabilities"].asJsonArray
+                        .asSequence()
+                        .map(JsonElement::getAsJsonObject)
+                        .mapNotNull { obj ->
+                            BUILTIN_CAPABILITIES[obj["id"].asString]?.let { cap ->
+                                when (cap.type) {
+                                    "boolean" -> Capability(cap, obj["value"].asBoolean)
+                                    "number" -> Capability(cap, obj["value"].asNumber)
+                                    else -> null
+                                }
+                            }
+                        }
+                        .toList()
+                val platformDescriptor = res["platform"].asJsonObject
+                val payloadDriver = if (platformDescriptor.has("payload")) {
+                    platformDescriptor["payload"].asJsonObject["driver"].asString
+                } else {
+                    null
+                }
+
+                SimpleResource(
+                        id,
+                        platformDescriptor["driver"].asString,
+                        payloadDriver,
+                        capabilities
+                ) as Resource
+            }
 
 }

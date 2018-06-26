@@ -32,12 +32,6 @@
                 android:resource="@xml/device_filter" />
         </activity>
 
-        <provider
-            android:authorities="${applicationId}.builtinResourceProvider"
-            android:name=".resource.internal.BuiltinResourceProvider"
-            android:exported="false"
-            android:enabled="true"/>
-
     </application>
 
 </manifest>

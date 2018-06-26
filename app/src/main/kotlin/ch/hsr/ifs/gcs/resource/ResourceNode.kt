@@ -43,15 +43,6 @@ interface ResourceNode {
     fun get(vararg capabilities: Capability<*>): Resource?
 
     /**
-     * Reset the resource node, removing all of its resources
-     *
-     * @throws AssertionError If there are resources that are currently acquired or busy
-     *
-     * @since 1.0.0
-     */
-    fun reset()
-
-    /**
      * Acquire the given resource
      *
      * @param resource The resource to acquire

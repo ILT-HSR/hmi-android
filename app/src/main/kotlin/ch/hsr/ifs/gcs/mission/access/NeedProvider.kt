@@ -9,7 +9,7 @@ import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_FLY
 import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_MOVE
 import kotlin.reflect.full.primaryConstructor
 
-object NeedProvider : ResourceManager.Listener {
+class NeedProvider(private val fResourceManager: ResourceManager) : ResourceManager.Listener {
 
     interface OnNeedsAvailabilityChangedListener {
 
@@ -25,7 +25,7 @@ object NeedProvider : ResourceManager.Listener {
     )
 
     init {
-        ResourceManager.addListener(this)
+        fResourceManager.addListener(this)
     }
 
     private fun instantiate(id: String, resource: Resource) =
@@ -34,16 +34,16 @@ object NeedProvider : ResourceManager.Listener {
     val needs: List<Need>
         get() =
             knownNeeds.mapNotNull {
-                ResourceManager.get(*it.value.second.toTypedArray())?.let { res ->
+                fResourceManager.get(*it.value.second.toTypedArray())?.let { res ->
                     instantiate(it.key, res)
                 }
             }.toList()
 
-    operator fun plusAssign(listener: OnNeedsAvailabilityChangedListener) {
+    fun addListener(listener: OnNeedsAvailabilityChangedListener) {
         listeners += listener
     }
 
-    operator fun minusAssign(listener: OnNeedsAvailabilityChangedListener) {
+    fun removeListener(listener: OnNeedsAvailabilityChangedListener) {
         listeners -= listener
     }
 

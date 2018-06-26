@@ -1,7 +1,5 @@
 package ch.hsr.ifs.gcs.resource
 
-import ch.hsr.ifs.gcs.resource.access.ResourceManager
-import ch.hsr.ifs.gcs.resource.internal.BuiltinResourceProvider
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.hasSize

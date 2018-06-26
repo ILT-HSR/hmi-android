@@ -10,8 +10,9 @@ import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.driver.access.InputProvider
-import ch.hsr.ifs.gcs.support.geo.LocationService
+import ch.hsr.ifs.gcs.mission.access.NeedProvider
 import ch.hsr.ifs.gcs.resource.access.ResourceManager
+import ch.hsr.ifs.gcs.support.geo.LocationService
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
@@ -31,6 +32,13 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
 
     private lateinit var fNeedItemFactory: NeedItemFactory
     private lateinit var fParameterItemFactory: ParameterItemFactory
+    private lateinit var fResourceManager: ResourceManager
+    private lateinit var fNeedProvider: NeedProvider
+
+    val needItemFactory get() = fNeedItemFactory
+    val parameterItemFactory get() = fParameterItemFactory
+    val resourceManager get() = fResourceManager
+    val needProvider get() = fNeedProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +49,8 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
 
         fNeedItemFactory = NeedItemFactory(this)
         fParameterItemFactory = ParameterItemFactory(this)
+        fResourceManager = ResourceManager(this)
+        fNeedProvider = NeedProvider(resourceManager)
 
         leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
 
@@ -58,8 +68,6 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
             controls = this
             addListener(this@MainActivity)
         }
-
-        ResourceManager.startScanning(this)
     }
 
     override fun onResume() {
@@ -114,8 +122,4 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
             map.invalidate()
         }
     }
-
-    val needItemFactory get() = fNeedItemFactory
-
-    val parameterItemFactory get() = fParameterItemFactory
 }

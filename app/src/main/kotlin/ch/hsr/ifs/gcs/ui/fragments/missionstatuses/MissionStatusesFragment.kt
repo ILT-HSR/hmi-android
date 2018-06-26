@@ -27,6 +27,9 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
  */
 class MissionStatusesFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChangedListener {
 
+    private lateinit var fNeedProvider: NeedProvider
+    private var listener: OnStatusesFragmentChangedListener? = null
+
     companion object {
         private val LOG_TAG = MissionStatusesFragment::class.java.simpleName
     }
@@ -51,13 +54,13 @@ class MissionStatusesFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChan
 
     }
 
-    private var listener: OnStatusesFragmentChangedListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is MainActivity) {
             listener = context.fragmentHandler?.missionStatusesListener
-            NeedProvider += this
+            fNeedProvider = context.needProvider
+            fNeedProvider.addListener(this)
         } else {
             throw RuntimeException(context.toString() + " must implement OnStatusesFragmentChangedListener")
         }
@@ -92,7 +95,7 @@ class MissionStatusesFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChan
                 context.leftButton?.background = context.applicationContext?.getDrawable(R.drawable.cancel_action)
             }
         }
-        statusesAddButton.isEnabled = !NeedProvider.needs.isEmpty()
+        statusesAddButton.isEnabled = !fNeedProvider.needs.isEmpty()
         activity?.leftButton?.setOnClickListener {
             Log.d(LOG_TAG, "Cancel Mission Pressed")
         }
@@ -108,7 +111,7 @@ class MissionStatusesFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChan
     override fun onDetach() {
         super.onDetach()
         listener = null
-        NeedProvider -= this
+        fNeedProvider.removeListener(this)
     }
 
     override fun onNeedsAvailabilityChanged(availability: Boolean) {
