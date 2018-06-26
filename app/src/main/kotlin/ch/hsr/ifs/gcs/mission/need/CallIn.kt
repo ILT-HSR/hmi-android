@@ -1,14 +1,12 @@
 package ch.hsr.ifs.gcs.mission.need
 
-import android.location.Location
+import ch.hsr.ifs.gcs.mission.need.parameter.Altitude
 import ch.hsr.ifs.gcs.mission.need.parameter.Cargo
 import ch.hsr.ifs.gcs.mission.need.parameter.Target
-import ch.hsr.ifs.gcs.mission.need.task.MoveToPosition
-import ch.hsr.ifs.gcs.mission.need.task.ReturnToHome
-import ch.hsr.ifs.gcs.mission.need.task.Task
-import ch.hsr.ifs.gcs.mission.need.task.TriggerPayload
+import ch.hsr.ifs.gcs.mission.need.task.*
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
+import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_FLY
 import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_MOVE
 
 /**
@@ -19,23 +17,29 @@ import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_MOVE
  */
 class CallIn(override val resource: Resource) : Need {
 
-    private val target = Target()
-    private val cargo = Cargo()
+    private val fAltitude = Altitude()
+    private val fTarget = Target()
+    private val fCargo = Cargo()
 
     override val id = "ch.hsr.ifs.gcs.mission.need.callIn"
 
-    override val parameterList = listOf(target, cargo)
+    override val parameterList = listOf(
+            fAltitude,
+            fTarget,
+            fCargo
+    )
 
     override val tasks: List<Task>?
-        get() = with(Location("")) {
-            latitude = target.result.latitude
-            longitude = target.result.longitude
-            listOf(MoveToPosition(this), TriggerPayload(cargo.result), ReturnToHome())
-        }
+        get() = listOf(
+//                ChangeAltitude(fAltitude.result),
+                MoveToPosition(fTarget.result),
+                TriggerPayload(fCargo.result),
+                ReturnToHome()
+        )
 
     override val requirements: List<Capability<*>>
         get() = listOf(
-                Capability(CAPABILITY_CAN_MOVE, true)
+                Capability(CAPABILITY_CAN_FLY, true)
         )
 
 }

@@ -33,19 +33,12 @@ class NeedInstructionFragment : Fragment() {
 
     }
 
-    private var fCurrentParaneterId = 0
+    private var fCurrentParameterId = 0
     private var fListener: OnNeedInstructionFragmentListener? = null
 
-    private lateinit var fNeed: NeedItem
-    private lateinit var fParameters: List<ParameterItem<*>>
     private lateinit var fAdapter: NeedInstructionRecyclerViewAdapter
 
-    var need
-        get() = fNeed
-        set(value) {
-            fNeed = value
-            fParameters = fNeed.parameters
-        }
+    lateinit var need: NeedItem
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -76,12 +69,12 @@ class NeedInstructionFragment : Fragment() {
         if (context is MainActivity) {
             activity?.apply {
                 setupCancelButton(context)
-                fCurrentParaneterId = 0
-                presentParameter(fCurrentParaneterId)
+                fCurrentParameterId = 0
+                presentParameter(fCurrentParameterId)
                 needNavigationButton.setOnClickListener {
                     finishCurrentParameter()
-                    if (fCurrentParaneterId < fParameters.size - 1) {
-                        presentParameter(++fCurrentParaneterId)
+                    if (fCurrentParameterId < fAdapter.itemCount - 1) {
+                        presentParameter(++fCurrentParameterId)
                     } else {
                         finishNeedSetup(context)
                     }
@@ -104,16 +97,16 @@ class NeedInstructionFragment : Fragment() {
         }
     }
 
-    private fun presentParameter(index: Int) = with(fParameters[index]) {
-        isActive = true
-        isComplete = false
-        configurator.present()
+    private fun presentParameter(index: Int) = fAdapter[index].let {
+        it.isActive = true
+        it.isComplete = false
+        it.showConfigurator()
     }
 
-    private fun finishCurrentParameter() = with(fParameters[fCurrentParaneterId]) {
-        isActive = false
-        isComplete = true
-        configurator.destroy()
+    private fun finishCurrentParameter() = fAdapter[fCurrentParameterId].let {
+        it.isActive = false
+        it.isComplete = true
+        it.hideConfigurator()
     }
 
     private fun FragmentActivity.finishNeedSetup(context: MainActivity) {

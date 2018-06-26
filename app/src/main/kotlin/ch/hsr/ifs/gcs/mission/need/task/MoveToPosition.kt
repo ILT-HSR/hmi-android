@@ -1,10 +1,10 @@
 package ch.hsr.ifs.gcs.mission.need.task
 
-import android.location.Location
 import ch.hsr.ifs.gcs.driver.Vehicle
 import ch.hsr.ifs.gcs.resource.Resource
+import ch.hsr.ifs.gcs.support.geo.GPSPosition
 
-class MoveToPosition(private val targetLocation: Location) : Task {
+class MoveToPosition(private val targetLocation: GPSPosition) : Task {
 
     override fun executeOn(resource: Resource) =
             with(resource.plaform as Vehicle) {

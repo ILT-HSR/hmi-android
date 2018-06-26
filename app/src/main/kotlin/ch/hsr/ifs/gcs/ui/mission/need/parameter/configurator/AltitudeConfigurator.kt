@@ -19,7 +19,7 @@ class AltitudeConfigurator : ParameterConfigurator<Int>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         altitudeSelectionBackgroundView.setOnClickListener {} // needed to shadow events on underlying map view
-        setDefaultResult()
+        altitudeValueTextView.text = "${parameter.parameter.result}m"
         increaseButton.setOnClickListener {
             parameter.parameter.result = parameter.parameter.result + 1
             altitudeValueTextView.text = "${parameter.parameter.result}m"
@@ -33,6 +33,7 @@ class AltitudeConfigurator : ParameterConfigurator<Int>() {
     }
 
     override fun present() {
+        setDefaultResult()
         context.map.setBuiltInZoomControls(false)
         context.fragmentHandler?.performFragmentTransaction(R.id.mapholder, this)
         context.leftButton.setOnClickListener {
@@ -47,7 +48,6 @@ class AltitudeConfigurator : ParameterConfigurator<Int>() {
     }
 
     private fun setDefaultResult() {
-        altitudeValueTextView.text = "5m"
         parameter.parameter.result = 5
     }
 

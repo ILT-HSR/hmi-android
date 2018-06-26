@@ -3,17 +3,18 @@ package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 import android.graphics.Canvas
 import android.view.MotionEvent
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 
-class TargetConfigurator : ParameterConfigurator<GeoPoint>() {
+class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
 
     override fun present() {
         val mapView = context.findViewById<MapView>(R.id.map)
-        parameter.parameter.result = mapView.mapCenter as GeoPoint
+        parameter.parameter.result = GPSPosition(mapView.mapCenter as GeoPoint)
         val posMarker = Marker(mapView)
         posMarker.position = mapView.mapCenter as GeoPoint?
         posMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
@@ -23,7 +24,7 @@ class TargetConfigurator : ParameterConfigurator<GeoPoint>() {
         posMarker.setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker) {}
             override fun onMarkerDragEnd(marker: Marker) {
-                parameter.parameter.result = GeoPoint(marker.position)
+                parameter.parameter.result = GPSPosition(GeoPoint(marker.position))
             }
 
             override fun onMarkerDrag(marker: Marker) {}
@@ -31,11 +32,10 @@ class TargetConfigurator : ParameterConfigurator<GeoPoint>() {
         mapView.overlays.add(object : Overlay() {
             override fun draw(c: Canvas?, osmv: MapView?, shadow: Boolean) {}
             override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
-                val proj = mapView.projection
-                val geoPoint = proj.fromPixels(e.x.toInt(), e.y.toInt()) as GeoPoint
+                val geoPoint = mapView.projection.fromPixels(e.x.toInt(), e.y.toInt()) as GeoPoint
                 posMarker.position = geoPoint
                 mapView.invalidate()
-                parameter.parameter.result = geoPoint
+                parameter.parameter.result = GPSPosition(geoPoint)
                 return true
             }
         })

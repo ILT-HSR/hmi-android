@@ -45,10 +45,8 @@ class NeedItemFactory(context: MainActivity) {
         }
     }
 
-    fun instantiate(id: String, need: Need) = if (fConstructors.contains(id)) {
-        fConstructors[id]!!.invoke(need)
-    } else {
-        throw IllegalArgumentException("No constructor for $id")
-    }
+    fun instantiate(need: Need) = fConstructors[need.id]?.let {
+        it.invoke(need)
+    } ?: throw IllegalArgumentException("No constructor for ${need.id}")
 
 }

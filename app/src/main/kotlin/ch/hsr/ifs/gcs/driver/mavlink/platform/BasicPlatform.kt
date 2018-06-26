@@ -280,7 +280,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     // AerialVehicle implementation
 
-    override fun moveTo(position: Location) = MAVLinkCommand(MAVLinkMissionCommand(
+    override fun moveTo(position: GPSPosition) = MAVLinkCommand(MAVLinkMissionCommand(
             LongCommand.NAV_WAYPOINT,
             frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
             param4 = Float.NaN,

@@ -26,7 +26,7 @@ class MissionItem(val mission: Mission, needItemFactory: NeedItemFactory, val co
     /**
      * The need-item for the need associated with the underlying mission
      */
-    val need = needItemFactory.instantiate(mission.need.id, mission.need)
+    val need = needItemFactory.instantiate(mission.need)
 
     /**
      * Whether or not the item is currently selected in the UI

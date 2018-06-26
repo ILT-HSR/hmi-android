@@ -16,11 +16,11 @@ import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
 
 class NeedInstructionRecyclerViewAdapter(
-        private val mNeedItem: NeedItem,
+        need: NeedItem,
         private val mContext: MainActivity)
     : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>(), Input.Listener {
 
-    private val mValues = mNeedItem.parameters
+    private val mValues = need.parameters
 
     init {
         mContext.controls?.addListener(this)
@@ -69,5 +69,7 @@ class NeedInstructionRecyclerViewAdapter(
             return super.toString() + " '" + mInstructionView.text + "'"
         }
     }
+
+    operator fun get(index: Int) = mValues[index]
 
 }

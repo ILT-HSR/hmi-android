@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver
 
 import android.location.Location
+import ch.hsr.ifs.gcs.support.geo.GPSPosition
 
 /**
  * The interface of drivers for vehicles
@@ -17,7 +18,7 @@ interface Vehicle : Platform {
      *
      * @since 1.0.0
      */
-    fun moveTo(position: Location): Command<*>
+    fun moveTo(position: GPSPosition): Command<*>
 
     /**
      * Instruct the vehicle to return to its launch position

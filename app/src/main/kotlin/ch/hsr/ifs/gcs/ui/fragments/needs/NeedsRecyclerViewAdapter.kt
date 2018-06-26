@@ -29,7 +29,7 @@ class NeedsRecyclerViewAdapter(
     : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>(), Input.Listener {
 
     private val mOnClickListener: View.OnClickListener
-    private val mItems = NeedProvider.needs.map{ mContext.needItemFactory.instantiate(it.id, it) }.toMutableList()
+    private val mItems = NeedProvider.needs.map(mContext.needItemFactory::instantiate)
     private var mActiveItem = mItems[0]
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
@@ -47,6 +47,7 @@ class NeedsRecyclerViewAdapter(
             mListener?.onNeedItemChanged(item)
         }
         mContext.controls?.addListener(this)
+        mActiveItem.activate()
     }
 
     val activeItem get() = mActiveItem
