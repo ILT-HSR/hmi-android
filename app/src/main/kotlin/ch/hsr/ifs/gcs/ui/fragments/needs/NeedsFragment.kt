@@ -60,7 +60,7 @@ class NeedsFragment : Fragment() {
             selectButton.setOnClickListener {
                 val needInstructionFragmentType = FragmentType.NEED_INSTRUCTION_FRAGMENT
                 val item = (view?.list?.adapter as NeedsRecyclerViewAdapter).activeItem
-                (needInstructionFragmentType.fragment as NeedInstructionFragment).activeNeed = item
+                (needInstructionFragmentType.fragment as NeedInstructionFragment).need = item
                 context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
 
             }

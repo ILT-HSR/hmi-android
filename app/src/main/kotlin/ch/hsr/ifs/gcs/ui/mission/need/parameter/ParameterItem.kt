@@ -1,6 +1,5 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
-import android.content.Context
 import ch.hsr.ifs.gcs.MainActivity
 import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
 

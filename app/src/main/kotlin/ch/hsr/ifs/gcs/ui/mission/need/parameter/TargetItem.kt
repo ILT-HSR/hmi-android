@@ -12,13 +12,11 @@ import org.osmdroid.views.overlay.Overlay
 
 class TargetItem(parameter: Target) : BasicParameterItem<GeoPoint>(parameter) {
 
-    private lateinit var result: GeoPoint
-
     override val name = "Target"
 
     override fun setup(context: MainActivity) {
         val mapView = context.findViewById<MapView>(map)
-        result = mapView.mapCenter as GeoPoint
+        parameter.result = mapView.mapCenter as GeoPoint
         val posMarker = Marker(mapView)
         posMarker.position = mapView.mapCenter as GeoPoint?
         posMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
@@ -28,7 +26,7 @@ class TargetItem(parameter: Target) : BasicParameterItem<GeoPoint>(parameter) {
         posMarker.setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker) {}
             override fun onMarkerDragEnd(marker: Marker) {
-                result = GeoPoint(marker.position)
+                parameter.result = GeoPoint(marker.position)
             }
 
             override fun onMarkerDrag(marker: Marker) {}
@@ -40,7 +38,7 @@ class TargetItem(parameter: Target) : BasicParameterItem<GeoPoint>(parameter) {
                 val geoPoint = proj.fromPixels(e.x.toInt(), e.y.toInt()) as GeoPoint
                 posMarker.position = geoPoint
                 mapView.invalidate()
-                result = geoPoint
+                parameter.result = geoPoint
                 return true
             }
         })
