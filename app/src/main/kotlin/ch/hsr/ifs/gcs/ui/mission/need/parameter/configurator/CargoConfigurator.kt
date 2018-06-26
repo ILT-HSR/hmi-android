@@ -1,36 +1,47 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.mission.need.parameter.item.CargoItem
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_choose_cargo.*
+import org.osmdroid.views.MapView
 
-class CargoConfigurator() : Fragment() {
+class CargoConfigurator : ParameterConfigurator<String>() {
 
-    lateinit var needParameter: CargoItem
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_choose_cargo, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+            inflater.inflate(R.layout.fragment_choose_cargo, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         cargoSelectionView.setOnClickListener {} // needed to shadow events on underlying map view
-        cargoButton.text = "Medkit"
-        setDefaultResult()
+        cargoButton.text = parameter.parameter.result
         cargoButton.setOnClickListener {
-            needParameter.parameter.result = "Medkit"
+            parameter.parameter.result = "Medkit"
         }
     }
 
+    override fun present() {
+        setDefaultResult()
+        context.map.setBuiltInZoomControls(false)
+        context.fragmentHandler?.performFragmentTransaction(R.id.mapholder, this)
+        context.leftButton.setOnClickListener {
+            destroy()
+            context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+        }
+    }
+
+    override fun destroy() {
+        context.map.setBuiltInZoomControls(true)
+        context.fragmentHandler?.removeFragment(this)
+    }
+
     private fun setDefaultResult() {
-        needParameter.parameter.result = "Medkit"
+        parameter.parameter.result = "Medkit"
     }
 
 }

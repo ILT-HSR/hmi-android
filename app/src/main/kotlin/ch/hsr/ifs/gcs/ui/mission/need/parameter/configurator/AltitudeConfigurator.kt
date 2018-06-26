@@ -1,20 +1,18 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.mission.need.parameter.item.AltitudeItem
+import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_choose_altitude.*
 
-class AltitudeConfigurator : Fragment() {
+class AltitudeConfigurator : ParameterConfigurator<Int>() {
 
-    lateinit var needParameter: AltitudeItem
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_choose_altitude, container, false)
     }
 
@@ -23,20 +21,34 @@ class AltitudeConfigurator : Fragment() {
         altitudeSelectionBackgroundView.setOnClickListener {} // needed to shadow events on underlying map view
         setDefaultResult()
         increaseButton.setOnClickListener {
-            needParameter.parameter.result = needParameter.parameter.result + 1
-            altitudeValueTextView.text = "${needParameter.parameter.result}m"
+            parameter.parameter.result = parameter.parameter.result + 1
+            altitudeValueTextView.text = "${parameter.parameter.result}m"
         }
         decreaseButton.setOnClickListener {
-            if(needParameter.parameter.result != 0) {
-                needParameter.parameter.result = needParameter.parameter.result - 1
-                altitudeValueTextView.text = "${needParameter.parameter.result}m"
+            if (parameter.parameter.result != 0) {
+                parameter.parameter.result = parameter.parameter.result - 1
+                altitudeValueTextView.text = "${parameter.parameter.result}m"
             }
         }
     }
 
+    override fun present() {
+        context.map.setBuiltInZoomControls(false)
+        context.fragmentHandler?.performFragmentTransaction(R.id.mapholder, this)
+        context.leftButton.setOnClickListener {
+            destroy()
+            context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+        }
+    }
+
+    override fun destroy() {
+        context.map.setBuiltInZoomControls(true)
+        context.fragmentHandler?.removeFragment(this)
+    }
+
     private fun setDefaultResult() {
         altitudeValueTextView.text = "5m"
-        needParameter.parameter.result = 5
+        parameter.parameter.result = 5
     }
 
 }

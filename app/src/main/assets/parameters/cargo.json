@@ -1,0 +1,5 @@
+{
+  "id": "ch.hsr.ifs.gcs.mission.need.parameter.cargo",
+  "name": "Cargo",
+  "configurator": "ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator.CargoConfigurator"
+}

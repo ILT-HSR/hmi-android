@@ -10,10 +10,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItem
@@ -76,11 +76,12 @@ class NeedInstructionFragment : Fragment() {
         if (context is MainActivity) {
             activity?.apply {
                 setupCancelButton(context)
-                selectFirstParameter(context)
+                fCurrentParaneterId = 0
+                presentParameter(fCurrentParaneterId)
                 needNavigationButton.setOnClickListener {
-                    finishCurrentParameter(context)
+                    finishCurrentParameter()
                     if (fCurrentParaneterId < fParameters.size - 1) {
-                        selectNextParameter(context)
+                        presentParameter(++fCurrentParaneterId)
                     } else {
                         finishNeedSetup(context)
                     }
@@ -103,28 +104,16 @@ class NeedInstructionFragment : Fragment() {
         }
     }
 
-    private fun selectFirstParameter(context: MainActivity) {
-        fCurrentParaneterId = 0
-        fParameters[fCurrentParaneterId].apply {
-            activate()
-            setup(context)
-        }
+    private fun presentParameter(index: Int) = with(fParameters[index]) {
+        isActive = true
+        isComplete = false
+        configurator.present()
     }
 
-    private fun finishCurrentParameter(context: MainActivity) {
-        fParameters[fCurrentParaneterId].apply {
-            deactivate()
-            markComplete()
-            cleanup(context)
-        }
-    }
-
-    private fun selectNextParameter(context: MainActivity) {
-        fCurrentParaneterId += 1
-        fParameters[fCurrentParaneterId].apply {
-            setup(context)
-            activate()
-        }
+    private fun finishCurrentParameter() = with(fParameters[fCurrentParaneterId]) {
+        isActive = false
+        isComplete = true
+        configurator.destroy()
     }
 
     private fun FragmentActivity.finishNeedSetup(context: MainActivity) {

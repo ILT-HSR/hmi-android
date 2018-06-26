@@ -1,39 +1,58 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
-import ch.hsr.ifs.gcs.mission.need.parameter.*
-import ch.hsr.ifs.gcs.mission.need.parameter.Target
-import ch.hsr.ifs.gcs.ui.mission.need.parameter.item.*
+import android.util.Log
+import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
+import ch.hsr.ifs.gcs.ui.MainActivity
+import com.google.gson.JsonParser
+import java.io.InputStream
+import java.io.InputStreamReader
+import kotlin.reflect.full.createInstance
 
-object ParameterItemFactory {
+class ParameterItemFactory(context: MainActivity) {
 
-    private val PARAMETER_ITEM_CONSTRUCTORS = mutableMapOf<String, (Parameter<*>) -> ParameterItem<*>>(
-            "ch.hsr.ifs.gcs.mission.need.parameter.altitude" to { p -> AltitudeItem(p as Altitude) },
-            "ch.hsr.ifs.gcs.mission.need.parameter.cargo" to { p -> CargoItem(p as Cargo) },
-            "ch.hsr.ifs.gcs.mission.need.parameter.region" to { p -> RegionItem(p as Region) },
-            "ch.hsr.ifs.gcs.mission.need.parameter.target" to { p -> TargetItem(p as Target) }
-    )
+    companion object {
 
-    /**
-     * Register a constructor for a specific [Parameter] ID
-     *
-     * @param id The of associated [Parameter] type
-     * @param constructor The constructor to create a need need item of the given [Parameter] type ID
-     */
-    fun register(id: String, constructor: (Parameter<*>) -> ParameterItem<*>) {
-        if (PARAMETER_ITEM_CONSTRUCTORS.contains(id)) {
-            throw IllegalArgumentException("Constructor for parameter $id is already registered")
+        private const val PARAMETER_ITEM_DESCRIPTOR_DIRECTORY = "parameters"
+
+        private val LOG_TAG = this::class.simpleName
+
+    }
+
+    data class ParameterItemDescriptor(val id: String, val name: String, val configurator: ParameterConfigurator<*>) {
+        companion object {
+            fun load(stream: InputStream) = with(JsonParser().parse(InputStreamReader(stream, Charsets.UTF_8)).asJsonObject) {
+                ParameterItemDescriptor(
+                        get("id").asString,
+                        get("name").asString,
+                        Class.forName(get("configurator").asString).kotlin.createInstance() as ParameterConfigurator<*>
+                )
+            }
+        }
+    }
+
+    private val fDescriptors = mutableMapOf<String, ParameterItemDescriptor>()
+
+    init {
+        context.assets.list(PARAMETER_ITEM_DESCRIPTOR_DIRECTORY).forEach {
+            try {
+                context.assets.open("$PARAMETER_ITEM_DESCRIPTOR_DIRECTORY/$it")?.let {
+                    ParameterItemDescriptor.load(it)
+                }?.apply {
+                    configurator.context = context
+                    fDescriptors[id] = this
+                }
+            } catch (e: IllegalStateException) {
+                Log.e(LOG_TAG, "Failed to read parameter item descriptor configuration '$PARAMETER_ITEM_DESCRIPTOR_DIRECTORY/$it'")
+            }
         }
 
-        PARAMETER_ITEM_CONSTRUCTORS[id] = constructor
     }
 
     /**
      * Instantiate an item for the [Parameter] with the given id
      */
-    fun instantiate(parameter: Parameter<*>) = if (PARAMETER_ITEM_CONSTRUCTORS.contains(parameter.id)) {
-        PARAMETER_ITEM_CONSTRUCTORS[parameter.id]!!.invoke(parameter)
-    } else {
-        throw IllegalArgumentException("Unknown parameter type ${parameter.id}")
-    }
+    fun instantiate(parameter: Parameter<*>) = fDescriptors[parameter.id]?.let {
+        ParameterItem(parameter, it.name, it.configurator)
+    } ?: throw IllegalArgumentException("Unknown parameter type ${parameter.id}")
 
 }
