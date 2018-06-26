@@ -9,7 +9,7 @@ import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_FLY
 import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_MOVE
 import kotlin.reflect.full.primaryConstructor
 
-object NeedProvider : ResourceManager.OnResourceAvailabilityChangedListener {
+object NeedProvider : ResourceManager.Listener {
 
     interface OnNeedsAvailabilityChangedListener {
 
@@ -25,7 +25,7 @@ object NeedProvider : ResourceManager.OnResourceAvailabilityChangedListener {
     )
 
     init {
-        ResourceManager.listener = this
+        ResourceManager.addListener(this)
     }
 
     private fun instantiate(id: String, resource: Resource) =

@@ -40,7 +40,7 @@ interface ResourceNode {
      * @since 1.0.0
      *
      */
-    operator fun get(vararg capabilities: Capability<*>): Resource?
+    fun get(vararg capabilities: Capability<*>): Resource?
 
     /**
      * Reset the resource node, removing all of its resources

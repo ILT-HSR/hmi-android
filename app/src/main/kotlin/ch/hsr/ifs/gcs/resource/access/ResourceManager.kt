@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.resource.access
 
 import android.content.Context
 import android.hardware.usb.UsbManager
+import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.access.PlatformProvider
 import ch.hsr.ifs.gcs.driver.channel.SerialDataChannelFactory
 import ch.hsr.ifs.gcs.resource.Capability
@@ -20,18 +21,16 @@ import java.util.concurrent.TimeUnit
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-object ResourceManager : ResourceNode {
+object ResourceManager : ResourceNode, Platform.Listener {
 
-    interface OnResourceAvailabilityChangedListener {
+    interface Listener {
 
         fun onResourceAvailabilityChanged()
 
     }
 
     private val fLocalResources = ArrayList<Resource>()
-
-    var listener: OnResourceAvailabilityChangedListener? = null
-
+    private val fListeners = mutableListOf<Listener>()
     private val fScanExecutor = Executors.newSingleThreadScheduledExecutor()
 
     fun startScanning(context: Context) {
@@ -42,6 +41,7 @@ object ResourceManager : ResourceNode {
         get() = synchronized(fLocalResources) {
             fLocalResources.filter {
                 it.status == Resource.Status.AVAILABLE
+                && it.plaform.isAlive
             }
         }
 
@@ -53,6 +53,10 @@ object ResourceManager : ResourceNode {
         }
     }
 
+    override fun onLivelinessChanged(platform: Platform) {
+        fListeners.forEach(Listener::onResourceAvailabilityChanged)
+    }
+
     operator fun plusAssign(resource: Resource) = synchronized(fLocalResources) {
         add(resource)
     }
@@ -60,7 +64,7 @@ object ResourceManager : ResourceNode {
     override fun get(vararg capabilities: Capability<*>) =
             synchronized(fLocalResources) {
                 availableResources.asSequence()
-                        .filter { it.status == Status.AVAILABLE }
+                        .filter { it.status == Status.AVAILABLE && it.plaform.isAlive }
                         .filter { capabilities.all(it::has) }
                         .firstOrNull()
             }
@@ -106,9 +110,15 @@ object ResourceManager : ResourceNode {
                     PlatformProvider.instantiate(it.driverId, SerialDataChannelFactory, parameters, it.payloadDriverId)?.apply {
                         it.markAs(Status.AVAILABLE)
                         it.plaform = this
+                        addListener(this@ResourceManager)
                     }
                 }
             }
         }
     }
+
+    fun addListener(needProvider: Listener) {
+        fListeners += needProvider
+    }
+
 }

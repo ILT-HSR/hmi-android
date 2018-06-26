@@ -1,10 +1,10 @@
 package ch.hsr.ifs.gcs.driver.mavlink.platform
 
-import android.location.Location
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.driver.Payload
+import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.access.PayloadProvider
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommand
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
@@ -20,6 +20,7 @@ import java.time.Instant
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlin.properties.Delegates
 
 /**
  * This class provides a basic [platform][ch.hsr.ifs.gcs.driver.Platform] implementation to be used
@@ -59,6 +60,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         val io = Executors.newSingleThreadScheduledExecutor()
         val heartbeat = Executors.newSingleThreadScheduledExecutor()
         val await = Executors.newSingleThreadScheduledExecutor()
+        val surveyor = Executors.newSingleThreadScheduledExecutor()
     }
 
     private val fPeriodicMessages = object {
@@ -66,13 +68,22 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         val capabilities = createRequestAutopilotCapabilitiesMessage(fSender, fTarget, schema)
     }
 
+    private val fPlatformListeners = mutableListOf<Platform.Listener>()
     private val fMessageListeners = mutableMapOf<MessageID, MutableList<(MAVLinkMessage) -> Unit>>()
     private val fOneShotMessageListeners = mutableMapOf<MessageID, MutableList<AbortableHandler>>()
 
     private val fVehicleState = object {
         /**
+         * The liveliness of the vehicle connection
+         */
+        var isAlive: Boolean by Delegates.observable(false) { _, _, _ ->
+            fPlatformListeners.forEach{ it.onLivelinessChanged(this@BasicPlatform) }
+        }
+
+        /**
          * The GCS local time of the last received vehicle heartbeat in milliseconds
          */
+        @Volatile
         var lastHeartbeat = Instant.ofEpochSecond(0)
 
         /**
@@ -264,10 +275,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             } ?: "<unknown>"
         }
 
-    override val isAlive
-        get() = synchronized(fVehicleState) {
-            Instant.now() < fVehicleState.lastHeartbeat + maximumExpectedHeartbeatInterval
-        }
+    override val isAlive get() = synchronized(fVehicleState){ fVehicleState.isAlive }
 
     override val currentPosition: GPSPosition?
         get() = synchronized(fVehicleState) { fVehicleState.position }
@@ -277,6 +285,14 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     override val execution: Execution
         get() = NativeMissionExecution(targetSystem)
+
+    override fun addListener(listener: Platform.Listener) {
+        fPlatformListeners += listener
+    }
+
+    override fun removeListener(listener: Platform.Listener) {
+        fPlatformListeners -= listener
+    }
 
     // AerialVehicle implementation
 
@@ -470,6 +486,18 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     }
 
     /**
+     * Schedule the surveyor actions
+     */
+    private fun scheduleSurveyor() {
+        fExecutors.surveyor.scheduleAtFixedRate({
+            if((fVehicleState.lastHeartbeat + maximumExpectedHeartbeatInterval) > Instant.now()) {
+                fVehicleState.isAlive = false
+            }
+        }, 0, 100, TimeUnit.MILLISECONDS)
+    }
+
+
+    /**
      * Request the basic vehicle capabilities
      *
      * We need to know certain aspects of the vehicle, for example the vendor and firmware version
@@ -520,7 +548,9 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      */
     @Suppress("UNUSED_PARAMETER")
     private fun handleHeartbeat(message: MAVLinkMessage): Unit = synchronized(fVehicleState) {
-        fVehicleState.lastHeartbeat = Instant.now()
+        val now = Instant.now()
+        fVehicleState.lastHeartbeat = now
+        fVehicleState.isAlive = true
     }
 
     /**
