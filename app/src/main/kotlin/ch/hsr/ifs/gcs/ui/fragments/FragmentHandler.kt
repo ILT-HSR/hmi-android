@@ -2,15 +2,14 @@ package ch.hsr.ifs.gcs.ui.fragments
 
 import android.app.Activity
 import android.support.v4.app.Fragment
-import ch.hsr.ifs.gcs.MainActivity
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesListener
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionListener
-import ch.hsr.ifs.gcs.ui.fragments.needparameters.CargoFragment
-import ch.hsr.ifs.gcs.ui.fragments.needparameters.ModeFragment
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator.CargoConfigurator
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsListener
 import org.osmdroid.views.MapView
@@ -20,8 +19,7 @@ enum class FragmentType(val fragment: Fragment) {
     MISSION_STATUSES_FRAGMENT(MissionStatusesFragment()),
     NEEDS_FRAGMENT(NeedsFragment()),
     NEED_INSTRUCTION_FRAGMENT(NeedInstructionFragment()),
-    CHOOSE_CARGO_FRAGMENT(CargoFragment()),
-    CHOOSE_MODE_FRAGMENT(ModeFragment())
+    CHOOSE_CARGO_FRAGMENT(CargoConfigurator()),
 }
 
 class FragmentHandler(val activity: Activity, val map: MapView) {

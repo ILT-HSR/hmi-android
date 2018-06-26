@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs
+package ch.hsr.ifs.gcs.ui
 
 import android.location.Location
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.driver.access.InputProvider
@@ -13,6 +14,8 @@ import ch.hsr.ifs.gcs.support.geo.LocationService
 import ch.hsr.ifs.gcs.resource.access.ResourceManager
 import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
+import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -26,12 +29,18 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
 
     private var location: Location? = null
 
+    private lateinit var fNeedItemFactory: NeedItemFactory
+    private lateinit var fParameterItemFactory: ParameterItemFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
 
         setContentView(R.layout.activity_main)
+
+        fNeedItemFactory = NeedItemFactory(this)
+        fParameterItemFactory = ParameterItemFactory(this)
 
         leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
 
@@ -106,4 +115,7 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         }
     }
 
+    val needItemFactory get() = fNeedItemFactory
+
+    val parameterItemFactory get() = fParameterItemFactory
 }

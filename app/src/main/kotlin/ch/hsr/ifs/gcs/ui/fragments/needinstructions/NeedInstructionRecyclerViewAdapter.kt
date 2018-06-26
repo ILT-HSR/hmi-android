@@ -5,20 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import ch.hsr.ifs.gcs.MainActivity
+import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
-import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
+import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import ch.hsr.ifs.gcs.ui.fragments.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
 
 class NeedInstructionRecyclerViewAdapter(
-        private val mValues: List<Parameter<*>>,
+        private val mNeedItem: NeedItem,
         private val mContext: MainActivity)
     : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>(), Input.Listener {
+
+    private val mValues = mNeedItem.parameters
 
     init {
         mContext.controls?.addListener(this)
@@ -32,11 +34,11 @@ class NeedInstructionRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
         val context = holder.mView.context.applicationContext
-        if (item.isActive && !item.isCompleted) {
+        if (item.isActive && !item.isComplete) {
             holder.mCheckBoxView.background = context.getDrawable(R.drawable.checkbox_active_incomplete)
-        } else if (item.isCompleted) {
+        } else if (item.isComplete) {
             holder.mCheckBoxView.background = context.getDrawable(R.drawable.checkbox_active_complete)
-            holder.mResultView.text = item.resultToString()
+            holder.mResultView.text = item.parameter.resultToString()
         } else {
             holder.mCheckBoxView.background = context.getDrawable(R.drawable.checkbox_inactive)
         }

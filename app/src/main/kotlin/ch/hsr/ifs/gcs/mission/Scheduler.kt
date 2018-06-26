@@ -1,88 +1,50 @@
 package ch.hsr.ifs.gcs.mission
 
-import android.util.Log
-import ch.hsr.ifs.gcs.mission.need.Need
-import ch.hsr.ifs.gcs.resource.Resource
-import ch.hsr.ifs.gcs.resource.access.ResourceManager
+import java.time.Duration
 import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 object Scheduler {
 
-    interface OnSchedulerDataChangedListener {
+    interface Listener {
 
-        fun onNewMissionAvailable(mission: Mission)
-
-        fun onMissionRemoved(mission: Mission)
-
-        fun onMissionStatusChanged(mission: Mission)
+        fun onMissionUpdated(mission: Mission)
 
     }
 
-    private val LOG_TAG = Scheduler::class.simpleName
-    private val fMissions = mutableListOf<Mission>()
-    private val fListeners = mutableListOf<OnSchedulerDataChangedListener>()
+    private val TICK = Duration.ofMillis(100)
+
+    private val fListeners = mutableListOf<Listener>()
+    private val fMissionExecutionStatuses = mutableMapOf<Mission, Execution.Status>()
     private val fExecutionRunner = Executors.newSingleThreadScheduledExecutor()
-    private val fExecutions = mutableMapOf<Execution, ScheduledFuture<*>>()
 
-    private operator fun plusAssign(mission: Mission) {
-        fMissions += mission
-        fListeners.forEach { it.onNewMissionAvailable(mission) }
-    }
-
-    private operator fun minusAssign(mission: Mission) {
-        fMissions -= mission
-        fListeners.forEach { it.onMissionRemoved(mission) }
-    }
-
-    fun addListener(listener: OnSchedulerDataChangedListener) {
+    fun addListener(listener: Listener) {
         fListeners += listener
     }
 
-    fun removeListener(listener: OnSchedulerDataChangedListener) {
+    fun removeListener(listener: Listener) {
         fListeners -= listener
     }
 
-    fun submit(need: Need) {
-        if (!ResourceManager.acquire(need.resource)) {
-            Log.e(LOG_TAG, "Failed to acquire resource ${need.resource.id}")
-            return
+    fun launch(mission: Mission) {
+        tick(mission)
+    }
+
+    private fun tick(mission: Mission) {
+        val status = mission.tick()
+        if(!fMissionExecutionStatuses.contains(mission)) {
+            val oldStatus = fMissionExecutionStatuses[mission]
+            if(status != oldStatus) {
+                fListeners.forEach { it.onMissionUpdated(mission) }
+                fMissionExecutionStatuses[mission] = status
+            }
+        } else {
+            fListeners.forEach { it.onMissionUpdated(mission) }
+            fMissionExecutionStatuses[mission] = status
         }
 
-        val execution = need.resource.plaform.execution
-        need.tasks?.map { it.executeOn(need.resource) }
-                ?.forEach(execution::add)
-
-        with(Mission(need)) {
-            fExecutions[execution] = fExecutionRunner.scheduleAtFixedRate(object : Runnable {
-
-                private var fLastStatus = Execution.Status.PREPARING
-                private val fMission = this@with
-
-                init {
-                    this@Scheduler += this@with
-                }
-
-                override fun run(): Unit = with(execution.tick()) {
-                    if (this != fLastStatus) {
-                        fLastStatus = this
-                        fListeners.forEach { it.onMissionStatusChanged(fMission) }
-                    }
-                    when (this) {
-                        Execution.Status.FAILURE, Execution.Status.FINISHED -> {
-                            fExecutions[execution]?.cancel(false)
-                            fExecutions.remove(execution)
-                            this@Scheduler -= fMission
-                        }
-                        Execution.Status.RUNNING -> {
-                            fMission.need.resource.markAs(Resource.Status.BUSY)
-                        }
-                        else -> Unit
-                    }
-                }
-
-            }, 0, 100, TimeUnit.MILLISECONDS)
+        if(status != Execution.Status.FINISHED && status != Execution.Status.FAILURE) {
+            fExecutionRunner.schedule({ tick(mission) }, TICK.toMillis(), TimeUnit.MILLISECONDS)
         }
     }
 

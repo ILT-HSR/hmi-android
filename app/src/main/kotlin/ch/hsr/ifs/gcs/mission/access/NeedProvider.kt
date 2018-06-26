@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments.needs
+package ch.hsr.ifs.gcs.mission.access
 
 import ch.hsr.ifs.gcs.mission.need.CallIn
 import ch.hsr.ifs.gcs.mission.need.Need
@@ -9,7 +9,7 @@ import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_FLY
 import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_MOVE
 import kotlin.reflect.full.primaryConstructor
 
-object NeedsManager : ResourceManager.OnResourceAvailabilityChangedListener {
+object NeedProvider : ResourceManager.OnResourceAvailabilityChangedListener {
 
     interface OnNeedsAvailabilityChangedListener {
 
@@ -35,7 +35,7 @@ object NeedsManager : ResourceManager.OnResourceAvailabilityChangedListener {
         get() =
             knownNeeds.mapNotNull {
                 ResourceManager.get(*it.value.second.toTypedArray())?.let { res ->
-                    NeedsManager.instantiate(it.key, res)
+                    instantiate(it.key, res)
                 }
             }.toList()
 

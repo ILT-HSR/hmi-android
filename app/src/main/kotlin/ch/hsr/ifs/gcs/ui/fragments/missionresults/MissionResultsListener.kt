@@ -1,7 +1,7 @@
 package ch.hsr.ifs.gcs.ui.fragments.missionresults
 
 import android.app.Activity
-import ch.hsr.ifs.gcs.ui.data.Results
+import ch.hsr.ifs.gcs.ui.mission.Results
 import org.osmdroid.views.MapView
 
 class MissionResultsListener(val activity: Activity, val map: MapView) : MissionResultsFragment.OnResultsFragmentChangedListener {
