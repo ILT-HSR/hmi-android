@@ -30,4 +30,9 @@ class SimpleResource(override val id: String,
         set(value) {
             fPlatform = value
         }
+
+    override val isAvailable: Boolean
+        get() = synchronized(fStatus) {
+            fStatus == Status.AVAILABLE && plaform.isAlive
+        }
 }

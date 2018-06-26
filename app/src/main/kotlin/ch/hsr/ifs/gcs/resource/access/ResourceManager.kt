@@ -64,7 +64,7 @@ object ResourceManager : ResourceNode, Platform.Listener {
     override fun get(vararg capabilities: Capability<*>) =
             synchronized(fLocalResources) {
                 availableResources.asSequence()
-                        .filter { it.status == Status.AVAILABLE && it.plaform.isAlive }
+                        .filter(Resource::isAvailable)
                         .filter { capabilities.all(it::has) }
                         .firstOrNull()
             }

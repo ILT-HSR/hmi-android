@@ -81,6 +81,13 @@ interface Resource {
     val capabilities: List<Capability<*>>
 
     /**
+     * Check if this resource is available
+     *
+     * @since 1.0.0
+     */
+    val isAvailable: Boolean
+
+    /**
      * The platform of this resource
      *
      * @since 1.0.0
