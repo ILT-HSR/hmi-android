@@ -33,5 +33,4 @@ class AltitudeItem(parameter: Altitude) : BasicParameterItem<Int>(parameter) {
         context.fragmentHandler?.removeFragment(fragment)
     }
 
-
 }

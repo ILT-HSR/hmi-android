@@ -59,7 +59,7 @@ class NeedsRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mItems[0]
+        val item = mItems[position]
         holder.mView.setBackgroundColor(
                 if (item.isActive) {
                     mContext.resources.getColor(R.color.activeListItem, null)

@@ -7,7 +7,7 @@ object ParameterItemFactory {
 
     private val PARAMETER_ITEM_CONSTRUCTORS = mutableMapOf<String, (Parameter<*>) -> ParameterItem<*>>(
             "ch.hsr.ifs.gcs.mission.need.parameter.altitude" to { p -> AltitudeItem(p as Altitude) },
-            "ch.hsr.ifs.gcs.mission.need.parameter.cargo" to { p -> CargoItem(p as Cargo)},
+            "ch.hsr.ifs.gcs.mission.need.parameter.cargo" to { p -> CargoItem(p as Cargo) },
             "ch.hsr.ifs.gcs.mission.need.parameter.region" to { p -> RegionItem(p as Region) },
             "ch.hsr.ifs.gcs.mission.need.parameter.target" to { p -> TargetItem(p as Target) }
     )
@@ -29,10 +29,10 @@ object ParameterItemFactory {
     /**
      * Instantiate an item for the [Parameter] with the given id
      */
-    fun instantiate(id: String, parameter: Parameter<*>) = if(PARAMETER_ITEM_CONSTRUCTORS.contains(id)) {
-        PARAMETER_ITEM_CONSTRUCTORS[id]!!.invoke(parameter)
+    fun instantiate(parameter: Parameter<*>) = if (PARAMETER_ITEM_CONSTRUCTORS.contains(parameter.id)) {
+        PARAMETER_ITEM_CONSTRUCTORS[parameter.id]!!.invoke(parameter)
     } else {
-        throw IllegalArgumentException("Unknown parameter type $id")
+        throw IllegalArgumentException("Unknown parameter type ${parameter.id}")
     }
 
 }

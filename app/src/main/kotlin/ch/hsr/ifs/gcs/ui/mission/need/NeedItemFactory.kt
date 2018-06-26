@@ -2,11 +2,13 @@ package ch.hsr.ifs.gcs.ui.mission.need
 
 import ch.hsr.ifs.gcs.mission.need.CallIn
 import ch.hsr.ifs.gcs.mission.need.Need
+import ch.hsr.ifs.gcs.mission.need.RadiationMap
 
 object NeedItemFactory {
 
     private val NEED_ITEM_CONSTRUCTORS = mutableMapOf<String, (Need) -> NeedItem>(
-            "ch.hsr.ifs.gcs.mission.need.callIn" to { n -> CallInItem(n as CallIn) }
+            "ch.hsr.ifs.gcs.mission.need.callIn" to { n -> CallInItem(n as CallIn) },
+            "ch.hsr.ifs.gcs.mission.need.radiationMap" to { n -> RadiationMapItem(n as RadiationMap) }
     )
 
     fun register(id: String, constructor: (Need) -> NeedItem) {

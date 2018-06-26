@@ -57,7 +57,7 @@ object ResourceManager : ResourceNode {
         add(resource)
     }
 
-    override operator fun get(vararg capabilities: Capability<*>) =
+    override fun get(vararg capabilities: Capability<*>) =
             synchronized(fLocalResources) {
                 availableResources.asSequence()
                         .filter { it.status == Status.AVAILABLE }
