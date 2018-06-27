@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <usb-device vendor-id="1027" product-id="24577" />
-    <usb-device vendor-id="10c4" />
-    <usb-device vendor-id="9025" />
+    <!-- Arduino devices -->
+    <usb-device vendor-id="0x2341" />
+    <!-- FTDI serial devices -->
+    <usb-device vendor-id="0x0403" />
 </resources>

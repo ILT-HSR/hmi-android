@@ -14,9 +14,9 @@ import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID.NEEDS_FRAGMENT
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
-import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.view.*
@@ -92,7 +92,7 @@ class NeedInstructionFragment : Fragment() {
 
     private fun setupCancelButton(context: MainActivity) {
         context.leftButton.setOnClickListener {
-            context.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+            context.showMenuFragment(NEEDS_FRAGMENT)
             context.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
         }
     }
@@ -114,7 +114,7 @@ class NeedInstructionFragment : Fragment() {
         needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
         need.let { Mission(it.need) }.let(MissionProvider::submit)
         needNavigationButton.setOnClickListener {
-            context.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+            context.showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
             context.leftButton?.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
         }
     }

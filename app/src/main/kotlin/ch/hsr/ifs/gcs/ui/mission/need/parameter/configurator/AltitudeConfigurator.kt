@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_choose_altitude.*
@@ -35,16 +35,16 @@ class AltitudeConfigurator : ParameterConfigurator<Int>() {
     override fun present() {
         setDefaultResult()
         context.map.setBuiltInZoomControls(false)
-        context.performFragmentTransaction(R.id.mapholder, this)
+        context.showMainFragment(this)
         context.leftButton.setOnClickListener {
             destroy()
-            context.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+            context.showMenuFragment(MenuFragmentID.NEEDS_FRAGMENT)
         }
     }
 
     override fun destroy() {
         context.map.setBuiltInZoomControls(true)
-        context.removeFragment(this)
+        context.hideMainFragment()
     }
 
     private fun setDefaultResult() {

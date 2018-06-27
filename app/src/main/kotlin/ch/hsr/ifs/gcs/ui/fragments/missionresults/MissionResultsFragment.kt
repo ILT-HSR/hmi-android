@@ -5,18 +5,17 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.mission.Results
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import ch.hsr.ifs.gcs.mission.access.NeedProvider
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
+import ch.hsr.ifs.gcs.ui.MainActivity
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID.NEEDS_FRAGMENT
+import ch.hsr.ifs.gcs.ui.mission.Results
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.*
+import kotlinx.android.synthetic.main.activity_main.view.leftButton
 import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
 
 /**
@@ -28,21 +27,17 @@ class MissionResultsFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChang
 
     private lateinit var fNeedProvider: NeedProvider
 
-    companion object {
-        private val LOG_TAG = MissionResultsFragment::class.java.simpleName
-    }
-
     private var listener: OnResultsFragmentChangedListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is MainActivity) {
-            listener = context
-            fNeedProvider = context.needProvider
-            fNeedProvider.addListener(this)
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnResultsFragmentChangedListener")
+        if (context !is MainActivity) {
+            throw IllegalArgumentException("'context' must be MainActivity")
         }
+
+        listener = context
+        fNeedProvider = context.needProvider
+        fNeedProvider.addListener(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -68,16 +63,12 @@ class MissionResultsFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChang
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
             resultsAddButton.setOnClickListener {
-                val context = context
-                if (context is FragmentHandler) {
-                    context.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                (context as? MainActivity)?.apply {
+                    showMenuFragment(NEEDS_FRAGMENT)
+                    leftButton?.background = context?.applicationContext?.getDrawable(R.drawable.cancel_action)
                 }
-                activity?.leftButton?.background = context?.applicationContext?.getDrawable(R.drawable.cancel_action)
             }
         resultsAddButton.isEnabled = !fNeedProvider.needs.isEmpty()
-        activity?.leftButton?.setOnClickListener {
-            Log.d(LOG_TAG, "Refresh Mission Pressed")
-        }
     }
 
     override fun onStart() {

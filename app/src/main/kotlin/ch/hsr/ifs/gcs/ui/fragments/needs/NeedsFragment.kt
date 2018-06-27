@@ -11,8 +11,8 @@ import android.view.ViewGroup
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.need.Need
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
@@ -55,20 +55,18 @@ class NeedsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val context = context
-        if (context is MainActivity) {
+        (context as? MainActivity)?.let { ctx ->
             selectButton.setOnClickListener {
-                val needInstructionFragmentType = FragmentType.NEED_INSTRUCTION_FRAGMENT
-                val item = (view?.list?.adapter as NeedsRecyclerViewAdapter).activeItem
-                (needInstructionFragmentType.fragment as NeedInstructionFragment).need = item
-                context.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
-
+                with(ctx.showMenuFragment(MenuFragmentID.NEED_INSTRUCTION_FRAGMENT) as NeedInstructionFragment) {
+                    need = (this@NeedsFragment.list.adapter as NeedsRecyclerViewAdapter).activeItem
+                }
             }
+
             activity?.apply {
-                leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
+                leftButton.background = ctx.applicationContext.getDrawable(R.drawable.cancel_action)
                 leftButton.setOnClickListener {
-                    context.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
-                    leftButton.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
+                    ctx.showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
+                    leftButton.background = ctx.applicationContext.getDrawable(R.drawable.abort_mission)
                 }
             }
         }

@@ -10,8 +10,10 @@ import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.mission.need.Need
+import ch.hsr.ifs.gcs.ui.BasicHardwareControllable
+import ch.hsr.ifs.gcs.ui.HardwareControllable
 import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedListener
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,7 +27,10 @@ class NeedsRecyclerViewAdapter(
         private val mListener: OnNeedsFragmentChangedListener?,
         private val mRecyclerView: RecyclerView,
         private val mContext: MainActivity)
-    : RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>(), Input.Listener {
+    :
+        RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>(),
+        Input.Listener,
+        HardwareControllable<NeedsRecyclerViewAdapter> by BasicHardwareControllable(mContext.inputProvider){
 
     private val mOnClickListener: View.OnClickListener
     private val mItems = mContext.needProvider.needs.map(mContext.needItemFactory::instantiate)
@@ -42,10 +47,10 @@ class NeedsRecyclerViewAdapter(
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as NeedItem
             activateItem(item)
-            mContext.controls?.removeListener(this)
+            disableHardwareControls(this)
             mListener?.onNeedItemChanged(item)
         }
-        mContext.controls?.addListener(this)
+        enableHardwareControls(this)
         mActiveItem.activate()
     }
 
@@ -82,13 +87,13 @@ class NeedsRecyclerViewAdapter(
                 activateNextItem()
             }
             Control.UPDATE_ABORT -> {
-                mContext.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                mContext.showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.abort_mission)
-                mContext.controls?.removeListener(this)
+                disableHardwareControls(this)
             }
             Control.NEED_START -> {
                 mListener?.onNeedItemChanged(mActiveItem)
-                mContext.controls?.removeListener(this)
+                disableHardwareControls(this)
             }
         }
     }

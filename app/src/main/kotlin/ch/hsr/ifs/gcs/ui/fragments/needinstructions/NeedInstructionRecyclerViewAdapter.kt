@@ -5,12 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
+import ch.hsr.ifs.gcs.ui.BasicHardwareControllable
+import ch.hsr.ifs.gcs.ui.HardwareControllable
+import ch.hsr.ifs.gcs.ui.MainActivity
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
@@ -18,12 +20,15 @@ import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
 class NeedInstructionRecyclerViewAdapter(
         need: NeedItem,
         private val mContext: MainActivity)
-    : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>(), Input.Listener {
+    :
+        RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>(),
+        Input.Listener,
+        HardwareControllable<NeedInstructionRecyclerViewAdapter> by BasicHardwareControllable(mContext.inputProvider) {
 
     private val mValues = need.parameters
 
     init {
-        mContext.controls?.addListener(this)
+        enableHardwareControls(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,9 +54,9 @@ class NeedInstructionRecyclerViewAdapter(
         @Suppress("NON_EXHAUSTIVE_WHEN")
         when (control) {
             Control.UPDATE_ABORT -> {
-                mContext.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                mContext.showMenuFragment(MenuFragmentID.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
-                mContext.controls?.removeListener(this)
+                disableHardwareControls(this)
             }
             Control.NEED_START -> {
                 mContext.needNavigationButton.performClick()

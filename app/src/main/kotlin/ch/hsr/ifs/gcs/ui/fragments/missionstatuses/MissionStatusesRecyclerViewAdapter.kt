@@ -14,8 +14,10 @@ import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.support.color.createRandomColorArgb
+import ch.hsr.ifs.gcs.ui.BasicHardwareControllable
+import ch.hsr.ifs.gcs.ui.HardwareControllable
 import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
 import ch.hsr.ifs.gcs.ui.mission.MissionItem
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,7 +31,11 @@ class MissionStatusesRecyclerViewAdapter(
         private val mListener: OnStatusesFragmentChangedListener?,
         private val mRecyclerView: RecyclerView,
         private val mContext: MainActivity)
-    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(), Input.Listener, MissionProvider.Listener {
+    :
+        RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(),
+        Input.Listener,
+        MissionProvider.Listener,
+        HardwareControllable<MissionStatusesRecyclerViewAdapter> by BasicHardwareControllable(mContext.inputProvider){
 
     companion object {
         private val LOG_TAG = MissionStatusesRecyclerViewAdapter::class.java.simpleName
@@ -58,7 +64,7 @@ class MissionStatusesRecyclerViewAdapter(
             mListener?.onStatusItemChanged(item)
         }
 
-        mContext.controls?.addListener(this)
+        enableHardwareControls(this)
         MissionProvider.addListener(this)
     }
 
@@ -101,14 +107,14 @@ class MissionStatusesRecyclerViewAdapter(
                 activateNextItem()
             }
             Control.DPAD_RIGHT -> {
-                mContext.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
+                mContext.showMenuFragment(MenuFragmentID.MISSION_RESULTS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.refresh_mission)
-                mContext.controls?.removeListener(this)
+                disableHardwareControls(this)
             }
             Control.NEED_START -> {
-                mContext.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                mContext.showMenuFragment(MenuFragmentID.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
-                mContext.controls?.removeListener(this)
+                disableHardwareControls(this)
             }
             Control.UPDATE_ABORT -> {
                 Log.d(LOG_TAG, "Cancel Mission Pressed")

@@ -8,14 +8,16 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.R.drawable.abort_mission
+import ch.hsr.ifs.gcs.R.layout.activity_main
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.driver.access.InputProvider
 import ch.hsr.ifs.gcs.mission.access.NeedProvider
 import ch.hsr.ifs.gcs.resource.access.ResourceManager
 import ch.hsr.ifs.gcs.support.geo.LocationService
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
+import ch.hsr.ifs.gcs.support.usb.DeviceScanner
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
@@ -40,7 +42,6 @@ class MainActivity(
         AppCompatActivity(),
         Input.Listener,
         LocationService.OnLocationChangedListener,
-        FragmentHandler,
         MissionResultsFragment.OnResultsFragmentChangedListener by missionResultsListener,
         MissionStatusesFragment.OnStatusesFragmentChangedListener by missionStatusesListener,
         NeedsFragment.OnNeedsFragmentChangedListener by needsListener,
@@ -48,15 +49,17 @@ class MainActivity(
 
     private lateinit var fLocationService: LocationService
     private lateinit var fLocation: Location
-    private var fActiveFragment = FragmentType.MISSION_RESULTS_FRAGMENT.fragment
-    private var fPreviousFragment = FragmentType.MISSION_RESULTS_FRAGMENT.fragment
+    private var fMenuFragment = MenuFragmentID.MISSION_STATUSES_FRAGMENT
+    private var fMainFragment: Fragment? = null
+    private val fDeviceScanner = DeviceScanner()
 
     val needItemFactory by lazy { NeedItemFactory(this) }
     val parameterItemFactory by lazy { ParameterItemFactory(this) }
     val resourceManager by lazy { ResourceManager(this) }
     val needProvider by lazy { NeedProvider(resourceManager) }
+    val inputProvider by lazy { InputProvider(fDeviceScanner) }
 
-    var controls: Input? = null
+    private var controls: Input? = null
 
 
     init {
@@ -66,18 +69,45 @@ class MainActivity(
         needInstructionListener.activity = this
     }
 
+    fun showMenuFragment(id: MenuFragmentID) =
+        with(supportFragmentManager.findFragmentByTag(id.name) ?: createFragment(id)) {
+            fMenuFragment = id
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.menuholder, this)
+                    .commit()
+            this
+        }
+
+
+    fun showMainFragment(fragment: Fragment) {
+        fMainFragment = fragment
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.mapholder, fragment)
+                .commit()
+    }
+
+    fun hideMainFragment() {
+        if(fMainFragment != null) {
+            supportFragmentManager.beginTransaction()
+                    .remove(fMainFragment)
+                    .commit()
+            fMainFragment = null
+        }
+    }
+
     // Activity implementation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("activity", "onCreate() $this")
 
         Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
 
-        setContentView(R.layout.activity_main)
+        setContentView(activity_main)
 
-        leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
+        leftButton.background = applicationContext.getDrawable(abort_mission)
 
-        performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+        showMenuFragment(fMenuFragment)
 
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.controller.setZoom(19.0)
@@ -85,10 +115,19 @@ class MainActivity(
 
         fLocationService = LocationService(this, this)
 
-        InputProvider.instantiate(this)?.apply {
-            controls = this
-            addListener(this@MainActivity)
+        if(inputProvider[this] == null) {
+            controls = inputProvider[this]
+            Log.i("activity", "device: $controls")
+        } else {
+            inputProvider.addListener(object : InputProvider.Listener {
+                override fun onInputDeviceAvailable(device: Input) {
+                    inputProvider.removeListener(this)
+                    controls = device
+                    Log.i("LISTENER", "device: $device")
+                }
+            })
         }
+        Log.i("activity", "device: $controls")
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -106,13 +145,23 @@ class MainActivity(
 
     override fun onResume() {
         super.onResume()
+        Log.i("activity", "onResume() $this")
         map.onResume()
+        fDeviceScanner.start(this)
+        showMenuFragment(fMenuFragment)
     }
 
     override fun onPause() {
         super.onPause()
+        Log.i("activity", "onPause() $this")
         map.onPause()
         finish()
+    }
+
+    override fun onDestroy() {
+        Log.i("activity", "onDestroy() $this")
+        fDeviceScanner.stop()
+        super.onDestroy()
     }
 
     // Input.Handler implementation
@@ -124,6 +173,9 @@ class MainActivity(
     override fun onButton(control: Control) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
         when (control) {
+            Control.SHOW_MENU -> {
+                Log.i("BUTTON", "SHOW_MENU")
+            }
             Control.ZOOM_IN -> {
                 runOnUiThread {
                     map.controller.zoomIn()
@@ -148,28 +200,13 @@ class MainActivity(
         }
     }
 
-    // FragmentHandler implementation
+    // Private implementation
 
-    override fun performFragmentTransaction(holderId: Int, fragmentType: FragmentHandler.FragmentType) {
-        fPreviousFragment = fActiveFragment
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(holderId, fragmentType.fragment)
-        transaction.commit()
-        fActiveFragment = fragmentType.fragment
-    }
-
-    override fun performFragmentTransaction(holderId: Int, fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(holderId, fragment)
-        transaction.commit()
-        fActiveFragment = fragment
-    }
-
-    override fun removeFragment(fragment: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.remove(fragment)
-        transaction.commit()
-        fActiveFragment = fPreviousFragment
+    private fun createFragment(id: MenuFragmentID): Fragment = when(id) {
+        MenuFragmentID.MISSION_RESULTS_FRAGMENT -> MissionResultsFragment()
+        MenuFragmentID.MISSION_STATUSES_FRAGMENT -> MissionStatusesFragment()
+        MenuFragmentID.NEEDS_FRAGMENT -> NeedsFragment()
+        MenuFragmentID.NEED_INSTRUCTION_FRAGMENT -> NeedInstructionFragment()
     }
 
 }

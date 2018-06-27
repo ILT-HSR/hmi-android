@@ -9,11 +9,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.mission.access.NeedProvider
-import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
+import ch.hsr.ifs.gcs.ui.MainActivity
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.mission.MissionItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
@@ -90,9 +90,9 @@ class MissionStatusesFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChan
         super.onActivityCreated(savedInstanceState)
         statusesAddButton.setOnClickListener {
             val context = context
-            if (context is MainActivity) {
-                context.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
-                context.leftButton?.background = context.applicationContext?.getDrawable(R.drawable.cancel_action)
+            (context as? MainActivity)?.apply {
+                showMenuFragment(MenuFragmentID.NEEDS_FRAGMENT)
+                leftButton?.background = applicationContext?.getDrawable(R.drawable.cancel_action)
             }
         }
         statusesAddButton.isEnabled = !fNeedProvider.needs.isEmpty()
