@@ -13,7 +13,7 @@ import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.mission.access.NeedProvider
-import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import ch.hsr.ifs.gcs.ui.mission.MissionItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
@@ -58,7 +58,7 @@ class MissionStatusesFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChan
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is MainActivity) {
-            listener = context.fragmentHandler?.missionStatusesListener
+            listener = context
             fNeedProvider = context.needProvider
             fNeedProvider.addListener(this)
         } else {
@@ -91,7 +91,7 @@ class MissionStatusesFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChan
         statusesAddButton.setOnClickListener {
             val context = context
             if (context is MainActivity) {
-                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                context.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 context.leftButton?.background = context.applicationContext?.getDrawable(R.drawable.cancel_action)
             }
         }

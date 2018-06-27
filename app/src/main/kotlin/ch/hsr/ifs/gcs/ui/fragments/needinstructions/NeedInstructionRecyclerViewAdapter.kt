@@ -10,7 +10,7 @@ import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
-import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
@@ -49,7 +49,7 @@ class NeedInstructionRecyclerViewAdapter(
         @Suppress("NON_EXHAUSTIVE_WHEN")
         when (control) {
             Control.UPDATE_ABORT -> {
-                mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                mContext.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
                 mContext.controls?.removeListener(this)
             }

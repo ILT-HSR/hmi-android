@@ -13,7 +13,7 @@ import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.ui.mission.Results
-import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment.OnResultsFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionresults.view.*
@@ -80,12 +80,12 @@ class MissionResultsRecyclerViewAdapter(
                 activateNextItem()
             }
             Control.DPAD_LEFT -> {
-                mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                mContext.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.abort_mission)
                 mContext.controls?.removeListener(this)
             }
             Control.NEED_START -> {
-                mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                mContext.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 mContext.controls?.removeListener(this)
             }
             Control.UPDATE_ABORT -> {

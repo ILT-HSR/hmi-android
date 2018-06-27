@@ -1,33 +1,40 @@
 package ch.hsr.ifs.gcs.ui.fragments.missionstatuses
 
 import android.app.Activity
+import android.view.animation.AccelerateInterpolator
 import ch.hsr.ifs.gcs.ui.mission.MissionItem
+import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.views.MapView
 
-class MissionStatusesListener(val activity: Activity, val map: MapView) : MissionStatusesFragment.OnStatusesFragmentChangedListener {
+class MissionStatusesListener : MissionStatusesFragment.OnStatusesFragmentChangedListener {
+
+    lateinit var activity: Activity
+    private val fMap by lazy {
+        activity.map
+    }
 
     override fun onStatusItemChanged(item: MissionItem?) {
         activity.runOnUiThread {
             item?.apply {
                 if (isSelected) {
-                    map.overlayManager.addAll(mapOverlays)
+                    fMap.overlayManager.addAll(mapOverlays)
                 } else {
-                    map.overlayManager.removeAll(mapOverlays)
+                    fMap.overlayManager.removeAll(mapOverlays)
                 }
             }
-            map.invalidate()
+            fMap.invalidate()
         }
     }
 
     override fun refreshStatusesMapView(items: List<MissionItem>) {
         activity.runOnUiThread {
-            map.overlays.clear()
+            fMap.overlays.clear()
             items.forEach {
                 if (it.isSelected) {
-                    map.overlayManager.addAll(it.mapOverlays)
+                    fMap.overlayManager.addAll(it.mapOverlays)
                 }
             }
-            map.invalidate()
+            fMap.invalidate()
         }
     }
 

@@ -8,16 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.support.color.createRandomColorArgb
-import ch.hsr.ifs.gcs.ui.mission.MissionItem
-import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.MainActivity
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
+import ch.hsr.ifs.gcs.ui.mission.MissionItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 
@@ -101,12 +101,12 @@ class MissionStatusesRecyclerViewAdapter(
                 activateNextItem()
             }
             Control.DPAD_RIGHT -> {
-                mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
+                mContext.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_RESULTS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.refresh_mission)
                 mContext.controls?.removeListener(this)
             }
             Control.NEED_START -> {
-                mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                mContext.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.cancel_action)
                 mContext.controls?.removeListener(this)
             }
@@ -126,7 +126,7 @@ class MissionStatusesRecyclerViewAdapter(
     }
 
     override fun onMissionRemoved(mission: Mission) {
-        mMissionItems.find{ it.mission == mission }?.let {
+        mMissionItems.find { it.mission == mission }?.let {
             with(mMissionItems.indexOf(it)) {
                 mMissionItems.removeAt(this)
                 notifyItemRemoved(this)

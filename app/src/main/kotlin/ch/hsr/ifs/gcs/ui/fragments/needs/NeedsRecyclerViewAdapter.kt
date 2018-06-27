@@ -6,15 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
-import ch.hsr.ifs.gcs.mission.access.NeedProvider
 import ch.hsr.ifs.gcs.mission.need.Need
-import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
-import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.MainActivity
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedListener
+import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need.view.*
 
@@ -83,7 +82,7 @@ class NeedsRecyclerViewAdapter(
                 activateNextItem()
             }
             Control.UPDATE_ABORT -> {
-                mContext.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                mContext.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                 mContext.leftButton.background = mContext.getDrawable(R.drawable.abort_mission)
                 mContext.controls?.removeListener(this)
             }

@@ -2,30 +2,36 @@ package ch.hsr.ifs.gcs.ui.fragments.missionresults
 
 import android.app.Activity
 import ch.hsr.ifs.gcs.ui.mission.Results
+import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.views.MapView
 
-class MissionResultsListener(val activity: Activity, val map: MapView) : MissionResultsFragment.OnResultsFragmentChangedListener {
+class MissionResultsListener : MissionResultsFragment.OnResultsFragmentChangedListener {
+
+    lateinit var activity: Activity
+    private val fMap: MapView by lazy {
+        activity.map
+    }
 
     override fun onResultItemChanged(item: Results.Item?) {
         activity.runOnUiThread {
             item?.let {
                 if(it.isSelected) {
-                    map.overlayManager.addAll(it.mapOverlays)
+                    fMap.overlayManager.addAll(it.mapOverlays)
                 } else {
-                    map.overlayManager.removeAll(it.mapOverlays)
+                    fMap.overlayManager.removeAll(it.mapOverlays)
                 }
-                map.invalidate()
+                fMap.invalidate()
             }
         }
     }
 
     override fun refreshResultsMapView() {
         activity.runOnUiThread {
-            map.overlays.clear()
+            fMap.overlays.clear()
             Results.forEach {
-                if (it.isSelected) map.overlayManager.addAll(it.mapOverlays)
+                if (it.isSelected) fMap.overlayManager.addAll(it.mapOverlays)
             }
-            map.invalidate()
+            fMap.invalidate()
         }
     }
 

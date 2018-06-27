@@ -14,7 +14,7 @@ import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItem
 import kotlinx.android.synthetic.main.activity_main.*
@@ -42,8 +42,8 @@ class NeedInstructionFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is MainActivity) {
-            fListener = context.fragmentHandler!!.needInstructionListener
+        if (context is OnNeedInstructionFragmentListener) {
+            fListener = context
         } else {
             throw IllegalArgumentException(context.toString() + " must implement OnNeedInstructionFragmentListener")
         }
@@ -92,7 +92,7 @@ class NeedInstructionFragment : Fragment() {
 
     private fun setupCancelButton(context: MainActivity) {
         context.leftButton.setOnClickListener {
-            context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+            context.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
             context.leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
         }
     }
@@ -114,7 +114,7 @@ class NeedInstructionFragment : Fragment() {
         needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
         need.let { Mission(it.need) }.let(MissionProvider::submit)
         needNavigationButton.setOnClickListener {
-            context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+            context.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
             context.leftButton?.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
         }
     }

@@ -12,7 +12,7 @@ import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.need.Need
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
-import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
@@ -29,8 +29,8 @@ class NeedsFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is MainActivity) {
-            listener = context.fragmentHandler!!.needsListener
+        if (context is OnNeedsFragmentChangedListener) {
+            listener = context
         } else {
             throw RuntimeException(context.toString() + " must implement OnNeedsFragmentChangedListener")
         }
@@ -61,13 +61,13 @@ class NeedsFragment : Fragment() {
                 val needInstructionFragmentType = FragmentType.NEED_INSTRUCTION_FRAGMENT
                 val item = (view?.list?.adapter as NeedsRecyclerViewAdapter).activeItem
                 (needInstructionFragmentType.fragment as NeedInstructionFragment).need = item
-                context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
+                context.performFragmentTransaction(R.id.menuholder, FragmentType.NEED_INSTRUCTION_FRAGMENT)
 
             }
             activity?.apply {
                 leftButton.background = context.applicationContext.getDrawable(R.drawable.cancel_action)
                 leftButton.setOnClickListener {
-                    context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
+                    context.performFragmentTransaction(R.id.menuholder, FragmentType.MISSION_STATUSES_FRAGMENT)
                     leftButton.background = context.applicationContext.getDrawable(R.drawable.abort_mission)
                 }
             }

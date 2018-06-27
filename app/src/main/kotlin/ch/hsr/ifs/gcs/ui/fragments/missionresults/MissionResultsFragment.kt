@@ -12,8 +12,9 @@ import android.view.ViewGroup
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.mission.Results
-import ch.hsr.ifs.gcs.ui.fragments.FragmentType
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler.FragmentType
 import ch.hsr.ifs.gcs.mission.access.NeedProvider
+import ch.hsr.ifs.gcs.ui.fragments.FragmentHandler
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
@@ -36,7 +37,7 @@ class MissionResultsFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChang
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is MainActivity) {
-            listener = context.fragmentHandler!!.missionResultsListener
+            listener = context
             fNeedProvider = context.needProvider
             fNeedProvider.addListener(this)
         } else {
@@ -68,8 +69,8 @@ class MissionResultsFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChang
         super.onActivityCreated(savedInstanceState)
             resultsAddButton.setOnClickListener {
                 val context = context
-                if (context is MainActivity) {
-                    context.fragmentHandler?.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
+                if (context is FragmentHandler) {
+                    context.performFragmentTransaction(R.id.menuholder, FragmentType.NEEDS_FRAGMENT)
                 }
                 activity?.leftButton?.background = context?.applicationContext?.getDrawable(R.drawable.cancel_action)
             }
