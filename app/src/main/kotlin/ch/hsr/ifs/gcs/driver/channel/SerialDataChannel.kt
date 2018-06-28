@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.driver.channel
 
 import android.content.Context
 import android.hardware.usb.UsbManager
+import android.util.Log
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import java.io.IOException
 import java.nio.ByteBuffer
@@ -85,7 +86,7 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
     }
 
     private var fIsOpen = true
-    private val fIncoming = ByteArray(128)
+    private val fIncoming = ByteArray(2048)
 
     override fun isOpen() = fIsOpen
 
@@ -98,7 +99,7 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
                     else -> {
                         val data = ByteArray(src.remaining())
                         src.get(data)
-                        fPort.write(data, 100)
+                        fPort.write(data, 64)
                     }
                 }
             }
@@ -114,13 +115,9 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
         return when (dst) {
             null -> 0
             else -> {
-                try {
-                    val read = fPort.read(fIncoming, 1)
+                    val read = fPort.read(fIncoming, 64)
                     dst.put(fIncoming, 0, read)
                     read
-                } catch (e: IOException) {
-                    0
-                }
             }
         }
     }

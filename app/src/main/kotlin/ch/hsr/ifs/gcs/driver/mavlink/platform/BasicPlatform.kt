@@ -14,6 +14,7 @@ import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import me.drton.jmavlib.mavlink.*
+import java.io.IOException
 import java.nio.channels.ByteChannel
 import java.time.Duration
 import java.time.Instant
@@ -77,7 +78,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
          * The liveliness of the vehicle connection
          */
         var isAlive: Boolean by Delegates.observable(false) { _, _, _ ->
-            fPlatformListeners.forEach{ it.onLivelinessChanged(this@BasicPlatform) }
+            fPlatformListeners.forEach { it.onLivelinessChanged(this@BasicPlatform) }
         }
 
         /**
@@ -255,6 +256,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     init {
         registerBasicHandlers()
+        fMessageStream.setDebug(true)
         beginSerialIO()
         scheduleHeartbeat()
         requestVehicleCapabilities()
@@ -275,7 +277,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             } ?: "<unknown>"
         }
 
-    override val isAlive get() = synchronized(fVehicleState){ fVehicleState.isAlive }
+    override val isAlive get() = synchronized(fVehicleState) { fVehicleState.isAlive }
 
     override val currentPosition: GPSPosition?
         get() = synchronized(fVehicleState) { fVehicleState.position }
@@ -466,12 +468,15 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      */
     private fun beginSerialIO() {
         fExecutors.io.scheduleAtFixedRate({
-            fMessageStream.read()?.let(this::dispatch)
-            fMessageQueue.peek()?.let {
-                when (it.msgName) {
-                    MessageID.COMMAND_LONG.name -> sendLongCommand(it)
-                    else -> sendCommand(it)
+            try {
+                fMessageStream.read()?.let(this::dispatch)
+                fMessageQueue.peek()?.let {
+                    when (it.msgName) {
+                        MessageID.COMMAND_LONG.name -> sendLongCommand(it)
+                        else -> sendCommand(it)
+                    }
                 }
+            } catch (e: IOException) {
             }
         }, 0, 138, TimeUnit.MICROSECONDS)
     }
@@ -490,7 +495,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      */
     private fun scheduleSurveyor() {
         fExecutors.surveyor.scheduleAtFixedRate({
-            if((fVehicleState.lastHeartbeat + maximumExpectedHeartbeatInterval) > Instant.now()) {
+            if ((fVehicleState.lastHeartbeat + maximumExpectedHeartbeatInterval) > Instant.now()) {
                 fVehicleState.isAlive = false
             }
         }, 0, 100, TimeUnit.MILLISECONDS)
@@ -512,10 +517,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      */
     private fun dispatch(message: MAVLinkMessage) {
         when (MessageID.from(message.msgName)) {
-            null -> Log.v(LOG_TAG, "Unsupported message '$message'")
+            null -> Log.i(LOG_TAG, "Unsupported message '$message'")
             else -> {
-             //   if (message.msgName != MessageID.HEARTBEAT.name)
-                    Log.i(LOG_TAG, "Received message '$message'")
                 invokeListeners(message)
                 invokeOneShotListeners(message)
             }
@@ -576,7 +579,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      * Process a 'Command Long ACK' message on the link.
      */
     private fun handleCommandAcknowledgement(message: MAVLinkMessage) {
-        //      Log.i(LOG_TAG, "Received ACK: $message")
         fCommandState.command?.let {
             if (message["command"] == it["command"]) {
                 fCommandState.command = null
@@ -611,8 +613,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      * Send a regular command
      */
     private fun sendCommand(message: MAVLinkMessage) {
-        if (message.msgName != MessageID.HEARTBEAT.name)
-            Log.i(LOG_TAG, "Transmitting '$message'")
         fMessageStream.write(message)
         fMessageQueue.remove()
     }

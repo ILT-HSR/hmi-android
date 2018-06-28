@@ -101,6 +101,7 @@ class ResourceManager(val context: Context) : ResourceNode, Platform.Listener {
     // Private implementation
 
     private fun scan() {
+        Log.i(LOG_TAG, "Scanning")
         val mUsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
         UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).filter {
             it.device.manufacturerName != "Arduino LLC"
@@ -112,6 +113,7 @@ class ResourceManager(val context: Context) : ResourceNode, Platform.Listener {
                         it.markAs(Resource.Status.AVAILABLE)
                         it.plaform = this
                         addListener(this@ResourceManager)
+                        fScanExecutor.shutdownNow()
                     }
                 }
             }
