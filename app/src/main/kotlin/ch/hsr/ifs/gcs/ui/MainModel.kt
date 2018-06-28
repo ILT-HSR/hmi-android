@@ -48,6 +48,30 @@ data class NeedAvailable(val need: Need) : Event()
 data class NeedUnavailable(val need: Need) : Event()
 
 /**
+ * Event to to signal that a need configuration has been started
+ *
+ * @author IFS Institute for Software
+ * @since 1.0.0
+ */
+data class NeedConfigurationStarted(val need: Need) : Event()
+
+/**
+ * Event to to signal that a need configuration has been started
+ *
+ * @author IFS Institute for Software
+ * @since 1.0.0
+ */
+class NeedConfigurationAborted: Event()
+
+/**
+ * Event to to signal that a need configuration has been started
+ *
+ * @author IFS Institute for Software
+ * @since 1.0.0
+ */
+class NeedConfigurationFinished() : Event()
+
+/**
  * Event type to signal that the result of a mission has become available
  *
  * @author IFS Institute for Software
@@ -66,23 +90,30 @@ data class ResultAvailable(val result: Result) : Event()
 class MainModel : ViewModel() {
 
     private val fAvailableNeeds = MutableLiveData<List<Need>>().apply { value = emptyList() }
+    private val fActiveNeed = MutableLiveData<Need>()
     private val fActiveMissions = MutableLiveData<List<Mission>>().apply { value = emptyList() }
     private val fMissionResults = MutableLiveData<List<Result>>().apply { value = emptyList() }
 
     private val fActor = actor<Event>(UI, Channel.UNLIMITED) {
-        for (action in this) {
-            when (action) {
+        for (event in this) {
+            when (event) {
                 is MissionAvailable -> {
-                    fActiveMissions.value = fActiveMissions.value!! + action.mission
+                    fActiveMissions.value = fActiveMissions.value!! + event.mission
                 }
                 is NeedAvailable -> {
-                    fAvailableNeeds.value = fAvailableNeeds.value!! + action.need
+                    fAvailableNeeds.value = fAvailableNeeds.value!! + event.need
                 }
                 is NeedUnavailable -> {
-                    fAvailableNeeds.value = fAvailableNeeds.value!! - action.need
+                    fAvailableNeeds.value = fAvailableNeeds.value!! - event.need
                 }
                 is ResultAvailable -> {
-                    fMissionResults.value = fMissionResults.value!! + action.result
+                    fMissionResults.value = fMissionResults.value!! + event.result
+                }
+                is NeedConfigurationStarted -> {
+                    fActiveNeed.value = event.need
+                }
+                is NeedConfigurationAborted, is NeedConfigurationFinished -> {
+                    fActiveNeed.value = null
                 }
             }
         }

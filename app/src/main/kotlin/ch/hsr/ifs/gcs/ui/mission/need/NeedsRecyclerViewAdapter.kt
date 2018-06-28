@@ -17,6 +17,7 @@ import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment.OnNeedsFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need.view.*
+import java.lang.IllegalStateException
 import kotlin.properties.Delegates
 
 /**
@@ -54,6 +55,8 @@ class NeedsRecyclerViewAdapter(
             notifyDataSetChanged()
         }
     }
+
+    val activeItem = fActiveItem ?: throw IllegalStateException("No need is selected")
 
     inner class ViewHolder(private val fView: View) : RecyclerView.ViewHolder(fView) {
         private val fNameView: TextView = fView.need_name

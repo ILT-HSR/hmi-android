@@ -10,10 +10,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.hsr.ifs.gcs.ui.MainModel
-import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Need
+import ch.hsr.ifs.gcs.ui.MainActivity
+import ch.hsr.ifs.gcs.ui.MainModel
+import ch.hsr.ifs.gcs.ui.NeedConfigurationAborted
+import ch.hsr.ifs.gcs.ui.NeedConfigurationStarted
+import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_need_list.*
 import kotlinx.android.synthetic.main.fragment_need_list.view.*
 
 /**
@@ -57,21 +62,15 @@ class NeedsFragment : Fragment() {
             fAdapter.needs = it ?: emptyList()
         })
 
-//        (context as? MainActivity)?.let { ctx ->
-//            selectButton.setOnClickListener {
-//                with(ctx.showMenuFragment(MenuFragmentID.NEED_INSTRUCTION_FRAGMENT) as NeedInstructionFragment) {
-//                    need = (this@NeedsFragment.list.adapter as NeedsRecyclerViewAdapter).activeItem
-//                }
-//            }
-//
-//            activity?.apply {
-//                leftButton.background = ctx.applicationContext.getDrawable(R.drawable.cancel_action)
-//                leftButton.setOnClickListener {
-//                    ctx.showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
-//                    leftButton.background = ctx.applicationContext.getDrawable(R.drawable.abort_mission)
-//                }
-//            }
-//        }
+        activity?.apply{
+            selectButton.setOnClickListener {
+                fModel.event(NeedConfigurationStarted(fAdapter.activeItem.need))
+            }
+            leftButton?.background = applicationContext.getDrawable(R.drawable.cancel_action)
+            leftButton.setOnClickListener {
+                fModel.event(NeedConfigurationAborted())
+            }
+        }
     }
 
     override fun onStart() {
