@@ -2,7 +2,7 @@ package ch.hsr.ifs.gcs.ui.mission.need
 
 import android.app.Activity
 import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
+import ch.hsr.ifs.gcs.ui.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import kotlinx.android.synthetic.main.activity_main.*
 

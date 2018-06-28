@@ -13,7 +13,7 @@ import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.ui.BasicHardwareControllable
 import ch.hsr.ifs.gcs.ui.HardwareControllable
 import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
+import ch.hsr.ifs.gcs.ui.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment.OnNeedsFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need.view.*
@@ -56,7 +56,7 @@ class NeedsRecyclerViewAdapter(
         }
     }
 
-    val activeItem = fActiveItem ?: throw IllegalStateException("No need is selected")
+    val activeItem get() = fActiveItem ?: throw IllegalStateException("No need is selected")
 
     inner class ViewHolder(private val fView: View) : RecyclerView.ViewHolder(fView) {
         private val fNameView: TextView = fView.need_name
@@ -87,7 +87,7 @@ class NeedsRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        fContext.needItemFactory.instantiate(needs[position]).let {
+       fItems[position].let {
             holder.item = it
         }
     }

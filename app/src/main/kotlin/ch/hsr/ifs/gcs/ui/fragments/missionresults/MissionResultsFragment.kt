@@ -11,10 +11,9 @@ import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.access.NeedProvider
 import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID.NEEDS_FRAGMENT
+import ch.hsr.ifs.gcs.ui.MenuFragmentID.NEEDS_FRAGMENT
 import ch.hsr.ifs.gcs.ui.mission.Results
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
 

@@ -19,11 +19,9 @@ import ch.hsr.ifs.gcs.mission.access.NeedProvider
 import ch.hsr.ifs.gcs.resource.access.ResourceManager
 import ch.hsr.ifs.gcs.support.geo.LocationService
 import ch.hsr.ifs.gcs.support.usb.DeviceScanner
-import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
 import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
-import ch.hsr.ifs.gcs.ui.mission.MissionStatusesListener
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionListener
 import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
@@ -37,7 +35,6 @@ import org.osmdroid.util.GeoPoint
 
 class MainActivity(
         missionResultsListener: MissionResultsListener = MissionResultsListener(),
-        missionStatusesListener: MissionStatusesListener = MissionStatusesListener(),
         needsListener: NeedsListener = NeedsListener(),
         needInstructionListener: NeedInstructionListener = NeedInstructionListener()
 ) :
@@ -45,7 +42,6 @@ class MainActivity(
         Input.Listener,
         LocationService.OnLocationChangedListener,
         MissionResultsFragment.OnResultsFragmentChangedListener by missionResultsListener,
-        MissionStatusesFragment.OnStatusesFragmentChangedListener by missionStatusesListener,
         NeedsFragment.OnNeedsFragmentChangedListener by needsListener,
         NeedInstructionFragment.OnNeedInstructionFragmentListener by needInstructionListener {
 
@@ -69,7 +65,6 @@ class MainActivity(
 
     init {
         missionResultsListener.activity = this
-        missionStatusesListener.activity = this
         needsListener.activity = this
         needInstructionListener.activity = this
     }
@@ -119,11 +114,11 @@ class MainActivity(
         fLocationService = LocationService(this, this)
 
         fModel = ViewModelProviders.of(this).get(MainModel::class.java)
-        fModel.activeNeed.observe(this, Observer {
+        fModel.activeMenuFragment.observe(this, Observer {
             if(it == null) {
                 showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
             } else {
-                showMenuFragment(MenuFragmentID.NEED_INSTRUCTION_FRAGMENT)
+                showMenuFragment(it)
             }
         })
     }

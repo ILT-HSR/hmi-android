@@ -14,7 +14,16 @@ import org.osmdroid.views.overlay.Overlay
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class MissionItem(val mission: Mission, needItemFactory: NeedItemFactory, val color: Int = createRandomColorArgb()) {
+class MissionItem(val mission: Mission) {
+
+    private var fIsActive = false
+
+    /**
+     * Whether or not the item is currently selected in the UI
+     *
+     * since 1.0.0
+     */
+    val isActive get() = fIsActive
 
     /**
      * A user-friendly string to describe the current mission status
@@ -22,18 +31,15 @@ class MissionItem(val mission: Mission, needItemFactory: NeedItemFactory, val co
     val status get() = mission.status
 
     /**
-     * The need-item for the need associated with the underlying mission
-     */
-    val need = needItemFactory.instantiate(mission.need)
-
-    /**
-     * Whether or not the item is currently selected in the UI
-     */
-    var isSelected = false
-
-    /**
      * The map overlays associated with the underlying mission
      */
     val mapOverlays: Collection<Overlay> = emptyList()
 
+    fun activate() {
+        fIsActive = true
+    }
+
+    fun deactivate() {
+        fIsActive = false
+    }
 }

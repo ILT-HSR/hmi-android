@@ -14,7 +14,7 @@ import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.ui.BasicHardwareControllable
 import ch.hsr.ifs.gcs.ui.HardwareControllable
-import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
+import ch.hsr.ifs.gcs.ui.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.mission.Results
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment.OnResultsFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*

@@ -16,7 +16,6 @@ import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.ui.MainModel
 import ch.hsr.ifs.gcs.ui.NeedConfigurationAborted
 import ch.hsr.ifs.gcs.ui.NeedConfigurationStarted
-import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
 import kotlinx.android.synthetic.main.fragment_need_list.view.*

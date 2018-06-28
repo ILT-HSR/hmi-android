@@ -14,8 +14,8 @@ import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
-import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID.NEEDS_FRAGMENT
+import ch.hsr.ifs.gcs.ui.MenuFragmentID
+import ch.hsr.ifs.gcs.ui.MenuFragmentID.NEEDS_FRAGMENT
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*

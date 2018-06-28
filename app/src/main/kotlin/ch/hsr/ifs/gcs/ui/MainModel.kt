@@ -72,6 +72,14 @@ class NeedConfigurationAborted: Event()
 class NeedConfigurationFinished() : Event()
 
 /**
+ * Event to signal that the user wants to select a need
+ *
+ * @author IFS Institute for Software
+ * @since 1.0.0
+ */
+class NeedOverviewRequested : Event()
+
+/**
  * Event type to signal that the result of a mission has become available
  *
  * @author IFS Institute for Software
@@ -93,6 +101,7 @@ class MainModel : ViewModel() {
     private val fActiveNeed = MutableLiveData<Need>()
     private val fActiveMissions = MutableLiveData<List<Mission>>().apply { value = emptyList() }
     private val fMissionResults = MutableLiveData<List<Result>>().apply { value = emptyList() }
+    private val fActiveMenuFragment = MutableLiveData<MenuFragmentID>().apply { value = MenuFragmentID.MISSION_STATUSES_FRAGMENT }
 
     private val fActor = actor<Event>(UI, Channel.UNLIMITED) {
         for (event in this) {
@@ -111,9 +120,18 @@ class MainModel : ViewModel() {
                 }
                 is NeedConfigurationStarted -> {
                     fActiveNeed.value = event.need
+                    fActiveMenuFragment.value = MenuFragmentID.NEED_INSTRUCTION_FRAGMENT
                 }
-                is NeedConfigurationAborted, is NeedConfigurationFinished -> {
+                is NeedConfigurationAborted -> {
                     fActiveNeed.value = null
+                    fActiveMenuFragment.value = MenuFragmentID.NEEDS_FRAGMENT
+                }
+                is NeedConfigurationFinished -> {
+                    fActiveNeed.value = null
+                    fActiveMenuFragment.value = MenuFragmentID.MISSION_STATUSES_FRAGMENT
+                }
+                is NeedOverviewRequested -> {
+                    fActiveMenuFragment.value = MenuFragmentID.NEEDS_FRAGMENT
                 }
             }
         }
@@ -146,6 +164,11 @@ class MainModel : ViewModel() {
      * @since 1.0.0
      */
     val missionResults: LiveData<List<Result>> = fMissionResults
+
+    /**
+     * The currently selected menu fragment
+     */
+    val activeMenuFragment: LiveData<MenuFragmentID> = fActiveMenuFragment
 
     /**
      * Submit an event to the model
