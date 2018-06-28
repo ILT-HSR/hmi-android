@@ -25,7 +25,6 @@ import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionListener
 import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
-import ch.hsr.ifs.gcs.ui.mission.need.NeedsListener
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
 import kotlinx.android.synthetic.main.activity_main.*
@@ -35,14 +34,12 @@ import org.osmdroid.util.GeoPoint
 
 class MainActivity(
         missionResultsListener: MissionResultsListener = MissionResultsListener(),
-        needsListener: NeedsListener = NeedsListener(),
         needInstructionListener: NeedInstructionListener = NeedInstructionListener()
 ) :
         AppCompatActivity(),
         Input.Listener,
         LocationService.OnLocationChangedListener,
         MissionResultsFragment.OnResultsFragmentChangedListener by missionResultsListener,
-        NeedsFragment.OnNeedsFragmentChangedListener by needsListener,
         NeedInstructionFragment.OnNeedInstructionFragmentListener by needInstructionListener {
 
     companion object {
@@ -65,7 +62,6 @@ class MainActivity(
 
     init {
         missionResultsListener.activity = this
-        needsListener.activity = this
         needInstructionListener.activity = this
     }
 
@@ -138,7 +134,6 @@ class MainActivity(
 
     override fun onResume() {
         super.onResume()
-        Log.i(LOG_TAG, "onResume() $this")
         map.onResume()
         fDeviceScanner.start(this)
         showMenuFragment(fMenuFragment)
@@ -146,29 +141,20 @@ class MainActivity(
 
     override fun onPause() {
         super.onPause()
-        Log.i(LOG_TAG, "onPause() $this")
         map.onPause()
         finish()
     }
 
     override fun onDestroy() {
-        Log.i("activity", "onDestroy() $this")
         fDeviceScanner.stop()
         super.onDestroy()
     }
 
     // Input.Handler implementation
 
-    override fun onJoystick(control: Control, value: Byte) {
-        Log.d("JOYSTICK", "Not implemented yet")
-    }
-
     override fun onButton(control: Control) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
         when (control) {
-            Control.SHOW_MENU -> {
-                Log.i("BUTTON", "SHOW_MENU")
-            }
             Control.ZOOM_IN -> {
                 runOnUiThread {
                     map.controller.zoomIn()
