@@ -1,7 +1,6 @@
-package ch.hsr.ifs.gcs.ui.fragments.needinstructions
+package ch.hsr.ifs.gcs.ui.mission.need
 
 import android.app.Activity
-import org.osmdroid.views.MapView
 
 class NeedInstructionListener : NeedInstructionFragment.OnNeedInstructionFragmentListener {
 

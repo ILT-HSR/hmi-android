@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments.needinstructions
+package ch.hsr.ifs.gcs.ui.mission.need
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,7 +12,6 @@ import ch.hsr.ifs.gcs.ui.BasicHardwareControllable
 import ch.hsr.ifs.gcs.ui.HardwareControllable
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.ui.MenuFragmentID
-import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*

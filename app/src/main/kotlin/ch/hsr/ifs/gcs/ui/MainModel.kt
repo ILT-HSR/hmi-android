@@ -8,6 +8,8 @@ import ch.hsr.ifs.gcs.driver.access.InputProvider
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Result
+import ch.hsr.ifs.gcs.mission.need.CallIn
+import ch.hsr.ifs.gcs.resource.internal.SimpleResource
 import ch.hsr.ifs.gcs.support.usb.DeviceScanner
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.Channel
@@ -100,7 +102,7 @@ data class ResultAvailable(val result: Result) : Event()
  */
 class MainModel : ViewModel() {
 
-    private val fAvailableNeeds = MutableLiveData<List<Need>>().apply { value = emptyList() }
+    private val fAvailableNeeds = MutableLiveData<List<Need>>().apply { value = listOf(CallIn(SimpleResource("id", "driver", "payload", emptyList()))) }
     private val fActiveNeed = MutableLiveData<Need>()
     private val fActiveMissions = MutableLiveData<List<Mission>>().apply { value = emptyList() }
     private val fMissionResults = MutableLiveData<List<Result>>().apply { value = emptyList() }

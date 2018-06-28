@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.R.drawable.abort_mission
@@ -22,8 +21,8 @@ import ch.hsr.ifs.gcs.support.usb.DeviceScanner
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
 import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
-import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
-import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionListener
+import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionFragment
+import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionListener
 import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
