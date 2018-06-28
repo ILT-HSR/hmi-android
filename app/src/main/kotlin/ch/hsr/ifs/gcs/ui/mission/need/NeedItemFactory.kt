@@ -1,8 +1,7 @@
 package ch.hsr.ifs.gcs.ui.mission.need
 
-import android.content.Context
 import android.util.Log
-import ch.hsr.ifs.gcs.mission.need.Need
+import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.ui.MainActivity
 import com.google.gson.JsonParser
 import java.io.InputStream

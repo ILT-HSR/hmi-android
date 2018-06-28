@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.mission.need
 
+import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.need.parameter.Altitude
 import ch.hsr.ifs.gcs.mission.need.parameter.Region
 import ch.hsr.ifs.gcs.mission.need.task.Task

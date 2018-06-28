@@ -1,7 +1,5 @@
 package ch.hsr.ifs.gcs.mission
 
-import ch.hsr.ifs.gcs.mission.need.Need
-
 /**
  * A [mission][Mission] encapsulates the translation of abstract [need][Need] tasks into driver
  * commands.

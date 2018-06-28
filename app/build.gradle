@@ -1,9 +1,7 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
+apply plugin: 'io.gitlab.arturbosch.detekt'
 apply from: '../artifacts.gradle'
 
 android {
@@ -42,10 +40,20 @@ android {
     }
 }
 
+detekt {
+    version = "$detektVersion"
+    profile("main") {
+        input = "$projectDir/app/src/main/kotlin"
+        config = "$projectDir/detekt.yml"
+    }
+}
+
 dependencies {
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
 
     // Android
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
@@ -53,6 +61,7 @@ dependencies {
     implementation "com.android.support:support-v4:$supportLibraryVersion"
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
+    implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
 
     // External Libraries
     implementation "org.osmdroid:osmdroid-android:$osmDroidVersion"
@@ -67,3 +76,11 @@ dependencies {
     testImplementation "org.hamcrest:hamcrest-library:$hamcrestVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
 }
+
+kotlin {
+    experimental {
+        coroutines 'enable'
+    }
+}
+
+

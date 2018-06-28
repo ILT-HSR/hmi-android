@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.mission.need
 
+import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.need.parameter.Altitude
 import ch.hsr.ifs.gcs.mission.need.parameter.Cargo
 import ch.hsr.ifs.gcs.mission.need.parameter.Target
@@ -7,7 +8,6 @@ import ch.hsr.ifs.gcs.mission.need.task.*
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_FLY
-import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_MOVE
 
 /**
  * This [Need] implementation represents the need to drop a cargo at a chosen location.

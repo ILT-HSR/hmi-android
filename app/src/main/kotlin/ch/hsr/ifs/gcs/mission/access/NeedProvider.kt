@@ -1,7 +1,7 @@
 package ch.hsr.ifs.gcs.mission.access
 
 import ch.hsr.ifs.gcs.mission.need.CallIn
-import ch.hsr.ifs.gcs.mission.need.Need
+import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.need.RadiationMap
 import ch.hsr.ifs.gcs.resource.*
 import ch.hsr.ifs.gcs.resource.access.ResourceManager

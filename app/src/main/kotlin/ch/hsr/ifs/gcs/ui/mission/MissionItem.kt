@@ -1,8 +1,6 @@
 package ch.hsr.ifs.gcs.ui.mission
 
-import android.content.Context
 import ch.hsr.ifs.gcs.mission.Mission
-import ch.hsr.ifs.gcs.mission.need.Need
 import ch.hsr.ifs.gcs.support.color.createRandomColorArgb
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
 import org.osmdroid.views.overlay.Overlay

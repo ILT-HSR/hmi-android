@@ -1,8 +1,7 @@
 package ch.hsr.ifs.gcs.ui.mission.need
 
-import ch.hsr.ifs.gcs.mission.need.Need
+import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
 
 class NeedItem(val need: Need, val name: String, val context: MainActivity) {
 

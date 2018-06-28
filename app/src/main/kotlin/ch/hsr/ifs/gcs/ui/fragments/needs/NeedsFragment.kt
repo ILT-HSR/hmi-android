@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.mission.need.Need
+import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment

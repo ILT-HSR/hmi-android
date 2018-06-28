@@ -1,5 +1,7 @@
 package ch.hsr.ifs.gcs.ui
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -7,6 +9,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import ch.hsr.ifs.gcs.MainModel
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.R.drawable.abort_mission
 import ch.hsr.ifs.gcs.R.layout.activity_main
@@ -47,8 +50,14 @@ class MainActivity(
         NeedsFragment.OnNeedsFragmentChangedListener by needsListener,
         NeedInstructionFragment.OnNeedInstructionFragmentListener by needInstructionListener {
 
+    companion object {
+        private val LOG_TAG = MainActivity::class.simpleName
+    }
+
     private lateinit var fLocationService: LocationService
     private lateinit var fLocation: Location
+    private lateinit var fModel: MainModel
+
     private var fMenuFragment = MenuFragmentID.MISSION_STATUSES_FRAGMENT
     private var fMainFragment: Fragment? = null
     private val fDeviceScanner = DeviceScanner()
@@ -59,8 +68,7 @@ class MainActivity(
     val needProvider by lazy { NeedProvider(resourceManager) }
     val inputProvider by lazy { InputProvider(fDeviceScanner) }
 
-    private var controls: Input? = null
-
+//    private var controls: Input? = null
 
     init {
         missionResultsListener.activity = this
@@ -99,35 +107,24 @@ class MainActivity(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("activity", "onCreate() $this")
-
         Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
 
         setContentView(activity_main)
-
-        leftButton.background = applicationContext.getDrawable(abort_mission)
-
-        showMenuFragment(fMenuFragment)
 
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.controller.setZoom(19.0)
         map.setBuiltInZoomControls(true)
 
+        showMenuFragment(fMenuFragment)
+
+        leftButton.background = applicationContext.getDrawable(abort_mission)
+
         fLocationService = LocationService(this, this)
 
-        if(inputProvider[this] == null) {
-            controls = inputProvider[this]
-            Log.i("activity", "device: $controls")
-        } else {
-            inputProvider.addListener(object : InputProvider.Listener {
-                override fun onInputDeviceAvailable(device: Input) {
-                    inputProvider.removeListener(this)
-                    controls = device
-                    Log.i("LISTENER", "device: $device")
-                }
-            })
-        }
-        Log.i("activity", "device: $controls")
+        fModel = ViewModelProviders.of(this).get(MainModel::class.java)
+        fModel.availableNeeds.observe(this, Observer {
+            Log.i(LOG_TAG, "Needs available changed: $it")
+        })
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -145,7 +142,7 @@ class MainActivity(
 
     override fun onResume() {
         super.onResume()
-        Log.i("activity", "onResume() $this")
+        Log.i(LOG_TAG, "onResume() $this")
         map.onResume()
         fDeviceScanner.start(this)
         showMenuFragment(fMenuFragment)
@@ -153,7 +150,7 @@ class MainActivity(
 
     override fun onPause() {
         super.onPause()
-        Log.i("activity", "onPause() $this")
+        Log.i(LOG_TAG, "onPause() $this")
         map.onPause()
         finish()
     }

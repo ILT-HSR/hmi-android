@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.mission.need
+package ch.hsr.ifs.gcs.mission
 
 import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
 import ch.hsr.ifs.gcs.resource.Capability
