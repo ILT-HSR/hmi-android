@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments.needs
+package ch.hsr.ifs.gcs.ui.mission.need
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -14,7 +14,6 @@ import ch.hsr.ifs.gcs.ui.MainModel
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Need
-import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import kotlinx.android.synthetic.main.fragment_need_list.view.*
 
 /**

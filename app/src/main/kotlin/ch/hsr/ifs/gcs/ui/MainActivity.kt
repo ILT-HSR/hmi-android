@@ -26,8 +26,8 @@ import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesListener
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionListener
-import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
-import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsListener
+import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
+import ch.hsr.ifs.gcs.ui.mission.need.NeedsListener
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
 import kotlinx.android.synthetic.main.activity_main.*

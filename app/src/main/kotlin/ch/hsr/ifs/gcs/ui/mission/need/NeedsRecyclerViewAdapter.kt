@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments.needs
+package ch.hsr.ifs.gcs.ui.mission.need
 
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
@@ -14,8 +14,7 @@ import ch.hsr.ifs.gcs.ui.BasicHardwareControllable
 import ch.hsr.ifs.gcs.ui.HardwareControllable
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
-import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedListener
-import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
+import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment.OnNeedsFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need.view.*
 import kotlin.properties.Delegates
