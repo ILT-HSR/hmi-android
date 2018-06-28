@@ -36,6 +36,11 @@ class ParameterItem<Result>(val parameter: Parameter<Result>, val name: String, 
         fIsComplete = true
     }
 
+    fun abort() {
+        deactivate()
+        fConfigurator.abort()
+    }
+
     @Suppress("UNCHECKED_CAST")
     fun showConfigurator() {
         (fConfigurator as ParameterConfigurator<Result>).parameter = this

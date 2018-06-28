@@ -9,7 +9,7 @@ class NeedItem(val need: Need, val name: String, val context: MainActivity) {
 
     val isActive get() = fIsActive
 
-    val parameters = need.parameterList.map(context.parameterItemFactory::instantiate)
+    val parameters get() = need.parameterList.map(context.parameterItemFactory::instantiate)
 
     fun activate() {
         fIsActive = true

@@ -28,10 +28,6 @@ class CargoConfigurator : ParameterConfigurator<String>() {
         setDefaultResult()
         context.map.setBuiltInZoomControls(false)
         context.showMainFragment(this)
-        context.leftButton.setOnClickListener {
-            destroy()
-            context.showMenuFragment(MenuFragmentID.NEEDS_FRAGMENT)
-        }
     }
 
     override fun destroy() {

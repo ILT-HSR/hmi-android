@@ -13,4 +13,6 @@ abstract class ParameterConfigurator<ResultType> : Fragment() {
 
     open fun destroy() = Unit
 
+    open fun abort() = destroy()
+
 }

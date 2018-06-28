@@ -11,8 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.mission.Mission
-import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
@@ -59,7 +57,10 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
         }
 
         activity?.apply {
-            leftButton?.setOnClickListener { fModel.event(NeedOverviewRequested()) }
+            leftButton?.setOnClickListener {
+                fAdapter.abort()
+                fModel.event(NeedOverviewRequested())
+            }
             fControls = fModel.getInputControls(this)
         }
 
@@ -70,7 +71,7 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
         @Suppress("NON_EXHAUSTIVE_WHEN")
         when (control) {
             Input.Control.UPDATE_ABORT -> {
-                fModel.event(NeedConfigurationAborted())
+                leftButton.performClick()
                 fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {

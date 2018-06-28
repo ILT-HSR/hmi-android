@@ -79,6 +79,11 @@ class NeedInstructionRecyclerViewAdapter(private val fRecyclerView: RecyclerView
         }
     }
 
+    fun abort() {
+        fItems.filter { it.isComplete || it.isActive }.map(ParameterItem<*>::abort)
+//        fActiveItem?.abort()
+    }
+
     val isDone get() = fActiveItem == null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
