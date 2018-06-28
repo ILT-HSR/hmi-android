@@ -11,13 +11,13 @@ import kotlin.reflect.full.primaryConstructor
 
 class NeedProvider(private val fResourceManager: ResourceManager) : ResourceManager.Listener {
 
-    interface OnNeedsAvailabilityChangedListener {
+    interface Listener {
 
         fun onNeedsAvailabilityChanged(availability: Boolean)
 
     }
 
-    private val listeners = mutableListOf<OnNeedsAvailabilityChangedListener>()
+    private val listeners = mutableListOf<Listener>()
 
     private val knownNeeds = kotlin.collections.mutableMapOf(
             "ch.hsr.ifs.gcs.mission.need.callIn" to Pair(CallIn::class, listOf(Capability(CAPABILITY_CAN_MOVE, true))),
@@ -39,11 +39,11 @@ class NeedProvider(private val fResourceManager: ResourceManager) : ResourceMana
                 }
             }.toList()
 
-    fun addListener(listener: OnNeedsAvailabilityChangedListener) {
+    fun addListener(listener: Listener) {
         listeners += listener
     }
 
-    fun removeListener(listener: OnNeedsAvailabilityChangedListener) {
+    fun removeListener(listener: Listener) {
         listeners -= listener
     }
 

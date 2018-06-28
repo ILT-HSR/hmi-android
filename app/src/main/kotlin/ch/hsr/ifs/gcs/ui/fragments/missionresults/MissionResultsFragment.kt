@@ -3,7 +3,6 @@ package ch.hsr.ifs.gcs.ui.fragments.missionresults
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -13,17 +12,14 @@ import ch.hsr.ifs.gcs.mission.access.NeedProvider
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID.NEEDS_FRAGMENT
 import ch.hsr.ifs.gcs.ui.mission.Results
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_missionresults_list.*
 import kotlinx.android.synthetic.main.activity_main.view.leftButton
-import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
 
 /**
  * A fragment representing a list of mission result items combined with a button to add
  * additional needs. The context containing this fragment must implement the
  * [MissionResultsFragment.OnResultsFragmentChangedListener] interface.
  */
-class MissionResultsFragment : Fragment(), NeedProvider.OnNeedsAvailabilityChangedListener {
+class MissionResultsFragment : Fragment(), NeedProvider.Listener {
 
     private lateinit var fNeedProvider: NeedProvider
 
