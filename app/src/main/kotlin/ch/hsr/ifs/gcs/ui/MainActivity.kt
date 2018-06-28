@@ -54,9 +54,13 @@ class MainActivity(
     private var fMainFragment: Fragment? = null
     private val fDeviceScanner = DeviceScanner()
 
-    val needItemFactory by lazy { NeedItemFactory(this) }
-    val parameterItemFactory by lazy { ParameterItemFactory(this) }
-    val resourceManager by lazy { ResourceManager(this) }
+    private lateinit var fParameterItemFactory: ParameterItemFactory
+    private lateinit var fNeedItemFactory: NeedItemFactory
+    private lateinit var fResourceManager: ResourceManager
+
+    val needItemFactory get() = fNeedItemFactory
+    val parameterItemFactory get() = fParameterItemFactory
+    val resourceManager get() = fResourceManager
     val needProvider by lazy { NeedProvider(resourceManager) }
     val inputProvider by lazy { InputProvider(fDeviceScanner) }
 
@@ -108,6 +112,9 @@ class MainActivity(
         leftButton.background = applicationContext.getDrawable(abort_mission)
 
         fLocationService = LocationService(this, this)
+        fParameterItemFactory = ParameterItemFactory(this)
+        fNeedItemFactory = NeedItemFactory(this)
+        fResourceManager = ResourceManager(this)
 
         fModel = ViewModelProviders.of(this).get(MainModel::class.java)
         fModel.activeMenuFragment.observe(this, Observer {
