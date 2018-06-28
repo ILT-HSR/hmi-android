@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.MainActivity
+import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.ui.MainModel
 import ch.hsr.ifs.gcs.ui.NeedOverviewRequested
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,17 +23,19 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
  * additional needs. The context containing this fragment must implement the
  * [MissionStatusesFragment.OnStatusesFragmentChangedListener] interface.
  */
-class MissionStatusesFragment : Fragment() {
+class MissionStatusesFragment : Fragment(), Input.Listener {
 
     private lateinit var fModel: MainModel
     private lateinit var fAdapter: MissionStatusesRecyclerViewAdapter
+
+    private var fControls: Input? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_missionstatuses_list, container, false)
         val list = view.list
         if (list is RecyclerView) {
             with(list) {
-                fAdapter =  MissionStatusesRecyclerViewAdapter(this, context as MainActivity)
+                fAdapter = MissionStatusesRecyclerViewAdapter(this)
                 layoutManager = LinearLayoutManager(context)
                 adapter = fAdapter
             }
@@ -52,14 +54,41 @@ class MissionStatusesFragment : Fragment() {
         })
 
         activity?.apply {
-            statusesAddButton.setOnClickListener{
+            statusesAddButton.setOnClickListener {
                 fModel.event(NeedOverviewRequested())
             }
             leftButton?.background = applicationContext?.getDrawable(R.drawable.cancel_action)
-            leftButton?.setOnClickListener{
+            leftButton?.setOnClickListener {
                 // TODO: Implement mission cancelation
+            }
+            fControls = fModel.getInputControls(this)
+        }
+
+        fControls?.addListener(this)
+    }
+
+    // Input.Listener implementation
+
+    override fun onButton(control: Input.Control) {
+        @Suppress("NON_EXHAUSTIVE_WHEN")
+        when (control) {
+            Input.Control.DPAD_UP -> {
+                fAdapter.activatePreviousItem()
+            }
+            Input.Control.DPAD_DOWN -> {
+                fAdapter.activateNextItem()
+            }
+            Input.Control.DPAD_RIGHT -> {
+                // TODO: Implement MissionResults switch
+                // fModel.event(ResultsOverviewRequested())
+                fControls?.removeListener(this)
+            }
+            Input.Control.NEED_START -> {
+                fModel.event(NeedOverviewRequested())
+                fControls?.removeListener(this)
             }
         }
     }
+
 
 }

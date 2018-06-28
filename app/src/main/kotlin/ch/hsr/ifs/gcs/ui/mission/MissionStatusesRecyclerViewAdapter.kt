@@ -8,28 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.mission.Mission
-import ch.hsr.ifs.gcs.ui.BasicHardwareControllable
-import ch.hsr.ifs.gcs.ui.HardwareControllable
-import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.MenuFragmentID
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 import kotlin.properties.Delegates
 
-class MissionStatusesRecyclerViewAdapter(
-        private val fRecyclerView: RecyclerView,
-        private val fContext: MainActivity)
-    :
-        RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>(),
-        Input.Listener,
-        HardwareControllable<MissionStatusesRecyclerViewAdapter> by BasicHardwareControllable(fContext.inputProvider) {
-
-    companion object {
-        private val LOG_TAG = MissionStatusesRecyclerViewAdapter::class.java.simpleName
-    }
+class MissionStatusesRecyclerViewAdapter(private val fRecyclerView: RecyclerView)
+    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>() {
 
     private var fActiveItem: MissionItem? = null
     private var fItems: List<MissionItem> = emptyList()
@@ -37,7 +21,7 @@ class MissionStatusesRecyclerViewAdapter(
         val item = v.tag as MissionItem
         activateItem(item)
     }
-    private val fActiveItemColor = fContext.resources.getColor(R.color.activeListItem, null)
+    private val fActiveItemColor = fRecyclerView.resources.getColor(R.color.activeListItem, null)
 
     var missions: List<Mission> by Delegates.observable(emptyList()) { _, old, new ->
         if (old != new) {
@@ -70,8 +54,18 @@ class MissionStatusesRecyclerViewAdapter(
         }
     }
 
-    init {
-        enableHardwareControls(this)
+    fun activateNextItem() {
+        val newIndex = fItems.indexOf(fActiveItem) + 1
+        if (newIndex < fItems.size) {
+            activateItem(fItems[newIndex])
+        }
+    }
+
+    fun activatePreviousItem() {
+        val newIndex = fItems.indexOf(fActiveItem) + 1
+        if (newIndex >= 0) {
+            activateItem(fItems[newIndex])
+        }
     }
 
     // RecyclerView.Adapter implementation
@@ -88,45 +82,7 @@ class MissionStatusesRecyclerViewAdapter(
 
     override fun getItemCount(): Int = missions.size
 
-    // Input.Listener implementation
-
-    override fun onButton(control: Control) {
-        @Suppress("NON_EXHAUSTIVE_WHEN")
-        when (control) {
-            Control.DPAD_UP -> {
-                activatePreviousItem()
-            }
-            Control.DPAD_DOWN -> {
-                activateNextItem()
-            }
-            Control.DPAD_RIGHT -> {
-                fContext.showMenuFragment(MenuFragmentID.MISSION_RESULTS_FRAGMENT)
-                fContext.leftButton.background = fContext.getDrawable(R.drawable.refresh_mission)
-                disableHardwareControls(this)
-            }
-            Control.NEED_START -> {
-                fContext.showMenuFragment(MenuFragmentID.NEEDS_FRAGMENT)
-                fContext.leftButton.background = fContext.getDrawable(R.drawable.cancel_action)
-                disableHardwareControls(this)
-            }
-        }
-    }
-
     // Private implementation
-
-    private fun activateNextItem() {
-        val newIndex = fItems.indexOf(fActiveItem) + 1
-        if (newIndex < fItems.size) {
-            activateItem(fItems[newIndex])
-        }
-    }
-
-    private fun activatePreviousItem() {
-        val newIndex = fItems.indexOf(fActiveItem) + 1
-        if (newIndex >= 0) {
-            activateItem(fItems[newIndex])
-        }
-    }
 
     private fun activateItem(item: MissionItem) {
         fActiveItem?.let {

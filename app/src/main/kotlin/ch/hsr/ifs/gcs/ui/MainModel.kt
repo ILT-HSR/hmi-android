@@ -3,9 +3,12 @@ package ch.hsr.ifs.gcs.ui
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.content.Context
+import ch.hsr.ifs.gcs.driver.access.InputProvider
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Result
+import ch.hsr.ifs.gcs.support.usb.DeviceScanner
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.actor
@@ -103,6 +106,9 @@ class MainModel : ViewModel() {
     private val fMissionResults = MutableLiveData<List<Result>>().apply { value = emptyList() }
     private val fActiveMenuFragment = MutableLiveData<MenuFragmentID>().apply { value = MenuFragmentID.MISSION_STATUSES_FRAGMENT }
 
+    private val fDeviceScanner = DeviceScanner()
+    private val fInputProvider = InputProvider(fDeviceScanner)
+
     private val fActor = actor<Event>(UI, Channel.UNLIMITED) {
         for (event in this) {
             when (event) {
@@ -167,8 +173,17 @@ class MainModel : ViewModel() {
 
     /**
      * The currently selected menu fragment
+     *
+     * @since 1.0.0
      */
     val activeMenuFragment: LiveData<MenuFragmentID> = fActiveMenuFragment
+
+    /**
+     * The input controls
+     *
+     * @since 1.0.0
+     */
+    fun getInputControls(context: Context) = fInputProvider[context]
 
     /**
      * Submit an event to the model
