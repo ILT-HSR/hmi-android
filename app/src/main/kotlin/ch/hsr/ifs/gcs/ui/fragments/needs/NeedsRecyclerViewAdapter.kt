@@ -18,43 +18,65 @@ import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment.OnNeedsFragmentChangedLis
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need.view.*
+import kotlin.properties.Delegates
 
 /**
  * [RecyclerView.Adapter] that can display a [Need] and makes a call to the
  * specified [OnNeedsFragmentChangedListener].
  */
 class NeedsRecyclerViewAdapter(
-        private val mListener: OnNeedsFragmentChangedListener?,
-        private val mRecyclerView: RecyclerView,
-        private val mContext: MainActivity)
+        private val fListener: OnNeedsFragmentChangedListener?,
+        private val fRecyclerView: RecyclerView,
+        private val fContext: MainActivity)
     :
         RecyclerView.Adapter<NeedsRecyclerViewAdapter.ViewHolder>(),
         Input.Listener,
-        HardwareControllable<NeedsRecyclerViewAdapter> by BasicHardwareControllable(mContext.inputProvider){
+        HardwareControllable<NeedsRecyclerViewAdapter> by BasicHardwareControllable(fContext.inputProvider) {
 
-    private val mOnClickListener: View.OnClickListener
-    private val mItems = mContext.needProvider.needs.map(mContext.needItemFactory::instantiate)
-    private var mActiveItem = mItems[0]
+    private var fActiveItem: NeedItem? = null
+    private var fItems: List<NeedItem> = emptyList()
+    private val fOnClickListener = View.OnClickListener { v ->
+        val item = v.tag as NeedItem
+        activateItem(item)
+        disableHardwareControls(this)
+        fListener?.onNeedItemChanged(item)
+    }
+    private val fActiveItemColor = fContext.resources.getColor(R.color.activeListItem, null)
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mNameView: TextView = mView.need_name
-        override fun toString(): String {
-            return super.toString() + " '" + mNameView.text + "'"
+    var needs: List<Need> by Delegates.observable(emptyList()) { _, old, new ->
+        if (old != new) {
+            fItems = new.map(fContext.needItemFactory::instantiate)
+            fActiveItem?.let { act ->
+                fItems.find { it.need == act.need }?.activate()
+            } ?: fItems.firstOrNull()?.let {
+                it.activate()
+                fActiveItem = it
+            }
+            notifyDataSetChanged()
+        }
+    }
+
+    inner class ViewHolder(private val fView: View) : RecyclerView.ViewHolder(fView) {
+        private val fNameView: TextView = fView.need_name
+
+        var item by Delegates.observable<NeedItem?>(null) { _, _, new ->
+            when (new) {
+                null -> Unit
+                else -> {
+                    fView.tag = new
+                    fView.setOnClickListener(fOnClickListener)
+                    fView.setBackgroundColor(if (new.isActive) fActiveItemColor else Color.TRANSPARENT)
+                    fNameView.text = new.name
+                }
+            }
         }
     }
 
     init {
-        mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as NeedItem
-            activateItem(item)
-            disableHardwareControls(this)
-            mListener?.onNeedItemChanged(item)
-        }
         enableHardwareControls(this)
-        mActiveItem.activate()
     }
 
-    val activeItem get() = mActiveItem
+    // RecyclerView.Adapter implementation
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -63,19 +85,14 @@ class NeedsRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mItems[position]
-        holder.mView.setBackgroundColor(
-                if (item.isActive) {
-                    mContext.resources.getColor(R.color.activeListItem, null)
-                } else {
-                    Color.TRANSPARENT
-                })
-        holder.mNameView.text = item.name
-        with(holder.mView) {
-            tag = item
-            setOnClickListener(mOnClickListener)
+        fContext.needItemFactory.instantiate(needs[position]).let {
+            holder.item = it
         }
     }
+
+    override fun getItemCount(): Int = needs.size
+
+    // Input.Listener implementation
 
     override fun onButton(control: Control) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
@@ -87,39 +104,43 @@ class NeedsRecyclerViewAdapter(
                 activateNextItem()
             }
             Control.UPDATE_ABORT -> {
-                mContext.showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
-                mContext.leftButton.background = mContext.getDrawable(R.drawable.abort_mission)
+                fContext.showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
+                fContext.leftButton.background = fContext.getDrawable(R.drawable.abort_mission)
                 disableHardwareControls(this)
             }
             Control.NEED_START -> {
-                mListener?.onNeedItemChanged(mActiveItem)
+                fListener?.onNeedItemChanged(fActiveItem!!)
                 disableHardwareControls(this)
             }
         }
     }
 
-    override fun getItemCount(): Int = mItems.size
-
     private fun activateNextItem() {
-        val newIndex = mItems.indexOf(mActiveItem) + 1
-        if (newIndex < mItems.size) {
-            activateItem(mItems[newIndex])
+        val newIndex = fItems.indexOf(fActiveItem) + 1
+        if (newIndex < fItems.size) {
+            activateItem(fItems[newIndex])
         }
     }
 
     private fun activatePreviousItem() {
-        val newIndex = mItems.indexOf(mActiveItem) - 1
+        val newIndex = fItems.indexOf(fActiveItem) - 1
         if (newIndex >= 0) {
-            activateItem(mItems[newIndex])
+            activateItem(fItems[newIndex])
         }
     }
 
     private fun activateItem(item: NeedItem) {
-        mActiveItem.deactivate()
-        mRecyclerView.findViewHolderForLayoutPosition(mItems.indexOf(mActiveItem)).itemView.setBackgroundColor(Color.TRANSPARENT)
-        mActiveItem = item
-        mActiveItem.activate()
-        mRecyclerView.findViewHolderForLayoutPosition(mItems.indexOf(mActiveItem)).itemView.setBackgroundColor(mContext.resources.getColor(R.color.activeListItem, null))
+        fActiveItem?.let {
+            it.deactivate()
+            val index = fItems.indexOf(it)
+            (fRecyclerView.findViewHolderForLayoutPosition(index) as ViewHolder).item = it
+        }
+        item.let {
+            it.activate()
+            fActiveItem = it
+            val index = fItems.indexOf(it)
+            (fRecyclerView.findViewHolderForLayoutPosition(index) as ViewHolder).item = it
+        }
     }
 
 }

@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import ch.hsr.ifs.gcs.MainModel
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.R.drawable.abort_mission
 import ch.hsr.ifs.gcs.R.layout.activity_main
@@ -67,8 +66,6 @@ class MainActivity(
     val resourceManager by lazy { ResourceManager(this) }
     val needProvider by lazy { NeedProvider(resourceManager) }
     val inputProvider by lazy { InputProvider(fDeviceScanner) }
-
-//    private var controls: Input? = null
 
     init {
         missionResultsListener.activity = this
