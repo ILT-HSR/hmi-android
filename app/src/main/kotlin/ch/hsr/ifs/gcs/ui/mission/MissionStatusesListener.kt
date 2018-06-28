@@ -1,10 +1,7 @@
-package ch.hsr.ifs.gcs.ui.fragments.missionstatuses
+package ch.hsr.ifs.gcs.ui.mission
 
 import android.app.Activity
-import android.view.animation.AccelerateInterpolator
-import ch.hsr.ifs.gcs.ui.mission.MissionItem
 import kotlinx.android.synthetic.main.activity_main.*
-import org.osmdroid.views.MapView
 
 class MissionStatusesListener : MissionStatusesFragment.OnStatusesFragmentChangedListener {
 

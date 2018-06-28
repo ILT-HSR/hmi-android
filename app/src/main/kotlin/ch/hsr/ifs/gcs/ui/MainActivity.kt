@@ -22,8 +22,8 @@ import ch.hsr.ifs.gcs.support.usb.DeviceScanner
 import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesListener
+import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
+import ch.hsr.ifs.gcs.ui.mission.MissionStatusesListener
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionListener
 import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment

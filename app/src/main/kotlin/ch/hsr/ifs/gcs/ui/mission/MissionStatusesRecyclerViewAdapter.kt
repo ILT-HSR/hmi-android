@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments.missionstatuses
+package ch.hsr.ifs.gcs.ui.mission
 
 
 import android.graphics.Color
@@ -18,8 +18,7 @@ import ch.hsr.ifs.gcs.ui.BasicHardwareControllable
 import ch.hsr.ifs.gcs.ui.HardwareControllable
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment.OnStatusesFragmentChangedListener
-import ch.hsr.ifs.gcs.ui.mission.MissionItem
+import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment.OnStatusesFragmentChangedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 

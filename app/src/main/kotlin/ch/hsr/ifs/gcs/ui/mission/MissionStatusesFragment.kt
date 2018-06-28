@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui.fragments.missionstatuses
+package ch.hsr.ifs.gcs.ui.mission
 
 import android.content.Context
 import android.os.Bundle
@@ -14,9 +14,7 @@ import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.mission.access.NeedProvider
 import ch.hsr.ifs.gcs.ui.MainActivity
 import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
-import ch.hsr.ifs.gcs.ui.mission.MissionItem
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
 
