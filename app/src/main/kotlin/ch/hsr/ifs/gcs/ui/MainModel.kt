@@ -127,6 +127,13 @@ class MainModel : ViewModel() {
     val availableNeeds: LiveData<List<Need>> = fAvailableNeeds
 
     /**
+     * The currently active need
+     *
+     * @since 1.0.0
+     */
+    val activeNeed: LiveData<Need> = fActiveNeed
+
+    /**
      * The list of currently active needs
      *
      * @since 1.0.0

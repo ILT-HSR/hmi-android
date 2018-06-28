@@ -119,8 +119,12 @@ class MainActivity(
         fLocationService = LocationService(this, this)
 
         fModel = ViewModelProviders.of(this).get(MainModel::class.java)
-        fModel.availableNeeds.observe(this, Observer {
-            Log.i(LOG_TAG, "Needs available changed: $it")
+        fModel.activeNeed.observe(this, Observer {
+            if(it == null) {
+                showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
+            } else {
+                showMenuFragment(MenuFragmentID.NEED_INSTRUCTION_FRAGMENT)
+            }
         })
     }
 
