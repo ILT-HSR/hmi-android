@@ -22,7 +22,6 @@ import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
 import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionFragment
-import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionListener
 import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
@@ -31,15 +30,11 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 
-class MainActivity(
-        missionResultsListener: MissionResultsListener = MissionResultsListener(),
-        needInstructionListener: NeedInstructionListener = NeedInstructionListener()
-) :
+class MainActivity(missionResultsListener: MissionResultsListener = MissionResultsListener()) :
         AppCompatActivity(),
         Input.Listener,
         LocationService.OnLocationChangedListener,
-        MissionResultsFragment.OnResultsFragmentChangedListener by missionResultsListener,
-        NeedInstructionFragment.OnNeedInstructionFragmentListener by needInstructionListener {
+        MissionResultsFragment.OnResultsFragmentChangedListener by missionResultsListener {
 
     companion object {
         private val LOG_TAG = MainActivity::class.simpleName
@@ -65,7 +60,6 @@ class MainActivity(
 
     init {
         missionResultsListener.activity = this
-        needInstructionListener.activity = this
     }
 
     fun showMenuFragment(id: MenuFragmentID) =

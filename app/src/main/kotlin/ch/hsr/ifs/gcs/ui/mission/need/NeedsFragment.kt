@@ -11,10 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.ui.MainActivity
-import ch.hsr.ifs.gcs.ui.MainModel
-import ch.hsr.ifs.gcs.ui.NeedConfigurationAborted
-import ch.hsr.ifs.gcs.ui.NeedConfigurationStarted
+import ch.hsr.ifs.gcs.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
 import kotlinx.android.synthetic.main.fragment_need_list.view.*
@@ -77,8 +74,7 @@ class NeedsFragment : Fragment(), Input.Listener {
                 fAdapter.activateNextItem()
             }
             Input.Control.UPDATE_ABORT -> {
-                // TODO: Implement switch to mission statuses
-                // fModel.event(StatusOverviewRequested())
+                fModel.event(MissionOverviewRequested())
                 fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {

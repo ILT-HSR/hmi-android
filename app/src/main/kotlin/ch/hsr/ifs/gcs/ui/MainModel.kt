@@ -8,6 +8,7 @@ import ch.hsr.ifs.gcs.driver.access.InputProvider
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Result
+import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.mission.need.CallIn
 import ch.hsr.ifs.gcs.resource.internal.SimpleResource
 import ch.hsr.ifs.gcs.support.usb.DeviceScanner
@@ -35,6 +36,14 @@ sealed class Event
  * @since 1.0.0
  */
 data class MissionAvailable(val mission: Mission) : Event()
+
+/**
+ * Event type to signal the user wants to go to the mission Overview
+ *
+ * @author IFS Institute for Software
+ * @since 1.0.0
+ */
+class MissionOverviewRequested : Event()
 
 /**
  * Event type to signal a new need has become available
@@ -135,11 +144,15 @@ class MainModel : ViewModel() {
                     fActiveMenuFragment.value = MenuFragmentID.NEEDS_FRAGMENT
                 }
                 is NeedConfigurationFinished -> {
+                    fActiveNeed.value?.let(::Mission)?.let(MissionProvider::submit)
                     fActiveNeed.value = null
                     fActiveMenuFragment.value = MenuFragmentID.MISSION_STATUSES_FRAGMENT
                 }
                 is NeedOverviewRequested -> {
                     fActiveMenuFragment.value = MenuFragmentID.NEEDS_FRAGMENT
+                }
+                is MissionOverviewRequested -> {
+                    fActiveMenuFragment.value = MenuFragmentID.MISSION_STATUSES_FRAGMENT
                 }
             }
         }

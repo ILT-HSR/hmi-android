@@ -3,7 +3,7 @@ package ch.hsr.ifs.gcs.ui.mission.need.parameter
 import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
 import java.util.*
 
-class ParameterItem<Result>(val parameter: Parameter<Result>, val name: String, private val fConfigurator: ParameterConfigurator<*>) : Observable() {
+class ParameterItem<Result>(val parameter: Parameter<Result>, val name: String, private val fConfigurator: ParameterConfigurator<*>) {
 
     private var fIsActive = false
     private var fIsComplete = false
@@ -13,22 +13,28 @@ class ParameterItem<Result>(val parameter: Parameter<Result>, val name: String, 
      *
      * @since 1.0.0
      */
-    var isActive
+    val isActive
         get() = fIsActive
-        set(value) {
-            fIsActive = value
-            notifyObservers()
-        }
 
     /**
      * Whether the parameter configuration has been completed
+     *
+     * @since 1.0.0
      */
-    var isComplete
+    val isComplete
         get() = fIsComplete
-        set(value) {
-            fIsComplete = value
-            notifyObservers()
-        }
+
+    fun activate() {
+        fIsActive = true
+    }
+
+    fun deactivate() {
+        fIsActive = false
+    }
+
+    fun complete() {
+        fIsComplete = true
+    }
 
     @Suppress("UNCHECKED_CAST")
     fun showConfigurator() {
