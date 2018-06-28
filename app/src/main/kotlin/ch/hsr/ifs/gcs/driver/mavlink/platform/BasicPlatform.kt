@@ -18,6 +18,7 @@ import java.io.IOException
 import java.nio.channels.ByteChannel
 import java.time.Duration
 import java.time.Instant
+import java.time.temporal.TemporalField
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -77,8 +78,10 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         /**
          * The liveliness of the vehicle connection
          */
-        var isAlive: Boolean by Delegates.observable(false) { _, _, _ ->
-            fPlatformListeners.forEach { it.onLivelinessChanged(this@BasicPlatform) }
+        var isAlive: Boolean by Delegates.observable(false) { _, old, new ->
+            if (old != new) {
+                fPlatformListeners.forEach { it.onLivelinessChanged(this@BasicPlatform) }
+            }
         }
 
         /**
@@ -256,10 +259,10 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     init {
         registerBasicHandlers()
-        fMessageStream.setDebug(true)
         beginSerialIO()
         scheduleHeartbeat()
         requestVehicleCapabilities()
+        scheduleSurveyor()
     }
 
     protected enum class ExecutionState {
@@ -495,7 +498,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      */
     private fun scheduleSurveyor() {
         fExecutors.surveyor.scheduleAtFixedRate({
-            if ((fVehicleState.lastHeartbeat + maximumExpectedHeartbeatInterval) > Instant.now()) {
+            if (fVehicleState.isAlive && (fVehicleState.lastHeartbeat + maximumExpectedHeartbeatInterval) > Instant.now()) {
                 fVehicleState.isAlive = false
             }
         }, 0, 100, TimeUnit.MILLISECONDS)
@@ -517,7 +520,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      */
     private fun dispatch(message: MAVLinkMessage) {
         when (MessageID.from(message.msgName)) {
-            null -> Log.i(LOG_TAG, "Unsupported message '$message'")
+            null -> Unit
             else -> {
                 invokeListeners(message)
                 invokeOneShotListeners(message)
