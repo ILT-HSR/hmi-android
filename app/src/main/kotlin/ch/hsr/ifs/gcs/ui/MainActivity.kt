@@ -14,9 +14,7 @@ import ch.hsr.ifs.gcs.R.drawable.abort_mission
 import ch.hsr.ifs.gcs.R.layout.activity_main
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
-import ch.hsr.ifs.gcs.driver.access.InputProvider
-import ch.hsr.ifs.gcs.mission.access.NeedProvider
-import ch.hsr.ifs.gcs.resource.access.ResourceManager
+import ch.hsr.ifs.gcs.resource.ResourceManager
 import ch.hsr.ifs.gcs.support.geo.LocationService
 import ch.hsr.ifs.gcs.support.usb.DeviceScanner
 import ch.hsr.ifs.gcs.ui.mission.MissionResultsFragment
@@ -30,14 +28,7 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 
-class MainActivity() :
-        AppCompatActivity(),
-        Input.Listener,
-        LocationService.OnLocationChangedListener {
-
-    companion object {
-        private val LOG_TAG = MainActivity::class.simpleName
-    }
+class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLocationChangedListener {
 
     private lateinit var fLocationService: LocationService
     private lateinit var fLocation: Location
@@ -49,13 +40,10 @@ class MainActivity() :
 
     private lateinit var fParameterItemFactory: ParameterItemFactory
     private lateinit var fNeedItemFactory: NeedItemFactory
-    private lateinit var fResourceManager: ResourceManager
+//    private lateinit var fResourceManager: ResourceManager
 
     val needItemFactory get() = fNeedItemFactory
     val parameterItemFactory get() = fParameterItemFactory
-    val resourceManager get() = fResourceManager
-    val needProvider by lazy { NeedProvider(resourceManager) }
-    val inputProvider by lazy { InputProvider(fDeviceScanner) }
 
     fun showMenuFragment(id: MenuFragmentID) =
         with(supportFragmentManager.findFragmentByTag(id.name) ?: createFragment(id)) {
@@ -102,7 +90,7 @@ class MainActivity() :
         fLocationService = LocationService(this, this)
         fParameterItemFactory = ParameterItemFactory(this)
         fNeedItemFactory = NeedItemFactory(this)
-        fResourceManager = ResourceManager(this)
+//        fResourceManager = ResourceManager(this)
 
         fModel = ViewModelProviders.of(this).get(MainModel::class.java)
         fModel.activeMenuFragment.observe(this, Observer {
