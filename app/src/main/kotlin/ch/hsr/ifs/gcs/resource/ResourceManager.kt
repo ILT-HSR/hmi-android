@@ -1,20 +1,17 @@
 package ch.hsr.ifs.gcs.resource
 
+import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.res.AssetManager
-import android.hardware.usb.UsbManager
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.access.PlatformProvider
-import ch.hsr.ifs.gcs.driver.channel.SerialDataChannelFactory
+import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ifs.gcs.driver.PlatformModel
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
-import com.hoho.android.usbserial.driver.UsbSerialProber
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
-class ResourceManager(val context: Context, val listener: Listener) {
+class ResourceManager(private val fListener: Listener) {
 
     interface Listener {
         fun onNewResourceAvailable(resource: Resource)
@@ -62,11 +59,25 @@ class ResourceManager(val context: Context, val listener: Listener) {
         private const val LOG_TAG = "ResourceManager"
     }
 
-    private val fKnownResources: List<ResourceDescriptor>
+    private var fKnownResources = emptyList<ResourceDescriptor>()
     private var fLocalResources = emptyList<Resource>()
-    private val fScanExecutor = Executors.newSingleThreadScheduledExecutor()
 
-    init {
+    private val fPlatformObserver = Observer<List<Platform>> {
+        it?.apply {
+            val platformCandidates = filter { fLocalResources.none { r -> r.plaform == it } }
+            platformCandidates.forEach { p ->
+                fKnownResources.find { it.driver == p.driverId }?.let {
+                    val resource = LocalResource(it.id, it.driver, it.payload, it.capabilities).apply {
+                        plaform = p
+                    }
+                    fListener.onNewResourceAvailable(resource)
+                    return@forEach
+                }
+            }
+        }
+    }
+
+    fun onCreate(context: Context, platformModel: PlatformModel) {
         fKnownResources = context.assets.list(RESOURCES_DIRECTORY).mapNotNull {
             try {
                 ResourceDescriptor.load(context.assets.open("$RESOURCES_DIRECTORY/$it", AssetManager.ACCESS_STREAMING))
@@ -75,26 +86,12 @@ class ResourceManager(val context: Context, val listener: Listener) {
                 null
             }
         }
-        fScanExecutor.scheduleAtFixedRate(this::scan, 0, 100, TimeUnit.MILLISECONDS)
+
+        platformModel.availablePlatforms.observeForever(fPlatformObserver)
     }
 
-    // Private implementation
-
-    private fun scan() {
-        val mUsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
-        UsbSerialProber.getDefaultProber().findAllDrivers(mUsbManager).filter { it.device.manufacturerName != "Arduino LLC" }
-                .forEach { d ->
-                    fKnownResources.filter { k -> fLocalResources.none { l -> l.id == k.id } }.forEach {
-                        val parameters = SerialDataChannelFactory.Parameters(context, d.ports[0])
-                        PlatformProvider.instantiate(it.driver, SerialDataChannelFactory, parameters, it.payload)?.let { p ->
-                            val resource = LocalResource(it.id, it.driver, it.payload, it.capabilities).apply {
-                                markAs(Resource.Status.AVAILABLE)
-                                plaform = p
-                            }
-                            fLocalResources += resource
-                            listener.onNewResourceAvailable(resource)
-                        }
-                    }
-                }
+    fun onDestroy(platformModel: PlatformModel) {
+        platformModel.availablePlatforms.removeObserver(fPlatformObserver)
     }
+
 }

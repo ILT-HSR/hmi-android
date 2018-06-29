@@ -32,7 +32,7 @@ import kotlin.properties.Delegates
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-abstract class BasicPlatform(channel: ByteChannel, final override val schema: MAVLinkSchema, private val fPayloadDriverId: String?) : MAVLinkPlatform {
+abstract class BasicPlatform(channel: ByteChannel, final override val schema: MAVLinkSchema) : MAVLinkPlatform {
 
     companion object {
         /**
@@ -286,7 +286,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         get() = synchronized(fVehicleState) { fVehicleState.position }
 
     override val payload: Payload
-        get() = fPayloadDriverId?.let { PayloadProvider.instantiate(it) } ?: NullPayload()
+        get() = NullPayload() //fPayloadDriverId?.let { PayloadProvider.instantiate(it) } ?: NullPayload()
 
     override val execution: Execution
         get() = NativeMissionExecution(targetSystem)

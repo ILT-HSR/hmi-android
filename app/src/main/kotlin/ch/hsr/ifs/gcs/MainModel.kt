@@ -112,7 +112,7 @@ data class ResultAvailable(val result: Result) : Event()
  */
 class MainModel : ViewModel() {
 
-    private val fAvailableNeeds = MutableLiveData<List<Need>>().apply { value = listOf(CallIn(LocalResource("id", "driver", "payload", emptyList()))) }
+    private val fAvailableNeeds = MutableLiveData<List<Need>>().apply { value = emptyList() }
     private val fActiveNeed = MutableLiveData<Need>()
     private val fActiveMissions = MutableLiveData<List<Mission>>().apply { value = emptyList() }
     private val fMissionResults = MutableLiveData<List<Result>>().apply { value = emptyList() }
