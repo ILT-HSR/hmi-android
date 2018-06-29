@@ -1,14 +1,14 @@
-package ch.hsr.ifs.gcs.resource.internal
+package ch.hsr.ifs.gcs.resource
 
 import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.Resource.Status
 
-class SimpleResource(override val id: String,
-                     override val driverId: String,
-                     override val payloadDriverId: String?,
-                     override val capabilities: List<Capability<*>>) : Resource {
+class LocalResource(override val id: String,
+                    override val driverId: String,
+                    override val payloadDriverId: String?,
+                    override val capabilities: List<Capability<*>>) : Resource {
 
     private lateinit var fPlatform: Platform
 

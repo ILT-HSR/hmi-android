@@ -6,8 +6,6 @@ import android.hardware.usb.UsbManager
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.access.PlatformProvider
 import ch.hsr.ifs.gcs.driver.channel.SerialDataChannelFactory
-import ch.hsr.ifs.gcs.resource.capability.BUILTIN_CAPABILITIES
-import ch.hsr.ifs.gcs.resource.internal.SimpleResource
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import com.hoho.android.usbserial.driver.UsbSerialProber
@@ -89,7 +87,7 @@ class ResourceManager(val context: Context, val listener: Listener) {
                     fKnownResources.filter { k -> fLocalResources.none { l -> l.id == k.id } }.forEach {
                         val parameters = SerialDataChannelFactory.Parameters(context, d.ports[0])
                         PlatformProvider.instantiate(it.driver, SerialDataChannelFactory, parameters, it.payload)?.let { p ->
-                            val resource = SimpleResource(it.id, it.driver, it.payload, it.capabilities).apply {
+                            val resource = LocalResource(it.id, it.driver, it.payload, it.capabilities).apply {
                                 markAs(Resource.Status.AVAILABLE)
                                 plaform = p
                             }

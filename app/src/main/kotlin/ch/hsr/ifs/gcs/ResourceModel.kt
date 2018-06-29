@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.util.Log
 import ch.hsr.ifs.gcs.resource.Resource
@@ -23,12 +24,14 @@ class ResourceModel {
         for(event in this) {
             when(event) {
                 is NewResourceAvailable -> {
-                    fAvailableResources.value = fAvailableResources.value!! + event.resource
                     Log.i(LOG_TAG, "New resource '${event.resource}' became available [${Thread.currentThread().name}")
+                    fAvailableResources.value = fAvailableResources.value!! + event.resource
                 }
             }
         }
     }
+
+    val availableResources: LiveData<List<Resource>> = fAvailableResources
 
     /**
      * Submit an event to the model
