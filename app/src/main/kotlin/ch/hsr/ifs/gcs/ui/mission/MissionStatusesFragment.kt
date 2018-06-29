@@ -11,8 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.ui.MainModel
-import ch.hsr.ifs.gcs.ui.NeedOverviewRequested
+import ch.hsr.ifs.gcs.MainModel
+import ch.hsr.ifs.gcs.NeedOverviewRequested
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
 import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*

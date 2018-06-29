@@ -8,6 +8,7 @@ import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import ch.hsr.ifs.gcs.MainModel
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.R.drawable.abort_mission
 import ch.hsr.ifs.gcs.R.layout.activity_main

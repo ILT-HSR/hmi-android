@@ -1,4 +1,4 @@
-package ch.hsr.ifs.gcs.ui
+package ch.hsr.ifs.gcs
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
@@ -12,6 +12,7 @@ import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.mission.need.CallIn
 import ch.hsr.ifs.gcs.resource.internal.SimpleResource
 import ch.hsr.ifs.gcs.support.usb.DeviceScanner
+import ch.hsr.ifs.gcs.ui.MenuFragmentID
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.Channel
 import kotlinx.coroutines.experimental.channels.actor
