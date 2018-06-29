@@ -11,31 +11,29 @@ import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.ui.MainModel
-import ch.hsr.ifs.gcs.ui.NeedOverviewRequested
+import ch.hsr.ifs.gcs.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
-import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
-
+import kotlinx.android.synthetic.main.fragment_missionresults_list.*
+import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
 
 /**
- * A fragment representing a list of mission status items combined with a button to add
+ * A fragment representing a list of mission result items combined with a button to add
  * additional needs. The context containing this fragment must implement the
- * [MissionStatusesFragment.OnStatusesFragmentChangedListener] interface.
+ * [MissionResultsFragment.OnResultsFragmentChangedListener] interface.
  */
-class MissionStatusesFragment : Fragment(), Input.Listener {
+class MissionResultsFragment : Fragment(), Input.Listener {
 
     private lateinit var fModel: MainModel
-    private lateinit var fAdapter: MissionStatusesRecyclerViewAdapter
+    private lateinit var fAdapter: MissionResultsRecyclerViewAdapter
 
     private var fControls: Input? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_missionstatuses_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_missionresults_list, container, false)
         val list = view.list
         if (list is RecyclerView) {
             with(list) {
-                fAdapter = MissionStatusesRecyclerViewAdapter(this)
+                fAdapter = MissionResultsRecyclerViewAdapter(this)
                 layoutManager = LinearLayoutManager(context)
                 adapter = fAdapter
             }
@@ -46,26 +44,25 @@ class MissionStatusesFragment : Fragment(), Input.Listener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         fModel = ViewModelProviders.of(activity!!)[MainModel::class.java]
-        fModel.activeMissions.observe(this, Observer {
-            fAdapter.missions = it ?: emptyList()
+        fModel.missionResults.observe(this, Observer {
+            fAdapter.results = it ?: emptyList()
         })
         fModel.availableNeeds.observe(this, Observer {
-            statusesAddButton.isEnabled = it != null && it.isNotEmpty()
+            resultsAddButton.isEnabled = it != null && it.isNotEmpty()
         })
 
         activity?.apply {
-            statusesAddButton.setOnClickListener {
+            resultsAddButton.setOnClickListener {
                 fModel.event(NeedOverviewRequested())
             }
-            leftButton?.background = applicationContext?.getDrawable(R.drawable.cancel_action)
-            // TODO: Implement mission cancelation
+            leftButton?.background = context?.applicationContext?.getDrawable(R.drawable.cancel_action)
+            // TODO: Implement mission cancellation
             fControls = fModel.getInputControls(this)
         }
-
         fControls?.addListener(this)
     }
 
-    // Input.Listener implementation
+    //Input.Listener implementation
 
     override fun onButton(control: Input.Control) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
@@ -76,9 +73,8 @@ class MissionStatusesFragment : Fragment(), Input.Listener {
             Input.Control.DPAD_DOWN -> {
                 fAdapter.activateNextItem()
             }
-            Input.Control.DPAD_RIGHT -> {
-                // TODO: Implement MissionResults switch
-                // fModel.event(ResultsOverviewRequested())
+            Input.Control.DPAD_LEFT -> {
+                fModel.event(MissionOverviewRequested())
                 fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {

@@ -18,8 +18,7 @@ import ch.hsr.ifs.gcs.mission.access.NeedProvider
 import ch.hsr.ifs.gcs.resource.access.ResourceManager
 import ch.hsr.ifs.gcs.support.geo.LocationService
 import ch.hsr.ifs.gcs.support.usb.DeviceScanner
-import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
-import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
+import ch.hsr.ifs.gcs.ui.mission.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
@@ -30,11 +29,10 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 
-class MainActivity(missionResultsListener: MissionResultsListener = MissionResultsListener()) :
+class MainActivity() :
         AppCompatActivity(),
         Input.Listener,
-        LocationService.OnLocationChangedListener,
-        MissionResultsFragment.OnResultsFragmentChangedListener by missionResultsListener {
+        LocationService.OnLocationChangedListener {
 
     companion object {
         private val LOG_TAG = MainActivity::class.simpleName
@@ -57,10 +55,6 @@ class MainActivity(missionResultsListener: MissionResultsListener = MissionResul
     val resourceManager get() = fResourceManager
     val needProvider by lazy { NeedProvider(resourceManager) }
     val inputProvider by lazy { InputProvider(fDeviceScanner) }
-
-    init {
-        missionResultsListener.activity = this
-    }
 
     fun showMenuFragment(id: MenuFragmentID) =
         with(supportFragmentManager.findFragmentByTag(id.name) ?: createFragment(id)) {
