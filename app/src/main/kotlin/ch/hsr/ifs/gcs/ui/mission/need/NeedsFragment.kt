@@ -1,7 +1,6 @@
 package ch.hsr.ifs.gcs.ui.mission.need
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -47,21 +46,24 @@ class NeedsFragment : Fragment(), Input.Listener {
         fModel.availableNeeds.observe(this, Observer {
             fAdapter.needs = it ?: emptyList()
         })
+        fModel.activeInputDevice.observe(this, Observer {
+            fControls = it
+        })
+
+        fControls = fModel.activeInputDevice.value
+        fControls?.addListener(this)
 
         activity?.apply {
             selectButton.setOnClickListener {
-                fModel.event(NeedConfigurationStarted(fAdapter.activeItem.need))
+                fModel.submit(NeedConfigurationStarted(fAdapter.activeItem.need))
             }
 
             // TODO: Move to model/activity?
             leftButton?.background = applicationContext.getDrawable(R.drawable.cancel_action)
             leftButton.setOnClickListener {
-                fModel.event(MissionOverviewRequested())
+                fModel.submit(MissionOverviewRequested())
             }
-            fControls = fModel.getInputControls(this)
         }
-
-        fControls?.addListener(this)
     }
 
     override fun onButton(control: Input.Control) {
@@ -74,7 +76,7 @@ class NeedsFragment : Fragment(), Input.Listener {
                 fAdapter.activateNextItem()
             }
             Input.Control.UPDATE_ABORT -> {
-                fModel.event(MissionOverviewRequested())
+                fModel.submit(MissionOverviewRequested())
                 fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {

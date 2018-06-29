@@ -1,19 +1,18 @@
 package ch.hsr.ifs.gcs
 
 import android.app.Application
-import android.arch.lifecycle.ViewModelProviders
-import android.util.Log
+import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.NewPlatformAvailable
 import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.PlatformModel
+import ch.hsr.ifs.gcs.driver.access.InputManager
 import ch.hsr.ifs.gcs.driver.access.PlatformManager
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.access.NeedManager
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.ResourceManager
-import ch.hsr.ifs.gcs.ui.MainActivity
 
-class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, NeedManager.Listener {
+class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, NeedManager.Listener, InputManager.Listener {
 
     private lateinit var fResourceModel: ResourceModel
     private lateinit var fPlatformModel: PlatformModel
@@ -22,8 +21,11 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
     private lateinit var fResourceManager: ResourceManager
     private lateinit var fNeedManager: NeedManager
     private lateinit var fPlatformManager: PlatformManager
+    private lateinit var fInputManager: InputManager
 
     val mainModel get() = fMainModel
+    val platformManager get() = fPlatformManager
+    val inputManager get() = fInputManager
 
     // Application implementation
 
@@ -36,6 +38,7 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
         fResourceManager = ResourceManager(this)
         fNeedManager = NeedManager(this)
         fPlatformManager = PlatformManager(this)
+        fInputManager = InputManager(this)
 
         fResourceManager.onCreate(this, fPlatformModel)
         fNeedManager.onCreate(fResourceModel)
@@ -71,7 +74,17 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
     // NeedManager.Listener implementation
 
     override fun onNewNeedAvailable(need: Need) {
-        fMainModel.event(NeedAvailable(need))
+        fMainModel.submit(NeedAvailable(need))
+    }
+
+    // InputManager.Listener implementation
+
+    override fun onInputDeviceAvailable(device: Input) {
+        fMainModel.submit(InputDeviceAvailable(device))
+    }
+
+    override fun onInputDeviceUnavailable() {
+        fMainModel.submit(InputDeviceUnavailable)
     }
 
 }

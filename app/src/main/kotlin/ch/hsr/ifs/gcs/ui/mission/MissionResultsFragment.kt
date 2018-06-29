@@ -1,7 +1,6 @@
 package ch.hsr.ifs.gcs.ui.mission
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -49,16 +48,20 @@ class MissionResultsFragment : Fragment(), Input.Listener {
         fModel.availableNeeds.observe(this, Observer {
             resultsAddButton.isEnabled = it != null && it.isNotEmpty()
         })
+        fModel.activeInputDevice.observe(this, Observer {
+            fControls = it
+        })
+
+        fControls = fModel.activeInputDevice.value
+        fControls?.addListener(this)
 
         activity?.apply {
             resultsAddButton.setOnClickListener {
-                fModel.event(NeedOverviewRequested())
+                fModel.submit(NeedOverviewRequested())
             }
             leftButton?.background = context?.applicationContext?.getDrawable(R.drawable.cancel_action)
             // TODO: Implement mission cancellation
-            fControls = fModel.getInputControls(this)
         }
-        fControls?.addListener(this)
     }
 
     //Input.Listener implementation
@@ -73,11 +76,11 @@ class MissionResultsFragment : Fragment(), Input.Listener {
                 fAdapter.activateNextItem()
             }
             Input.Control.DPAD_LEFT -> {
-                fModel.event(MissionOverviewRequested())
+                fModel.submit(MissionOverviewRequested())
                 fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {
-                fModel.event(NeedOverviewRequested())
+                fModel.submit(NeedOverviewRequested())
                 fControls?.removeListener(this)
             }
         }

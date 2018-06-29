@@ -34,7 +34,7 @@ class ResourceModel {
     val availableResources: LiveData<List<Resource>> = fAvailableResources
 
     /**
-     * Submit an event to the model
+     * Submit an submit to the model
      *
      * @since 1.0.0
      */

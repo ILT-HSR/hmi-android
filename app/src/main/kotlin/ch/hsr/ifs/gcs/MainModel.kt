@@ -2,16 +2,11 @@ package ch.hsr.ifs.gcs
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.content.Context
-import ch.hsr.ifs.gcs.driver.access.InputProvider
+import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Result
 import ch.hsr.ifs.gcs.mission.access.MissionProvider
-import ch.hsr.ifs.gcs.mission.need.CallIn
-import ch.hsr.ifs.gcs.resource.LocalResource
-import ch.hsr.ifs.gcs.support.usb.DeviceScanner
 import ch.hsr.ifs.gcs.ui.MenuFragmentID
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.Channel
@@ -28,7 +23,7 @@ import kotlinx.coroutines.experimental.channels.actor
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-sealed class Event
+sealed class MainModelEvent
 
 /**
  * Event type to signal the arrival of a new missin on the system
@@ -36,7 +31,7 @@ sealed class Event
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-data class MissionAvailable(val mission: Mission) : Event()
+data class MissionAvailable(val mission: Mission) : MainModelEvent()
 
 /**
  * Event type to signal the user wants to go to the mission Overview
@@ -44,7 +39,7 @@ data class MissionAvailable(val mission: Mission) : Event()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class MissionOverviewRequested : Event()
+class MissionOverviewRequested : MainModelEvent()
 
 /**
  * Event type to signal a new need has become available
@@ -52,7 +47,7 @@ class MissionOverviewRequested : Event()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-data class NeedAvailable(val need: Need) : Event()
+data class NeedAvailable(val need: Need) : MainModelEvent()
 
 /**
  * Event type to signal a need has become unavailable
@@ -60,7 +55,7 @@ data class NeedAvailable(val need: Need) : Event()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-data class NeedUnavailable(val need: Need) : Event()
+data class NeedUnavailable(val need: Need) : MainModelEvent()
 
 /**
  * Event to to signal that a need configuration has been started
@@ -68,7 +63,7 @@ data class NeedUnavailable(val need: Need) : Event()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-data class NeedConfigurationStarted(val need: Need) : Event()
+data class NeedConfigurationStarted(val need: Need) : MainModelEvent()
 
 /**
  * Event to to signal that a need configuration has been started
@@ -76,7 +71,7 @@ data class NeedConfigurationStarted(val need: Need) : Event()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class NeedConfigurationAborted: Event()
+class NeedConfigurationAborted: MainModelEvent()
 
 /**
  * Event to to signal that a need configuration has been started
@@ -84,7 +79,7 @@ class NeedConfigurationAborted: Event()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class NeedConfigurationFinished() : Event()
+class NeedConfigurationFinished() : MainModelEvent()
 
 /**
  * Event to signal that the user wants to select a need
@@ -92,7 +87,7 @@ class NeedConfigurationFinished() : Event()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class NeedOverviewRequested : Event()
+class NeedOverviewRequested : MainModelEvent()
 
 /**
  * Event type to signal that the result of a mission has become available
@@ -100,7 +95,23 @@ class NeedOverviewRequested : Event()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-data class ResultAvailable(val result: Result) : Event()
+data class ResultAvailable(val result: Result) : MainModelEvent()
+
+/**
+ * Event type to signal that an input device became available
+ *
+ * @author IFS Institute for Software
+ * @since 1.0.0
+ */
+data class InputDeviceAvailable(val device: Input) : MainModelEvent()
+
+/**
+ * Event type to signal that an input device became available
+ *
+ * @author IFS Institute for Software
+ * @since 1.0.0
+ */
+object InputDeviceUnavailable : MainModelEvent()
 
 /**
  * The main application model
@@ -117,11 +128,9 @@ class MainModel {
     private val fActiveMissions = MutableLiveData<List<Mission>>().apply { value = emptyList() }
     private val fMissionResults = MutableLiveData<List<Result>>().apply { value = emptyList() }
     private val fActiveMenuFragment = MutableLiveData<MenuFragmentID>().apply { value = MenuFragmentID.MISSION_STATUSES_FRAGMENT }
+    private val fActiveInputDevice = MutableLiveData<Input?>()
 
-    private val fDeviceScanner = DeviceScanner()
-    private val fInputProvider = InputProvider(fDeviceScanner)
-
-    private val fActor = actor<Event>(UI, Channel.UNLIMITED) {
+    private val fActor = actor<MainModelEvent>(UI, Channel.UNLIMITED) {
         for (event in this) {
             when (event) {
                 is MissionAvailable -> {
@@ -154,6 +163,12 @@ class MainModel {
                 }
                 is MissionOverviewRequested -> {
                     fActiveMenuFragment.value = MenuFragmentID.MISSION_STATUSES_FRAGMENT
+                }
+                is InputDeviceAvailable -> {
+                    fActiveInputDevice.value = event.device
+                }
+                is InputDeviceUnavailable -> {
+                    fActiveInputDevice.value = null
                 }
             }
         }
@@ -195,18 +210,18 @@ class MainModel {
     val activeMenuFragment: LiveData<MenuFragmentID> = fActiveMenuFragment
 
     /**
-     * The input controls
+     * The currently active input device
      *
      * @since 1.0.0
      */
-    fun getInputControls(context: Context) = fInputProvider[context]
+    val activeInputDevice: LiveData<Input?> = fActiveInputDevice
 
     /**
-     * Submit an event to the model
+     * Submit an submit to the model
      *
      * @since 1.0.0
      */
-    fun event(event: Event) = fActor.offer(event)
+    fun submit(event: MainModelEvent) = fActor.offer(event)
 
     fun onDestroy() {
         fActor.close()

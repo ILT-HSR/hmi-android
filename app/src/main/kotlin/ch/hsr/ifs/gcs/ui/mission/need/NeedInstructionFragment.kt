@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.ui.mission.need
 
-import android.arch.lifecycle.ViewModelProviders
+import android.arch.lifecycle.Observer
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -40,6 +40,13 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
         super.onActivityCreated(savedInstanceState)
         val context = activity as MainActivity
         fModel = (activity!!.application as GCS).mainModel
+        fModel.activeInputDevice.observe(this, Observer {
+            fControls = it
+        })
+
+        fControls = fModel.activeInputDevice.value
+        fControls?.addListener(this)
+
         fAdapter.parameters = fModel.activeNeed.value!!.parameterList
         fModel.activeNeed.value?.let { need ->
             val item = context.needItemFactory.instantiate(need)
@@ -50,7 +57,7 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
                     needNavigationButton.text = getString(R.string.button_start_mission)
                     needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
                     needNavigationButton.setOnClickListener {
-                        fModel.event(NeedConfigurationFinished())
+                        fModel.submit(NeedConfigurationFinished())
                     }
                 }
             }
@@ -59,12 +66,9 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
         activity?.apply {
             leftButton?.setOnClickListener {
                 fAdapter.abort()
-                fModel.event(NeedOverviewRequested())
+                fModel.submit(NeedOverviewRequested())
             }
-            fControls = fModel.getInputControls(this)
         }
-
-        fControls?.addListener(this)
     }
 
     override fun onButton(control: Input.Control) {

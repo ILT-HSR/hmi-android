@@ -1,7 +1,6 @@
 package ch.hsr.ifs.gcs.ui
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -15,9 +14,7 @@ import ch.hsr.ifs.gcs.R.drawable.abort_mission
 import ch.hsr.ifs.gcs.R.layout.activity_main
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
-import ch.hsr.ifs.gcs.resource.ResourceManager
 import ch.hsr.ifs.gcs.support.geo.LocationService
-import ch.hsr.ifs.gcs.support.usb.DeviceScanner
 import ch.hsr.ifs.gcs.ui.mission.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionFragment
@@ -37,23 +34,13 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
 
     private var fMenuFragment = MenuFragmentID.MISSION_STATUSES_FRAGMENT
     private var fMainFragment: Fragment? = null
-    private val fDeviceScanner = DeviceScanner()
+    //private val fDeviceScanner = DeviceHandler()
 
     private lateinit var fParameterItemFactory: ParameterItemFactory
     private lateinit var fNeedItemFactory: NeedItemFactory
 
     val needItemFactory get() = fNeedItemFactory
     val parameterItemFactory get() = fParameterItemFactory
-
-    fun showMenuFragment(id: MenuFragmentID) =
-        with(supportFragmentManager.findFragmentByTag(id.name) ?: createFragment(id)) {
-            fMenuFragment = id
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.menuholder, this)
-                    .commit()
-            this
-        }
-
 
     fun showMainFragment(fragment: Fragment) {
         fMainFragment = fragment
@@ -109,7 +96,7 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
     override fun onResume() {
         super.onResume()
         map.onResume()
-        fDeviceScanner.start(this)
+        //fDeviceScanner.start(this)
         showMenuFragment(fMenuFragment)
 
         fModel = (application as GCS).mainModel
@@ -129,7 +116,7 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
     }
 
     override fun onDestroy() {
-        fDeviceScanner.stop()
+        //fDeviceScanner.stop()
         super.onDestroy()
     }
 
@@ -163,6 +150,15 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
     }
 
     // Private implementation
+
+    private fun showMenuFragment(id: MenuFragmentID) =
+            with(supportFragmentManager.findFragmentByTag(id.name) ?: createFragment(id)) {
+                fMenuFragment = id
+                supportFragmentManager.beginTransaction()
+                        .replace(R.id.menuholder, this)
+                        .commit()
+                this
+            }
 
     private fun createFragment(id: MenuFragmentID): Fragment = when(id) {
         MenuFragmentID.MISSION_RESULTS_FRAGMENT -> MissionResultsFragment()
