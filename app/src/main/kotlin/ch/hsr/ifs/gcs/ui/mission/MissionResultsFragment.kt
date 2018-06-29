@@ -9,10 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.hsr.ifs.gcs.MainModel
-import ch.hsr.ifs.gcs.MissionOverviewRequested
-import ch.hsr.ifs.gcs.NeedOverviewRequested
-import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.*
 import ch.hsr.ifs.gcs.driver.Input
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.*
@@ -45,7 +42,7 @@ class MissionResultsFragment : Fragment(), Input.Listener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        fModel = ViewModelProviders.of(activity!!)[MainModel::class.java]
+        fModel = (activity!!.application as GCS).mainModel
         fModel.missionResults.observe(this, Observer {
             fAdapter.results = it ?: emptyList()
         })

@@ -8,6 +8,7 @@ import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.MainModel
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.R.drawable.abort_mission
@@ -40,7 +41,6 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
 
     private lateinit var fParameterItemFactory: ParameterItemFactory
     private lateinit var fNeedItemFactory: NeedItemFactory
-//    private lateinit var fResourceManager: ResourceManager
 
     val needItemFactory get() = fNeedItemFactory
     val parameterItemFactory get() = fParameterItemFactory
@@ -90,16 +90,7 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         fLocationService = LocationService(this, this)
         fParameterItemFactory = ParameterItemFactory(this)
         fNeedItemFactory = NeedItemFactory(this)
-//        fResourceManager = ResourceManager(this)
 
-        fModel = ViewModelProviders.of(this).get(MainModel::class.java)
-        fModel.activeMenuFragment.observe(this, Observer {
-            if(it == null) {
-                showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
-            } else {
-                showMenuFragment(it)
-            }
-        })
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -120,6 +111,15 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         map.onResume()
         fDeviceScanner.start(this)
         showMenuFragment(fMenuFragment)
+
+        fModel = (application as GCS).mainModel
+        fModel.activeMenuFragment.observe(this, Observer {
+            if(it == null) {
+                showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
+            } else {
+                showMenuFragment(it)
+            }
+        })
     }
 
     override fun onPause() {

@@ -110,7 +110,7 @@ data class ResultAvailable(val result: Result) : Event()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class MainModel : ViewModel() {
+class MainModel {
 
     private val fAvailableNeeds = MutableLiveData<List<Need>>().apply { value = emptyList() }
     private val fActiveNeed = MutableLiveData<Need>()
@@ -208,9 +208,7 @@ class MainModel : ViewModel() {
      */
     fun event(event: Event) = fActor.offer(event)
 
-    // ViewModel implementation
-
-    override fun onCleared(){
+    fun onDestroy() {
         fActor.close()
     }
 

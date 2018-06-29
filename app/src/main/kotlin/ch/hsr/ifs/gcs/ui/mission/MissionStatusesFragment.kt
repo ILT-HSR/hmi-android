@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.MainModel
@@ -45,7 +46,7 @@ class MissionStatusesFragment : Fragment(), Input.Listener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        fModel = ViewModelProviders.of(activity!!)[MainModel::class.java]
+        fModel = (activity!!.application as GCS).mainModel
         fModel.activeMissions.observe(this, Observer {
             fAdapter.missions = it ?: emptyList()
         })

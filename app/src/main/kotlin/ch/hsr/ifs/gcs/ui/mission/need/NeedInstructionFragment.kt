@@ -9,10 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ch.hsr.ifs.gcs.MainModel
-import ch.hsr.ifs.gcs.NeedConfigurationFinished
-import ch.hsr.ifs.gcs.NeedOverviewRequested
-import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.*
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -42,7 +39,7 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val context = activity as MainActivity
-        fModel = ViewModelProviders.of(activity!!)[MainModel::class.java]
+        fModel = (activity!!.application as GCS).mainModel
         fAdapter.parameters = fModel.activeNeed.value!!.parameterList
         fModel.activeNeed.value?.let { need ->
             val item = context.needItemFactory.instantiate(need)

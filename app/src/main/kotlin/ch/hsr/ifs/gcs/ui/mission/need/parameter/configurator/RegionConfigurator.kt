@@ -65,8 +65,8 @@ class RegionConfigurator : ParameterConfigurator<List<GeoPoint>>() {
     }
 
     override fun abort() {
-        map.overlays.clear()
-        map.invalidate()
+        context.map.overlays.clear()
+        context.map.invalidate()
     }
 
     private fun createInitialPolygon(mapView: MapView): Polygon {
