@@ -23,10 +23,6 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
     private lateinit var fNeedManager: NeedManager
     private lateinit var fPlatformManager: PlatformManager
 
-    companion object {
-        private val LOG_TAG = GCS::class.simpleName
-    }
-
     val mainModel get() = fMainModel
 
     // Application implementation
@@ -48,8 +44,6 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
 
     override fun onTerminate() {
         super.onTerminate()
-        Log.i(LOG_TAG, "Application terminating")
-
         fPlatformManager.stop()
         fNeedManager.onDestroy(fResourceModel)
         fResourceManager.onDestroy(fPlatformModel)
@@ -75,6 +69,7 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
     }
 
     // NeedManager.Listener implementation
+
     override fun onNewNeedAvailable(need: Need) {
         fMainModel.event(NeedAvailable(need))
     }
