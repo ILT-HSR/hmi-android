@@ -285,8 +285,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     override val currentPosition: GPSPosition?
         get() = synchronized(fVehicleState) { fVehicleState.position }
 
-    override val payload: Payload
-        get() = NullPayload() //fPayloadDriverId?.let { PayloadProvider.instantiate(it) } ?: NullPayload()
+    override var payload: Payload = NullPayload()
 
     override val execution: Execution
         get() = NativeMissionExecution(targetSystem)

@@ -6,6 +6,7 @@ import android.content.res.AssetManager
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.PlatformModel
+import ch.hsr.ifs.gcs.driver.access.PayloadProvider
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import java.io.InputStream
@@ -67,6 +68,11 @@ class ResourceManager(private val fListener: Listener) {
             val platformCandidates = filter { fLocalResources.none { r -> r.plaform == it } }
             platformCandidates.forEach { p ->
                 fKnownResources.find { it.driver == p.driverId }?.let {
+                    if(it.payload != null){
+                        val payload = PayloadProvider.instantiate(it.payload) ?: return@forEach
+                        p.payload = payload
+                    }
+                    it.payload?.let(PayloadProvider::instantiate)
                     val resource = LocalResource(it.id, it.driver, it.payload, it.capabilities).apply {
                         plaform = p
                     }

@@ -61,7 +61,7 @@ interface Platform {
      *
      * @since 1.0.0
      */
-    val payload: Payload
+    var payload: Payload
 
     /**
      * Get the mission execution strategy for the specific platform implementation
