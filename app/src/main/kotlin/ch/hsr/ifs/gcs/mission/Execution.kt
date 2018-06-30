@@ -4,8 +4,6 @@ import ch.hsr.ifs.gcs.driver.Command
 
 abstract class Execution {
 
-    protected val fCommands = mutableListOf<Command<*>>()
-
     enum class Status {
         FAILURE,
         PREPARING,
@@ -13,7 +11,9 @@ abstract class Execution {
         FINISHED
     }
 
-    abstract fun tick() : Status
+    protected val fCommands = mutableListOf<Command<*>>()
+
+    abstract suspend fun tick() : Status
 
     open operator fun plusAssign(command: Command<*>) {
         fCommands += command

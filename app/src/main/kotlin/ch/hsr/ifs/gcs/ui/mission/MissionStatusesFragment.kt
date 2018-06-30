@@ -63,8 +63,12 @@ class MissionStatusesFragment : Fragment(), Input.Listener {
             statusesAddButton.setOnClickListener {
                 fModel.submit(NeedOverviewRequested())
             }
-            leftButton?.background = applicationContext?.getDrawable(R.drawable.cancel_action)
-            // TODO: Implement mission cancelation
+            leftButton?.apply {
+                background = applicationContext?.getDrawable(R.drawable.cancel_action)
+                setOnClickListener{
+                    fAdapter.selection?.abort()
+                }
+            }
         }
     }
 

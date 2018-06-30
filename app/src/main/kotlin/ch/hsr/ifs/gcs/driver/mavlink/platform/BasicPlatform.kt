@@ -250,7 +250,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     Status.FAILURE
                 }
 
-        override fun tick() = when (fState) {
+        override suspend fun tick() = when (fState) {
             ExecutionState.CREATED -> upload()
             ExecutionState.UPLOADING -> Status.PREPARING
             ExecutionState.RUNNING -> Status.RUNNING

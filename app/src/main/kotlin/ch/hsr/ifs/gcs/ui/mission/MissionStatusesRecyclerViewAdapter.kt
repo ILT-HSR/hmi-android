@@ -2,6 +2,8 @@ package ch.hsr.ifs.gcs.ui.mission
 
 
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -15,56 +17,67 @@ import kotlin.properties.Delegates
 class MissionStatusesRecyclerViewAdapter(private val fRecyclerView: RecyclerView)
     : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>() {
 
-    private var fActiveItem: MissionItem? = null
-    private var fItems: List<MissionItem> = emptyList()
-    private val fOnClickListener = View.OnClickListener { v ->
-        val item = v.tag as MissionItem
-        activateItem(item)
-    }
+    private var fSelectedMission: Mission? = null
     private val fActiveItemColor = fRecyclerView.resources.getColor(R.color.activeListItem, null)
 
     var missions: List<Mission> by Delegates.observable(emptyList()) { _, old, new ->
         if (old != new) {
-            fItems = new.map(::MissionItem)
-            fActiveItem?.let { act ->
-                fItems.find { it.mission == act.mission }?.activate()
-            } ?: fItems.firstOrNull()?.let {
-                it.activate()
-                fActiveItem = it
-            }
+            fSelectedMission = fSelectedMission?.let {
+                if (it !in new) {
+                    new.firstOrNull()
+                } else {
+                    it
+                }
+            } ?: new.firstOrNull()
             notifyDataSetChanged()
         }
     }
 
-    val activeItem get() = fActiveItem ?: throw IllegalArgumentException("No mission is selected")
+    val selection get() = fSelectedMission
 
-    inner class ViewHolder(private val fView: View) : RecyclerView.ViewHolder(fView) {
+    inner class ViewHolder(private val fView: View) : RecyclerView.ViewHolder(fView), Mission.Listener {
         private val fMissionName: TextView = fView.mission_name
 
-        var item by Delegates.observable<MissionItem?>(null) { _, _, new ->
+        var mission by Delegates.observable<Mission?>(null) { _, old, new ->
             when (new) {
                 null -> Unit
                 else -> {
                     fView.tag = new
-                    fView.setOnClickListener(fOnClickListener)
-                    fView.setBackgroundColor(if (new.isActive) fActiveItemColor else Color.TRANSPARENT)
-                    fMissionName.text = new.status
+                    fView.setOnClickListener { v ->
+                        val item = v.tag as Mission
+                        select(item)
+                    }
+                    fView.setBackgroundColor(if (fSelectedMission == new) fActiveItemColor else Color.TRANSPARENT)
+                    fMissionName.text = new.status.name
                 }
+            }
+
+            if(old != new) {
+                new?.addListener(this)
+                old?.removeListener(this)
+            }
+        }
+
+        override fun onMissionStatusChanged(mission: Mission, status: Mission.Status) {
+            if(mission == this.mission) {
+                val handler = Handler(Looper.getMainLooper())
+                handler.post{ fMissionName.text = status.name }
             }
         }
     }
 
     fun activateNextItem() {
-        val newIndex = fItems.indexOf(fActiveItem) + 1
-        if (newIndex < fItems.size) {
-            activateItem(fItems[newIndex])
+        val newIndex = missions.indexOf(fSelectedMission) + 1
+        if (newIndex < missions.size) {
+            select(missions[newIndex])
         }
+        notifyDataSetChanged()
     }
 
     fun activatePreviousItem() {
-        val newIndex = fItems.indexOf(fActiveItem) - 1
+        val newIndex = missions.indexOf(fSelectedMission) - 1
         if (newIndex >= 0) {
-            activateItem(fItems[newIndex])
+            select(missions[newIndex])
         }
     }
 
@@ -77,25 +90,17 @@ class MissionStatusesRecyclerViewAdapter(private val fRecyclerView: RecyclerView
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.item = fItems[position]
+        holder.mission = missions[position]
     }
 
     override fun getItemCount(): Int = missions.size
 
     // Private implementation
 
-    private fun activateItem(item: MissionItem) {
-        fActiveItem?.let {
-            it.deactivate()
-            val index = fItems.indexOf(it)
-            (fRecyclerView.findViewHolderForLayoutPosition(index) as ViewHolder).item = it
-        }
-        item.let {
-            it.activate()
-            fActiveItem = it
-            val index = fItems.indexOf(it)
-            (fRecyclerView.findViewHolderForLayoutPosition(index) as ViewHolder).item = it
-        }
+    private fun select(item: Mission) {
+        fSelectedMission = item
+        notifyDataSetChanged()
     }
+
 
 }
