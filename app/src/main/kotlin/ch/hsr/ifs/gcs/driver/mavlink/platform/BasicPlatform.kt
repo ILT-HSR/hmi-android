@@ -206,7 +206,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 set("param4", nativeCommand.param4)
                 set("x", nativeCommand.x)
                 set("y", nativeCommand.y)
-                set("z", 5.0)
+                set("z", nativeCommand.z)
 
                 val expectedResponse = if (index < fCommands.size - 1) {
                     MessageID.MISSION_REQUEST
@@ -214,6 +214,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     MessageID.MISSION_ACK
                 }
 
+                Log.i(LOG_TAG, "transmitting item $index: $this")
                 awaitResponse(this, expectedResponse, Duration.ofMillis(1000), {
                     Log.i(LOG_TAG, "transmitItem($index) await succeeded")
 

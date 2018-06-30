@@ -8,6 +8,7 @@ import ch.hsr.ifs.gcs.mission.need.task.*
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.CAPABILITY_CAN_FLY
+import ch.hsr.ifs.gcs.support.geo.GPSPosition
 
 /**
  * This [Need] implementation represents the need to drop a cargo at a chosen location.
@@ -30,12 +31,14 @@ class CallIn(override val resource: Resource) : Need {
     )
 
     override val tasks: List<Task>?
-        get() = listOf(
-//                ChangeAltitude(fAltitude.result),
-                MoveToPosition(fTarget.result),
-                TriggerPayload(fCargo.result),
-                ReturnToHome()
-        )
+        get() = GPSPosition(fTarget.result.latitude, fTarget.result.longitude, fAltitude.result.toDouble()).let{ target ->
+            listOf(
+                    TakeOff(fAltitude.result),
+                    MoveToPosition(target),
+                    TriggerPayload(fCargo.result),
+                    ReturnToHome()
+            )
+        }
 
     override val requirements: List<Capability<*>>
         get() = listOf(
