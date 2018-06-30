@@ -2,6 +2,9 @@ package ch.hsr.ifs.gcs.driver
 
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
+import kotlinx.coroutines.experimental.newSingleThreadContext
+
+val PlatformContext = newSingleThreadContext("PlatformContext")
 
 /**
  * The interface of drivers for a given 'Platform'
@@ -20,11 +23,11 @@ import ch.hsr.ifs.gcs.support.geo.GPSPosition
  */
 interface Platform {
 
-    interface Listener {
-
-        fun onLivelinessChanged(platform: Platform)
-
-    }
+//    interface Listener {
+//
+//        fun onLivelinessChanged(platform: Platform)
+//
+//    }
 
     /**
      * The driver id of the specific implementation
@@ -70,21 +73,21 @@ interface Platform {
      */
     val execution: Execution
 
-    /**
-     * Add the given [platform listener][Platform.Listener] to this [Platform]
-     *
-     * @param listener An implementation of [Platform.Listener]
-     *
-     * @since 1.0.0
-     */
-    fun addListener(listener: Listener)
-
-    /**
-     * Remove the given [platform listener][Platform.Listener] from this [Platform]
-     *
-     * @param listener An implementation of [Platform.Listener]
-     *
-     * @since 1.0.0
-     */
-    fun removeListener(listener: Listener)
+//    /**
+//     * Add the given [platform listener][Platform.Listener] to this [Platform]
+//     *
+//     * @param listener An implementation of [Platform.Listener]
+//     *
+//     * @since 1.0.0
+//     */
+//    fun addListener(listener: Listener)
+//
+//    /**
+//     * Remove the given [platform listener][Platform.Listener] from this [Platform]
+//     *
+//     * @param listener An implementation of [Platform.Listener]
+//     *
+//     * @since 1.0.0
+//     */
+//    fun removeListener(listener: Listener)
 }

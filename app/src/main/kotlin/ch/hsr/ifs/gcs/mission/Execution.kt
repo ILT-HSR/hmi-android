@@ -13,7 +13,7 @@ abstract class Execution {
 
     protected val fCommands = mutableListOf<Command<*>>()
 
-    abstract suspend fun tick() : Status
+    abstract fun tick() : Status
 
     open operator fun plusAssign(command: Command<*>) {
         fCommands += command
