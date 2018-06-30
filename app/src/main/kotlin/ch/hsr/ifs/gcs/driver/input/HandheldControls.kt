@@ -8,14 +8,13 @@ import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.driver.Input.Listener
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.util.SerialInputOutputManager
-import java.io.IOException
 import java.lang.Exception
 import java.util.concurrent.Executors
 
 class HandheldControls(context: Context, private val fPort: UsbSerialPort) : SerialInputOutputManager.Listener, Input {
 
     companion object {
-        private val LOG_TAG = HandheldControls::class.simpleName
+        private const val LOG_TAG = "HandheldControls"
     }
 
     private val fIOExecutor = Executors.newSingleThreadExecutor()
@@ -28,15 +27,11 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
     init {
         with(context.getSystemService(Context.USB_SERVICE) as UsbManager) {
             openDevice(fPort.driver.device)?.let {
-                try {
-                    fPort.open(it)
-                    fPort.dtr = true
-                    fPort.setParameters(9600, 8, 1, UsbSerialPort.PARITY_NONE)
-                    fIOManager = SerialInputOutputManager(fPort, this@HandheldControls)
-                    fIOExecutor.submit(fIOManager)
-                } catch (e: IOException) {
-                    Log.e(LOG_TAG, "Failed to open control port", e)
-                }
+                fPort.open(it)
+                fPort.dtr = true
+                fPort.setParameters(9600, 8, 1, UsbSerialPort.PARITY_NONE)
+                fIOManager = SerialInputOutputManager(fPort, this@HandheldControls)
+                fIOExecutor.submit(fIOManager)
             }
         }
     }
@@ -50,6 +45,7 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
     }
 
     override fun onNewData(data: ByteArray) {
+        Log.i(LOG_TAG, "onNewData: $data")
         var message = ""
         data.forEach {
             message += String.format("0x%02x ", it)

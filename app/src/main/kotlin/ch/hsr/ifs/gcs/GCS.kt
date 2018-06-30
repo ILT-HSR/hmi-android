@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs
 
 import android.app.Application
+import android.util.Log
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.NewPlatformAvailable
 import ch.hsr.ifs.gcs.driver.Platform
@@ -47,6 +48,7 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
         fResourceManager.onCreate(this, fPlatformModel)
         fNeedManager.onCreate(fResourceModel)
         fPlatformManager.start(this)
+        fInputManager.start(this)
 
         fMainModel.activeMissions.observeForever {
             (it ?: emptyList()).forEach(fScheduler::launch)
@@ -55,6 +57,7 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
 
     override fun onTerminate() {
         super.onTerminate()
+        fInputManager.stop()
         fPlatformManager.stop()
         fNeedManager.onDestroy(fResourceModel)
         fResourceManager.onDestroy(fPlatformModel)

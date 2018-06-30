@@ -18,8 +18,8 @@ import ch.hsr.ifs.gcs.support.geo.LocationService
 import ch.hsr.ifs.gcs.ui.mission.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionFragment
-import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
+import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
     }
 
     fun hideMainFragment() {
-        if(fMainFragment != null) {
+        if (fMainFragment != null) {
             supportFragmentManager.beginTransaction()
                     .remove(fMainFragment)
                     .commit()
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
 
         fModel = (application as GCS).mainModel
         fModel.activeMenuFragment.observe(this, Observer {
-            if(it == null) {
+            if (it == null) {
                 showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
             } else {
                 showMenuFragment(it)
@@ -135,7 +135,6 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
                     map.controller.zoomOut()
                 }
             }
-
         }
     }
 
@@ -160,7 +159,7 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
                 this
             }
 
-    private fun createFragment(id: MenuFragmentID): Fragment = when(id) {
+    private fun createFragment(id: MenuFragmentID): Fragment = when (id) {
         MenuFragmentID.MISSION_RESULTS_FRAGMENT -> MissionResultsFragment()
         MenuFragmentID.MISSION_STATUSES_FRAGMENT -> MissionStatusesFragment()
         MenuFragmentID.NEEDS_FRAGMENT -> NeedsFragment()
