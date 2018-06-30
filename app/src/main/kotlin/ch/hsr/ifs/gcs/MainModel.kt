@@ -6,7 +6,6 @@ import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Result
-import ch.hsr.ifs.gcs.mission.access.MissionProvider
 import ch.hsr.ifs.gcs.ui.MenuFragmentID
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.channels.Channel
@@ -71,7 +70,7 @@ data class NeedConfigurationStarted(val need: Need) : MainModelEvent()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class NeedConfigurationAborted: MainModelEvent()
+class NeedConfigurationAborted : MainModelEvent()
 
 /**
  * Event to to signal that a need configuration has been started
@@ -154,7 +153,9 @@ class MainModel {
                     fActiveMenuFragment.value = MenuFragmentID.NEEDS_FRAGMENT
                 }
                 is NeedConfigurationFinished -> {
-                    fActiveNeed.value?.let(::Mission)?.let(MissionProvider::submit)
+                    fActiveNeed.value?.let(::Mission)?.let {
+                        fActiveMissions.value = fActiveMissions.value!! + it
+                    }
                     fActiveNeed.value = null
                     fActiveMenuFragment.value = MenuFragmentID.MISSION_STATUSES_FRAGMENT
                 }

@@ -8,6 +8,7 @@ import ch.hsr.ifs.gcs.driver.PlatformModel
 import ch.hsr.ifs.gcs.driver.access.InputManager
 import ch.hsr.ifs.gcs.driver.access.PlatformManager
 import ch.hsr.ifs.gcs.mission.Need
+import ch.hsr.ifs.gcs.mission.Scheduler
 import ch.hsr.ifs.gcs.mission.access.NeedManager
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.ResourceManager
@@ -23,9 +24,12 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
     private lateinit var fPlatformManager: PlatformManager
     private lateinit var fInputManager: InputManager
 
+    private val fScheduler = Scheduler()
+
     val mainModel get() = fMainModel
     val platformManager get() = fPlatformManager
     val inputManager get() = fInputManager
+
 
     // Application implementation
 
@@ -43,6 +47,10 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
         fResourceManager.onCreate(this, fPlatformModel)
         fNeedManager.onCreate(fResourceModel)
         fPlatformManager.start(this)
+
+        fMainModel.activeMissions.observeForever {
+            (it ?: emptyList()).forEach(fScheduler::launch)
+        }
     }
 
     override fun onTerminate() {

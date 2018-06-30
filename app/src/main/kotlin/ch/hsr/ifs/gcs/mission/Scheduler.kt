@@ -4,7 +4,7 @@ import java.time.Duration
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-object Scheduler {
+class Scheduler {
 
     interface Listener {
 
@@ -18,16 +18,10 @@ object Scheduler {
     private val fMissionExecutionStatuses = mutableMapOf<Mission, Execution.Status>()
     private val fExecutionRunner = Executors.newSingleThreadScheduledExecutor()
 
-    fun addListener(listener: Listener) {
-        fListeners += listener
-    }
-
-    fun removeListener(listener: Listener) {
-        fListeners -= listener
-    }
-
     fun launch(mission: Mission) {
-        tick(mission)
+        if(!fMissionExecutionStatuses.containsKey(mission)) {
+            tick(mission)
+        }
     }
 
     private fun tick(mission: Mission) {
@@ -35,7 +29,6 @@ object Scheduler {
         if(!fMissionExecutionStatuses.contains(mission)) {
             val oldStatus = fMissionExecutionStatuses[mission]
             if(status != oldStatus) {
-                fListeners.forEach { it.onMissionUpdated(mission) }
                 fMissionExecutionStatuses[mission] = status
             }
         } else {
