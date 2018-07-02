@@ -2,13 +2,12 @@ package ch.hsr.ifs.gcs.ui.mission.need
 
 import android.content.Context
 import android.util.Log
-import ch.hsr.ifs.gcs.mission.need.Need
-import ch.hsr.ifs.gcs.ui.MainActivity
+import ch.hsr.ifs.gcs.mission.Need
 import com.google.gson.JsonParser
 import java.io.InputStream
 import java.io.InputStreamReader
 
-class NeedItemFactory(context: MainActivity) {
+class NeedItemFactory(context: Context) {
 
     companion object {
 
@@ -37,7 +36,7 @@ class NeedItemFactory(context: MainActivity) {
                 context.assets.open("$NEED_ITEM_DESCRIPTOR_DIRECTORY/$it")?.let {
                     NeedItemDescriptor.load(it)
                 }?.apply {
-                    fConstructors[id] = { need -> NeedItem(need, name, context) }
+                    fConstructors[id] = { need -> NeedItem(need, name) }
                 }
             } catch (e: IllegalStateException) {
                 Log.e(LOG_TAG, "Failed to read need item descriptor configuration '$NEED_ITEM_DESCRIPTOR_DIRECTORY/$it'")

@@ -13,7 +13,19 @@ import java.nio.channels.ByteChannel
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-internal class PixhawkPX4(channel: ByteChannel, payloadDriverId: String?) : CommonPlatform(channel, payloadDriverId) {
+internal class PixhawkPX4 private constructor(channel: ByteChannel) : CommonPlatform(channel) {
+
+    companion object {
+        /**
+         * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform] implementation for Pixhawk PX4 controllers
+         *
+         * @since 1.0.0
+         * @author IFS Institute for Software
+         */
+        const val DRIVER_MAVLINK_PIXHAWK_PX4 = "ch.hsr.ifs.gcs.driver.mavlink.platform.PixhawkPX4"
+
+        fun instantiate(channel: ByteChannel): PixhawkPX4? = PixhawkPX4(channel)
+    }
 
     enum class PX4CustomMode(val id: Int) {
         MANUAL(1),
@@ -36,16 +48,6 @@ internal class PixhawkPX4(channel: ByteChannel, payloadDriverId: String?) : Comm
         LAND(6),
         RETURN_TO_GROUND_STATION(7),
         FOLLOW_TARGET(8)
-    }
-
-    companion object {
-        /**
-         * The driver ID of the builtin [ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform] implementation for Pixhawk PX4 controllers
-         *
-         * @since 1.0.0
-         * @author IFS Institute for Software
-         */
-        const val DRIVER_MAVLINK_PIXHAWK_PX4 = "ch.hsr.ifs.gcs.driver.mavlink.platform.PixhawkPX4"
     }
 
     override val driverId get() = DRIVER_MAVLINK_PIXHAWK_PX4

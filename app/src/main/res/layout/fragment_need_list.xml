@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleText"
-        tools:context=".ui.fragments.needs.NeedsFragment"
+        tools:context=".ui.mission.need.NeedsFragment"
         tools:listitem="@layout/fragment_need" />
 
     <Button

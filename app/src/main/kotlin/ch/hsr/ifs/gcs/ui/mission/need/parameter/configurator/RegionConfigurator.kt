@@ -64,6 +64,11 @@ class RegionConfigurator : ParameterConfigurator<List<GeoPoint>>() {
         }
     }
 
+    override fun abort() {
+        context.map.overlays.clear()
+        context.map.invalidate()
+    }
+
     private fun createInitialPolygon(mapView: MapView): Polygon {
         val zoomLevel = mapView.zoomLevelDouble
         val currentGeoPoint = mapView.mapCenter

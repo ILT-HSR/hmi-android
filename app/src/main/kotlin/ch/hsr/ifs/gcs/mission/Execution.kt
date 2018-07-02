@@ -4,14 +4,14 @@ import ch.hsr.ifs.gcs.driver.Command
 
 abstract class Execution {
 
-    protected val fCommands = mutableListOf<Command<*>>()
-
     enum class Status {
         FAILURE,
         PREPARING,
         RUNNING,
         FINISHED
     }
+
+    protected val fCommands = mutableListOf<Command<*>>()
 
     abstract fun tick() : Status
 

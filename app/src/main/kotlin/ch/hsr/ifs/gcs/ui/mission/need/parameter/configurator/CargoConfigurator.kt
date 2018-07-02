@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
+import ch.hsr.ifs.gcs.ui.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_choose_cargo.*
@@ -28,10 +28,6 @@ class CargoConfigurator : ParameterConfigurator<String>() {
         setDefaultResult()
         context.map.setBuiltInZoomControls(false)
         context.showMainFragment(this)
-        context.leftButton.setOnClickListener {
-            destroy()
-            context.showMenuFragment(MenuFragmentID.NEEDS_FRAGMENT)
-        }
     }
 
     override fun destroy() {

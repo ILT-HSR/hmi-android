@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
+import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -44,9 +45,14 @@ class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
     override fun destroy() {
         val mapView = context.findViewById<MapView>(R.id.map)
         mapView.overlays.removeAt(mapView.overlays.size - 1)
-        val posMarker = mapView.overlays[0] as Marker
+        val posMarker = mapView.overlays[mapView.overlays.size - 1] as Marker
         posMarker.isDraggable = false
         posMarker.setOnMarkerClickListener { _, _ -> true } // needed to prevent info box pop up
+        mapView.invalidate()
     }
 
+    override fun abort() {
+        context.map.overlays.clear()
+        context.map.invalidate()
+    }
 }

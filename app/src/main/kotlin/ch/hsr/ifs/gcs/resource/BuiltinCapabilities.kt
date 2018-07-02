@@ -1,6 +1,4 @@
-package ch.hsr.ifs.gcs.resource.capability
-
-import ch.hsr.ifs.gcs.resource.CapabilityDescriptor
+package ch.hsr.ifs.gcs.resource
 
 /**
  * This capability should be attached to resources supporting vertical takeoff

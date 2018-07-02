@@ -1,9 +1,10 @@
 package ch.hsr.ifs.gcs.mission.need
 
+import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.need.parameter.Altitude
 import ch.hsr.ifs.gcs.mission.need.parameter.Region
 import ch.hsr.ifs.gcs.mission.need.task.Task
-import ch.hsr.ifs.gcs.resource.capability.CAPABILITY_CAN_FLY
+import ch.hsr.ifs.gcs.resource.CAPABILITY_CAN_FLY
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
 

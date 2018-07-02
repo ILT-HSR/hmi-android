@@ -1,83 +1,46 @@
 package ch.hsr.ifs.gcs.ui
 
+import android.arch.lifecycle.Observer
 import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
+import ch.hsr.ifs.gcs.GCS
+import ch.hsr.ifs.gcs.MainModel
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.R.drawable.abort_mission
 import ch.hsr.ifs.gcs.R.layout.activity_main
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
-import ch.hsr.ifs.gcs.driver.access.InputProvider
-import ch.hsr.ifs.gcs.mission.access.NeedProvider
-import ch.hsr.ifs.gcs.resource.access.ResourceManager
 import ch.hsr.ifs.gcs.support.geo.LocationService
-import ch.hsr.ifs.gcs.support.usb.DeviceScanner
-import ch.hsr.ifs.gcs.ui.fragments.MenuFragmentID
-import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsFragment
-import ch.hsr.ifs.gcs.ui.fragments.missionresults.MissionResultsListener
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesFragment
-import ch.hsr.ifs.gcs.ui.fragments.missionstatuses.MissionStatusesListener
-import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionFragment
-import ch.hsr.ifs.gcs.ui.fragments.needinstructions.NeedInstructionListener
-import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsFragment
-import ch.hsr.ifs.gcs.ui.fragments.needs.NeedsListener
+import ch.hsr.ifs.gcs.ui.mission.MissionResultsFragment
+import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
+import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
+import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 
-class MainActivity(
-        missionResultsListener: MissionResultsListener = MissionResultsListener(),
-        missionStatusesListener: MissionStatusesListener = MissionStatusesListener(),
-        needsListener: NeedsListener = NeedsListener(),
-        needInstructionListener: NeedInstructionListener = NeedInstructionListener()
-) :
-        AppCompatActivity(),
-        Input.Listener,
-        LocationService.OnLocationChangedListener,
-        MissionResultsFragment.OnResultsFragmentChangedListener by missionResultsListener,
-        MissionStatusesFragment.OnStatusesFragmentChangedListener by missionStatusesListener,
-        NeedsFragment.OnNeedsFragmentChangedListener by needsListener,
-        NeedInstructionFragment.OnNeedInstructionFragmentListener by needInstructionListener {
+class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLocationChangedListener {
 
     private lateinit var fLocationService: LocationService
     private lateinit var fLocation: Location
+    private lateinit var fModel: MainModel
+
     private var fMenuFragment = MenuFragmentID.MISSION_STATUSES_FRAGMENT
     private var fMainFragment: Fragment? = null
-    private val fDeviceScanner = DeviceScanner()
+    //private val fDeviceScanner = DeviceHandler()
 
-    val needItemFactory by lazy { NeedItemFactory(this) }
-    val parameterItemFactory by lazy { ParameterItemFactory(this) }
-    val resourceManager by lazy { ResourceManager(this) }
-    val needProvider by lazy { NeedProvider(resourceManager) }
-    val inputProvider by lazy { InputProvider(fDeviceScanner) }
+    private lateinit var fParameterItemFactory: ParameterItemFactory
+    private lateinit var fNeedItemFactory: NeedItemFactory
 
-    private var controls: Input? = null
-
-
-    init {
-        missionResultsListener.activity = this
-        missionStatusesListener.activity = this
-        needsListener.activity = this
-        needInstructionListener.activity = this
-    }
-
-    fun showMenuFragment(id: MenuFragmentID) =
-        with(supportFragmentManager.findFragmentByTag(id.name) ?: createFragment(id)) {
-            fMenuFragment = id
-            supportFragmentManager.beginTransaction()
-                    .replace(R.id.menuholder, this)
-                    .commit()
-            this
-        }
-
+    val needItemFactory get() = fNeedItemFactory
+    val parameterItemFactory get() = fParameterItemFactory
 
     fun showMainFragment(fragment: Fragment) {
         fMainFragment = fragment
@@ -87,7 +50,7 @@ class MainActivity(
     }
 
     fun hideMainFragment() {
-        if(fMainFragment != null) {
+        if (fMainFragment != null) {
             supportFragmentManager.beginTransaction()
                     .remove(fMainFragment)
                     .commit()
@@ -99,35 +62,22 @@ class MainActivity(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("activity", "onCreate() $this")
-
         Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
 
         setContentView(activity_main)
-
-        leftButton.background = applicationContext.getDrawable(abort_mission)
-
-        showMenuFragment(fMenuFragment)
 
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.controller.setZoom(19.0)
         map.setBuiltInZoomControls(true)
 
-        fLocationService = LocationService(this, this)
+        showMenuFragment(fMenuFragment)
 
-        if(inputProvider[this] == null) {
-            controls = inputProvider[this]
-            Log.i("activity", "device: $controls")
-        } else {
-            inputProvider.addListener(object : InputProvider.Listener {
-                override fun onInputDeviceAvailable(device: Input) {
-                    inputProvider.removeListener(this)
-                    controls = device
-                    Log.i("LISTENER", "device: $device")
-                }
-            })
-        }
-        Log.i("activity", "device: $controls")
+        leftButton.background = applicationContext.getDrawable(abort_mission)
+
+        fLocationService = LocationService(this, this)
+        fParameterItemFactory = ParameterItemFactory(this)
+        fNeedItemFactory = NeedItemFactory(this)
+
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -145,37 +95,36 @@ class MainActivity(
 
     override fun onResume() {
         super.onResume()
-        Log.i("activity", "onResume() $this")
         map.onResume()
-        fDeviceScanner.start(this)
+        //fDeviceScanner.start(this)
         showMenuFragment(fMenuFragment)
+
+        fModel = (application as GCS).mainModel
+        fModel.activeMenuFragment.observe(this, Observer {
+            if (it == null) {
+                showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
+            } else {
+                showMenuFragment(it)
+            }
+        })
     }
 
     override fun onPause() {
         super.onPause()
-        Log.i("activity", "onPause() $this")
         map.onPause()
         finish()
     }
 
     override fun onDestroy() {
-        Log.i("activity", "onDestroy() $this")
-        fDeviceScanner.stop()
+        //fDeviceScanner.stop()
         super.onDestroy()
     }
 
     // Input.Handler implementation
 
-    override fun onJoystick(control: Control, value: Byte) {
-        Log.d("JOYSTICK", "Not implemented yet")
-    }
-
     override fun onButton(control: Control) {
         @Suppress("NON_EXHAUSTIVE_WHEN")
         when (control) {
-            Control.SHOW_MENU -> {
-                Log.i("BUTTON", "SHOW_MENU")
-            }
             Control.ZOOM_IN -> {
                 runOnUiThread {
                     map.controller.zoomIn()
@@ -186,7 +135,6 @@ class MainActivity(
                     map.controller.zoomOut()
                 }
             }
-
         }
     }
 
@@ -202,7 +150,16 @@ class MainActivity(
 
     // Private implementation
 
-    private fun createFragment(id: MenuFragmentID): Fragment = when(id) {
+    private fun showMenuFragment(id: MenuFragmentID) =
+            with(supportFragmentManager.findFragmentByTag(id.name) ?: createFragment(id)) {
+                fMenuFragment = id
+                supportFragmentManager.beginTransaction()
+                        .replace(R.id.menuholder, this)
+                        .commit()
+                this
+            }
+
+    private fun createFragment(id: MenuFragmentID): Fragment = when (id) {
         MenuFragmentID.MISSION_RESULTS_FRAGMENT -> MissionResultsFragment()
         MenuFragmentID.MISSION_STATUSES_FRAGMENT -> MissionStatusesFragment()
         MenuFragmentID.NEEDS_FRAGMENT -> NeedsFragment()

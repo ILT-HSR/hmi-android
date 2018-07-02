@@ -1,51 +1,64 @@
 package ch.hsr.ifs.gcs.mission
 
+import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.channels.Channel
+import kotlinx.coroutines.experimental.channels.actor
 import java.time.Duration
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-object Scheduler {
+class Scheduler(private val fTickInterval: Duration = Duration.ofMillis(100)) {
 
-    interface Listener {
-
-        fun onMissionUpdated(mission: Mission)
-
+    companion object {
+        val MISSION_TICK_CONTEXT = newSingleThreadContext("MissionTickContext")
     }
 
-    private val TICK = Duration.ofMillis(100)
-
-    private val fListeners = mutableListOf<Listener>()
-    private val fMissionExecutionStatuses = mutableMapOf<Mission, Execution.Status>()
-    private val fExecutionRunner = Executors.newSingleThreadScheduledExecutor()
-
-    fun addListener(listener: Listener) {
-        fListeners += listener
+    private sealed class Event {
+        data class LaunchMission(val mission: Mission) : Event()
+        data class MissionAborted(val mission: Mission) : Event()
     }
 
-    fun removeListener(listener: Listener) {
-        fListeners -= listener
+    private val fScheduledMissions = mutableMapOf<Mission, Job>()
+
+    private val fActor = actor<Event>(DefaultDispatcher, Channel.UNLIMITED) {
+        for (event in this) {
+            when (event) {
+                is Event.LaunchMission -> event.mission.let { mission ->
+                    if (mission !in fScheduledMissions) {
+                        fScheduledMissions[mission] = schedule(mission)
+                    }
+                }
+                is Event.MissionAborted -> event.mission.let { mission ->
+                    fScheduledMissions[mission]?.let {
+                        if(it.isActive) {
+                            it.cancel()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun launch(mission: Mission) {
-        tick(mission)
+        fActor.offer(Event.LaunchMission(mission))
     }
 
-    private fun tick(mission: Mission) {
-        val status = mission.tick()
-        if(!fMissionExecutionStatuses.contains(mission)) {
-            val oldStatus = fMissionExecutionStatuses[mission]
-            if(status != oldStatus) {
-                fListeners.forEach { it.onMissionUpdated(mission) }
-                fMissionExecutionStatuses[mission] = status
+    fun shutdown() {
+        fActor.close()
+    }
+
+    private fun schedule(mission: Mission): Job = launch(MISSION_TICK_CONTEXT) {
+        mission.tick()
+
+        while (isActive) {
+            delay(fTickInterval.toNanos(), TimeUnit.NANOSECONDS)
+            if (!mission.isAborted) {
+                mission.tick()
+            } else {
+                fActor.send(Event.MissionAborted(mission))
             }
-        } else {
-            fListeners.forEach { it.onMissionUpdated(mission) }
-            fMissionExecutionStatuses[mission] = status
         }
 
-        if(status != Execution.Status.FINISHED && status != Execution.Status.FAILURE) {
-            fExecutionRunner.schedule({ tick(mission) }, TICK.toMillis(), TimeUnit.MILLISECONDS)
-        }
+        mission.abort()
+        fActor.send(Event.MissionAborted(mission))
     }
-
 }

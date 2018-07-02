@@ -5,7 +5,7 @@ import ch.hsr.ifs.gcs.mission.Execution
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 import java.nio.channels.ByteChannel
 
-class TestPlatform(channel: ByteChannel, schema: MAVLinkSchema) : BasicPlatform(channel, schema, null) {
+class TestPlatform(channel: ByteChannel, schema: MAVLinkSchema) : BasicPlatform(channel, schema) {
 
     private inner class TestExecution(target: MAVLinkSystem) : BasicPlatform.NativeMissionExecution(target), IntrospectableExecution {
         override val size get() = fCommands.size

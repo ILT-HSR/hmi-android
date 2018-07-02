@@ -1,9 +1,8 @@
-package ch.hsr.ifs.gcs.ui.mission.need
+package ch.hsr.ifs.gcs.ui.mission
 
-import ch.hsr.ifs.gcs.mission.Need
-import ch.hsr.ifs.gcs.ui.MainActivity
+import ch.hsr.ifs.gcs.mission.Result
 
-class NeedItem(val need: Need, val name: String) {
+class ResultItem(val result: Result) {
 
     private var fIsActive = false
 
@@ -16,4 +15,5 @@ class NeedItem(val need: Need, val name: String) {
     fun deactivate() {
         fIsActive = false
     }
+
 }

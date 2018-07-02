@@ -1,6 +1,12 @@
 package ch.hsr.ifs.gcs.mission
 
-import ch.hsr.ifs.gcs.mission.need.Need
+import android.util.Log
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.newSingleThreadContext
+import kotlinx.coroutines.experimental.runBlocking
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.properties.Delegates
 
 /**
  * A [mission][Mission] encapsulates the translation of abstract [need][Need] tasks into driver
@@ -11,8 +17,35 @@ import ch.hsr.ifs.gcs.mission.need.Need
  */
 class Mission(val need: Need) {
 
+    interface Listener {
+        fun onMissionStatusChanged(mission: Mission, status: Status)
+    }
+
+    enum class Status {
+        PREPARING,
+        ACTIVE,
+        FINISHED,
+        ABORTED,
+        FAILED
+    }
+
+    companion object {
+        private val MISSION_CONTEXT = newSingleThreadContext("MissionContext")
+        private const val LOG_TAG = "Mission"
+    }
+
+    private val fIsAborted = AtomicBoolean()
     private val fPlatform = need.resource.plaform
     private val fExecution = fPlatform.execution
+    private var fActiveTick: Job? = null
+    private val fListeners = mutableListOf<Listener>()
+    private var fStatus by Delegates.observable(Status.PREPARING) { _, old, new ->
+        if (old != new) {
+            launch(MISSION_CONTEXT) {
+                fListeners.forEach { it.onMissionStatusChanged(this@Mission, new) }
+            }
+        }
+    }
 
     init {
         need.tasks?.apply {
@@ -21,9 +54,46 @@ class Mission(val need: Need) {
         }
     }
 
-    val status: String
-        get() = need.resource.status.name
+    val isAborted get() = fIsAborted.get()
 
-    fun tick() = fExecution.tick()
+    val status get() = runBlocking(MISSION_CONTEXT) { fStatus }
+
+    fun abort() {
+        if (!fIsAborted.getAndSet(true)) {
+            Log.i(LOG_TAG, "Abortion requested for $this")
+            fActiveTick?.cancel()
+        }
+    }
+
+    fun addListener(listener: Listener) = runBlocking(MISSION_CONTEXT) {
+        fListeners += listener
+    }
+
+    fun removeListener(listener: Listener) = runBlocking(MISSION_CONTEXT) {
+        fListeners -= listener
+    }
+
+    suspend fun tick() {
+        if (!fIsAborted.get()) {
+            fActiveTick?.let {
+                if(!it.isActive) {
+                    performTick()
+                } else {
+                    it.join()
+                }
+            } ?: performTick()
+        }
+    }
+
+    private fun performTick() {
+        fActiveTick = launch(MISSION_CONTEXT) {
+            fStatus = when (fExecution.tick()) {
+                Execution.Status.FAILURE -> Status.FAILED
+                Execution.Status.PREPARING -> Status.PREPARING
+                Execution.Status.RUNNING -> Status.ACTIVE
+                Execution.Status.FINISHED -> Status.FINISHED
+            }
+        }
+    }
 
 }
