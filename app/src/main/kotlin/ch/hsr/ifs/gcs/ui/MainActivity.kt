@@ -1,10 +1,14 @@
 package ch.hsr.ifs.gcs.ui
 
+import android.Manifest
 import android.arch.lifecycle.Observer
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import ch.hsr.ifs.gcs.GCS
@@ -23,12 +27,11 @@ import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.tileprovider.tilesource.bing.BingMapTileSource
 import org.osmdroid.util.GeoPoint
 import java.util.*
 
-class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLocationChangedListener {
+class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLocationChangedListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private lateinit var fLocationService: LocationService
     private lateinit var fLocation: Location
@@ -67,6 +70,8 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
 
         setContentView(activity_main)
+
+        requestLocationPermissions()
 
         BingMapTileSource.retrieveBingKey(this)
         val tileSource = BingMapTileSource(Locale.getDefault().displayName)
@@ -143,6 +148,12 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         }
     }
 
+    // ActivityCompat.OnRequestPermissionsResultCallback implementation
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     // LocationService.OnLocationChangedListener implementation
 
     override fun onCurrentLocationChanged(location: Location) {
@@ -169,6 +180,12 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         MenuFragmentID.MISSION_STATUSES_FRAGMENT -> MissionStatusesFragment()
         MenuFragmentID.NEEDS_FRAGMENT -> NeedsFragment()
         MenuFragmentID.NEED_INSTRUCTION_FRAGMENT -> NeedInstructionFragment()
+    }
+
+    private fun requestLocationPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this@MainActivity, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 42)
+        }
     }
 
 }
