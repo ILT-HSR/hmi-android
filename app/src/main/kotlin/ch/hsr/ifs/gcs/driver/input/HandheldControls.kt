@@ -2,6 +2,8 @@ package ch.hsr.ifs.gcs.driver.input
 
 import android.content.Context
 import android.hardware.usb.UsbManager
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
@@ -15,6 +17,11 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
 
     companion object {
         private const val LOG_TAG = "HandheldControls"
+
+        fun runOnUIThread(block: () -> Unit) {
+            val handler = Handler(Looper.getMainLooper())
+            handler.post(block)
+        }
     }
 
     private val fIOExecutor = Executors.newSingleThreadExecutor()
@@ -37,20 +44,23 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
     }
 
     override fun addListener(listener: Listener) {
-        fListeners.add(listener)
+        runOnUIThread {
+            fListeners.add(listener)
+        }
     }
 
     override fun removeListener(listener: Listener) {
-        fListeners.remove(listener)
+        runOnUIThread {
+            fListeners.remove(listener)
+        }
     }
 
     override fun onNewData(data: ByteArray) {
-        Log.i(LOG_TAG, "onNewData: $data")
         var message = ""
         data.forEach {
             message += String.format("0x%02x ", it)
         }
-        Log.d(LOG_TAG, "read ${data.size} bytes: $message")
+//        Log.i(LOG_TAG, "read ${data.size} bytes: $message")
 
         for (i in 0 until data.size) {
             val byte = data[i]
@@ -62,12 +72,15 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
 
             if (fBuffered == 4) {
                 decode()?.let { control ->
-                    fListeners.forEach {
-                        if (!(control == Control.JOYSTICK_X_AXIS ||
-                                        control == Control.JOYSTICK_Y_AXIS)) {
-                            it.onButton(control)
-                        } else {
-                            it.onJoystick(control, fBuffer[2])
+                    Log.i(LOG_TAG, "Decoded: $control")
+                    runOnUIThread {
+                        fListeners.forEach {
+                            if (!(control == Control.JOYSTICK_X_AXIS ||
+                                            control == Control.JOYSTICK_Y_AXIS)) {
+                                it.onButton(control)
+                            } else {
+                                it.onJoystick(control, fBuffer[2])
+                            }
                         }
                     }
                 }
@@ -87,8 +100,8 @@ class HandheldControls(context: Context, private val fPort: UsbSerialPort) : Ser
         Control.SHOW_MENU.value -> Control.SHOW_MENU
         Control.ZOOM_IN.value -> Control.ZOOM_IN
         Control.ZOOM_OUT.value -> Control.ZOOM_OUT
-        Control.JOYSTICK_X_AXIS.value -> Control.JOYSTICK_X_AXIS
-        Control.JOYSTICK_Y_AXIS.value -> Control.JOYSTICK_Y_AXIS
+//        Control.JOYSTICK_X_AXIS.value -> Control.JOYSTICK_X_AXIS
+//        Control.JOYSTICK_Y_AXIS.value -> Control.JOYSTICK_Y_AXIS
         else -> null
     }
 

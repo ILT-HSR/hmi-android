@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
 
     private var fMenuFragment = MenuFragmentID.MISSION_STATUSES_FRAGMENT
     private var fMainFragment: Fragment? = null
-    //private val fDeviceScanner = DeviceHandler()
 
     private lateinit var fParameterItemFactory: ParameterItemFactory
     private lateinit var fNeedItemFactory: NeedItemFactory
@@ -74,8 +73,13 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         requestLocationPermissions()
 
         BingMapTileSource.retrieveBingKey(this)
-        val tileSource = BingMapTileSource(Locale.getDefault().displayName)
+        val tileSource = object : BingMapTileSource(Locale.getDefault().displayName) {
+            override fun getMaximumZoomLevel(): Int {
+                return 19
+            }
+        }
         tileSource.style = BingMapTileSource.IMAGERYSET_AERIAL
+        tileSource.maximumZoomLevel
         map.setTileSource(tileSource)
         map.controller.setZoom(18.0)
         map.setBuiltInZoomControls(true)
@@ -117,6 +121,10 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
                 showMenuFragment(it)
             }
         })
+        fModel.activeInputDevice.observe(this, Observer {
+            it?.removeListener(this)
+            it?.addListener(this)
+        })
     }
 
     override fun onPause() {
@@ -136,14 +144,10 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         @Suppress("NON_EXHAUSTIVE_WHEN")
         when (control) {
             Control.ZOOM_IN -> {
-                runOnUiThread {
-                    map.controller.zoomIn()
-                }
+                map.controller.zoomIn()
             }
             Control.ZOOM_OUT -> {
-                runOnUiThread {
-                    map.controller.zoomOut()
-                }
+                map.controller.zoomOut()
             }
         }
     }

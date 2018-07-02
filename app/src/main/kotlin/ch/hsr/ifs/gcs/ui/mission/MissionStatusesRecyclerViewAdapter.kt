@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -71,7 +72,6 @@ class MissionStatusesRecyclerViewAdapter(private val fRecyclerView: RecyclerView
         if (newIndex < missions.size) {
             select(missions[newIndex])
         }
-        notifyDataSetChanged()
     }
 
     fun activatePreviousItem() {
@@ -99,6 +99,7 @@ class MissionStatusesRecyclerViewAdapter(private val fRecyclerView: RecyclerView
 
     private fun select(item: Mission) {
         fSelectedMission = item
+        Log.i("MSRVA", "thread: ${Thread.currentThread().name}")
         notifyDataSetChanged()
     }
 

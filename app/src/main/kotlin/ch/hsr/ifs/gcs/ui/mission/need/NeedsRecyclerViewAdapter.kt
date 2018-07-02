@@ -90,13 +90,13 @@ class NeedsRecyclerViewAdapter(private val fRecyclerView: RecyclerView, private 
         fActiveItem?.let {
             it.deactivate()
             val index = fItems.indexOf(it)
-            (fRecyclerView.findViewHolderForLayoutPosition(index) as ViewHolder).item = it
+            (fRecyclerView.findViewHolderForAdapterPosition(index) as ViewHolder).item = it
         }
         item.let {
             it.activate()
             fActiveItem = it
             val index = fItems.indexOf(it)
-            (fRecyclerView.findViewHolderForLayoutPosition(index) as ViewHolder).item = it
+            (fRecyclerView.findViewHolderForAdapterPosition(index) as ViewHolder).item = it
         }
     }
 

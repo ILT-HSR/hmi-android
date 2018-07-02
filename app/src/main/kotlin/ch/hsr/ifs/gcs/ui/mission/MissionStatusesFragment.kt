@@ -54,6 +54,8 @@ class MissionStatusesFragment : Fragment(), Input.Listener {
         })
         fModel.activeInputDevice.observe(this, Observer {
             fControls = it
+            fControls?.removeListener(this)
+            fControls?.addListener(this)
         })
 
         fControls = fModel.activeInputDevice.value

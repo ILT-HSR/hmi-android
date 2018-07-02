@@ -42,6 +42,8 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
         fModel = (activity!!.application as GCS).mainModel
         fModel.activeInputDevice.observe(this, Observer {
             fControls = it
+            fControls?.removeListener(this)
+            fControls?.addListener(this)
         })
 
         fControls = fModel.activeInputDevice.value
@@ -58,6 +60,7 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
                     needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
                     needNavigationButton.setOnClickListener {
                         fModel.submit(NeedConfigurationFinished())
+                        fControls?.removeListener(this)
                     }
                 }
             }
@@ -75,12 +78,12 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
         @Suppress("NON_EXHAUSTIVE_WHEN")
         when (control) {
             Input.Control.UPDATE_ABORT -> {
-                leftButton.performClick()
+                activity?.leftButton?.performClick()
                 fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {
                 needNavigationButton.performClick()
-                fControls?.removeListener(this)
+//                fControls?.removeListener(this)
             }
         }
     }
