@@ -56,6 +56,8 @@
                 android:resource="@xml/device_filter" />
         </receiver>
 
+        <meta-data android:name="BING_KEY" android:value="ArMy7ZPtrgfSheZdCkalAWDl0tFkfims5ZAR9twg6XqgJnntIOQY7FAcTAJ3rY7h"/>
+
     </application>
 
 </manifest>

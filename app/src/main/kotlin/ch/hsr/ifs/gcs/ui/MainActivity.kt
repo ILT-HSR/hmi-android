@@ -24,7 +24,9 @@ import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItemFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.tileprovider.tilesource.bing.BingMapTileSource
 import org.osmdroid.util.GeoPoint
+import java.util.*
 
 class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLocationChangedListener {
 
@@ -66,8 +68,11 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
 
         setContentView(activity_main)
 
-        map.setTileSource(TileSourceFactory.MAPNIK)
-        map.controller.setZoom(19.0)
+        BingMapTileSource.retrieveBingKey(this)
+        val tileSource = BingMapTileSource(Locale.getDefault().displayName)
+        tileSource.style = BingMapTileSource.IMAGERYSET_AERIAL
+        map.setTileSource(tileSource)
+        map.controller.setZoom(18.0)
         map.setBuiltInZoomControls(true)
 
         showMenuFragment(fMenuFragment)

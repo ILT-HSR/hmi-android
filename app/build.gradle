@@ -65,6 +65,7 @@ dependencies {
 
     // External Libraries
     implementation "org.osmdroid:osmdroid-android:$osmDroidVersion"
+    implementation "org.osmdroid:osmdroid-third-party:$osmDroidVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
 
     // Local Libraries
