@@ -13,7 +13,7 @@ class RunPlan(val name: String) : Task {
     override fun executeOn(resource: Resource): List<Command<*>> =
             with(resource.plaform as Platform) {
                 try {
-                    val planStream = GCS.context.assets.open("plans/$name.plan")
+                    val planStream = GCS.context.assets.open("plans/${this@RunPlan.name}.plan")
                     readQGCPlan(planStream)
                 } catch (e: IOException) {
                     Log.e("RunPlan", "Failed to load plan file", e)

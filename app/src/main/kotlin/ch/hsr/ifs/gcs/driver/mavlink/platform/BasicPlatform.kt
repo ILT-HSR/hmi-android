@@ -58,8 +58,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     private val fIORunner = Executors.newSingleThreadScheduledExecutor()
 
-//    private val fPlatformListeners = mutableListOf<Platform.Listener>()
-
     private var fIsAlive = false
     private var fLastHeartbeat = Instant.ofEpochSecond(0)
     private var fTimeSinceBoot = 0
@@ -119,8 +117,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 is CommandEvent.SendCommand -> event.command.let { command ->
                     fPendingAck = CompletableDeferred()
                     while (withTimeoutOrNull(250, TimeUnit.MILLISECONDS) { fPendingAck!!.await() } == null) {
-                        Log.i(LOG_TAG, "Thread ${Thread.currentThread().name} at ${Instant.now()}")
-                        Log.i(LOG_TAG, "Retrying")
+                        Log.d(LOG_TAG, "Retrying")
                         sendMessage(command.apply { set("confirmation", (getInt("confirmation") + 1) % 256) })
                     }
                     fPendingAck = null
@@ -133,18 +130,25 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
         private var fState = ExecutionState.CREATED
         private val fMissionPlanner = MAVLinkSystem(target.id, COMPONENT_MISSION_PLANNER)
+        private lateinit var fPendingResponse: CompletableDeferred<MAVLinkMessage>
 
-        var pendingResponse: CompletableDeferred<MAVLinkMessage>? = null
-
-        override fun tick() = when (fState) {
-            ExecutionState.CREATED -> {
-                fState = ExecutionState.UPLOADING
-                launch { upload() }
-                Status.PREPARING
+        fun handleResponse(message: MAVLinkMessage) {
+            if(this::fPendingResponse.isInitialized && fPendingResponse.isActive) {
+                fPendingResponse.complete(message)
             }
-            ExecutionState.UPLOADING -> Status.PREPARING
-            ExecutionState.RUNNING -> Status.RUNNING
-            ExecutionState.FAILED -> Status.FAILURE
+        }
+
+        override fun tick() = runBlocking(PlatformContext) {
+            when (fState) {
+                ExecutionState.CREATED -> {
+                    fState = ExecutionState.UPLOADING
+                    launch { upload() }
+                    Status.PREPARING
+                }
+                ExecutionState.UPLOADING -> Status.PREPARING
+                ExecutionState.RUNNING -> Status.RUNNING
+                ExecutionState.FAILED -> Status.FAILURE
+            }
         }
 
         override operator fun plusAssign(command: Command<*>) {
@@ -157,33 +161,34 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             val count = createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fMissionPlanner, schema)
             count["count"] = fCommands.size
 
-            pendingResponse = CompletableDeferred()
+            fPendingResponse = CompletableDeferred()
             sendMessage(count)
-            while (withTimeoutOrNull(1000, TimeUnit.MILLISECONDS) { pendingResponse?.await() } == null) {
+            while (withTimeoutOrNull(1000, TimeUnit.MILLISECONDS) { fPendingResponse.await() } == null) {
                 sendMessage(count)
             }
-            var response = pendingResponse!!.getCompleted()
-            Log.i(LOG_TAG, "Response: $response")
+            var response = fPendingResponse.getCompleted()
+            Log.d(LOG_TAG, "Response: $response")
 
             if (response.msgName == MessageID.MISSION_REQUEST.name) {
                 fCommands.forEachIndexed { idx, cmd ->
                     while (response.msgName == MessageID.MISSION_REQUEST.name && response.getInt("seq") == idx) {
                         response = sendItem(idx, cmd)
-                        Log.i(LOG_TAG, "Response: $response")
+                        Log.d(LOG_TAG, "Response: $response")
                     }
                 }
             }
 
             if (response.msgName == MessageID.MISSION_ACK.name) {
-                if (response.getInt("type") == 0) {
+                fState = if (response.getInt("type") == 0) {
                     sendCommand(createArmMessage(fSender, fTarget, schema))
+                    delay(1000)
                     sendCommand(createLongCommandMessage(fSender, fTarget, schema, LongCommand.MISSION_START).apply {
                         set("param1", 0)
                         set("param2", fCommands.size - 1)
                     })
-                    fState = ExecutionState.RUNNING
+                    ExecutionState.RUNNING
                 } else {
-                    fState = ExecutionState.FAILED
+                    ExecutionState.FAILED
                 }
             } else {
                 Log.i(LOG_TAG, "Mission start failed")
@@ -208,14 +213,14 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             item["y"] = nativeCommand.y
             item["z"] = nativeCommand.z
 
-            pendingResponse = CompletableDeferred()
+            fPendingResponse = CompletableDeferred()
             sendMessage(item)
             Log.i(LOG_TAG, "Sending $item")
-            while (withTimeoutOrNull(1000, TimeUnit.MILLISECONDS) { pendingResponse?.await() } == null) {
+            while (withTimeoutOrNull(1000, TimeUnit.MILLISECONDS) { fPendingResponse.await() } == null) {
                 sendMessage(item)
             }
 
-            return pendingResponse!!.getCompleted()
+            return fPendingResponse.getCompleted()
         }
 
     }
@@ -379,10 +384,10 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 MessageID.AUTOPILOT_VERSION -> fMainActor.offer(MessageEvent.Version(message))
                 MessageID.GLOBAL_POSITION_INT -> fMainActor.offer(MessageEvent.Position(message))
                 MessageID.COMMAND_ACK -> fPendingAck?.complete(message)
-                MessageID.MISSION_REQUEST, MessageID.MISSION_ACK -> (execution as NativeMissionExecution).pendingResponse?.complete(message)
+                MessageID.MISSION_REQUEST, MessageID.MISSION_ACK -> (execution as NativeMissionExecution).handleResponse(message)
                 else -> Unit
             }
-        }
+        } ?: Log.v(LOG_TAG, "unhandled: $message")
     }
 
 }

@@ -33,7 +33,7 @@ class CallIn(override val resource: Resource) : Need {
     override val tasks: List<Task>?
         get() = GPSPosition(fTarget.result.latitude, fTarget.result.longitude, fAltitude.result.toDouble()).let{ target ->
             listOf(
-                    TakeOff(fAltitude.result),
+//                    TakeOff(fAltitude.result),
                     MoveToPosition(target),
                     TriggerPayload(fCargo.result),
                     ReturnToHome()

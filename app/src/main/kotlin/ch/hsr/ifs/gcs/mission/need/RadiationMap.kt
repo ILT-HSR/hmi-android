@@ -30,7 +30,7 @@ class RadiationMap(override val resource: Resource) : Need {
 
     override val tasks: List<Task>?
         get() = listOf(
-                RunPlan("hsr-flight")
+                RunPlan("container_navigation")
         )
 
     override val requirements: List<Capability<*>>
