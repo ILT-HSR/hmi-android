@@ -8,7 +8,7 @@ class MoveToPosition(private val targetLocation: GPSPosition) : Task {
 
     override fun executeOn(resource: Resource) =
             with(resource.plaform as Vehicle) {
-                moveTo(targetLocation)
+                listOf(moveTo(targetLocation))
             }
 
 }

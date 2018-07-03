@@ -17,6 +17,6 @@ interface Task {
      *
      * @since 1.0.0
      */
-    fun executeOn(resource: Resource): Command<*>
+    fun executeOn(resource: Resource): List<Command<*>>
 
 }

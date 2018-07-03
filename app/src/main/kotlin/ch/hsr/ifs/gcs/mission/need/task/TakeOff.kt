@@ -8,7 +8,7 @@ class TakeOff(private val altitude: Int) : Task {
 
     override fun executeOn(resource: Resource) =
             with(resource.plaform as AerialVehicle) {
-                takeOff(Altitude((altitude.toDouble())))
+                listOf(takeOff(Altitude((altitude.toDouble()))))
             }
 
 }

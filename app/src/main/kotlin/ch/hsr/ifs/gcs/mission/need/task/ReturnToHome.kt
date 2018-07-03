@@ -5,7 +5,7 @@ import ch.hsr.ifs.gcs.resource.Resource
 
 class ReturnToHome : Task {
     override fun executeOn(resource: Resource) = with(resource.plaform as Vehicle) {
-        returnToHome()
+        listOf(returnToHome())
     }
 
 }

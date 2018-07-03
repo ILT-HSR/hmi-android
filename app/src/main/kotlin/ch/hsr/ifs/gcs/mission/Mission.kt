@@ -49,7 +49,7 @@ class Mission(val need: Need) {
 
     init {
         need.tasks?.apply {
-            map { it.executeOn(need.resource) }
+            flatMap { it.executeOn(need.resource) }
                     .forEach(fExecution::add)
         }
     }

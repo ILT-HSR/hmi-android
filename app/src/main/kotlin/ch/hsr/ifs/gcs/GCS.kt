@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.NewPlatformAvailable
@@ -15,6 +16,12 @@ import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.ResourceManager
 
 class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, NeedManager.Listener, InputManager.Listener {
+
+    companion object {
+        private lateinit var fContext: Context
+
+        val context get() = fContext
+    }
 
     private lateinit var fResourceModel: ResourceModel
     private lateinit var fPlatformModel: PlatformModel
@@ -36,6 +43,8 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
 
     override fun onCreate() {
         super.onCreate()
+        fContext = this
+
         fResourceModel = ResourceModel()
         fPlatformModel = PlatformModel()
         fMainModel = MainModel()
