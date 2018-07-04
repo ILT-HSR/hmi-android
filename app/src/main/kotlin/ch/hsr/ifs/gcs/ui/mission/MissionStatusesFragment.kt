@@ -88,7 +88,7 @@ class MissionStatusesFragment : Fragment(), Input.Listener {
             Input.Control.DPAD_RIGHT -> {
                 // TODO: Implement MissionResults switch
                 // fModel.submit(ResultsOverviewRequested())
-                fControls?.removeListener(this)
+                // fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {
                 fModel.submit(NeedOverviewRequested())

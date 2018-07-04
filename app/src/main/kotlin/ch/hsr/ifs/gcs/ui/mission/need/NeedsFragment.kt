@@ -80,7 +80,7 @@ class NeedsFragment : Fragment(), Input.Listener {
                 fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {
-                selectButton.performClick()
+                selectButton?.performClick()
                 fControls?.removeListener(this)
             }
         }

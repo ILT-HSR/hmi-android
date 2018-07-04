@@ -82,7 +82,7 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
                 fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {
-                needNavigationButton.performClick()
+                needNavigationButton?.performClick()
 //                fControls?.removeListener(this)
             }
         }
