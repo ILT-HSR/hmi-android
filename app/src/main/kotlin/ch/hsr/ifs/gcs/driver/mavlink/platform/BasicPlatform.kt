@@ -58,6 +58,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     private val fIORunner = Executors.newSingleThreadScheduledExecutor()
 
+    private var fCurrentExecution = NativeMissionExecution(fTarget)
+
     private var fIsAlive = false
     private var fLastHeartbeat = Instant.ofEpochSecond(0)
     private var fTimeSinceBoot = 0
@@ -71,19 +73,29 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         var up = 0
     }
 
-    // Regular message handling
+    private var fPendingLongCommand: Pair<Int, CompletableDeferred<MAVLinkMessage>>? = null
+    private var fPendingMissionCommand: Pair<MessageID, CompletableDeferred<MAVLinkMessage>>? = null
 
     sealed class MessageEvent {
-        data class Heartbeat(val time: Instant) : MessageEvent()
+        data class Heartbeat(val message: MAVLinkMessage) : MessageEvent()
         data class Position(val message: MAVLinkMessage) : MessageEvent()
         data class Version(val message: MAVLinkMessage) : MessageEvent()
+        data class LongCommandAcknowledgement(val message: MAVLinkMessage) : MessageEvent()
+        data class MissionRequest(val message: MAVLinkMessage) : MessageEvent()
+        data class MissionAcknowledgement(val message: MAVLinkMessage) : MessageEvent()
+
+        data class SendLongCommand(val message: MAVLinkMessage, val result: CompletableDeferred<MAVLinkMessage>) : MessageEvent()
+        data class SendMessage(val message: MAVLinkMessage) : MessageEvent()
+        data class SendMissionMessage(val message: MAVLinkMessage, val expected: MessageID, val result: CompletableDeferred<MAVLinkMessage>) : MessageEvent()
     }
 
     private val fMainActor = actor<MessageEvent>(PlatformContext, Channel.UNLIMITED) {
         for (event in this) {
+            @Suppress("IMPLICIT_CAST_TO_ANY")
             when (event) {
-                is MessageEvent.Heartbeat -> event.time.let { time ->
-                    fLastHeartbeat = time
+            // Incoming messages
+                is MessageEvent.Heartbeat -> {
+                    fLastHeartbeat = Instant.now()
                 }
                 is MessageEvent.Position -> event.message.let { message ->
                     Log.i(LOG_TAG, "Position update: $message")
@@ -99,28 +111,62 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     fProduct = MAVLinkProducts[message["product_id"] as? Int ?: 0]
                     fId = message.getLong("uid")
                 }
-            }
-        }
-    }
-
-    // Command message handling
-
-    private var fPendingAck: CompletableDeferred<MAVLinkMessage>? = null
-
-    sealed class CommandEvent {
-        data class SendCommand(val command: MAVLinkMessage) : CommandEvent()
-    }
-
-    private val fCommandActor = actor<CommandEvent>(PlatformContext, Channel.UNLIMITED) {
-        for (event in this) {
-            when (event) {
-                is CommandEvent.SendCommand -> event.command.let { command ->
-                    fPendingAck = CompletableDeferred()
-                    while (withTimeoutOrNull(250, TimeUnit.MILLISECONDS) { fPendingAck!!.await() } == null) {
-                        Log.d(LOG_TAG, "Retrying")
-                        sendMessage(command.apply { set("confirmation", (getInt("confirmation") + 1) % 256) })
+                is MessageEvent.LongCommandAcknowledgement -> event.message.let { message ->
+                    val pending = fPendingLongCommand
+                    Log.i(LOG_TAG, "Command response: $message")
+                    if (pending == null) {
+                        Log.w(LOG_TAG, "Unexpected long command ack: $message")
+                    } else if (pending.first != message.getInt("command")) {
+                        Log.w(LOG_TAG, "Stray long command ack: $message")
+                    } else {
+                        pending.second.complete(message)
+                        fPendingLongCommand = null
                     }
-                    fPendingAck = null
+                }
+                is MessageEvent.MissionRequest -> event.message.let { message ->
+                    val pending = fPendingMissionCommand
+                    if (pending == null) {
+                        Log.w(LOG_TAG, "Unexpected mission command response: $message")
+                    } else if (pending.first != MessageID.MISSION_REQUEST) {
+                        Log.w(LOG_TAG, "Stray mission command response: $message")
+                    } else {
+                        pending.second.complete(message)
+                        fPendingMissionCommand = null
+                    }
+                }
+                is MessageEvent.MissionAcknowledgement -> event.message.let { message ->
+                    val pending = fPendingMissionCommand
+                    if (pending == null) {
+                        Log.w(LOG_TAG, "Unexpected mission command response: $message")
+                    } else if (pending.first != MessageID.MISSION_ACK) {
+                        Log.w(LOG_TAG, "Stray mission command response: $message")
+                    } else {
+                        pending.second.complete(message)
+                        fPendingMissionCommand = null
+                    }
+                }
+
+            // Outgoing messages
+                is MessageEvent.SendLongCommand -> event.message.let { message ->
+                    if (fPendingLongCommand != null) {
+                        Log.w(LOG_TAG, "Another command is already waiting. Dropping: $message")
+                    } else {
+                        Log.i(LOG_TAG, "Sending command: $message")
+                        fPendingLongCommand = Pair(message.getInt("command"), event.result)
+                        sendMessage(message)
+                    }
+                }
+                is MessageEvent.SendMessage -> event.message.let { message ->
+                    fMessageQueue.offer(message)
+                }
+                is MessageEvent.SendMissionMessage -> event.message.let { message ->
+                    if (fPendingMissionCommand != null) {
+                        Log.w(LOG_TAG, "Another mission command is already waiting. Dropping: $message")
+                    } else {
+                        Log.i(LOG_TAG, "Sending mission command: $message")
+                        fPendingMissionCommand = Pair(event.expected, event.result)
+                        sendMessage(message)
+                    }
                 }
             }
         }
@@ -130,19 +176,12 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
         private var fState = ExecutionState.CREATED
         private val fMissionPlanner = MAVLinkSystem(target.id, COMPONENT_MISSION_PLANNER)
-        private lateinit var fPendingResponse: CompletableDeferred<MAVLinkMessage>
-
-        fun handleResponse(message: MAVLinkMessage) {
-            if(this::fPendingResponse.isInitialized && fPendingResponse.isActive) {
-                fPendingResponse.complete(message)
-            }
-        }
 
         override fun tick() = runBlocking(PlatformContext) {
             when (fState) {
                 ExecutionState.CREATED -> {
                     fState = ExecutionState.UPLOADING
-                    launch { upload() }
+                    launch(PlatformContext) { upload() }
                     Status.PREPARING
                 }
                 ExecutionState.UPLOADING -> Status.PREPARING
@@ -161,42 +200,45 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             val count = createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fMissionPlanner, schema)
             count["count"] = fCommands.size
 
-            fPendingResponse = CompletableDeferred()
-            sendMessage(count)
-            while (withTimeoutOrNull(1000, TimeUnit.MILLISECONDS) { fPendingResponse.await() } == null) {
-                sendMessage(count)
-            }
-            var response = fPendingResponse.getCompleted()
-            Log.d(LOG_TAG, "Response: $response")
-
-            if (response.msgName == MessageID.MISSION_REQUEST.name) {
-                fCommands.forEachIndexed { idx, cmd ->
-                    while (response.msgName == MessageID.MISSION_REQUEST.name && response.getInt("seq") == idx) {
-                        response = sendItem(idx, cmd)
-                        Log.d(LOG_TAG, "Response: $response")
-                    }
-                }
-            }
-
-            if (response.msgName == MessageID.MISSION_ACK.name) {
-                fState = if (response.getInt("type") == 0) {
-                    sendCommand(createArmMessage(fSender, fTarget, schema))
-                    delay(1000)
-                    sendCommand(createLongCommandMessage(fSender, fTarget, schema, LongCommand.MISSION_START).apply {
-                        set("param1", 0)
-                        set("param2", fCommands.size - 1)
-                    })
-                    ExecutionState.RUNNING
-                } else {
-                    ExecutionState.FAILED
-                }
-            } else {
-                Log.i(LOG_TAG, "Mission start failed")
+            if (sendMissionCommand(count, MessageID.MISSION_REQUEST) == null) {
                 fState = ExecutionState.FAILED
+                return
             }
+
+            var response: MAVLinkMessage? = null
+            fCommands.forEachIndexed { idx, cmd ->
+                response = sendItem(idx, cmd)
+                if(response == null) {
+                    fState = ExecutionState.FAILED
+                    return
+                }
+            }
+
+            if (response?.msgName != MessageID.MISSION_ACK.name || response?.getInt("type") != 0) {
+                fState = ExecutionState.FAILED
+                return
+            }
+
+            response = sendLongCommand(createArmMessage(fSender, fTarget, schema))
+            if (response == null || response?.getInt("result") != 0) {
+                fState = ExecutionState.FAILED
+                return
+            }
+
+            val launch = createLongCommandMessage(fSender, fTarget, schema, LongCommand.MISSION_START).apply {
+                set("param1", 0)
+                set("param2", fCommands.size - 1)
+            }
+            response = sendLongCommand(launch)
+            if (response == null || response?.getInt("result") != 0) {
+                fState = ExecutionState.FAILED
+                return
+            }
+
+            fState = ExecutionState.RUNNING
         }
 
-        private suspend fun sendItem(index: Int, command: Command<*>): MAVLinkMessage {
+        private suspend fun sendItem(index: Int, command: Command<*>): MAVLinkMessage? {
             val nativeCommand = command.nativeCommand as MAVLinkMissionCommand
             val item = createTargetedMAVLinkMessage(MessageID.MISSION_ITEM, senderSystem, fMissionPlanner, schema)
 
@@ -213,23 +255,13 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             item["y"] = nativeCommand.y
             item["z"] = nativeCommand.z
 
-            fPendingResponse = CompletableDeferred()
-            sendMessage(item)
-            Log.i(LOG_TAG, "Sending $item")
-            while (withTimeoutOrNull(1000, TimeUnit.MILLISECONDS) { fPendingResponse.await() } == null) {
-                sendMessage(item)
+            if (index < fCommands.size - 1) {
+                return sendMissionCommand(item, MessageID.MISSION_REQUEST)
             }
 
-            return fPendingResponse.getCompleted()
+            return sendMissionCommand(item, MessageID.MISSION_ACK)
         }
 
-    }
-
-    init {
-        beginSerialIO()
-        fHeartbeatJob = startHeartbeat()
-        fSurveillanceJob = startSurveyor()
-        sendCommand(createRequestAutopilotCapabilitiesMessage(fSender, fTarget, schema))
     }
 
     protected enum class ExecutionState {
@@ -239,13 +271,22 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         FAILED,
     }
 
+    init {
+        beginSerialIO()
+        fHeartbeatJob = startHeartbeat()
+        fSurveillanceJob = startSurveyor()
+        launch(PlatformContext) {
+            sendLongCommand(createRequestAutopilotCapabilitiesMessage(fSender, fTarget, schema))
+        }
+    }
+
     // Platform implementation
 
     override val name get() = runBlocking(PlatformContext) { fProduct }
     override val isAlive get() = runBlocking(PlatformContext) { fIsAlive }
     override val currentPosition get() = runBlocking(PlatformContext) { fPosition }
     override var payload: Payload = NullPayload()
-    override val execution: Execution by lazy { NativeMissionExecution(targetSystem) }
+    override val execution: Execution get() = fCurrentExecution
 
     // AerialVehicle implementation
 
@@ -301,28 +342,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     ))
 
     /**
-     * Enqueue a single command into the internal command queue
-     *
-     * @since 1.0.0
-     */
-    protected fun sendMessage(message: MAVLinkMessage) {
-        fMessageQueue.offer(message)
-    }
-
-    /**
-     * Enqueue a series of commands into the internal command queue
-     *
-     * @since 1.0.0
-     */
-    protected fun sendMessages(vararg messages: MAVLinkMessage) {
-        fMessageQueue.addAll(messages)
-    }
-
-    protected fun sendCommand(command: MAVLinkMessage) {
-        fCommandActor.offer(CommandEvent.SendCommand(command))
-    }
-
-    /**
      * Get the sender system
      *
      * @since 1.0.0
@@ -335,6 +354,63 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      * @since 1.0.0
      */
     override val targetSystem get() = fTarget
+
+    // Protected implementation
+
+    /**
+     * Send a non-acknowledged MAVLink message
+     *
+     * @since 1.0.0
+     */
+    protected fun sendMessage(message: MAVLinkMessage) {
+        fMainActor.offer(MessageEvent.SendMessage(message))
+    }
+
+    /**
+     * Send an acknowledged MAVLink message (command protocol)
+     *
+     * @since 1.0.0
+     */
+    protected suspend fun sendLongCommand(command: MAVLinkMessage, retries: Int = 8): MAVLinkMessage? {
+        val result = CompletableDeferred<MAVLinkMessage>()
+        fMainActor.send(MessageEvent.SendLongCommand(command, result))
+
+        for (retry in 0 until retries) {
+            withTimeoutOrNull(500, TimeUnit.MILLISECONDS) {
+                result.await()
+            }?.let { return@sendLongCommand it } ?: command.apply {
+                set("confirmation", (getInt("confirmation") + 1) % 256)
+                sendMessage(this)
+            }
+        }
+
+        result.cancel()
+        fPendingLongCommand = null
+        return null
+    }
+
+    /**
+     * Send an acknowledged MAVLink mission command (mission protocol)
+     */
+    protected suspend fun sendMissionCommand(command: MAVLinkMessage, expected: MessageID, retries: Int = 8): MAVLinkMessage? {
+        val result = CompletableDeferred<MAVLinkMessage>()
+        fMainActor.send(MessageEvent.SendMissionMessage(command, expected, result))
+
+        var response: MAVLinkMessage? = null
+        for (retry in 0 until retries) {
+            response = withTimeoutOrNull(500, TimeUnit.MILLISECONDS) { result.await() }
+            if(response != null) {
+                return response
+            }
+            sendMessage(command)
+        }
+
+        result.cancel()
+        fPendingMissionCommand = null
+        return null
+    }
+
+    // Private implementation
 
     /**
      * Initialize the serial I/O connection with the vehicle.
@@ -370,24 +446,37 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             if (fIsAlive && fLastHeartbeat + Duration.ofSeconds(10) < Instant.now()) {
                 fIsAlive = false
             }
-            delay(100, TimeUnit.MILLISECONDS)
+            delay(500, TimeUnit.MILLISECONDS)
         }
     }
 
     /**
-     * Dispatch a received MAVLink message to the associated listener(s)
+     * Dispatch a received MAVLink message via the main actor
      */
     private fun dispatch(message: MAVLinkMessage) {
-        MessageID.from(message.msgName)?.let {
-            when (it) {
-                MessageID.HEARTBEAT -> fMainActor.offer(MessageEvent.Heartbeat(Instant.now()))
-                MessageID.AUTOPILOT_VERSION -> fMainActor.offer(MessageEvent.Version(message))
-                MessageID.GLOBAL_POSITION_INT -> fMainActor.offer(MessageEvent.Position(message))
-                MessageID.COMMAND_ACK -> fPendingAck?.complete(message)
-                MessageID.MISSION_REQUEST, MessageID.MISSION_ACK -> (execution as NativeMissionExecution).handleResponse(message)
-                else -> Unit
+        when (MessageID.from(message.msgName)) {
+            MessageID.HEARTBEAT -> {
+                fMainActor.offer(MessageEvent.Heartbeat(message))
             }
-        } ?: Log.v(LOG_TAG, "unhandled: $message")
+            MessageID.AUTOPILOT_VERSION -> {
+                fMainActor.offer(MessageEvent.Version(message))
+            }
+            MessageID.GLOBAL_POSITION_INT -> {
+                fMainActor.offer(MessageEvent.Position(message))
+            }
+            MessageID.COMMAND_ACK -> {
+                fMainActor.offer(MessageEvent.LongCommandAcknowledgement(message))
+            }
+            MessageID.MISSION_REQUEST -> {
+                fMainActor.offer(MessageEvent.MissionRequest(message))
+            }
+            MessageID.MISSION_ACK -> {
+                fMainActor.offer(MessageEvent.MissionAcknowledgement(message))
+            }
+            else -> {
+                Log.v(LOG_TAG, "Unhandled message: $message")
+            }
+        }
     }
 
 }
