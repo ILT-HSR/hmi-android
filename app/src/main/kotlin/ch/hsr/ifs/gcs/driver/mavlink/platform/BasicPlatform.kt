@@ -114,35 +114,35 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 is MessageEvent.LongCommandAcknowledgement -> event.message.let { message ->
                     val pending = fPendingLongCommand
                     Log.i(LOG_TAG, "Command response: $message")
-                    if (pending == null) {
-                        Log.w(LOG_TAG, "Unexpected long command ack: $message")
-                    } else if (pending.first != message.getInt("command")) {
-                        Log.w(LOG_TAG, "Stray long command ack: $message")
-                    } else {
-                        pending.second.complete(message)
-                        fPendingLongCommand = null
+                    when {
+                        pending == null -> Log.w(LOG_TAG, "Unexpected long command ack: $message")
+                        pending.first != message.getInt("command") -> Log.w(LOG_TAG, "Stray long command ack: $message")
+                        else -> {
+                            pending.second.complete(message)
+                            fPendingLongCommand = null
+                        }
                     }
                 }
                 is MessageEvent.MissionRequest -> event.message.let { message ->
                     val pending = fPendingMissionCommand
-                    if (pending == null) {
-                        Log.w(LOG_TAG, "Unexpected mission command response: $message")
-                    } else if (pending.first != MessageID.MISSION_REQUEST) {
-                        Log.w(LOG_TAG, "Stray mission command response: $message")
-                    } else {
-                        pending.second.complete(message)
-                        fPendingMissionCommand = null
+                    when {
+                        pending == null -> Log.w(LOG_TAG, "Unexpected mission command response: $message")
+                        pending.first != MessageID.MISSION_REQUEST -> Log.w(LOG_TAG, "Stray mission command response: $message")
+                        else -> {
+                            pending.second.complete(message)
+                            fPendingMissionCommand = null
+                        }
                     }
                 }
                 is MessageEvent.MissionAcknowledgement -> event.message.let { message ->
                     val pending = fPendingMissionCommand
-                    if (pending == null) {
-                        Log.w(LOG_TAG, "Unexpected mission command response: $message")
-                    } else if (pending.first != MessageID.MISSION_ACK) {
-                        Log.w(LOG_TAG, "Stray mission command response: $message")
-                    } else {
-                        pending.second.complete(message)
-                        fPendingMissionCommand = null
+                    when {
+                        pending == null -> Log.w(LOG_TAG, "Unexpected mission command response: $message")
+                        pending.first != MessageID.MISSION_ACK -> Log.w(LOG_TAG, "Stray mission command response: $message")
+                        else -> {
+                            pending.second.complete(message)
+                            fPendingMissionCommand = null
+                        }
                     }
                 }
 
@@ -396,7 +396,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         val result = CompletableDeferred<MAVLinkMessage>()
         fMainActor.send(MessageEvent.SendMissionMessage(command, expected, result))
 
-        var response: MAVLinkMessage? = null
+        var response: MAVLinkMessage?
         for (retry in 0 until retries) {
             response = withTimeoutOrNull(500, TimeUnit.MILLISECONDS) { result.await() }
             if(response != null) {
