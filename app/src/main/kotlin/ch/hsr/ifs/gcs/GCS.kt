@@ -3,10 +3,7 @@ package ch.hsr.ifs.gcs
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.driver.NewPlatformAvailable
-import ch.hsr.ifs.gcs.driver.Platform
-import ch.hsr.ifs.gcs.driver.PlatformModel
+import ch.hsr.ifs.gcs.driver.*
 import ch.hsr.ifs.gcs.driver.access.InputManager
 import ch.hsr.ifs.gcs.driver.access.PlatformManager
 import ch.hsr.ifs.gcs.mission.Need
@@ -62,6 +59,8 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
         fMainModel.activeMissions.observeForever {
             (it ?: emptyList()).forEach(fScheduler::launch)
         }
+
+        fPlatformModel.submit(NewPlatformAvailable(NullPlatform()))
     }
 
     override fun onTerminate() {

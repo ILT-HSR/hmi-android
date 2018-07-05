@@ -72,7 +72,6 @@ class ResourceManager(private val fListener: Listener) {
                         val payload = PayloadProvider.instantiate(it.payload) ?: return@forEach
                         p.payload = payload
                     }
-                    it.payload?.let(PayloadProvider::instantiate)
                     val resource = LocalResource(it.id, it.driver, it.payload, it.capabilities).apply {
                         plaform = p
                     }
