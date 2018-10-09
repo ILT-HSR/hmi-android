@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Arduino devices -->
+    <usb-device vendor-id="0x2341" />
+    <!-- FTDI serial devices -->
+    <usb-device vendor-id="0x0403" />
+    <!-- Cygnal serial devices -->
+    <usb-device vendor-id="0x10c4" />
+</resources>

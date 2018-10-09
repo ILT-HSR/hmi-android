@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">GCS</string>
+    <string name="new_need_button_text">New Need</string>
+    <string name="mission_results_list_title">Results</string>
+    <string name="mission_statuses_list_title">Mission State</string>
+    <string name="need_navigation_button_text">Next</string>
+    <string name="new_need_list_title">New Need</string>
+    <string name="select_need_button_text">Select</string>
+    <string name="instruction_text">Default Instruction</string>
+    <string name="instruction_title">Default Need Instruction</string>
+    <string name="mission_status_title">Status</string>
+    <string name="mission_result_title">Result</string>
+    <string name="default_need_name">Default Need Name</string>
+    <string name="chooseButtonText">Default Option</string>
+    <string name="altitude_box_title">Altitude</string>
+    <string name="altitude_value_text">0m</string>
+    <string name="increase_button_text">+</string>
+    <string name="decrease_button_text">-</string>
+    <string name="choose_medkit_cargo">Choose Medkit Cargo</string>
+    <string name="choose_autonomous_mode">Choose Autonomous Mode</string>
+    <string name="results_result_placeholder">Result</string>
+    <string name="button_start_mission">Start Mission</string>
+    <string name="enable_null_platform">Enable \'Null\' Platform</string>
+    <string name="enable_null_platform_summary">Enable a fake platform that does nothing</string>
+    <string name="settings_activity_label">GCS Settings</string>
 </resources>
