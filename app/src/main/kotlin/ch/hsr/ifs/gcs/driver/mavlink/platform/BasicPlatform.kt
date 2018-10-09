@@ -93,7 +93,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         for (event in this) {
             @Suppress("IMPLICIT_CAST_TO_ANY")
             when (event) {
-            // Incoming messages
+                // Incoming messages
                 is MessageEvent.Heartbeat -> {
                     fLastHeartbeat = Instant.now()
                 }
@@ -146,7 +146,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     }
                 }
 
-            // Outgoing messages
+                // Outgoing messages
                 is MessageEvent.SendLongCommand -> event.message.let { message ->
                     if (fPendingLongCommand != null) {
                         Log.w(LOG_TAG, "Another command is already waiting. Dropping: $message")
@@ -208,7 +208,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             var response: MAVLinkMessage? = null
             fCommands.forEachIndexed { idx, cmd ->
                 response = sendItem(idx, cmd)
-                if(response == null) {
+                if (response == null) {
                     fState = ExecutionState.FAILED
                     return
                 }
@@ -313,8 +313,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     override fun takeOff(altitude: AerialVehicle.Altitude) = MAVLinkCommand(MAVLinkMissionCommand(
             LongCommand.NAV_TAKEOFF,
             frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
-            x = Float.NaN,
-            y = Float.NaN,
+            x = fPosition?.longitude?.toFloat() ?: Float.NaN,
+            y = fPosition?.latitude?.toFloat() ?: Float.NaN,
             z = altitude.meters.toFloat()
     ))
 
@@ -399,7 +399,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         var response: MAVLinkMessage?
         for (retry in 0 until retries) {
             response = withTimeoutOrNull(500, TimeUnit.MILLISECONDS) { result.await() }
-            if(response != null) {
+            if (response != null) {
                 return response
             }
             sendMessage(command)
@@ -454,6 +454,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      * Dispatch a received MAVLink message via the main actor
      */
     private fun dispatch(message: MAVLinkMessage) {
+        //Log.v(LOG_TAG, "Received message: $message")
         when (MessageID.from(message.msgName)) {
             MessageID.HEARTBEAT -> {
                 fMainActor.offer(MessageEvent.Heartbeat(message))
