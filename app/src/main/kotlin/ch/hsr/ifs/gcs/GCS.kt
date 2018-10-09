@@ -2,7 +2,7 @@ package ch.hsr.ifs.gcs
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
+import android.preference.PreferenceManager
 import ch.hsr.ifs.gcs.driver.*
 import ch.hsr.ifs.gcs.driver.access.InputManager
 import ch.hsr.ifs.gcs.driver.access.PlatformManager
@@ -11,6 +11,7 @@ import ch.hsr.ifs.gcs.mission.Scheduler
 import ch.hsr.ifs.gcs.mission.access.NeedManager
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.ResourceManager
+import ch.hsr.ifs.gcs.ui.SettingsActivity
 
 class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, NeedManager.Listener, InputManager.Listener {
 
@@ -60,7 +61,10 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
             (it ?: emptyList()).forEach(fScheduler::launch)
         }
 
-        fPlatformModel.submit(NewPlatformAvailable(NullPlatform()))
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        if (preferences.getBoolean(SettingsActivity.PREFERENCE_KEY_ENABLE_NULL_PLATFORM, false)) {
+            fPlatformModel.submit(NewPlatformAvailable(NullPlatform()))
+        }
     }
 
     override fun onTerminate() {
