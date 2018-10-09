@@ -313,8 +313,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     override fun takeOff(altitude: AerialVehicle.Altitude) = MAVLinkCommand(MAVLinkMissionCommand(
             LongCommand.NAV_TAKEOFF,
             frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
-            x = fPosition?.longitude?.toFloat() ?: Float.NaN,
-            y = fPosition?.latitude?.toFloat() ?: Float.NaN,
+            x = fPosition?.latitude?.toFloat() ?: Float.NaN,
+            y = fPosition?.longitude?.toFloat() ?: Float.NaN,
             z = altitude.meters.toFloat()
     ))
 
