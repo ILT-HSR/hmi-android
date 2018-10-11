@@ -62,7 +62,7 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
         }
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        if (preferences.getBoolean(SettingsActivity.PREFERENCE_KEY_ENABLE_NULL_PLATFORM, false)) {
+        if (preferences.getBoolean(PREFERENCE_KEY_ENABLE_NULL_PLATFORM, false)) {
             fPlatformModel.submit(NewPlatformAvailable(NullPlatform()))
         }
     }
