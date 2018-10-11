@@ -29,6 +29,9 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.tileprovider.tilesource.bing.BingMapTileSource
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.compass.CompassOverlay
+import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.util.*
 
 const val PERMISSION_REQUEST_ID_MAP = 42
@@ -228,7 +231,6 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         when (mapSource) {
             PREFERENCE_VAL_MAP_SOURCE_OSM -> {
                 map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
-                map.controller.setZoom(18.0)
                 map.setBuiltInZoomControls(true)
             }
             PREFERENCE_VAL_MAP_SOURCE_BING -> {
@@ -239,12 +241,22 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
                     }
                 }
                 tileSource.style = BingMapTileSource.IMAGERYSET_AERIAL
-                tileSource.maximumZoomLevel
                 map.setTileSource(tileSource)
-                map.controller.setZoom(18.0)
-                map.setBuiltInZoomControls(true)
             }
             else -> Unit
+        }
+
+        map.controller.setZoom(18.0)
+        map.setBuiltInZoomControls(true)
+
+        MyLocationNewOverlay(GpsMyLocationProvider(this), map).apply {
+            enableMyLocation()
+            map.overlays += this
+        }
+
+        CompassOverlay(this, map).apply {
+            enableCompass()
+            map.overlays += this
         }
     }
 
