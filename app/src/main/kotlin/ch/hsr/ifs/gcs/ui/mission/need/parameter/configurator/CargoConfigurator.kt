@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.ui.MenuFragmentID
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_choose_cargo.*

@@ -43,10 +43,10 @@ class NeedsRecyclerViewAdapter(private val fRecyclerView: RecyclerView, private 
                 null -> Unit
                 else -> {
                     fView.tag = new
-                    fView.setOnClickListener(View.OnClickListener { v ->
+                    fView.setOnClickListener { v ->
                         val item = v.tag as NeedItem
                         activateItem(item)
-                    })
+                    }
                     fView.setBackgroundColor(if (new.isActive) fActiveItemColor else Color.TRANSPARENT)
                     fNameView.text = new.name
                 }

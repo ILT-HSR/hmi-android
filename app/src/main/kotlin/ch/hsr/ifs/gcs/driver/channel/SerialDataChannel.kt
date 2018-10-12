@@ -2,7 +2,6 @@ package ch.hsr.ifs.gcs.driver.channel
 
 import android.content.Context
 import android.hardware.usb.UsbManager
-import android.util.Log
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import java.io.IOException
 import java.nio.ByteBuffer

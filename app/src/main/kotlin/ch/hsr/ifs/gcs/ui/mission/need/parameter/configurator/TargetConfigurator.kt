@@ -11,6 +11,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 
+@Suppress("unused")
 class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
 
     override fun present() {

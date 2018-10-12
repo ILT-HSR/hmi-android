@@ -36,8 +36,6 @@ class MissionResultsRecyclerViewAdapter(private val fRecyclerView: RecyclerView)
         }
     }
 
-    val activeItem get() = fActiveItem ?: throw IllegalStateException("No result is selected")
-
     inner class ViewHolder(private val fView: View) : RecyclerView.ViewHolder(fView) {
         private val fMissionName: TextView = fView.mission_name
 

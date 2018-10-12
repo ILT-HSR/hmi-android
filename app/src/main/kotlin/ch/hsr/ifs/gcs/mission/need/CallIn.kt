@@ -31,14 +31,12 @@ class CallIn(override val resource: Resource) : Need {
     )
 
     override val tasks: List<Task>?
-        get() = GPSPosition(fTarget.result.latitude, fTarget.result.longitude, fAltitude.result.toDouble()).let{ target ->
-            listOf(
-                    TakeOff(fAltitude.result),
-                    MoveToPosition(target),
-                    TriggerPayload(fCargo.result),
-                    ReturnToHome()
-            )
-        }
+        get() = listOf(
+                TakeOff(fAltitude.result),
+                MoveToPosition(GPSPosition(fTarget.result.latitude, fTarget.result.longitude, fAltitude.result.toDouble())),
+                TriggerPayload(fCargo.result),
+                ReturnToHome()
+        )
 
     override val requirements: List<Capability<*>>
         get() = listOf(

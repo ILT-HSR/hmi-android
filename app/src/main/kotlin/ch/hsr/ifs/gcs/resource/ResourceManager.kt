@@ -63,16 +63,16 @@ class ResourceManager(private val fListener: Listener) {
     private var fKnownResources = emptyList<ResourceDescriptor>()
     private var fLocalResources = emptyList<Resource>()
 
-    private val fPlatformObserver = Observer<List<Platform>> {
-        it?.apply {
+    private val fPlatformObserver = Observer<List<Platform>> { lp ->
+        lp?.apply {
             val platformCandidates = filter { fLocalResources.none { r -> r.plaform == it } }
             platformCandidates.forEach { p ->
-                fKnownResources.find { it.driver == p.driverId }?.let {
-                    if(it.payload != null){
-                        val payload = PayloadProvider.instantiate(it.payload) ?: return@forEach
+                fKnownResources.find { it.driver == p.driverId }?.let { d ->
+                    if(d.payload != null){
+                        val payload = PayloadProvider.instantiate(d.payload) ?: return@forEach
                         p.payload = payload
                     }
-                    val resource = LocalResource(it.id, it.driver, it.payload, it.capabilities).apply {
+                    val resource = LocalResource(d.id, d.driver, d.payload, d.capabilities).apply {
                         plaform = p
                     }
                     fListener.onNewResourceAvailable(resource)

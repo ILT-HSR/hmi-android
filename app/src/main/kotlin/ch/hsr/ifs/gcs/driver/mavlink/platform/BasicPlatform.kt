@@ -362,6 +362,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      *
      * @since 1.0.0
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     protected fun sendMessage(message: MAVLinkMessage) {
         fMainActor.offer(MessageEvent.SendMessage(message))
     }

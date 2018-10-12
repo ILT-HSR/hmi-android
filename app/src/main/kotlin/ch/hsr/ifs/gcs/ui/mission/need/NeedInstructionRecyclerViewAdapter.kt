@@ -13,7 +13,7 @@ import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterItem
 import kotlinx.android.synthetic.main.fragment_need_instruction.view.*
 import kotlin.properties.Delegates
 
-class NeedInstructionRecyclerViewAdapter(private val fRecyclerView: RecyclerView, private val fContext: MainActivity)
+class NeedInstructionRecyclerViewAdapter(private val fContext: MainActivity)
     : RecyclerView.Adapter<NeedInstructionRecyclerViewAdapter.ViewHolder>() {
 
     private var fActiveItem: ParameterItem<*>? = null
@@ -33,10 +33,10 @@ class NeedInstructionRecyclerViewAdapter(private val fRecyclerView: RecyclerView
         }
     }
 
-    inner class ViewHolder(private val fView: View) : RecyclerView.ViewHolder(fView) {
-        private val fInstructionView: TextView = fView.instruction
-        private val fCheckBoxView: View = fView.checkBoxView
-        private val fResultView: TextView = fView.result
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val fInstructionView: TextView = view.instruction
+        private val fCheckBoxView: View = view.checkBoxView
+        private val fResultView: TextView = view.result
 
         var item by Delegates.observable<ParameterItem<*>?>(null) { _, _, new ->
             when(new) {
@@ -80,8 +80,9 @@ class NeedInstructionRecyclerViewAdapter(private val fRecyclerView: RecyclerView
     }
 
     fun abort() {
-        fItems.filter { it.isComplete || it.isActive }.map(ParameterItem<*>::abort)
-//        fActiveItem?.abort()
+        fItems.asSequence()
+                .filter { it.isComplete || it.isActive }
+                .map(ParameterItem<*>::abort).toList()
     }
 
     val isDone get() = fActiveItem == null

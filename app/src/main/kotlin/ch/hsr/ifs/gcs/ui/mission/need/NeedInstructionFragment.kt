@@ -28,7 +28,7 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
         val list = view.instructionList
         if (list is RecyclerView) {
             with(list) {
-                fAdapter = NeedInstructionRecyclerViewAdapter(list, context as MainActivity)
+                fAdapter = NeedInstructionRecyclerViewAdapter(context as MainActivity)
                 layoutManager = LinearLayoutManager(context)
                 adapter = fAdapter
             }
@@ -53,13 +53,13 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
         fModel.activeNeed.value?.let { need ->
             val item = context.needItemFactory.instantiate(need)
             view!!.titleText.text = "New ${item.name}"
-            needNavigationButton.setOnClickListener{
+            needNavigationButton.setOnClickListener{ _ ->
                 fAdapter.completeCurrent()
                 if(fAdapter.isDone) {
                     needNavigationButton.text = getString(R.string.button_start_mission)
                     needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
                     needNavigationButton.setOnClickListener {
-                        fModel.submit(NeedConfigurationFinished())
+                        fModel.submit(NeedConfigurationFinished)
                         fControls?.removeListener(this)
                     }
                 }
@@ -69,7 +69,7 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
         activity?.apply {
             leftButton?.setOnClickListener {
                 fAdapter.abort()
-                fModel.submit(NeedOverviewRequested())
+                fModel.submit(NeedOverviewRequested)
             }
         }
     }

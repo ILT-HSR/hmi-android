@@ -17,8 +17,6 @@ import kotlinx.android.synthetic.main.fragment_need_list.view.*
 
 /**
  * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [NeedsFragment.OnNeedsFragmentChangedListener] interface.
  */
 class NeedsFragment : Fragment(), Input.Listener {
 
@@ -61,7 +59,7 @@ class NeedsFragment : Fragment(), Input.Listener {
             // TODO: Move to model/activity?
             leftButton?.background = applicationContext.getDrawable(R.drawable.cancel_action)
             leftButton.setOnClickListener {
-                fModel.submit(MissionOverviewRequested())
+                fModel.submit(MissionOverviewRequested)
             }
         }
     }
@@ -76,7 +74,7 @@ class NeedsFragment : Fragment(), Input.Listener {
                 fAdapter.activateNextItem()
             }
             Input.Control.UPDATE_ABORT -> {
-                fModel.submit(MissionOverviewRequested())
+                fModel.submit(MissionOverviewRequested)
                 fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {

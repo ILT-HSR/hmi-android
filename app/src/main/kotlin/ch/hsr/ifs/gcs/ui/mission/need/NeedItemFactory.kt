@@ -31,21 +31,19 @@ class NeedItemFactory(context: Context) {
     private val fConstructors = mutableMapOf<String, (Need) -> NeedItem>()
 
     init {
-        context.assets.list(NEED_ITEM_DESCRIPTOR_DIRECTORY).forEach {
+        context.assets.list(NEED_ITEM_DESCRIPTOR_DIRECTORY).forEach { f ->
             try {
-                context.assets.open("$NEED_ITEM_DESCRIPTOR_DIRECTORY/$it")?.let {
+                context.assets.open("$NEED_ITEM_DESCRIPTOR_DIRECTORY/$f")?.let {
                     NeedItemDescriptor.load(it)
                 }?.apply {
                     fConstructors[id] = { need -> NeedItem(need, name) }
                 }
             } catch (e: IllegalStateException) {
-                Log.e(LOG_TAG, "Failed to read need item descriptor configuration '$NEED_ITEM_DESCRIPTOR_DIRECTORY/$it'")
+                Log.e(LOG_TAG, "Failed to read need item descriptor configuration '$NEED_ITEM_DESCRIPTOR_DIRECTORY/$f'")
             }
         }
     }
 
-    fun instantiate(need: Need) = fConstructors[need.id]?.let {
-        it.invoke(need)
-    } ?: throw IllegalArgumentException("No constructor for ${need.id}")
+    fun instantiate(need: Need) = fConstructors[need.id]?.invoke(need) ?: throw IllegalArgumentException("No constructor for ${need.id}")
 
 }

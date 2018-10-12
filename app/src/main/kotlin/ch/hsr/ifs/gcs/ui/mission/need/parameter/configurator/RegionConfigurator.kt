@@ -8,6 +8,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
 
+@Suppress("unused")
 class RegionConfigurator : ParameterConfigurator<List<GeoPoint>>() {
 
     data class RectangularRegion(private val upperLeft: GeoPoint, private val lowerRight: GeoPoint) {

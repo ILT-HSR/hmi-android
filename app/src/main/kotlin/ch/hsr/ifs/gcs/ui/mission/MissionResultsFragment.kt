@@ -16,8 +16,7 @@ import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
 
 /**
  * A fragment representing a list of mission result items combined with a button to add
- * additional needs. The context containing this fragment must implement the
- * [MissionResultsFragment.OnResultsFragmentChangedListener] interface.
+ * additional needs.
  */
 class MissionResultsFragment : Fragment(), Input.Listener {
 
@@ -57,7 +56,7 @@ class MissionResultsFragment : Fragment(), Input.Listener {
 
         activity?.apply {
             resultsAddButton.setOnClickListener {
-                fModel.submit(NeedOverviewRequested())
+                fModel.submit(NeedOverviewRequested)
             }
             leftButton?.background = context?.applicationContext?.getDrawable(R.drawable.cancel_action)
             // TODO: Implement mission cancellation
@@ -76,11 +75,11 @@ class MissionResultsFragment : Fragment(), Input.Listener {
                 fAdapter.activateNextItem()
             }
             Input.Control.DPAD_LEFT -> {
-                fModel.submit(MissionOverviewRequested())
+                fModel.submit(MissionOverviewRequested)
                 fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {
-                fModel.submit(NeedOverviewRequested())
+                fModel.submit(NeedOverviewRequested)
                 fControls?.removeListener(this)
             }
         }

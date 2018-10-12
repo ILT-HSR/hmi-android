@@ -142,11 +142,6 @@ class MainActivity : AppCompatActivity(), Input.Listener, ActivityCompat.OnReque
         finish()
     }
 
-    override fun onDestroy() {
-        //fDeviceScanner.stop()
-        super.onDestroy()
-    }
-
     // Input.Handler implementation
 
     override fun onButton(control: Control) {
