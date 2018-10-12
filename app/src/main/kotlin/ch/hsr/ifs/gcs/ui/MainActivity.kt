@@ -4,7 +4,6 @@ import android.Manifest
 import android.arch.lifecycle.Observer
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.ActivityCompat
@@ -17,7 +16,6 @@ import ch.hsr.ifs.gcs.R.drawable.abort_mission
 import ch.hsr.ifs.gcs.R.layout.activity_main
 import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.driver.Input.Control
-import ch.hsr.ifs.gcs.support.geo.LocationService
 import ch.hsr.ifs.gcs.ui.mission.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionFragment
@@ -31,6 +29,7 @@ import org.osmdroid.tileprovider.tilesource.bing.BingMapTileSource
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.compass.CompassOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
+import org.osmdroid.views.overlay.mylocation.IMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.util.*
 
@@ -50,13 +49,12 @@ fun <T> Pair<Array<out T>, IntArray>.iterator(): Iterator<Pair<T, Int>> {
     }
 }
 
-class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLocationChangedListener, ActivityCompat.OnRequestPermissionsResultCallback {
+class MainActivity : AppCompatActivity(), Input.Listener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private data class PermissionState(val permission: String, val state: Int)
 
     private lateinit var fPreferences: SharedPreferences
-    private lateinit var fLocationService: LocationService
-    private lateinit var fLocation: Location
+    private lateinit var fLocationProvider: IMyLocationProvider
     private lateinit var fModel: MainModel
 
     private var fMenuFragment = MenuFragmentID.MISSION_STATUSES_FRAGMENT
@@ -100,7 +98,6 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
 
         leftButton.background = applicationContext.getDrawable(abort_mission)
 
-        fLocationService = LocationService(this, this)
         fParameterItemFactory = ParameterItemFactory(this)
         fNeedItemFactory = NeedItemFactory(this)
 
@@ -183,16 +180,6 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         }
     }
 
-    // LocationService.OnLocationChangedListener implementation
-
-    override fun onCurrentLocationChanged(location: Location) {
-        if (!this::fLocation.isInitialized) {
-            this.fLocation = location
-            map.controller.animateTo(GeoPoint(location))
-            map.invalidate()
-        }
-    }
-
     // Private implementation
 
     private fun showMenuFragment(id: MenuFragmentID) =
@@ -226,6 +213,8 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
     }
 
     private fun setupMap() {
+        fLocationProvider = GpsMyLocationProvider(this)
+
         val mapSource = fPreferences.getString(PREFERENCE_KEY_MAP_SOURCE, PREFERENCE_VAL_MAP_SOURCE_OSM)
 
         when (mapSource) {
@@ -249,7 +238,8 @@ class MainActivity : AppCompatActivity(), Input.Listener, LocationService.OnLoca
         map.controller.setZoom(18.0)
         map.setBuiltInZoomControls(true)
 
-        MyLocationNewOverlay(GpsMyLocationProvider(this), map).apply {
+        MyLocationNewOverlay(fLocationProvider, map).apply {
+            runOnFirstFix { runOnUiThread { map.controller.animateTo(GeoPoint(myLocation)) } }
             enableMyLocation()
             map.overlays += this
         }
