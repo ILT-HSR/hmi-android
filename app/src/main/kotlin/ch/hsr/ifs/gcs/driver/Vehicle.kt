@@ -26,4 +26,11 @@ interface Vehicle : Platform {
      */
     fun returnToHome(): Command<*>
 
+    /**
+     * Set the maximum travel speed for the vehicle
+     *
+     * @since 1.1.0
+     */
+    fun limitTravelSpeed(speed: Double): Command<*>
+
 }

@@ -3,6 +3,7 @@ package ch.hsr.ifs.gcs.mission.need
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.need.parameter.Altitude
 import ch.hsr.ifs.gcs.mission.need.parameter.Region
+import ch.hsr.ifs.gcs.mission.need.parameter.SpeedLimit
 import ch.hsr.ifs.gcs.mission.need.task.*
 import ch.hsr.ifs.gcs.resource.CAPABILITY_CAN_FLY
 import ch.hsr.ifs.gcs.resource.Capability
@@ -29,17 +30,19 @@ class RadiationMap(override val resource: Resource) : Need {
 
     private val regionParameter = Region()
     private val altitudeParameter = Altitude()
+    private val speedLimitParameter = SpeedLimit()
 
     override val id = "ch.hsr.ifs.gcs.mission.need.radiationMap"
 
     override val parameterList = listOf(
             regionParameter,
-            altitudeParameter
+            altitudeParameter,
+            speedLimitParameter
     )
 
     override val tasks: List<Task>?
         get() {
-            return listOf(TakeOff(altitudeParameter.result)) + buildFlightplan() + ReturnToHome()
+            return listOf(LimitTravelSpeed(speedLimitParameter.result), TakeOff(altitudeParameter.result)) + buildFlightplan() + ReturnToHome()
         }
 
     override val requirements: List<Capability<*>>

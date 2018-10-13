@@ -4,6 +4,10 @@ import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 
 class NullPlatform : AerialVehicle {
+    override fun limitTravelSpeed(speed: Double): Command<*> {
+        return NullCommand()
+    }
+
     private lateinit var fPayload: Payload
 
     override fun takeOff(altitude: AerialVehicle.Altitude): Command<*> {
