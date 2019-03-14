@@ -7,26 +7,26 @@ import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_choose_altitude.*
+import kotlinx.android.synthetic.main.fragment_choose_speed_limit.*
 
-class AltitudeConfigurator : ParameterConfigurator<Int>() {
+class SpeedLimitConfigurator : ParameterConfigurator<Double>() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_choose_altitude, container, false)
+        return inflater.inflate(R.layout.fragment_choose_speed_limit, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        altitudeSelectionBackgroundView.setOnClickListener {} // needed to shadow events on underlying map view
-        altitudeValueTextView.text = "${parameter.parameter.result}m"
+        speedLimitSelectionBackgroundView.setOnClickListener {} // needed to shadow events on underlying map view
+        speedLimitValueTextView.text = "${parameter.parameter.result}m/s"
         increaseButton.setOnClickListener {
             parameter.parameter.result = parameter.parameter.result + 1
-            altitudeValueTextView.text = "${parameter.parameter.result}m"
+            speedLimitValueTextView.text = "${parameter.parameter.result}m/s"
         }
         decreaseButton.setOnClickListener {
-            if (parameter.parameter.result != 0) {
+            if (parameter.parameter.result != 1.0) {
                 parameter.parameter.result = parameter.parameter.result - 1
-                altitudeValueTextView.text = "${parameter.parameter.result}m"
+                speedLimitValueTextView.text = "${parameter.parameter.result}m/s"
             }
         }
     }
@@ -43,7 +43,7 @@ class AltitudeConfigurator : ParameterConfigurator<Int>() {
     }
 
     private fun setDefaultResult() {
-        parameter.parameter.result = 5
+        parameter.parameter.result = 2.0
     }
 
 }

@@ -33,16 +33,16 @@ class ParameterItemFactory(context: MainActivity) {
     private val fDescriptors = mutableMapOf<String, ParameterItemDescriptor>()
 
     init {
-        context.assets.list(PARAMETER_ITEM_DESCRIPTOR_DIRECTORY).forEach {
+        context.assets.list(PARAMETER_ITEM_DESCRIPTOR_DIRECTORY).forEach { d ->
             try {
-                context.assets.open("$PARAMETER_ITEM_DESCRIPTOR_DIRECTORY/$it")?.let {
+                context.assets.open("$PARAMETER_ITEM_DESCRIPTOR_DIRECTORY/$d")?.let {
                     ParameterItemDescriptor.load(it)
                 }?.apply {
                     configurator.context = context
                     fDescriptors[id] = this
                 }
             } catch (e: IllegalStateException) {
-                Log.e(LOG_TAG, "Failed to read parameter item descriptor configuration '$PARAMETER_ITEM_DESCRIPTOR_DIRECTORY/$it'")
+                Log.e(LOG_TAG, "Failed to read parameter item descriptor configuration '$PARAMETER_ITEM_DESCRIPTOR_DIRECTORY/$d'")
             }
         }
 

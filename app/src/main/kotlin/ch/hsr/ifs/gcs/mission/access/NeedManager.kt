@@ -22,11 +22,11 @@ class NeedManager(private val fListener: Listener) {
             "ch.hsr.ifs.gcs.mission.need.radiationMap" to Pair(RadiationMap::class, listOf<Capability<*>>(Capability(CAPABILITY_CAN_FLY, true)))
     )
     private val fAvailableNeeds = mutableListOf<Need>()
-    private val fResourceObserver = Observer<List<Resource>>{
-        if (it != null) {
+    private val fResourceObserver = Observer<List<Resource>>{ list ->
+        if (list != null) {
             val nonAvailableNeeds = fNeedMap.filter { d -> fAvailableNeeds.none { n -> n.id == d.key }}
             nonAvailableNeeds.forEach{id, des ->
-                it.find { r -> des.second.all(r::has)}?.let{
+                list.find { r -> des.second.all(r::has)}?.let{
                     with(instantiate(id, it)) {
                         fAvailableNeeds += this
                         fListener.onNewNeedAvailable(this)

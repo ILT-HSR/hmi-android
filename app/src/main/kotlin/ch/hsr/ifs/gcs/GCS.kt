@@ -11,7 +11,6 @@ import ch.hsr.ifs.gcs.mission.Scheduler
 import ch.hsr.ifs.gcs.mission.access.NeedManager
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.ResourceManager
-import ch.hsr.ifs.gcs.ui.SettingsActivity
 
 class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, NeedManager.Listener, InputManager.Listener {
 
@@ -62,7 +61,7 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
         }
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        if (preferences.getBoolean(SettingsActivity.PREFERENCE_KEY_ENABLE_NULL_PLATFORM, false)) {
+        if (preferences.getBoolean(PREFERENCE_KEY_ENABLE_NULL_PLATFORM, false)) {
             fPlatformModel.submit(NewPlatformAvailable(NullPlatform()))
         }
     }

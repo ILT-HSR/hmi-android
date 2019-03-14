@@ -20,8 +20,7 @@ import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
 
 /**
  * A fragment representing a list of mission status items combined with a button to add
- * additional needs. The context containing this fragment must implement the
- * [MissionStatusesFragment.OnStatusesFragmentChangedListener] interface.
+ * additional needs.
  */
 class MissionStatusesFragment : Fragment(), Input.Listener {
 
@@ -63,7 +62,7 @@ class MissionStatusesFragment : Fragment(), Input.Listener {
 
         activity?.apply {
             statusesAddButton.setOnClickListener {
-                fModel.submit(NeedOverviewRequested())
+                fModel.submit(NeedOverviewRequested)
             }
             leftButton?.apply {
                 background = applicationContext?.getDrawable(R.drawable.cancel_action)
@@ -91,7 +90,7 @@ class MissionStatusesFragment : Fragment(), Input.Listener {
                 // fControls?.removeListener(this)
             }
             Input.Control.NEED_START -> {
-                fModel.submit(NeedOverviewRequested())
+                fModel.submit(NeedOverviewRequested)
                 fControls?.removeListener(this)
             }
         }

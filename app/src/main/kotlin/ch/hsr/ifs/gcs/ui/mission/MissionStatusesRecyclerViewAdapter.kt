@@ -15,11 +15,11 @@ import ch.hsr.ifs.gcs.mission.Mission
 import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
 import kotlin.properties.Delegates
 
-class MissionStatusesRecyclerViewAdapter(private val fRecyclerView: RecyclerView)
+class MissionStatusesRecyclerViewAdapter(view: RecyclerView)
     : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>() {
 
     private var fSelectedMission: Mission? = null
-    private val fActiveItemColor = fRecyclerView.resources.getColor(R.color.activeListItem, null)
+    private val fActiveItemColor = view.resources.getColor(R.color.activeListItem, null)
 
     var missions: List<Mission> by Delegates.observable(emptyList()) { _, old, new ->
         if (old != new) {

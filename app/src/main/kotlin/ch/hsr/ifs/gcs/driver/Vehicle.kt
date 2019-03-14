@@ -1,6 +1,5 @@
 package ch.hsr.ifs.gcs.driver
 
-import android.location.Location
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 
 /**
@@ -26,5 +25,12 @@ interface Vehicle : Platform {
      * @since 1.0.0
      */
     fun returnToHome(): Command<*>
+
+    /**
+     * Set the maximum travel speed for the vehicle
+     *
+     * @since 1.1.0
+     */
+    fun limitTravelSpeed(speed: Double): Command<*>
 
 }

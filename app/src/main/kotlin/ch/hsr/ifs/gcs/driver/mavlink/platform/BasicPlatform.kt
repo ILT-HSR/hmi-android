@@ -326,6 +326,14 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             z = Float.NaN
     ))
 
+    override fun limitTravelSpeed(speed: Double) = MAVLinkCommand(MAVLinkMissionCommand(
+            LongCommand.DO_CHANGE_SPEED,
+            frame = NavigationFrame.MISSION,
+            param1 = 1.0f,
+            param2 = speed.toFloat(),
+            param3 = -1.0f,
+            param4 = 0.0f
+    ))
 
     // MAVLinkPlatform implementation
 
@@ -362,6 +370,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      *
      * @since 1.0.0
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     protected fun sendMessage(message: MAVLinkMessage) {
         fMainActor.offer(MessageEvent.SendMessage(message))
     }

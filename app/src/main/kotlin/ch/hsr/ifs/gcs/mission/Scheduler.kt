@@ -42,10 +42,6 @@ class Scheduler(private val fTickInterval: Duration = Duration.ofMillis(100)) {
         fActor.offer(Event.LaunchMission(mission))
     }
 
-    fun shutdown() {
-        fActor.close()
-    }
-
     private fun schedule(mission: Mission): Job = launch(MISSION_TICK_CONTEXT) {
         mission.tick()
 

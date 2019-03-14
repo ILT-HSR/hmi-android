@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 
-import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.util.GeoPoint
@@ -8,59 +8,77 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
 
-class RegionConfigurator : ParameterConfigurator<List<GeoPoint>>() {
+@Suppress("unused")
+class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
 
-    data class RectangularRegion(private val upperLeft: GeoPoint, private val lowerRight: GeoPoint) {
+    private data class RectangularRegion(private var upperLeft: GeoPoint, private var lowerRight: GeoPoint, private val map: MapView) {
 
-        fun getPolygonPoints() = listOf(
-                upperLeft,
-                GeoPoint(upperLeft.latitude, lowerRight.longitude),
-                lowerRight,
-                GeoPoint(lowerRight.latitude, upperLeft.longitude)
+        private val dragPointMap = mapOf(
+                "region_marker_UL" to this::upperLeft,
+                "region_marker_LR" to this::lowerRight
         )
 
-        fun getRegionPoints() = listOf(
-                upperLeft,
-                lowerRight
-        )
+        val polygon: Polygon
+            get() = Polygon().apply {
+                points = listOf(
+                        upperLeft,
+                        GeoPoint(upperLeft.latitude, lowerRight.longitude),
+                        lowerRight,
+                        GeoPoint(lowerRight.latitude, upperLeft.longitude)
+                )
+                id = "region_polygon"
+            }
+
+        val dragPoints: List<Marker>
+            get() =
+                dragPointMap.map { (mid, field) ->
+                    Marker(map).apply {
+                        id = mid
+                        position = field.get()
+                        isDraggable = true
+                        setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
+                            override fun onMarkerDragEnd(marker: Marker?) {}
+                            override fun onMarkerDragStart(marker: Marker) = onMarkerDrag(marker)
+                            override fun onMarkerDrag(marker: Marker) {
+                                field.set(marker.position)
+                                map.overlays.asSequence()
+                                        .filter { it is Polygon && it.id == "region_polygon" }
+                                        .map { it as Polygon }.toList()
+                                        .forEach { map.overlays -= it }
+                                map.overlays += polygon
+                                map.invalidate()
+                            }
+                        })
+                    }
+                }
 
     }
 
     private lateinit var region: RectangularRegion
 
     override fun present() {
-        val mapView = context.findViewById<MapView>(R.id.map)
+        val map = context.map
+        region = createInitialRegion(map)
 
-        val polygon = createInitialPolygon(mapView)
-        parameter.parameter.result = region.getPolygonPoints()
-        mapView.overlays.add(polygon)
-        region.getRegionPoints().forEach {
-            val marker = Marker(mapView)
-            marker.isDraggable = true
-            marker.position = it
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            mapView.overlays.add(marker)
-            marker.setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
-                override fun onMarkerDragStart(marker: Marker) {}
-                override fun onMarkerDragEnd(marker: Marker) {}
-                override fun onMarkerDrag(marker: Marker) {
-                    it.latitude = marker.position.latitude
-                    it.longitude = marker.position.longitude
-                    polygon.points = region.getPolygonPoints()
-                    parameter.parameter.result = region.getPolygonPoints()
-                    mapView.invalidate()
-                }
-            })
+        map.overlays.add(region.polygon)
+        region.dragPoints.forEach { marker ->
+            map.overlays += marker
         }
-        mapView.invalidate()
+
+        map.invalidate()
     }
 
     override fun destroy() {
-        context.map.overlays.forEach {
+        val map = context.map
+        map.overlays.forEach {
             if (it is Marker) {
                 it.isDraggable = false
                 it.setOnMarkerClickListener { _, _ -> true } // needed to prevent info box pop up
             }
+        }
+
+        parameter.parameter.result = region.polygon.points.map {
+            GPSPosition(it.latitude, it.longitude, it.altitude)
         }
     }
 
@@ -69,21 +87,19 @@ class RegionConfigurator : ParameterConfigurator<List<GeoPoint>>() {
         context.map.invalidate()
     }
 
-    private fun createInitialPolygon(mapView: MapView): Polygon {
+    private fun createInitialRegion(mapView: MapView): RectangularRegion {
         val zoomLevel = mapView.zoomLevelDouble
         val currentGeoPoint = mapView.mapCenter
         val currentLatitude = currentGeoPoint.latitude
         val currentLongitude = currentGeoPoint.longitude
         val latitudeDiff = (0.00007 / 2) * zoomLevel
         val longitudeDiff = (0.0001 / 2) * zoomLevel
-        val polygon = Polygon()
-        region = RectangularRegion(
+
+        return RectangularRegion(
                 GeoPoint(currentLatitude + latitudeDiff, currentLongitude - longitudeDiff),
-                GeoPoint(currentLatitude - latitudeDiff, currentLongitude + longitudeDiff)
+                GeoPoint(currentLatitude - latitudeDiff, currentLongitude + longitudeDiff),
+                mapView
         )
-        val pointList = region.getPolygonPoints()
-        polygon.points = pointList
-        return polygon
     }
 
 }

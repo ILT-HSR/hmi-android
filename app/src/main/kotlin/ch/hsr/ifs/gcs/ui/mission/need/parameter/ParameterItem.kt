@@ -1,7 +1,6 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
 import ch.hsr.ifs.gcs.mission.need.parameter.Parameter
-import java.util.*
 
 class ParameterItem<Result>(val parameter: Parameter<Result>, val name: String, private val fConfigurator: ParameterConfigurator<*>) {
 

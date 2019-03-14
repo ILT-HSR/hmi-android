@@ -11,11 +11,13 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 
+@Suppress("unused")
 class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
 
     override fun present() {
         val mapView = context.findViewById<MapView>(R.id.map)
-        parameter.parameter.result = GPSPosition(mapView.mapCenter as GeoPoint)
+        val mapCenter = mapView.mapCenter as GeoPoint
+        parameter.parameter.result = GPSPosition(mapCenter.latitude, mapCenter.longitude, mapCenter.altitude)
         val posMarker = Marker(mapView)
         posMarker.position = mapView.mapCenter as GeoPoint?
         posMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
@@ -25,7 +27,8 @@ class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
         posMarker.setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
             override fun onMarkerDragStart(marker: Marker) {}
             override fun onMarkerDragEnd(marker: Marker) {
-                parameter.parameter.result = GPSPosition(GeoPoint(marker.position))
+                val position = marker.position
+                parameter.parameter.result = GPSPosition(position.latitude, position.longitude, position.altitude)
             }
 
             override fun onMarkerDrag(marker: Marker) {}
@@ -36,7 +39,7 @@ class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
                 val geoPoint = mapView.projection.fromPixels(e.x.toInt(), e.y.toInt()) as GeoPoint
                 posMarker.position = geoPoint
                 mapView.invalidate()
-                parameter.parameter.result = GPSPosition(geoPoint)
+                parameter.parameter.result = GPSPosition(geoPoint.latitude, geoPoint.longitude, geoPoint.altitude)
                 return true
             }
         })

@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-<CheckBoxPreference
-    android:key="enable_null_platform"
-    android:title="@string/enable_null_platform"
-    android:summary="@string/enable_null_platform_summary"
-    android:defaultValue="false"/>
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="enable_null_platform"
+        android:summary="@string/enable_null_platform_summary"
+        android:title="@string/enable_null_platform" />
+    <ListPreference
+        android:defaultValue="osm"
+        android:entries="@array/map_sources_names"
+        android:entryValues="@array/map_sources_values"
+        android:key="map_source"
+        android:summary="Select the source of the map tiles"
+        android:title="Map source" />
 </PreferenceScreen>

@@ -6,7 +6,7 @@ apply from: '../artifacts.gradle'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "ch.hsr.ifs.gcs"
-        minSdkVersion 27
+        minSdkVersion 26
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"

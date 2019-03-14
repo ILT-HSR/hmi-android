@@ -38,7 +38,7 @@ data class MissionAvailable(val mission: Mission) : MainModelEvent()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class MissionOverviewRequested : MainModelEvent()
+object MissionOverviewRequested : MainModelEvent()
 
 /**
  * Event type to signal a new need has become available
@@ -70,7 +70,7 @@ data class NeedConfigurationStarted(val need: Need) : MainModelEvent()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class NeedConfigurationAborted : MainModelEvent()
+object NeedConfigurationAborted : MainModelEvent()
 
 /**
  * Event to to signal that a need configuration has been started
@@ -78,7 +78,7 @@ class NeedConfigurationAborted : MainModelEvent()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class NeedConfigurationFinished() : MainModelEvent()
+object NeedConfigurationFinished : MainModelEvent()
 
 /**
  * Event to signal that the user wants to select a need
@@ -86,7 +86,7 @@ class NeedConfigurationFinished() : MainModelEvent()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class NeedOverviewRequested : MainModelEvent()
+object NeedOverviewRequested : MainModelEvent()
 
 /**
  * Event type to signal that the result of a mission has become available

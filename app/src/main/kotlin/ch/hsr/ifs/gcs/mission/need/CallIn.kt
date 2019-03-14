@@ -3,6 +3,7 @@ package ch.hsr.ifs.gcs.mission.need
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.need.parameter.Altitude
 import ch.hsr.ifs.gcs.mission.need.parameter.Cargo
+import ch.hsr.ifs.gcs.mission.need.parameter.SpeedLimit
 import ch.hsr.ifs.gcs.mission.need.parameter.Target
 import ch.hsr.ifs.gcs.mission.need.task.*
 import ch.hsr.ifs.gcs.resource.Capability
@@ -21,24 +22,25 @@ class CallIn(override val resource: Resource) : Need {
     private val fAltitude = Altitude()
     private val fTarget = Target()
     private val fCargo = Cargo()
+    private val fSpeedLimit = SpeedLimit()
 
     override val id = "ch.hsr.ifs.gcs.mission.need.callIn"
 
     override val parameterList = listOf(
             fAltitude,
+            fSpeedLimit,
             fTarget,
             fCargo
     )
 
     override val tasks: List<Task>?
-        get() = GPSPosition(fTarget.result.latitude, fTarget.result.longitude, fAltitude.result.toDouble()).let{ target ->
-            listOf(
-                    TakeOff(fAltitude.result),
-                    MoveToPosition(target),
-                    TriggerPayload(fCargo.result),
-                    ReturnToHome()
-            )
-        }
+        get() = listOf(
+                LimitTravelSpeed(fSpeedLimit.result),
+                TakeOff(fAltitude.result),
+                MoveToPosition(GPSPosition(fTarget.result.latitude, fTarget.result.longitude, fAltitude.result.toDouble())),
+                TriggerPayload(fCargo.result),
+                ReturnToHome()
+        )
 
     override val requirements: List<Capability<*>>
         get() = listOf(

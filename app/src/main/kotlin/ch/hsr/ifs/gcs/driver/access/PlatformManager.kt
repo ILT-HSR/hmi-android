@@ -60,8 +60,8 @@ class PlatformManager(private val fListener: Listener) {
     private fun probe(context: Context, driver: UsbSerialDriver): Boolean {
         val parameters = SerialDataChannelFactory.Parameters(context, driver.ports[0])
         (SerialDataChannelFactory.createChannel(parameters))?.let { channel ->
-            fSerialDrivers.map {
-                it.value(channel)?.let {
+            fSerialDrivers.map { e ->
+                e.value(channel)?.let {
                     fOpenDevices[driver.device] = it
                     Log.i(LOG_TAG, "New platform created: $it")
                     fListener.onNewPlatformAvailable(it)
