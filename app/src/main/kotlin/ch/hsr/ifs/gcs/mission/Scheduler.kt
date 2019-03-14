@@ -1,10 +1,10 @@
 package ch.hsr.ifs.gcs.mission
 
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.actor
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.actor
 import java.time.Duration
-import java.util.concurrent.TimeUnit
 
 class Scheduler(private val fTickInterval: Duration = Duration.ofMillis(100)) {
 
@@ -19,7 +19,7 @@ class Scheduler(private val fTickInterval: Duration = Duration.ofMillis(100)) {
 
     private val fScheduledMissions = mutableMapOf<Mission, Job>()
 
-    private val fActor = actor<Event>(DefaultDispatcher, Channel.UNLIMITED) {
+    private val fActor = GlobalScope.actor<Event>(Default, Channel.UNLIMITED) {
         for (event in this) {
             when (event) {
                 is Event.LaunchMission -> event.mission.let { mission ->
@@ -42,11 +42,11 @@ class Scheduler(private val fTickInterval: Duration = Duration.ofMillis(100)) {
         fActor.offer(Event.LaunchMission(mission))
     }
 
-    private fun schedule(mission: Mission): Job = launch(MISSION_TICK_CONTEXT) {
+    private fun schedule(mission: Mission): Job = GlobalScope.launch(MISSION_TICK_CONTEXT) {
         mission.tick()
 
         while (isActive) {
-            delay(fTickInterval.toNanos(), TimeUnit.NANOSECONDS)
+            delay(fTickInterval.toMillis())
             if (!mission.isAborted) {
                 mission.tick()
             } else {

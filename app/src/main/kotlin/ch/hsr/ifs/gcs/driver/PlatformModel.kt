@@ -3,9 +3,10 @@ package ch.hsr.ifs.gcs.driver
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.util.Log
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.actor
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.actor
 
 sealed class PlatformEvent
 
@@ -19,7 +20,7 @@ class PlatformModel {
 
     private val fAvailablePlatforms = MutableLiveData<List<Platform>>().apply { value = emptyList() }
 
-    private val fActor = actor<PlatformEvent>(UI, Channel.UNLIMITED) {
+    private val fActor = GlobalScope.actor<PlatformEvent>(Main, Channel.UNLIMITED) {
         for(event in this) {
             when(event) {
                 is NewPlatformAvailable -> {

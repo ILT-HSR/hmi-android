@@ -78,11 +78,3 @@ dependencies {
     testImplementation "org.hamcrest:hamcrest-library:$hamcrestVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
 }
-
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
-

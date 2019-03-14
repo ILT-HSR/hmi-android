@@ -7,9 +7,10 @@ import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Result
 import ch.hsr.ifs.gcs.ui.MenuFragmentID
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.actor
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.actor
 
 /**
  * The tag class to identify [MainModel] events
@@ -129,7 +130,7 @@ class MainModel {
     private val fActiveMenuFragment = MutableLiveData<MenuFragmentID>().apply { value = MenuFragmentID.MISSION_STATUSES_FRAGMENT }
     private val fActiveInputDevice = MutableLiveData<Input?>()
 
-    private val fActor = actor<MainModelEvent>(UI, Channel.UNLIMITED) {
+    private val fActor = GlobalScope.actor<MainModelEvent>(Main, Channel.UNLIMITED) {
         for (event in this) {
             when (event) {
                 is MissionAvailable -> {

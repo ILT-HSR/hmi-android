@@ -4,9 +4,10 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.util.Log
 import ch.hsr.ifs.gcs.resource.Resource
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.actor
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.actor
 
 sealed class ResourceEvent
 
@@ -20,7 +21,7 @@ class ResourceModel {
 
     private val fAvailableResources = MutableLiveData<List<Resource>>().apply { value = emptyList() }
 
-    private val fActor = actor<ResourceEvent>(UI, Channel.UNLIMITED){
+    private val fActor = GlobalScope.actor<ResourceEvent>(Main, Channel.UNLIMITED){
         for(event in this) {
             when(event) {
                 is NewResourceAvailable -> {

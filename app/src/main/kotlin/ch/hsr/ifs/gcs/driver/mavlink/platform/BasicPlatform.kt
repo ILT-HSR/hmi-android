@@ -13,9 +13,9 @@ import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.concurrent.every
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.channels.Channel
-import kotlinx.coroutines.experimental.channels.actor
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.actor
 import me.drton.jmavlib.mavlink.*
 import java.io.IOException
 import java.nio.channels.ByteChannel
@@ -89,7 +89,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         data class SendMissionMessage(val message: MAVLinkMessage, val expected: MessageID, val result: CompletableDeferred<MAVLinkMessage>) : MessageEvent()
     }
 
-    private val fMainActor = actor<MessageEvent>(PlatformContext, Channel.UNLIMITED) {
+    private val fMainActor = GlobalScope.actor<MessageEvent>(PlatformContext, Channel.UNLIMITED) {
         for (event in this) {
             @Suppress("IMPLICIT_CAST_TO_ANY")
             when (event) {
@@ -275,7 +275,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         beginSerialIO()
         fHeartbeatJob = startHeartbeat()
         fSurveillanceJob = startSurveyor()
-        launch(PlatformContext) {
+        GlobalScope.launch(PlatformContext) {
             sendLongCommand(createRequestAutopilotCapabilitiesMessage(fSender, fTarget, schema))
         }
     }
@@ -385,7 +385,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         fMainActor.send(MessageEvent.SendLongCommand(command, result))
 
         for (retry in 0 until retries) {
-            withTimeoutOrNull(500, TimeUnit.MILLISECONDS) {
+            withTimeoutOrNull(500) {
                 result.await()
             }?.let { return@sendLongCommand it } ?: command.apply {
                 set("confirmation", (getInt("confirmation") + 1) % 256)
@@ -407,7 +407,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
         var response: MAVLinkMessage?
         for (retry in 0 until retries) {
-            response = withTimeoutOrNull(500, TimeUnit.MILLISECONDS) { result.await() }
+            response = withTimeoutOrNull(500) { result.await() }
             if (response != null) {
                 return response
             }
@@ -440,22 +440,22 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     /**
      * Schedule the transmission of 'Heartbeat' messages to the vehicle at a fixed 1s interval
      */
-    private fun startHeartbeat() = launch(PlatformContext) {
+    private fun startHeartbeat() = GlobalScope.launch(PlatformContext) {
         while (isActive) {
             sendMessage(createHeartbeatMessage(fSender, schema))
-            delay(1, TimeUnit.SECONDS)
+            delay(TimeUnit.SECONDS.toMillis(1))
         }
     }
 
     /**
      * Schedule the surveyor actions
      */
-    private fun startSurveyor() = launch(PlatformContext) {
+    private fun startSurveyor() = GlobalScope.launch(PlatformContext) {
         while (isActive) {
             if (fIsAlive && fLastHeartbeat + Duration.ofSeconds(10) < Instant.now()) {
                 fIsAlive = false
             }
-            delay(500, TimeUnit.MILLISECONDS)
+            delay(500)
         }
     }
 

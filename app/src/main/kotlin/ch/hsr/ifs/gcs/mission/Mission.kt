@@ -1,10 +1,7 @@
 package ch.hsr.ifs.gcs.mission
 
 import android.util.Log
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.newSingleThreadContext
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.properties.Delegates
 
@@ -41,7 +38,7 @@ class Mission(val need: Need) {
     private val fListeners = mutableListOf<Listener>()
     private var fStatus by Delegates.observable(Status.PREPARING) { _, old, new ->
         if (old != new) {
-            launch(MISSION_CONTEXT) {
+            GlobalScope.launch(MISSION_CONTEXT) {
                 fListeners.forEach { it.onMissionStatusChanged(this@Mission, new) }
             }
         }
@@ -86,7 +83,7 @@ class Mission(val need: Need) {
     }
 
     private fun performTick() {
-        fActiveTick = launch(MISSION_CONTEXT) {
+        fActiveTick = GlobalScope.launch(MISSION_CONTEXT) {
             fStatus = when (fExecution.tick()) {
                 Execution.Status.FAILURE -> Status.FAILED
                 Execution.Status.PREPARING -> Status.PREPARING
