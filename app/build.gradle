@@ -48,6 +48,13 @@ detekt {
     }
 }
 
+android {
+    lintOptions {
+        abortOnError false
+    }
+}
+
+
 dependencies {
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
