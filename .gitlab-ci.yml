@@ -2,9 +2,15 @@ image: gitlab.dev.ifs.hsr.ch:45023/arche18/gcs/android-sdk
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
+  ANDROID_COMPILE_SDK: "27"
+  ANDROID_BUILD_TOOLS: "28.0.3"
+  ANDROID_SDK_TOOLS:   "4333796"
 
 before_script:
   - export GRADLE_USER_HOME=$(pwd)/.gradle
+  - echo y | /android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
+  - echo y | /android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
+  - echo y | /android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
 
 stages:
   - build
