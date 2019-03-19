@@ -4,6 +4,18 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.gitlab.arturbosch.detekt'
 apply from: '../artifacts.gradle'
 
+ext.versionMajor = 1
+ext.versionMinor = 1
+ext.versionPatch = 0
+
+private Integer generateVersionCode() {
+    return ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
+}
+
+private String generateVersionName() {
+    return "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
+}
+
 android {
     compileSdkVersion 27
     buildToolsVersion '28.0.3'
@@ -17,8 +29,8 @@ android {
         applicationId "ch.hsr.ifs.gcs"
         minSdkVersion 26
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode generateVersionCode()
+        versionName generateVersionName()
     }
 
     buildTypes {
@@ -53,7 +65,6 @@ android {
         abortOnError false
     }
 }
-
 
 dependencies {
     // Kotlin
