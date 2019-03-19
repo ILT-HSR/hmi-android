@@ -8,9 +8,9 @@ variables:
 
 before_script:
   - export GRADLE_USER_HOME=$(pwd)/.gradle
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
-  - echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
+  - echo y | /android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
+  - echo y | /android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
+  - echo y | /android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
 
 stages:
   - build
