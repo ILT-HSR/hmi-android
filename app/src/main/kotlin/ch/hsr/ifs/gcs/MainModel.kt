@@ -26,7 +26,7 @@ import kotlinx.coroutines.channels.actor
 sealed class MainModelEvent
 
 /**
- * Event type to signal the arrival of a new missin on the system
+ * Event type to signal the arrival of a new mission on the system
  *
  * @author IFS Institute for Software
  * @since 1.0.0
@@ -34,7 +34,7 @@ sealed class MainModelEvent
 data class MissionAvailable(val mission: Mission) : MainModelEvent()
 
 /**
- * Event type to signal the user wants to go to the mission Overview
+ * Event type to signal that the user wants to go to the mission overview
  *
  * @author IFS Institute for Software
  * @since 1.0.0
@@ -42,7 +42,7 @@ data class MissionAvailable(val mission: Mission) : MainModelEvent()
 object MissionOverviewRequested : MainModelEvent()
 
 /**
- * Event type to signal a new need has become available
+ * Event type to signal that a new need has become available
  *
  * @author IFS Institute for Software
  * @since 1.0.0
@@ -50,7 +50,7 @@ object MissionOverviewRequested : MainModelEvent()
 data class NeedAvailable(val need: Need) : MainModelEvent()
 
 /**
- * Event type to signal a need has become unavailable
+ * Event type to signal that a need has become unavailable
  *
  * @author IFS Institute for Software
  * @since 1.0.0
@@ -58,7 +58,7 @@ data class NeedAvailable(val need: Need) : MainModelEvent()
 data class NeedUnavailable(val need: Need) : MainModelEvent()
 
 /**
- * Event to to signal that a need configuration has been started
+ * Event to signal that a need configuration has been started
  *
  * @author IFS Institute for Software
  * @since 1.0.0
@@ -66,7 +66,7 @@ data class NeedUnavailable(val need: Need) : MainModelEvent()
 data class NeedConfigurationStarted(val need: Need) : MainModelEvent()
 
 /**
- * Event to to signal that a need configuration has been started
+ * Event to signal that a need configuration has been started
  *
  * @author IFS Institute for Software
  * @since 1.0.0
@@ -74,7 +74,7 @@ data class NeedConfigurationStarted(val need: Need) : MainModelEvent()
 object NeedConfigurationAborted : MainModelEvent()
 
 /**
- * Event to to signal that a need configuration has been started
+ * Event to signal that a need configuration has finished
  *
  * @author IFS Institute for Software
  * @since 1.0.0
@@ -106,7 +106,7 @@ data class ResultAvailable(val result: Result) : MainModelEvent()
 data class InputDeviceAvailable(val device: Input) : MainModelEvent()
 
 /**
- * Event type to signal that an input device became available
+ * Event type to signal that an input device became unavailable
  *
  * @author IFS Institute for Software
  * @since 1.0.0
@@ -219,7 +219,7 @@ class MainModel {
     val activeInputDevice: LiveData<Input?> = fActiveInputDevice
 
     /**
-     * Submit an submit to the model
+     * Submit an event to the model
      *
      * @since 1.0.0
      */
