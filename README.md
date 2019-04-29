@@ -9,11 +9,15 @@ Open the following links in a browser on your android device to install the newe
 
 ## Stable Releases
 
+[![Build Status](https://travis-ci.com/ILT-HSR/hmi-android.svg?branch=master)](https://travis-ci.com/ILT-HSR/hmi-android)
+
 | Build Type | Link   |
 |------------|--------|
 | Debug      | _TBD_  |
 
 ## Development Releases
+
+[![Build Status](https://travis-ci.com/ILT-HSR/hmi-android.svg?branch=develop)](https://travis-ci.com/ILT-HSR/hmi-android)
 
 | Build Type | Link   |
 |------------|--------|
