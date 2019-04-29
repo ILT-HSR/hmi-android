@@ -14,8 +14,6 @@ import android.view.View
 import ch.hsr.ifs.gcs.*
 import ch.hsr.ifs.gcs.R.drawable.abort_mission
 import ch.hsr.ifs.gcs.R.layout.activity_main
-import ch.hsr.ifs.gcs.driver.Input
-import ch.hsr.ifs.gcs.driver.Input.Control
 import ch.hsr.ifs.gcs.ui.mission.MissionResultsFragment
 import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionFragment
@@ -49,7 +47,7 @@ fun <T> Pair<Array<out T>, IntArray>.iterator(): Iterator<Pair<T, Int>> {
     }
 }
 
-class MainActivity : AppCompatActivity(), Input.Listener, ActivityCompat.OnRequestPermissionsResultCallback {
+class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private data class PermissionState(val permission: String, val state: Int)
 
@@ -136,20 +134,6 @@ class MainActivity : AppCompatActivity(), Input.Listener, ActivityCompat.OnReque
         super.onPause()
         map.onPause()
         finish()
-    }
-
-    // Input.Handler implementation
-
-    override fun onButton(control: Control) {
-        @Suppress("NON_EXHAUSTIVE_WHEN")
-        when (control) {
-            Control.ZOOM_IN -> {
-                map.controller.zoomIn()
-            }
-            Control.ZOOM_OUT -> {
-                map.controller.zoomOut()
-            }
-        }
     }
 
     // ActivityCompat.OnRequestPermissionsResultCallback implementation

@@ -2,7 +2,6 @@ package ch.hsr.ifs.gcs
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Result
