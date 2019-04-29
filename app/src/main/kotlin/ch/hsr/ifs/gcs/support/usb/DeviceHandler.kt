@@ -35,7 +35,6 @@ class DeviceHandler : BroadcastReceiver() {
         Log.i(LOG_TAG, "Device attached")
         (context.applicationContext as? GCS)?.let {
             it.platformManager.deviceAttached(context, device)
-            it.inputManager.deviceAttached(context, device)
         }
 
     }
@@ -44,7 +43,6 @@ class DeviceHandler : BroadcastReceiver() {
         Log.i(LOG_TAG, "Device detached")
         (context.applicationContext as? GCS)?.let {
             it.platformManager.deviceDetached(device)
-            it.inputManager.deviceDetached(device)
         }
     }
 
