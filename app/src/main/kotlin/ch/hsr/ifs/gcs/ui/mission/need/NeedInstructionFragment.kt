@@ -1,6 +1,5 @@
 package ch.hsr.ifs.gcs.ui.mission.need
 
-import android.arch.lifecycle.Observer
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -10,18 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.*
-import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.view.*
 
-class NeedInstructionFragment : Fragment(), Input.Listener {
+class NeedInstructionFragment : Fragment() {
 
     private lateinit var fModel: MainModel
     private lateinit var fAdapter: NeedInstructionRecyclerViewAdapter
-
-    private var fControls: Input? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_need_instruction_list, container, false)
@@ -40,14 +36,6 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
         super.onActivityCreated(savedInstanceState)
         val context = activity as MainActivity
         fModel = (activity!!.application as GCS).mainModel
-        fModel.activeInputDevice.observe(this, Observer {
-            fControls = it
-            fControls?.removeListener(this)
-            fControls?.addListener(this)
-        })
-
-        fControls = fModel.activeInputDevice.value
-        fControls?.addListener(this)
 
         fAdapter.parameters = fModel.activeNeed.value!!.parameterList
         fModel.activeNeed.value?.let { need ->
@@ -60,7 +48,6 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
                     needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
                     needNavigationButton.setOnClickListener {
                         fModel.submit(NeedConfigurationFinished)
-                        fControls?.removeListener(this)
                     }
                 }
             }
@@ -70,20 +57,6 @@ class NeedInstructionFragment : Fragment(), Input.Listener {
             leftButton?.setOnClickListener {
                 fAdapter.abort()
                 fModel.submit(NeedOverviewRequested)
-            }
-        }
-    }
-
-    override fun onButton(control: Input.Control) {
-        @Suppress("NON_EXHAUSTIVE_WHEN")
-        when (control) {
-            Input.Control.UPDATE_ABORT -> {
-                activity?.leftButton?.performClick()
-                fControls?.removeListener(this)
-            }
-            Input.Control.NEED_START -> {
-                needNavigationButton?.performClick()
-//                fControls?.removeListener(this)
             }
         }
     }

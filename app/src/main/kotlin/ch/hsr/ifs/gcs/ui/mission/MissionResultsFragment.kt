@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.*
-import ch.hsr.ifs.gcs.driver.Input
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.*
 import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
@@ -18,12 +17,10 @@ import kotlinx.android.synthetic.main.fragment_missionresults_list.view.*
  * A fragment representing a list of mission result items combined with a button to add
  * additional needs.
  */
-class MissionResultsFragment : Fragment(), Input.Listener {
+class MissionResultsFragment : Fragment() {
 
     private lateinit var fModel: MainModel
     private lateinit var fAdapter: MissionResultsRecyclerViewAdapter
-
-    private var fControls: Input? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_missionresults_list, container, false)
@@ -47,12 +44,6 @@ class MissionResultsFragment : Fragment(), Input.Listener {
         fModel.availableNeeds.observe(this, Observer {
             resultsAddButton.isEnabled = it != null && it.isNotEmpty()
         })
-        fModel.activeInputDevice.observe(this, Observer {
-            fControls = it
-        })
-
-        fControls = fModel.activeInputDevice.value
-        fControls?.addListener(this)
 
         activity?.apply {
             resultsAddButton.setOnClickListener {
@@ -63,25 +54,4 @@ class MissionResultsFragment : Fragment(), Input.Listener {
         }
     }
 
-    //Input.Listener implementation
-
-    override fun onButton(control: Input.Control) {
-        @Suppress("NON_EXHAUSTIVE_WHEN")
-        when (control) {
-            Input.Control.DPAD_UP -> {
-                fAdapter.activatePreviousItem()
-            }
-            Input.Control.DPAD_DOWN -> {
-                fAdapter.activateNextItem()
-            }
-            Input.Control.DPAD_LEFT -> {
-                fModel.submit(MissionOverviewRequested)
-                fControls?.removeListener(this)
-            }
-            Input.Control.NEED_START -> {
-                fModel.submit(NeedOverviewRequested)
-                fControls?.removeListener(this)
-            }
-        }
-    }
 }

@@ -130,10 +130,6 @@ class MainActivity : AppCompatActivity(), Input.Listener, ActivityCompat.OnReque
                 showMenuFragment(it)
             }
         })
-        fModel.activeInputDevice.observe(this, Observer {
-            it?.removeListener(this)
-            it?.addListener(this)
-        })
     }
 
     override fun onPause() {
