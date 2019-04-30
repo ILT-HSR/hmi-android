@@ -2,7 +2,7 @@ buildscript {
     ext {
         // Kotlin
         kotlinVersion = '1.3.30'
-        dokkaVersion = '0.9.17'
+        dokkaVersion = '0.9.18'
         kotlinCoroutinesVersion = '1.1.1'
 
         // Gradle
@@ -49,7 +49,7 @@ apply plugin: 'org.jetbrains.dokka-android'
 
 dokka {
     moduleName = "$rootProject.name"
-    outputDirectory = "javadoc"
+    outputDirectory = "docs"
     outputFormat = "html"
     processConfigurations = []
 
