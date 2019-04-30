@@ -1,12 +1,18 @@
 language: android
+sudo: required
+
 android:
   components:
     - build-tools-28.0.3
     - android-27
+
 jobs:
   include:
     - stage: build
       script: ./gradlew build
     - stage: deploy_docs
-      script: cd doc && ./deploy.sh
+      before_script:
+        - sudo apt-get update
+        - sudo apt-get install -y python3 python3-pip
+      script: cd doc && sudo pip install -r requirements.txt && ./deploy.sh
       if: branch =~ /^(master|develop)$/
