@@ -4,4 +4,4 @@ android:
     - build-tools-28.0.3
     - android-27
 
-script: ./gradlew build
+script: ./gradlew build && ./gradlew dokka
