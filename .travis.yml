@@ -14,5 +14,5 @@ jobs:
       before_script:
         - sudo apt-get update
         - sudo apt-get install -y python3 python3-pip
-      script: cd doc && sudo pip install -r requirements.txt && ./deploy.sh
+      script: cd doc && sudo pip3 install -r requirements.txt && ./deploy.sh
       if: branch =~ /^(master|develop)$/
