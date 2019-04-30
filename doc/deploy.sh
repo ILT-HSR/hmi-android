@@ -8,7 +8,7 @@ fi
 SHA=$(git rev-parse --verify HEAD)
 
 echo "Creating build directory hierarchy"
-git worktree add _build gh_pages
+git worktree add _build gh-pages
 
 echo "Building documentation"
 sphinx-build -b html . _build/${TRAVIS_BRANCH}
@@ -40,4 +40,4 @@ ssh-add deploy_key
 echo "Publishing changes"
 REPO=$(git config remote.origin.url)
 SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
-git push $SSH_REPO gh_pages
+git push $SSH_REPO gh-pages
