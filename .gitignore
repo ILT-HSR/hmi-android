@@ -71,7 +71,7 @@ fastlane/test_output
 fastlane/readme.md
 
 # docs
-javadoc
+docs
 
 # macOS
 .DS_Store
