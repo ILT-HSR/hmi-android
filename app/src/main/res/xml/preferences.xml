@@ -1,15 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="enable_null_platform"
-        android:summary="@string/enable_null_platform_summary"
-        android:title="@string/enable_null_platform" />
-    <ListPreference
-        android:defaultValue="osm"
-        android:entries="@array/map_sources_names"
-        android:entryValues="@array/map_sources_values"
-        android:key="map_source"
-        android:summary="Select the source of the map tiles"
-        android:title="Map source" />
-</PreferenceScreen>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/general_settings_category_name" >
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_null_platform"
+            android:summary="@string/enable_null_platform_summary"
+            android:title="@string/enable_null_platform" />
+        <ListPreference
+            android:defaultValue="osm"
+            android:entries="@array/map_sources_names"
+            android:entryValues="@array/map_sources_values"
+            android:key="map_source"
+            android:summary="@string/map_source_summary"
+            android:title="@string/map_source" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/call_in_settings_category_name" >
+
+        <android.support.v7.preference.SeekBarPreference
+            android:defaultValue="5"
+            android:max="15"
+            android:key="call_in_altitude"
+            android:summary="@string/call_in_altitude_summary"
+            android:title="@string/call_in_altitude" />
+        <android.support.v7.preference.SeekBarPreference
+            android:defaultValue="1"
+            android:max="5"
+            android:key="call_in_travel_speed"
+            android:summary="@string/call_in_travel_speed_summary"
+            android:title="@string/call_in_travel_speed" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/mapping_settings_category_name" >
+
+        <android.support.v7.preference.SeekBarPreference
+            android:defaultValue="5"
+            android:max="15"
+            android:key="mapping_altitude"
+            android:summary="@string/mapping_altitude_summary"
+            android:title="@string/mapping_altitude" />
+        <android.support.v7.preference.SeekBarPreference
+            android:defaultValue="1"
+            android:max="5"
+            android:key="mapping_travel_speed"
+            android:summary="@string/mapping_travel_speed_summary"
+            android:title="@string/mapping_travel_speed" />
+
+    </PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>

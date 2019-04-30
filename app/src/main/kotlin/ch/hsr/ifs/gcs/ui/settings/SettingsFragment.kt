@@ -1,13 +1,12 @@
 package ch.hsr.ifs.gcs.ui.settings
 
 import android.os.Bundle
-import android.preference.PreferenceFragment
+import android.support.v7.preference.PreferenceFragmentCompat
 import ch.hsr.ifs.gcs.R
 
-class SettingsFragment : PreferenceFragment() {
+class SettingsFragment : PreferenceFragmentCompat() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.preferences)
     }
 
