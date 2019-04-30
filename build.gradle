@@ -2,7 +2,6 @@ buildscript {
     ext {
         // Kotlin
         kotlinVersion = '1.3.30'
-        dokkaVersion = '0.9.17'
         kotlinCoroutinesVersion = '1.1.1'
 
         // Gradle
@@ -38,25 +37,10 @@ buildscript {
 
         // Kotlin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokkaVersion"
 
         // Metrics
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detektVersion"
     }
-}
-
-apply plugin: 'org.jetbrains.dokka-android'
-
-dokka {
-    moduleName = "$rootProject.name"
-    outputDirectory = "javadoc"
-    outputFormat = "html"
-    processConfigurations = []
-
-    sourceDirs = files(subprojects.findAll { !it.name.contains("test") }.collect {
-        p ->
-            return new File(p.projectDir, "/src/main/kotlin")
-    })
 }
 
 allprojects {

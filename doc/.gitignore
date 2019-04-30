@@ -1,0 +1,10 @@
+/_build
+/implementation/**/*.rst
+
+# Include hand-written index files
+!/implementation/index.rst
+!/implementation/driver.rst
+!/implementation/mission.rst
+!/implementation/resource.rst
+!/implementation/support.rst
+!/implementation/ui.rst
