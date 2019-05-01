@@ -22,7 +22,7 @@ git config user.email "travis@travis-ci.com"
 
 echo -n "Checking for changes... "
 cd _build
-if git diff --quiet; then
+if [ -z "$(git status --porcelain)" ]; then
   echo "no changes detected"
   exit 0
 fi
