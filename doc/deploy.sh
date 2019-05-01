@@ -14,6 +14,7 @@ git fetch origin gh-pages:gh-pages
 git worktree add _build gh-pages
 
 echo "Building documentation"
+kotlinsphinx --overwrite ../app/src/main/kotlin/ch/hsr/ifs/gcs ./implementation
 sphinx-build -b html . _build/${TRAVIS_BRANCH}
 
 echo "Preparing git for committing"
