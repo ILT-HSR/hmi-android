@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   echo "Pull request detected. Skipping documentation deployment"
   exit 0
