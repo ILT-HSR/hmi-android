@@ -10,6 +10,7 @@ fi
 SHA=$(git rev-parse --verify HEAD)
 
 echo "Creating build directory hierarchy"
+git fetch origin gh-pages:gh-pages
 git worktree add _build gh-pages
 
 echo "Building documentation"
