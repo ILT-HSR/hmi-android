@@ -1,0 +1,23 @@
+Documentation for mission/need/parameter/Parameter.kt
+=====================================================
+
+
+.. kotlin:interface:: Parameter
+
+Interface representing the base structure of a single need parameter of a need to be configured.
+
+   .. kotlin:var:: result: Result
+   
+    The result of the need parameter when completed.
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: resultToString(): String
+   
+    Provides a [String] representation of the result. This is shown in the user interface.
+    
+    :since: 1.0.0
+    
+   
+

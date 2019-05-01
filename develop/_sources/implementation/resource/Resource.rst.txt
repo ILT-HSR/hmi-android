@@ -1,0 +1,91 @@
+Documentation for resource/Resource.kt
+======================================
+
+
+.. kotlin:interface:: Resource
+
+A resource is an abstract representation of a platform.
+
+Each resource provides a unique identification, a list of capabilities, and information about
+the status of the resource.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:val:: status: Status
+   
+    The status of the resource
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: id: String
+   
+    The unique identification of a resource
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: driverId: String
+   
+    The driver id of a resource
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: payloadDriverId: String?
+   
+    The id of the payload driver if any
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: capabilities: List<Capability<*>>
+   
+    The list of capabilities of this resource
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: isAvailable: Boolean
+   
+    Check if this resource is available
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:var:: plaform: Platform
+   
+    The platform of this resource
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: has(capability: Capability<*>): Boolean
+   
+    Check if the resource has the given capability
+    
+    :parameter capability: The desired capability
+    :returns: `true` iff. the resource has the desired capability, `false` otherwise
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: markAs(status: Status)
+   
+    Change the status of the resource to the given status
+    
+   
+   .. kotlin:enum_class:: Status
+   
+      A [resource][Resource] can be in one of several states, allowing for further filtering
+      
+      :since: 1.0.0
+      
+      - UNAVAILABLE
+      - AVAILABLE
+      - ACQUIRED
+      - BUSY
+      - FAILED
+
+

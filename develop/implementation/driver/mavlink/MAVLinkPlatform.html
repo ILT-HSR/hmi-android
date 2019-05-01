@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Documentation for driver/mavlink/MAVLinkPlatform.kt &mdash; HSR HMI for Android 1.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Documentation for driver/mavlink/MAVLinkPayload.kt" href="MAVLinkPayload.html" />
+    <link rel="prev" title="Documentation for driver/mavlink/MAVLinkCommand.kt" href="MAVLinkCommand.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> HSR HMI for Android
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Implementation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../driver.html">Driver Subsystem</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../AerialVehicle.html">Documentation for driver/AerialVehicle.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Command.html">Documentation for driver/Command.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../channel/SerialDataChannel.html">Documentation for driver/channel/SerialDataChannel.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../channel/SerialDataChannelFactory.html">Documentation for driver/channel/SerialDataChannelFactory.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../channel/ChannelFactory.html">Documentation for driver/channel/ChannelFactory.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../SerialPlatform.html">Documentation for driver/SerialPlatform.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Input.html">Documentation for driver/Input.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../NullPlatform.html">Documentation for driver/NullPlatform.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="platform/BasicPlatform.html">Documentation for driver/mavlink/platform/BasicPlatform.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="platform/PixhawkPX4.html">Documentation for driver/mavlink/platform/PixhawkPX4.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="platform/CommonPlatform.html">Documentation for driver/mavlink/platform/CommonPlatform.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payload/NullPayload.html">Documentation for driver/mavlink/payload/NullPayload.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payload/Gripper.html">Documentation for driver/mavlink/payload/Gripper.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="support/MAVLinkExecution.html">Documentation for driver/mavlink/support/MAVLinkExecution.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="support/VehicleMode.html">Documentation for driver/mavlink/support/VehicleMode.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="support/LongCommand.html">Documentation for driver/mavlink/support/LongCommand.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="support/MessageID.html">Documentation for driver/mavlink/support/MessageID.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="support/Messages.html">Documentation for driver/mavlink/support/Messages.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="support/NavigationFrame.html">Documentation for driver/mavlink/support/NavigationFrame.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="support/MAVLinkMissionCommand.html">Documentation for driver/mavlink/support/MAVLinkMissionCommand.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="MAVLinkCommand.html">Documentation for driver/mavlink/MAVLinkCommand.kt</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Documentation for driver/mavlink/MAVLinkPlatform.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="MAVLinkPayload.html">Documentation for driver/mavlink/MAVLinkPayload.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../access/PlatformManager.html">Documentation for driver/access/PlatformManager.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../access/PayloadProvider.html">Documentation for driver/access/PayloadProvider.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../access/InputManager.html">Documentation for driver/access/InputManager.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../input/HandheldControls.html">Documentation for driver/input/HandheldControls.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Payload.html">Documentation for driver/Payload.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Vehicle.html">Documentation for driver/Vehicle.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../PlatformModel.html">Documentation for driver/PlatformModel.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../NullCommand.html">Documentation for driver/NullCommand.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../Platform.html">Documentation for driver/Platform.kt</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../mission.html">Mission Handling Subsystem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../resource.html">Resource Management Subsystem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../support.html">Generic Support Infrastructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ui.html">User Interface</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">HSR HMI for Android</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Implementation</a> &raquo;</li>
+        
+          <li><a href="../../driver.html">Driver Subsystem</a> &raquo;</li>
+        
+      <li>Documentation for driver/mavlink/MAVLinkPlatform.kt</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/implementation/driver/mavlink/MAVLinkPlatform.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="documentation-for-driver-mavlink-mavlinkplatform-kt">
+<h1>Documentation for driver/mavlink/MAVLinkPlatform.kt<a class="headerlink" href="#documentation-for-driver-mavlink-mavlinkplatform-kt" title="Permalink to this headline">¶</a></h1>
+<dl class="interface">
+<dt id="interface MAVLinkPlatform">
+<code class="descclassname">interface </code><code class="descname">MAVLinkPlatform</code> : <a class="reference internal" href="../AerialVehicle.html#interface AerialVehicle" title="AerialVehicle">AerialVehicle</a><a class="reference internal" href="../SerialPlatform.html#interface SerialPlatform" title="SerialPlatform">, SerialPlatform</a><a class="headerlink" href="#interface MAVLinkPlatform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>This interface specifies the generic API of MAVLink vehicle platforms.</p>
+<dl class="field-list">
+<dt class="field-odd">since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+<dt class="field-even">author</dt>
+<dd class="field-even"><p>IFS Institute for Software</p>
+<dl class="val">
+<dt id="schema">
+<code class="descclassname">val </code><code class="descname">schema</code> : MAVLinkSchema<a class="headerlink" href="#schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>The MAVLink message schema associated with this platform</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="fun">
+<dt id="arm()-Command&lt;*&gt;">
+<code class="descclassname">fun </code><code class="descname">arm</code><span class="sig-paren">(</span><span class="sig-paren">)</span> : Command&lt;*&gt;<a class="headerlink" href="#arm()-Command<*>" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arm the vehicle for takeoff</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="fun">
+<dt id="disarm()-Command&lt;*&gt;">
+<code class="descclassname">fun </code><code class="descname">disarm</code><span class="sig-paren">(</span><span class="sig-paren">)</span> : Command&lt;*&gt;<a class="headerlink" href="#disarm()-Command<*>" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disarm the vehicle, preventing takeoff</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="senderSystem">
+<code class="descclassname">val </code><code class="descname">senderSystem</code> : <a class="reference internal" href="support/Messages.html#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a><a class="headerlink" href="#senderSystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>The MAVLink system identifying the GCS</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="targetSystem">
+<code class="descclassname">val </code><code class="descname">targetSystem</code> : <a class="reference internal" href="support/Messages.html#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a><a class="headerlink" href="#targetSystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>The MAVLink system identifying the Vehicle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd>
+</dl>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="MAVLinkPayload.html" class="btn btn-neutral float-right" title="Documentation for driver/mavlink/MAVLinkPayload.kt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="MAVLinkCommand.html" class="btn btn-neutral float-left" title="Documentation for driver/mavlink/MAVLinkCommand.kt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright (c) 2019, ILT Institute for Lab Automation and Mechatronics and IFS Institute for Software
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

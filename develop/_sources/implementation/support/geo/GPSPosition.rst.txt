@@ -1,0 +1,25 @@
+Documentation for support/geo/GPSPosition.kt
+============================================
+
+
+.. kotlin:data_class:: GPSPosition
+
+A simple value type to hold GPS floating point coordinates
+
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:constructor:: constructor(latitude: Double, longitude: Double, altitude: Double)
+   
+    Main constructor
+    
+   
+   .. kotlin:constructor:: constructor(position: WGS89Position)
+   
+    Convert a #WGS89Position into a #GPSPosition
+    
+    :since: 1.0.0
+    
+   
+

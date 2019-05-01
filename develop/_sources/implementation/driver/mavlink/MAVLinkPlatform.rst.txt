@@ -1,0 +1,47 @@
+Documentation for driver/mavlink/MAVLinkPlatform.kt
+===================================================
+
+
+.. kotlin:interface:: MAVLinkPlatform : AerialVehicle, SerialPlatform
+
+This interface specifies the generic API of MAVLink vehicle platforms.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:val:: schema: MAVLinkSchema
+   
+    The MAVLink message schema associated with this platform
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: arm(): Command<*>
+   
+    Arm the vehicle for takeoff
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: disarm(): Command<*>
+   
+    Disarm the vehicle, preventing takeoff
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: senderSystem: MAVLinkSystem
+   
+    The MAVLink system identifying the GCS
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: targetSystem: MAVLinkSystem
+   
+    The MAVLink system identifying the Vehicle
+    
+    :since: 1.0.0
+    
+   
+

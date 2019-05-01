@@ -1,0 +1,23 @@
+Documentation for driver/mavlink/support/VehicleMode.kt
+=======================================================
+
+
+.. kotlin:enum_class:: VehicleMode
+
+This enumeration describes the modes a MAVLink vehicle can be in.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   - PREFLIGHT = 0
+   - MANUAL_DISARMED = 64
+   - MANUAL_ARMED
+   - TEST_DISARMED = 66
+   - TEST_ARMED
+   - STABILIZE_DISARMED = 80
+   - STABILIZE_ARMED
+   - GUIDED_DISARMED = 88
+   - GUIDED_ARMED
+   - AUTO_DISARMED = 92
+   - AUTO_ARMED
+

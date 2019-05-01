@@ -1,0 +1,50 @@
+Documentation for driver/mavlink/support/Messages.kt
+====================================================
+
+
+.. kotlin:data_class:: MAVLinkSystem
+
+A simple value type to represent a MAVLink system
+
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:constructor:: constructor(id: Int, component: Int)
+   
+    Main constructor
+    
+   
+
+.. kotlin:fun:: createHeartbeatMessage(sender: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage 
+
+Create a new MAVLink 'Heartbeat' message
+
+:parameter sender: The sender system
+:parameter schema: The message schema
+
+:returns: A new MAVLink 'Heartbeat' message
+
+
+.. kotlin:fun:: createArmMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage 
+
+Create a new MAVLink 'Arm' message
+
+:parameter sender: The sender system
+:parameter target: The target system
+:parameter schema: The message schema
+
+:returns: a new MAVLink 'Long Command' message containing an 'Arm' command
+
+
+.. kotlin:fun:: createRequestAutopilotCapabilitiesMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage 
+
+Create a new MAVLink 'Request Autopilot Capabilities' message
+
+:parameter sender: The sender system
+:parameter target: The target system
+:parameter schema: The message schema
+
+:returns: a new MAVLink 'Long Command' message containing a 'Request Autopilot Capabilities' command
+
+

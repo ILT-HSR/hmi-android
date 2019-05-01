@@ -1,0 +1,12 @@
+Documentation for mission/need/parameter/Target.kt
+==================================================
+
+
+.. kotlin:class:: Target : Parameter<GPSPosition>
+
+This [Parameter] implementation is used to configure the target of the vehicle.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+

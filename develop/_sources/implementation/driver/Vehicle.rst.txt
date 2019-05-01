@@ -1,0 +1,35 @@
+Documentation for driver/Vehicle.kt
+===================================
+
+
+.. kotlin:interface:: Vehicle : Platform
+
+The interface of drivers for vehicles
+
+This interface defines the common functionality shared by all vehicles.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:fun:: moveTo(position: GPSPosition): Command<*>
+   
+    Instruct the vehicle to move to the given GPS position
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: returnToHome(): Command<*>
+   
+    Instruct the vehicle to return to its launch position
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: limitTravelSpeed(speed: Double): Command<*>
+   
+    Set the maximum travel speed for the vehicle
+    
+    :since: 1.1.0
+    
+   
+

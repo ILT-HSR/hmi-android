@@ -1,0 +1,48 @@
+Documentation for mission/Need.kt
+=================================
+
+
+.. kotlin:interface:: Need
+
+Interface representing the base structure of a need.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:val:: id: String
+   
+    A unique ID for the concrete need
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: parameterList: List<Parameter<*>>
+   
+    The list of tasks necessary to fulfill the need. This is needed for the recycler view.
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: resource: Resource
+   
+    The resource associated with the need.
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: tasks: List<Task>?
+   
+    Translate the need into a list of [Task] instances.
+    :returns: A list of [Task] instances or null, if the need parameters are not completed.
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: requirements: List<Capability<*>>
+   
+    The capabilities required by the concrete need
+    
+    :since: 1.0.0
+    
+   
+

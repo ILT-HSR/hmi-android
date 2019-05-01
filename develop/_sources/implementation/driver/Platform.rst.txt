@@ -1,0 +1,65 @@
+Documentation for driver/Platform.kt
+====================================
+
+
+.. kotlin:interface:: Platform
+
+The interface of drivers for a given 'Platform'
+
+Generally, a platform is some sort of unmanned vehicle, be it drones, submarines, rovers, etc.
+Each platform provides a number of commands and queries that can be performed by the platform.
+Additionally, a platform may be coupled to a payload, which allows for payload specific tasks
+that can be performed. Payloads are accessed through payload drivers, an the attached payloads
+can be queried through the platform itself.
+
+This interface specifies the minimal subset of commands and queries shared by all supported
+platforms.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:val:: driverId: String
+   
+    The driver id of the specific implementation
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: name: String
+   
+    Retrieve the platform name
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: isAlive: Boolean
+   
+    Check if the communication with the vehicle is working
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: currentPosition: GPSPosition?
+   
+    Access the current position of the vehicle
+    
+    The returned position shall be `null` if no position has yet been determined
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:var:: payload: Payload
+   
+    Get the payload attached to the vehicle
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: execution: Execution
+   
+    Get the mission execution strategy for the specific platform implementation
+    
+    :since: 1.0.0
+    
+   
+

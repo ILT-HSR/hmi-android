@@ -1,0 +1,307 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Documentation for mission/Need.kt &mdash; HSR HMI for Android 1.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Documentation for mission/Execution.kt" href="Execution.html" />
+    <link rel="prev" title="Documentation for mission/access/NeedManager.kt" href="access/NeedManager.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> HSR HMI for Android
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Implementation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../driver.html">Driver Subsystem</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../mission.html">Mission Handling Subsystem</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="need/RadiationMap.html">Documentation for mission/need/RadiationMap.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/CallIn.html">Documentation for mission/need/CallIn.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/task/TakeOff.html">Documentation for mission/need/task/TakeOff.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/task/LimitTravelSpeed.html">Documentation for mission/need/task/LimitTravelSpeed.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/task/RunPlan.html">Documentation for mission/need/task/RunPlan.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/task/MoveToPosition.html">Documentation for mission/need/task/MoveToPosition.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/task/ReturnToHome.html">Documentation for mission/need/task/ReturnToHome.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/task/Task.html">Documentation for mission/need/task/Task.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/task/TriggerPayload.html">Documentation for mission/need/task/TriggerPayload.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/parameter/SpeedLimit.html">Documentation for mission/need/parameter/SpeedLimit.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/parameter/Cargo.html">Documentation for mission/need/parameter/Cargo.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/parameter/Target.html">Documentation for mission/need/parameter/Target.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/parameter/Altitude.html">Documentation for mission/need/parameter/Altitude.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/parameter/Region.html">Documentation for mission/need/parameter/Region.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="need/parameter/Parameter.html">Documentation for mission/need/parameter/Parameter.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Result.html">Documentation for mission/Result.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Mission.html">Documentation for mission/Mission.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="access/NeedManager.html">Documentation for mission/access/NeedManager.kt</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Documentation for mission/Need.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Execution.html">Documentation for mission/Execution.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Scheduler.html">Documentation for mission/Scheduler.kt</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../resource.html">Resource Management Subsystem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../support.html">Generic Support Infrastructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ui.html">User Interface</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HSR HMI for Android</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Implementation</a> &raquo;</li>
+        
+          <li><a href="../mission.html">Mission Handling Subsystem</a> &raquo;</li>
+        
+      <li>Documentation for mission/Need.kt</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/implementation/mission/Need.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="documentation-for-mission-need-kt">
+<h1>Documentation for mission/Need.kt<a class="headerlink" href="#documentation-for-mission-need-kt" title="Permalink to this headline">¶</a></h1>
+<dl class="interface">
+<dt id="interface Need">
+<code class="descclassname">interface </code><code class="descname">Need</code><a class="headerlink" href="#interface Need" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Interface representing the base structure of a need.</p>
+<dl class="field-list">
+<dt class="field-odd">since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+<dt class="field-even">author</dt>
+<dd class="field-even"><p>IFS Institute for Software</p>
+<dl class="val">
+<dt id="id">
+<code class="descclassname">val </code><code class="descname">id</code> : <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html" title="String">String</a><a class="headerlink" href="#id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A unique ID for the concrete need</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="parameterList">
+<code class="descclassname">val </code><code class="descname">parameterList</code> : List&lt;Parameter&lt;*&gt;&gt;<a class="headerlink" href="#parameterList" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of tasks necessary to fulfill the need. This is needed for the recycler view.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="resource">
+<code class="descclassname">val </code><code class="descname">resource</code> : <a class="reference internal" href="../resource/Resource.html#interface Resource" title="Resource">Resource</a><a class="headerlink" href="#resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>The resource associated with the need.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="tasks">
+<code class="descclassname">val </code><code class="descname">tasks</code> : List&lt;Task&gt;?<a class="headerlink" href="#tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate the need into a list of [Task] instances.
+:returns: A list of [Task] instances or null, if the need parameters are not completed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="requirements">
+<code class="descclassname">val </code><code class="descname">requirements</code> : List&lt;Capability&lt;*&gt;&gt;<a class="headerlink" href="#requirements" title="Permalink to this definition">¶</a></dt>
+<dd><p>The capabilities required by the concrete need</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd>
+</dl>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Execution.html" class="btn btn-neutral float-right" title="Documentation for mission/Execution.kt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="access/NeedManager.html" class="btn btn-neutral float-left" title="Documentation for mission/access/NeedManager.kt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright (c) 2019, ILT Institute for Lab Automation and Mechatronics and IFS Institute for Software
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

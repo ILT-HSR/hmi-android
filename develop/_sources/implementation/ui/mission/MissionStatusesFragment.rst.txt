@@ -1,0 +1,10 @@
+Documentation for ui/mission/MissionStatusesFragment.kt
+=======================================================
+
+
+.. kotlin:class:: MissionStatusesFragment : Fragment(), Input.Listener
+
+A fragment representing a list of mission status items combined with a button to add
+additional needs.
+
+

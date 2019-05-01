@@ -1,0 +1,25 @@
+Documentation for support/geo/WGS89Position.kt
+==============================================
+
+
+.. kotlin:data_class:: WGS89Position
+
+A simple value type to hold scaled WGS89 integer coordinates
+
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:constructor:: constructor(latitude: Int, longitude: Int, altitude: Int)
+   
+    Main constructor
+    
+   
+   .. kotlin:constructor:: constructor(position: GPSPosition)
+   
+    Convert a #GPSPosition into a #WGS89Position
+    
+    :since: 1.0.0
+    
+   
+

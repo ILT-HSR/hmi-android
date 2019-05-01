@@ -1,0 +1,12 @@
+Documentation for mission/need/parameter/Cargo.kt
+=================================================
+
+
+.. kotlin:class:: Cargo : Parameter<String>
+
+This [Parameter] implementation is used to configure the desired cargo of the vehicle.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+

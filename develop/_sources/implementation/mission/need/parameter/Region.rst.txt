@@ -1,0 +1,12 @@
+Documentation for mission/need/parameter/Region.kt
+==================================================
+
+
+.. kotlin:class:: Region : Parameter<List<GPSPosition>>
+
+This [Parameter] implementation is used to define a region in which a need has to take place.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+

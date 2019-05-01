@@ -1,0 +1,10 @@
+Documentation for ui/mission/MissionResultsFragment.kt
+======================================================
+
+
+.. kotlin:class:: MissionResultsFragment : Fragment(), Input.Listener
+
+A fragment representing a list of mission result items combined with a button to add
+additional needs.
+
+

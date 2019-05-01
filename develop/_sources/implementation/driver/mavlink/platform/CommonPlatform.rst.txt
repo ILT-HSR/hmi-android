@@ -1,0 +1,19 @@
+Documentation for driver/mavlink/platform/CommonPlatform.kt
+===========================================================
+
+
+.. kotlin:class:: CommonPlatform
+
+This class provides a basic [platform][ch.hsr.ifs.gcs.driver.Platform] implementation for the
+MAVLink **common** schema. Specific platform drivers for vehicles implementing the **common**
+schema should be derived from this class.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:constructor:: constructor(channel ByteChannel)
+   
+    Main constructor
+    
+   
+

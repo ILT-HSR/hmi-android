@@ -1,0 +1,21 @@
+Documentation for driver/mavlink/support/MessageID.kt
+=====================================================
+
+
+.. kotlin:enum_class:: MessageID
+
+An enumeration of messages IDs commonly used by MAVLink vehicles
+
+:since: 1.0.0
+
+   - HEARTBEAT
+   - COMMAND_LONG
+   - SET_MODE
+   - AUTOPILOT_VERSION
+   - GLOBAL_POSITION_INT
+   - COMMAND_ACK
+   - MISSION_COUNT
+   - MISSION_REQUEST
+   - MISSION_ITEM
+   - MISSION_ACK
+

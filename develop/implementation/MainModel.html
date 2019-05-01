@@ -1,0 +1,492 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Documentation for MainModel.kt &mdash; HSR HMI for Android 1.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> HSR HMI for Android
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Implementation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">HSR HMI for Android</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Documentation for MainModel.kt</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/implementation/MainModel.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="documentation-for-mainmodel-kt">
+<h1>Documentation for MainModel.kt<a class="headerlink" href="#documentation-for-mainmodel-kt" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="class MainModelEvent">
+<code class="descclassname">class </code><code class="descname">MainModelEvent</code><a class="headerlink" href="#class MainModelEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>The tag class to identify [MainModel] events</p>
+<p>This class is used to identify events as being of interest to the
+[main application model][MainModel]. It it sealed, since defining new events outside of the main
+application model does not make sense. All main application model events must be derived from
+this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+</dd>
+</dl>
+<dl class="data_class">
+<dt id="data_class MissionAvailable">
+<code class="descclassname">data class </code><code class="descname">MissionAvailable</code><a class="headerlink" href="#data_class MissionAvailable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event type to signal the arrival of a new mission on the system</p>
+<dl class="field-list">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+<dl class="constructor">
+<dt id="constructor(mission:)">
+<code class="descclassname">fun </code><code class="descname">constructor</code><span class="sig-paren">(</span><em>mission: <a class="reference internal" href="mission/Mission.html#class Mission" title="Mission">Mission</a></em><span class="sig-paren">)</span><a class="headerlink" href="#constructor(mission:)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main constructor</p>
+</dd></dl>
+
+</dd>
+</dl>
+<dl class="object">
+<dt id="object MissionOverviewRequested">
+<code class="descclassname">object </code><code class="descname">MissionOverviewRequested</code> : MainModelEvent()<a class="headerlink" href="#object MissionOverviewRequested" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event type to signal that the user wants to go to the mission overview</p>
+<dl class="field-list simple">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+</dd>
+</dl>
+<dl class="data_class">
+<dt id="data_class NeedAvailable">
+<code class="descclassname">data class </code><code class="descname">NeedAvailable</code><a class="headerlink" href="#data_class NeedAvailable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event type to signal that a new need has become available</p>
+<dl class="field-list">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+<dl class="constructor">
+<dt id="constructor(need:)">
+<code class="descclassname">fun </code><code class="descname">constructor</code><span class="sig-paren">(</span><em>need: <a class="reference internal" href="mission/Need.html#interface Need" title="Need">Need</a></em><span class="sig-paren">)</span><a class="headerlink" href="#constructor(need:)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main constructor</p>
+</dd></dl>
+
+</dd>
+</dl>
+<dl class="data_class">
+<dt id="data_class NeedUnavailable">
+<code class="descclassname">data class </code><code class="descname">NeedUnavailable</code><a class="headerlink" href="#data_class NeedUnavailable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event type to signal that a need has become unavailable</p>
+<dl class="field-list">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+<dl class="constructor">
+<dt>
+<code class="descclassname">fun </code><code class="descname">constructor</code><span class="sig-paren">(</span><em>need: <a class="reference internal" href="mission/Need.html#interface Need" title="Need">Need</a></em><span class="sig-paren">)</span></dt>
+<dd><p>Main constructor</p>
+</dd></dl>
+
+</dd>
+</dl>
+<dl class="data_class">
+<dt id="data_class NeedConfigurationStarted">
+<code class="descclassname">data class </code><code class="descname">NeedConfigurationStarted</code><a class="headerlink" href="#data_class NeedConfigurationStarted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event to signal that a need configuration has been started</p>
+<dl class="field-list">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+<dl class="constructor">
+<dt>
+<code class="descclassname">fun </code><code class="descname">constructor</code><span class="sig-paren">(</span><em>need: <a class="reference internal" href="mission/Need.html#interface Need" title="Need">Need</a></em><span class="sig-paren">)</span></dt>
+<dd><p>Main constructor</p>
+</dd></dl>
+
+</dd>
+</dl>
+<dl class="object">
+<dt id="object NeedConfigurationAborted">
+<code class="descclassname">object </code><code class="descname">NeedConfigurationAborted</code> : MainModelEvent()<a class="headerlink" href="#object NeedConfigurationAborted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event to signal that a need configuration has been started</p>
+<dl class="field-list simple">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+</dd>
+</dl>
+<dl class="object">
+<dt id="object NeedConfigurationFinished">
+<code class="descclassname">object </code><code class="descname">NeedConfigurationFinished</code> : MainModelEvent()<a class="headerlink" href="#object NeedConfigurationFinished" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event to signal that a need configuration has finished</p>
+<dl class="field-list simple">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+</dd>
+</dl>
+<dl class="object">
+<dt id="object NeedOverviewRequested">
+<code class="descclassname">object </code><code class="descname">NeedOverviewRequested</code> : MainModelEvent()<a class="headerlink" href="#object NeedOverviewRequested" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event to signal that the user wants to select a need</p>
+<dl class="field-list simple">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+</dd>
+</dl>
+<dl class="data_class">
+<dt id="data_class ResultAvailable">
+<code class="descclassname">data class </code><code class="descname">ResultAvailable</code><a class="headerlink" href="#data_class ResultAvailable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event type to signal that the result of a mission has become available</p>
+<dl class="field-list">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+<dl class="constructor">
+<dt id="constructor(result:)">
+<code class="descclassname">fun </code><code class="descname">constructor</code><span class="sig-paren">(</span><em>result: Result</em><span class="sig-paren">)</span><a class="headerlink" href="#constructor(result:)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main constructor</p>
+</dd></dl>
+
+</dd>
+</dl>
+<dl class="data_class">
+<dt id="data_class InputDeviceAvailable">
+<code class="descclassname">data class </code><code class="descname">InputDeviceAvailable</code><a class="headerlink" href="#data_class InputDeviceAvailable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event type to signal that an input device became available</p>
+<dl class="field-list">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+<dl class="constructor">
+<dt id="constructor(device:)">
+<code class="descclassname">fun </code><code class="descname">constructor</code><span class="sig-paren">(</span><em>device: Input</em><span class="sig-paren">)</span><a class="headerlink" href="#constructor(device:)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main constructor</p>
+</dd></dl>
+
+</dd>
+</dl>
+<dl class="object">
+<dt id="object InputDeviceUnavailable">
+<code class="descclassname">object </code><code class="descname">InputDeviceUnavailable</code> : MainModelEvent()<a class="headerlink" href="#object InputDeviceUnavailable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Event type to signal that an input device became unavailable</p>
+<dl class="field-list simple">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+</dd>
+</dl>
+<dl class="class">
+<dt id="class MainModel">
+<code class="descclassname">class </code><code class="descname">MainModel</code><a class="headerlink" href="#class MainModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>The main application model</p>
+<p>This class provides a data connection from the underlying application logic to the UI.</p>
+<dl class="field-list">
+<dt class="field-odd">author</dt>
+<dd class="field-odd"><p>IFS Institute for Software</p>
+</dd>
+<dt class="field-even">since</dt>
+<dd class="field-even"><p>1.0.0</p>
+<dl class="val">
+<dt id="availableNeeds">
+<code class="descclassname">val </code><code class="descname">availableNeeds</code> : LiveData&lt;List&lt;Need&gt;&gt;<code class="descclassname"> = fAvailableNeeds</code><a class="headerlink" href="#availableNeeds" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of available needs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="activeNeed">
+<code class="descclassname">val </code><code class="descname">activeNeed</code> : LiveData&lt;Need&gt;<code class="descclassname"> = fActiveNeed</code><a class="headerlink" href="#activeNeed" title="Permalink to this definition">¶</a></dt>
+<dd><p>The currently active need</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="activeMissions">
+<code class="descclassname">val </code><code class="descname">activeMissions</code> : LiveData&lt;List&lt;Mission&gt;&gt;<code class="descclassname"> = fActiveMissions</code><a class="headerlink" href="#activeMissions" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of currently active needs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="missionResults">
+<code class="descclassname">val </code><code class="descname">missionResults</code> : LiveData&lt;List&lt;Result&gt;&gt;<code class="descclassname"> = fMissionResults</code><a class="headerlink" href="#missionResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of available mission results</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="activeMenuFragment">
+<code class="descclassname">val </code><code class="descname">activeMenuFragment</code> : LiveData&lt;MenuFragmentID&gt;<code class="descclassname"> = fActiveMenuFragment</code><a class="headerlink" href="#activeMenuFragment" title="Permalink to this definition">¶</a></dt>
+<dd><p>The currently selected menu fragment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="val">
+<dt id="activeInputDevice">
+<code class="descclassname">val </code><code class="descname">activeInputDevice</code> : LiveData&lt;Input?&gt;<code class="descclassname"> = fActiveInputDevice</code><a class="headerlink" href="#activeInputDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>The currently active input device</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="fun">
+<dt id="submit(event:)">
+<code class="descclassname">fun </code><code class="descname">submit</code><span class="sig-paren">(</span><em>event: <a class="reference internal" href="#class MainModelEvent" title="MainModelEvent">MainModelEvent</a></em><span class="sig-paren">)</span><a class="headerlink" href="#submit(event:)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submit an event to the model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Since</dt>
+<dd class="field-odd"><p>1.0.0</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd>
+</dl>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright (c) 2019, ILT Institute for Lab Automation and Mechatronics and IFS Institute for Software
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

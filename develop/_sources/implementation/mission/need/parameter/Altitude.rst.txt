@@ -1,0 +1,12 @@
+Documentation for mission/need/parameter/Altitude.kt
+====================================================
+
+
+.. kotlin:class:: Altitude : Parameter<Int>
+
+This [Parameter] implementation is used to configure the desired altitude of the vehicle.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+

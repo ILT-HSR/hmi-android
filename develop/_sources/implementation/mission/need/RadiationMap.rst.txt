@@ -1,0 +1,18 @@
+Documentation for mission/need/RadiationMap.kt
+==============================================
+
+
+.. kotlin:class:: RadiationMap
+
+This [Need] implementation represents the need to generate a heat map for radiation in a
+provided region using a certain mode.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:constructor:: constructor(override val resource Resource)
+   
+    Main constructor
+    
+   
+

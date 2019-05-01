@@ -1,0 +1,20 @@
+Documentation for mission/need/task/Task.kt
+===========================================
+
+
+.. kotlin:interface:: Task
+
+This interface specifies the basic tasks that vehicles are capable of on an abstract level.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:fun:: executeOn(resource: Resource): List<Command<*>>
+   
+    Execute this Task with the given [resource].
+    :parameter resource: The resource with which the Task should be executed.
+    
+    :since: 1.0.0
+    
+   
+

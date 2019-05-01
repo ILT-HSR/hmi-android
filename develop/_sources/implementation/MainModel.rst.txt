@@ -1,0 +1,194 @@
+Documentation for MainModel.kt
+==============================
+
+
+.. kotlin:class:: MainModelEvent
+
+The tag class to identify [MainModel] events
+
+This class is used to identify events as being of interest to the
+[main application model][MainModel]. It it sealed, since defining new events outside of the main
+application model does not make sense. All main application model events must be derived from
+this class.
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+
+.. kotlin:data_class:: MissionAvailable
+
+Event type to signal the arrival of a new mission on the system
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+   .. kotlin:constructor:: constructor(mission: Mission)
+   
+    Main constructor
+    
+   
+
+.. kotlin:object:: MissionOverviewRequested : MainModelEvent()
+
+Event type to signal that the user wants to go to the mission overview
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+
+.. kotlin:data_class:: NeedAvailable
+
+Event type to signal that a new need has become available
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+   .. kotlin:constructor:: constructor(need: Need)
+   
+    Main constructor
+    
+   
+
+.. kotlin:data_class:: NeedUnavailable
+
+Event type to signal that a need has become unavailable
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+   .. kotlin:constructor:: constructor(need: Need)
+   
+    Main constructor
+    
+   
+
+.. kotlin:data_class:: NeedConfigurationStarted
+
+Event to signal that a need configuration has been started
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+   .. kotlin:constructor:: constructor(need: Need)
+   
+    Main constructor
+    
+   
+
+.. kotlin:object:: NeedConfigurationAborted : MainModelEvent()
+
+Event to signal that a need configuration has been started
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+
+.. kotlin:object:: NeedConfigurationFinished : MainModelEvent()
+
+Event to signal that a need configuration has finished
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+
+.. kotlin:object:: NeedOverviewRequested : MainModelEvent()
+
+Event to signal that the user wants to select a need
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+
+.. kotlin:data_class:: ResultAvailable
+
+Event type to signal that the result of a mission has become available
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+   .. kotlin:constructor:: constructor(result: Result)
+   
+    Main constructor
+    
+   
+
+.. kotlin:data_class:: InputDeviceAvailable
+
+Event type to signal that an input device became available
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+   .. kotlin:constructor:: constructor(device: Input)
+   
+    Main constructor
+    
+   
+
+.. kotlin:object:: InputDeviceUnavailable : MainModelEvent()
+
+Event type to signal that an input device became unavailable
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+
+.. kotlin:class:: MainModel
+
+The main application model
+
+This class provides a data connection from the underlying application logic to the UI.
+
+:author: IFS Institute for Software
+:since: 1.0.0
+
+   .. kotlin:val:: availableNeeds: LiveData<List<Need>> = fAvailableNeeds
+   
+    The list of available needs
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: activeNeed: LiveData<Need> = fActiveNeed
+   
+    The currently active need
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: activeMissions: LiveData<List<Mission>> = fActiveMissions
+   
+    The list of currently active needs
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: missionResults: LiveData<List<Result>> = fMissionResults
+   
+    The list of available mission results
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: activeMenuFragment: LiveData<MenuFragmentID> = fActiveMenuFragment
+   
+    The currently selected menu fragment
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:val:: activeInputDevice: LiveData<Input?> = fActiveInputDevice
+   
+    The currently active input device
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: submit(event: MainModelEvent) = fActor.offer(event)
+   
+    Submit an event to the model
+    
+    :since: 1.0.0
+    
+   
+

@@ -1,0 +1,55 @@
+Documentation for driver/AerialVehicle.kt
+=========================================
+
+
+.. kotlin:interface:: AerialVehicle : Vehicle
+
+The interface of drivers for aerial vehicles
+
+This interface defines the common functionality shared by all aerial vehicles.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:fun:: takeOff(altitude: Altitude): Command<*>
+   
+    Instruct the vehicle to take-off into the specified altitude
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: land(): Command<*>
+   
+    Instruct the vehicle to land
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: changeAltitude(altitude: Altitude): Command<*>
+   
+    Instruct the vehicle to change its altitude to the given value
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:fun:: returnToLaunch(): Command<*>
+   
+    Instruct the vehicle to return to its launch position
+    
+    :since: 1.0.0
+    
+   
+   .. kotlin:data_class:: Altitude
+   
+      This class represents altitudes for aerial vehicles.
+      
+      :since: 1.0.0
+      :author: IFS Institute for Software
+      
+      .. kotlin:constructor:: constructor(meters: Double)
+      
+          Main constructor
+          
+      
+
+

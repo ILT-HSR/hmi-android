@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Mission Handling Subsystem" href="mission.html" />
+    <link rel="next" title="Documentation for driver/AerialVehicle.kt" href="driver/AerialVehicle.html" />
     <link rel="prev" title="Implementation" href="index.html" /> 
 </head>
 
@@ -83,7 +83,39 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Implementation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Driver Subsystem</a><ul class="simple">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Driver Subsystem</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="driver/AerialVehicle.html">Documentation for driver/AerialVehicle.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/Command.html">Documentation for driver/Command.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/channel/SerialDataChannel.html">Documentation for driver/channel/SerialDataChannel.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/channel/SerialDataChannelFactory.html">Documentation for driver/channel/SerialDataChannelFactory.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/channel/ChannelFactory.html">Documentation for driver/channel/ChannelFactory.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/SerialPlatform.html">Documentation for driver/SerialPlatform.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/Input.html">Documentation for driver/Input.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/NullPlatform.html">Documentation for driver/NullPlatform.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/platform/BasicPlatform.html">Documentation for driver/mavlink/platform/BasicPlatform.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/platform/PixhawkPX4.html">Documentation for driver/mavlink/platform/PixhawkPX4.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/platform/CommonPlatform.html">Documentation for driver/mavlink/platform/CommonPlatform.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/payload/NullPayload.html">Documentation for driver/mavlink/payload/NullPayload.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/payload/Gripper.html">Documentation for driver/mavlink/payload/Gripper.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/support/MAVLinkExecution.html">Documentation for driver/mavlink/support/MAVLinkExecution.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/support/VehicleMode.html">Documentation for driver/mavlink/support/VehicleMode.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/support/LongCommand.html">Documentation for driver/mavlink/support/LongCommand.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/support/MessageID.html">Documentation for driver/mavlink/support/MessageID.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/support/Messages.html">Documentation for driver/mavlink/support/Messages.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/support/NavigationFrame.html">Documentation for driver/mavlink/support/NavigationFrame.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/support/MAVLinkMissionCommand.html">Documentation for driver/mavlink/support/MAVLinkMissionCommand.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/MAVLinkCommand.html">Documentation for driver/mavlink/MAVLinkCommand.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/MAVLinkPlatform.html">Documentation for driver/mavlink/MAVLinkPlatform.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/mavlink/MAVLinkPayload.html">Documentation for driver/mavlink/MAVLinkPayload.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/access/PlatformManager.html">Documentation for driver/access/PlatformManager.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/access/PayloadProvider.html">Documentation for driver/access/PayloadProvider.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/access/InputManager.html">Documentation for driver/access/InputManager.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/input/HandheldControls.html">Documentation for driver/input/HandheldControls.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/Payload.html">Documentation for driver/Payload.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/Vehicle.html">Documentation for driver/Vehicle.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/PlatformModel.html">Documentation for driver/PlatformModel.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/NullCommand.html">Documentation for driver/NullCommand.kt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="driver/Platform.html">Documentation for driver/Platform.kt</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mission.html">Mission Handling Subsystem</a></li>
@@ -161,6 +193,41 @@
   <div class="section" id="driver-subsystem">
 <h1>Driver Subsystem<a class="headerlink" href="#driver-subsystem" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="driver/AerialVehicle.html">Documentation for driver/AerialVehicle.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/Command.html">Documentation for driver/Command.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/channel/SerialDataChannel.html">Documentation for driver/channel/SerialDataChannel.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/channel/SerialDataChannelFactory.html">Documentation for driver/channel/SerialDataChannelFactory.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/channel/ChannelFactory.html">Documentation for driver/channel/ChannelFactory.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/SerialPlatform.html">Documentation for driver/SerialPlatform.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/Input.html">Documentation for driver/Input.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/NullPlatform.html">Documentation for driver/NullPlatform.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/platform/BasicPlatform.html">Documentation for driver/mavlink/platform/BasicPlatform.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/platform/PixhawkPX4.html">Documentation for driver/mavlink/platform/PixhawkPX4.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/platform/CommonPlatform.html">Documentation for driver/mavlink/platform/CommonPlatform.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/payload/NullPayload.html">Documentation for driver/mavlink/payload/NullPayload.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/payload/Gripper.html">Documentation for driver/mavlink/payload/Gripper.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/support/MAVLinkExecution.html">Documentation for driver/mavlink/support/MAVLinkExecution.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/support/VehicleMode.html">Documentation for driver/mavlink/support/VehicleMode.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/support/LongCommand.html">Documentation for driver/mavlink/support/LongCommand.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/support/MessageID.html">Documentation for driver/mavlink/support/MessageID.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/support/Messages.html">Documentation for driver/mavlink/support/Messages.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/support/NavigationFrame.html">Documentation for driver/mavlink/support/NavigationFrame.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/support/MAVLinkMissionCommand.html">Documentation for driver/mavlink/support/MAVLinkMissionCommand.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/MAVLinkCommand.html">Documentation for driver/mavlink/MAVLinkCommand.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/MAVLinkPlatform.html">Documentation for driver/mavlink/MAVLinkPlatform.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/mavlink/MAVLinkPayload.html">Documentation for driver/mavlink/MAVLinkPayload.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/access/PlatformManager.html">Documentation for driver/access/PlatformManager.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/access/PayloadProvider.html">Documentation for driver/access/PayloadProvider.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/access/InputManager.html">Documentation for driver/access/InputManager.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/input/HandheldControls.html">Documentation for driver/input/HandheldControls.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/Payload.html">Documentation for driver/Payload.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/Vehicle.html">Documentation for driver/Vehicle.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/PlatformModel.html">Documentation for driver/PlatformModel.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/NullCommand.html">Documentation for driver/NullCommand.kt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="driver/Platform.html">Documentation for driver/Platform.kt</a></li>
+</ul>
 </div>
 </div>
 
@@ -172,7 +239,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="mission.html" class="btn btn-neutral float-right" title="Mission Handling Subsystem" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="driver/AerialVehicle.html" class="btn btn-neutral float-right" title="Documentation for driver/AerialVehicle.kt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Implementation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

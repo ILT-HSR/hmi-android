@@ -1,0 +1,29 @@
+Documentation for driver/channel/SerialDataChannel.kt
+=====================================================
+
+
+.. kotlin:class:: SerialDataChannel
+
+A byte channel to communicate with serial devices
+
+This channel provides an interface to a serial port, facilitating byte oriented input output
+to serial devices.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+   .. kotlin:constructor:: constructor(fPort: UsbSerialPort)
+   
+    Main constructor
+    
+   
+   .. kotlin:static_fun:: create(context: Context, port: UsbSerialPort, configuration: Configuration): SerialDataChannel?
+   
+    Create a new channel on the given port with the given [configuration][Configuration]
+    
+    :parameter context: The application context to use with the port
+    :parameter port: The USB-Serial port to attach to the channel
+    :parameter configuration: The USB-Serial configuration for the channel
+    
+   
+
