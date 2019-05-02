@@ -1,9 +1,11 @@
 package ch.hsr.ifs.gcs.mission.need
 
+import android.preference.PreferenceManager
+import ch.hsr.ifs.gcs.GCS
+import ch.hsr.ifs.gcs.PREFERENCE_KEY_CALL_IN_ALTITUDE
+import ch.hsr.ifs.gcs.PREFERENCE_KEY_CALL_IN_TRAVEL_SPEED
 import ch.hsr.ifs.gcs.mission.Need
-import ch.hsr.ifs.gcs.mission.need.parameter.Altitude
 import ch.hsr.ifs.gcs.mission.need.parameter.Cargo
-import ch.hsr.ifs.gcs.mission.need.parameter.SpeedLimit
 import ch.hsr.ifs.gcs.mission.need.parameter.Target
 import ch.hsr.ifs.gcs.mission.need.task.*
 import ch.hsr.ifs.gcs.resource.Capability
@@ -19,25 +21,23 @@ import ch.hsr.ifs.gcs.support.geo.GPSPosition
  */
 class CallIn(override val resource: Resource) : Need {
 
-    private val fAltitude = Altitude()
+    private val fPreferences = PreferenceManager.getDefaultSharedPreferences(GCS.context)
+
     private val fTarget = Target()
     private val fCargo = Cargo()
-    private val fSpeedLimit = SpeedLimit()
 
     override val id = "ch.hsr.ifs.gcs.mission.need.callIn"
 
     override val parameterList = listOf(
-            fAltitude,
-            fSpeedLimit,
-            fTarget,
-            fCargo
+            fCargo,
+            fTarget
     )
 
     override val tasks: List<Task>?
         get() = listOf(
-                LimitTravelSpeed(fSpeedLimit.result),
-                TakeOff(fAltitude.result),
-                MoveToPosition(GPSPosition(fTarget.result.latitude, fTarget.result.longitude, fAltitude.result.toDouble())),
+                LimitTravelSpeed(fPreferences.getInt(PREFERENCE_KEY_CALL_IN_TRAVEL_SPEED, 1).toDouble()),
+                TakeOff(fPreferences.getInt(PREFERENCE_KEY_CALL_IN_ALTITUDE, 1)),
+                MoveToPosition(GPSPosition(fTarget.result.latitude, fTarget.result.longitude, fPreferences.getInt(PREFERENCE_KEY_CALL_IN_ALTITUDE, 1).toDouble())),
                 TriggerPayload(fCargo.result),
                 ReturnToHome()
         )
