@@ -54,20 +54,6 @@ class NeedsRecyclerViewAdapter(private val fRecyclerView: RecyclerView, private 
         }
     }
 
-    fun activateNextItem() {
-        val newIndex = fItems.indexOf(fActiveItem) + 1
-        if (newIndex < fItems.size) {
-            activateItem(fItems[newIndex])
-        }
-    }
-
-    fun activatePreviousItem() {
-        val newIndex = fItems.indexOf(fActiveItem) - 1
-        if (newIndex >= 0) {
-            activateItem(fItems[newIndex])
-        }
-    }
-
     // RecyclerView.Adapter implementation
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

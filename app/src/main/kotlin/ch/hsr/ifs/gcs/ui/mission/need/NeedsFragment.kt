@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.*
-import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.ui.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_list.*
@@ -18,12 +17,10 @@ import kotlinx.android.synthetic.main.fragment_need_list.view.*
 /**
  * A fragment representing a list of Items.
  */
-class NeedsFragment : Fragment(), Input.Listener {
+class NeedsFragment : Fragment() {
 
     private lateinit var fModel: MainModel
     private lateinit var fAdapter: NeedsRecyclerViewAdapter
-
-    private var fControls: Input? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_need_list, container, false)
@@ -44,12 +41,6 @@ class NeedsFragment : Fragment(), Input.Listener {
         fModel.availableNeeds.observe(this, Observer {
             fAdapter.needs = it ?: emptyList()
         })
-        fModel.activeInputDevice.observe(this, Observer {
-            fControls = it
-        })
-
-        fControls = fModel.activeInputDevice.value
-        fControls?.addListener(this)
 
         activity?.apply {
             selectButton.setOnClickListener {
@@ -60,26 +51,6 @@ class NeedsFragment : Fragment(), Input.Listener {
             leftButton?.background = applicationContext.getDrawable(R.drawable.cancel_action)
             leftButton.setOnClickListener {
                 fModel.submit(MissionOverviewRequested)
-            }
-        }
-    }
-
-    override fun onButton(control: Input.Control) {
-        @Suppress("NON_EXHAUSTIVE_WHEN")
-        when (control) {
-            Input.Control.DPAD_UP -> {
-                fAdapter.activatePreviousItem()
-            }
-            Input.Control.DPAD_DOWN -> {
-                fAdapter.activateNextItem()
-            }
-            Input.Control.UPDATE_ABORT -> {
-                fModel.submit(MissionOverviewRequested)
-                fControls?.removeListener(this)
-            }
-            Input.Control.NEED_START -> {
-                selectButton?.performClick()
-                fControls?.removeListener(this)
             }
         }
     }

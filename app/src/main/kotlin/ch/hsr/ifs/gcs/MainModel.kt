@@ -2,7 +2,6 @@ package ch.hsr.ifs.gcs
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import ch.hsr.ifs.gcs.driver.Input
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Result
@@ -98,22 +97,6 @@ object NeedOverviewRequested : MainModelEvent()
 data class ResultAvailable(val result: Result) : MainModelEvent()
 
 /**
- * Event type to signal that an input device became available
- *
- * @author IFS Institute for Software
- * @since 1.0.0
- */
-data class InputDeviceAvailable(val device: Input) : MainModelEvent()
-
-/**
- * Event type to signal that an input device became unavailable
- *
- * @author IFS Institute for Software
- * @since 1.0.0
- */
-object InputDeviceUnavailable : MainModelEvent()
-
-/**
  * The main application model
  *
  * This class provides a data connection from the underlying application logic to the UI.
@@ -128,7 +111,6 @@ class MainModel {
     private val fActiveMissions = MutableLiveData<List<Mission>>().apply { value = emptyList() }
     private val fMissionResults = MutableLiveData<List<Result>>().apply { value = emptyList() }
     private val fActiveMenuFragment = MutableLiveData<MenuFragmentID>().apply { value = MenuFragmentID.MISSION_STATUSES_FRAGMENT }
-    private val fActiveInputDevice = MutableLiveData<Input?>()
 
     private val fActor = GlobalScope.actor<MainModelEvent>(Main, Channel.UNLIMITED) {
         for (event in this) {
@@ -165,12 +147,6 @@ class MainModel {
                 }
                 is MissionOverviewRequested -> {
                     fActiveMenuFragment.value = MenuFragmentID.MISSION_STATUSES_FRAGMENT
-                }
-                is InputDeviceAvailable -> {
-                    fActiveInputDevice.value = event.device
-                }
-                is InputDeviceUnavailable -> {
-                    fActiveInputDevice.value = null
                 }
             }
         }
@@ -210,13 +186,6 @@ class MainModel {
      * @since 1.0.0
      */
     val activeMenuFragment: LiveData<MenuFragmentID> = fActiveMenuFragment
-
-    /**
-     * The currently active input device
-     *
-     * @since 1.0.0
-     */
-    val activeInputDevice: LiveData<Input?> = fActiveInputDevice
 
     /**
      * Submit an event to the model

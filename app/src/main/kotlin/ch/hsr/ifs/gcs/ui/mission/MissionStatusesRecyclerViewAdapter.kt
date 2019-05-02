@@ -67,20 +67,6 @@ class MissionStatusesRecyclerViewAdapter(view: RecyclerView)
         }
     }
 
-    fun activateNextItem() {
-        val newIndex = missions.indexOf(fSelectedMission) + 1
-        if (newIndex < missions.size) {
-            select(missions[newIndex])
-        }
-    }
-
-    fun activatePreviousItem() {
-        val newIndex = missions.indexOf(fSelectedMission) - 1
-        if (newIndex >= 0) {
-            select(missions[newIndex])
-        }
-    }
-
     // RecyclerView.Adapter implementation
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

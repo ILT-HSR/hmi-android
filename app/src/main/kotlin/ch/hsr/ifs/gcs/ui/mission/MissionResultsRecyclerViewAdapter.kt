@@ -52,20 +52,6 @@ class MissionResultsRecyclerViewAdapter(private val fRecyclerView: RecyclerView)
         }
     }
 
-    fun activateNextItem() {
-        val newIdex = fItems.indexOf(fActiveItem) + 1
-        if(newIdex < fItems.size) {
-            activateItem(fItems[newIdex])
-        }
-    }
-
-    fun activatePreviousItem() {
-        val newIdex = fItems.indexOf(fActiveItem) - 1
-        if(newIdex >= fItems.size) {
-            activateItem(fItems[newIdex])
-        }
-    }
-
     // RecyclerView.Adapter implementation
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
