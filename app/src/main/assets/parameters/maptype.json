@@ -1,5 +1,5 @@
 {
   "id": "ch.hsr.ifs.gcs.mission.need.parameter.maptype",
-  "name": "MapType",
+  "name": "Maptype",
   "configurator": "ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator.MapTypeConfigurator"
 }

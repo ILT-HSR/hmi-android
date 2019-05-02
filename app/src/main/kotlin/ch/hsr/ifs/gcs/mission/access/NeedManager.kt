@@ -19,7 +19,7 @@ class NeedManager(private val fListener: Listener) {
 
     private val fNeedMap = kotlin.collections.mutableMapOf(
             "ch.hsr.ifs.gcs.mission.need.callIn" to Pair(CallIn::class, listOf<Capability<*>>(Capability(CAPABILITY_CAN_MOVE, true))),
-            "ch.hsr.ifs.gcs.mission.need.radiationMap" to Pair(Mapping::class, listOf<Capability<*>>(Capability(CAPABILITY_CAN_FLY, true)))
+            "ch.hsr.ifs.gcs.mission.need.mapping" to Pair(Mapping::class, listOf<Capability<*>>(Capability(CAPABILITY_CAN_FLY, true)))
     )
     private val fAvailableNeeds = mutableListOf<Need>()
     private val fResourceObserver = Observer<List<Resource>>{ list ->

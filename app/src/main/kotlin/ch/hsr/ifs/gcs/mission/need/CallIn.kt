@@ -26,7 +26,7 @@ class CallIn(override val resource: Resource) : Need {
     private val fTarget = Target()
     private val fCargo = Cargo()
 
-    override val id = "ch.hsr.ifs.gcs.mission.need.callIn"
+    override val id = "ch.hsr.ifs.gcs.mission.need.callIn" //TODO: Move mapping to need descriptor
 
     override val parameterList = listOf(
             fCargo,

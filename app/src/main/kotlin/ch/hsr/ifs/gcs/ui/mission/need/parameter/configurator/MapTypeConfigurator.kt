@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_choose_cargo.*
+import kotlinx.android.synthetic.main.fragment_choose_maptype.*
 
 class MapTypeConfigurator : ParameterConfigurator<String>() {
 
@@ -16,9 +16,9 @@ class MapTypeConfigurator : ParameterConfigurator<String>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        cargoSelectionView.setOnClickListener {} // needed to shadow events on underlying map view
-        cargoButton.text = parameter.parameter.result
-        cargoButton.setOnClickListener {
+        mapTypeSelectionView.setOnClickListener {} // needed to shadow events on underlying map view
+        mapTypeButton.text = parameter.parameter.result
+        mapTypeButton.setOnClickListener {
             parameter.parameter.result = "Radiation"
         }
     }

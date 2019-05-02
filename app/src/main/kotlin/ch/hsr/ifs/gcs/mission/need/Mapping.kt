@@ -36,7 +36,7 @@ class Mapping(override val resource: Resource) : Need {
     private val fMapType = MapType()
     private val fRegion = Region()
 
-    override val id = "ch.hsr.ifs.gcs.mission.need.radiationMap"
+    override val id = "ch.hsr.ifs.gcs.mission.need.mapping" //TODO: Move mapping to need descriptor
 
     override val parameterList = listOf(
             fMapType,
