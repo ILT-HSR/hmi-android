@@ -17,6 +17,7 @@
     <string name="increase_button_text">+</string>
     <string name="decrease_button_text">-</string>
     <string name="choose_medkit_cargo">Choose Medkit Cargo</string>
+    <string name="choose_radiation_maptype">Choose Radiation Maptype</string>
     <string name="button_start_mission">Start Mission</string>
     <string name="speedLimit_value_text">m/s</string>
     <string name="speedLimit_box_title">Travel Speed Limit</string>
