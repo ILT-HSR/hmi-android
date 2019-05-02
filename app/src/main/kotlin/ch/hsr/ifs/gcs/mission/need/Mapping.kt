@@ -5,6 +5,7 @@ import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.PREFERENCE_KEY_MAPPING_ALTITUDE
 import ch.hsr.ifs.gcs.PREFERENCE_KEY_MAPPING_TRAVEL_SPEED
 import ch.hsr.ifs.gcs.mission.Need
+import ch.hsr.ifs.gcs.mission.need.parameter.MapType
 import ch.hsr.ifs.gcs.mission.need.parameter.Region
 import ch.hsr.ifs.gcs.mission.need.task.*
 import ch.hsr.ifs.gcs.resource.CAPABILITY_CAN_FLY
@@ -21,7 +22,7 @@ import kotlin.math.floor
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class RadiationMap(override val resource: Resource) : Need {
+class Mapping(override val resource: Resource) : Need {
 
     private companion object {
         const val SCAN_CORRIDOR_WIDTH = 2.0
@@ -32,12 +33,14 @@ class RadiationMap(override val resource: Resource) : Need {
 
     private val fPreferences = PreferenceManager.getDefaultSharedPreferences(GCS.context)
 
-    private val regionParameter = Region()
+    private val fMapType = MapType()
+    private val fRegion = Region()
 
     override val id = "ch.hsr.ifs.gcs.mission.need.radiationMap"
 
     override val parameterList = listOf(
-            regionParameter
+            fMapType,
+            fRegion
     )
 
     override val tasks: List<Task>?
@@ -53,7 +56,7 @@ class RadiationMap(override val resource: Resource) : Need {
         )
 
     private fun buildFlightplan(): List<Task> {
-        val corners = regionParameter.result
+        val corners = fRegion.result
         val topLeft = GPSPosition(corners[0].latitude, corners[0].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_ALTITUDE, 1).toDouble())
         val topRight = GPSPosition(corners[1].latitude, corners[1].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_ALTITUDE, 1).toDouble())
         val bottomLeft = GPSPosition(corners[3].latitude, corners[3].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_ALTITUDE, 1).toDouble())
