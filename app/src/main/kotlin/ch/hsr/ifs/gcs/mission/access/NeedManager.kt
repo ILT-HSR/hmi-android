@@ -4,7 +4,7 @@ import android.arch.lifecycle.Observer
 import ch.hsr.ifs.gcs.ResourceModel
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.need.CallIn
-import ch.hsr.ifs.gcs.mission.need.RadiationMap
+import ch.hsr.ifs.gcs.mission.need.Mapping
 import ch.hsr.ifs.gcs.resource.CAPABILITY_CAN_FLY
 import ch.hsr.ifs.gcs.resource.CAPABILITY_CAN_MOVE
 import ch.hsr.ifs.gcs.resource.Capability
@@ -19,7 +19,7 @@ class NeedManager(private val fListener: Listener) {
 
     private val fNeedMap = kotlin.collections.mutableMapOf(
             "ch.hsr.ifs.gcs.mission.need.callIn" to Pair(CallIn::class, listOf<Capability<*>>(Capability(CAPABILITY_CAN_MOVE, true))),
-            "ch.hsr.ifs.gcs.mission.need.radiationMap" to Pair(RadiationMap::class, listOf<Capability<*>>(Capability(CAPABILITY_CAN_FLY, true)))
+            "ch.hsr.ifs.gcs.mission.need.radiationMap" to Pair(Mapping::class, listOf<Capability<*>>(Capability(CAPABILITY_CAN_FLY, true)))
     )
     private val fAvailableNeeds = mutableListOf<Need>()
     private val fResourceObserver = Observer<List<Resource>>{ list ->
