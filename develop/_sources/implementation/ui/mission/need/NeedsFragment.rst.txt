@@ -2,7 +2,7 @@ Documentation for ui/mission/need/NeedsFragment.kt
 ==================================================
 
 
-.. kotlin:class:: NeedsFragment : Fragment(), Input.Listener
+.. kotlin:class:: NeedsFragment : Fragment()
 
 A fragment representing a list of Items.
 

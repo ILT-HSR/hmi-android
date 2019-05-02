@@ -112,27 +112,6 @@ Event type to signal that the result of a mission has become available
     
    
 
-.. kotlin:data_class:: InputDeviceAvailable
-
-Event type to signal that an input device became available
-
-:author: IFS Institute for Software
-:since: 1.0.0
-
-   .. kotlin:constructor:: constructor(device: Input)
-   
-    Main constructor
-    
-   
-
-.. kotlin:object:: InputDeviceUnavailable : MainModelEvent()
-
-Event type to signal that an input device became unavailable
-
-:author: IFS Institute for Software
-:since: 1.0.0
-
-
 .. kotlin:class:: MainModel
 
 The main application model
@@ -173,13 +152,6 @@ This class provides a data connection from the underlying application logic to t
    .. kotlin:val:: activeMenuFragment: LiveData<MenuFragmentID> = fActiveMenuFragment
    
     The currently selected menu fragment
-    
-    :since: 1.0.0
-    
-   
-   .. kotlin:val:: activeInputDevice: LiveData<Input?> = fActiveInputDevice
-   
-    The currently active input device
     
     :since: 1.0.0
     
