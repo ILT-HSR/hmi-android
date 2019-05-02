@@ -1,5 +1,0 @@
-{
-  "id": "ch.hsr.ifs.gcs.mission.need.parameter.speedLimit",
-  "name": "Travel Speed Limit",
-  "configurator": "ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator.SpeedLimitConfigurator"
-}

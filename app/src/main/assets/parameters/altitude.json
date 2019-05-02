@@ -1,5 +1,0 @@
-{
-  "id": "ch.hsr.ifs.gcs.mission.need.parameter.altitude",
-  "name": "Altitude",
-  "configurator": "ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator.AltitudeConfigurator"
-}
