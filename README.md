@@ -9,7 +9,7 @@ Open the following links in a browser on your android device to install the newe
 
 ## Stable Releases
 
-[![Build Status](https://travis-ci.com/ILT-HSR/hmi-android.svg?branch=master)](https://travis-ci.com/ILT-HSR/hmi-android)[![Master Docs](https://img.shields.io/badge/Docs-master-blue.svg)](https://ilt-hsr.github.io/hmi-android/master)
+[![Build Status](https://travis-ci.com/ILT-HSR/hmi-android.svg?branch=master)](https://travis-ci.com/ILT-HSR/hmi-android) [![Master Docs](https://img.shields.io/badge/Docs-master-blue.svg)](https://ilt-hsr.github.io/hmi-android/master)
 
 | Build Type | Link   |
 |------------|--------|
@@ -17,7 +17,7 @@ Open the following links in a browser on your android device to install the newe
 
 ## Development Releases
 
-[![Build Status](https://travis-ci.com/ILT-HSR/hmi-android.svg?branch=develop)](https://travis-ci.com/ILT-HSR/hmi-android)[![Develop Docs](https://img.shields.io/badge/Docs-develop-blue.svg)](https://ilt-hsr.github.io/hmi-android/develop)
+[![Build Status](https://travis-ci.com/ILT-HSR/hmi-android.svg?branch=develop)](https://travis-ci.com/ILT-HSR/hmi-android) [![Develop Docs](https://img.shields.io/badge/Docs-develop-blue.svg)](https://ilt-hsr.github.io/hmi-android/develop)
 
 | Build Type | Link   |
 |------------|--------|
