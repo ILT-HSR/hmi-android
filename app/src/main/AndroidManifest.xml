@@ -42,8 +42,10 @@
                 android:resource="@xml/device_filter" />
         </activity>
 
-        <activity android:name="ch.hsr.ifs.gcs.ui.SettingsActivity"
-            android:label="@string/settings_activity_label">
+        <activity
+            android:name="ch.hsr.ifs.gcs.ui.SettingsActivity"
+            android:label="@string/settings_activity_label"
+            android:theme="@style/AppTheme.Settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

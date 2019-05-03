@@ -17,10 +17,24 @@
     <string name="increase_button_text">+</string>
     <string name="decrease_button_text">-</string>
     <string name="choose_medkit_cargo">Choose Medkit Cargo</string>
+    <string name="choose_radiation_maptype">Choose Radiation Maptype</string>
     <string name="button_start_mission">Start Mission</string>
-    <string name="enable_null_platform">Enable \'Null\' Platform</string>
-    <string name="enable_null_platform_summary">Enable a fake platform that does nothing</string>
-    <string name="settings_activity_label">GCS Settings</string>
     <string name="speedLimit_value_text">m/s</string>
     <string name="speedLimit_box_title">Travel Speed Limit</string>
+    <string name="settings_activity_label">GCS Settings</string>
+    <string name="general_settings_category_name">General Settings</string>
+    <string name="enable_null_platform">Enable \'Null\' Platform</string>
+    <string name="enable_null_platform_summary">Enable a fake platform that does nothing</string>
+    <string name="map_source_summary">Select the source of the map tiles</string>
+    <string name="map_source">Map Source</string>
+    <string name="call_in_settings_category_name">Call-In Default Settings</string>
+    <string name="call_in_altitude">Altitude</string>
+    <string name="call_in_altitude_summary">The altitude in [m] during mission execution</string>
+    <string name="call_in_travel_speed">Travel Speed</string>
+    <string name="call_in_travel_speed_summary">The travel speed in [m/s] during mission execution</string>
+    <string name="mapping_settings_category_name">Mapping Default Settings</string>
+    <string name="mapping_altitude">Altitude</string>
+    <string name="mapping_altitude_summary">The altitude in [m] during mission execution</string>
+    <string name="mapping_travel_speed">Travel Speed</string>
+    <string name="mapping_travel_speed_summary">The travel speed in [m/s] during mission execution</string>
 </resources>
