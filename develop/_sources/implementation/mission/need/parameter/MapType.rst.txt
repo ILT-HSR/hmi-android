@@ -1,0 +1,12 @@
+Documentation for mission/need/parameter/MapType.kt
+===================================================
+
+
+.. kotlin:class:: MapType : Parameter<String>
+
+This [Parameter] implementation is used to configure the type of map to be created by the vehicle.
+
+:since: 1.0.0
+:author: IFS Institute for Software
+
+
