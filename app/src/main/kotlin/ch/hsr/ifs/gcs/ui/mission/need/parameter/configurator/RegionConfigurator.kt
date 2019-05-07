@@ -1,7 +1,5 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 
-import android.view.View
-import android.widget.TextView
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
@@ -65,6 +63,7 @@ class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
         showInstructionText("CHOOSE A REGION")
         map.overlays.add(region.polygon)
         region.dragPoints.forEach { marker ->
+            marker.icon = context.getDrawable(R.drawable.ic_location_marker)
             map.overlays += marker
         }
 
