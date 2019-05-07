@@ -27,11 +27,13 @@ class MapTypeConfigurator : ParameterConfigurator<String>() {
         setDefaultResult()
         context.map.setBuiltInZoomControls(false)
         context.showMainFragment(this)
+        showInstructionText("CHOOSE A MAP TYPE")
     }
 
     override fun destroy() {
         context.map.setBuiltInZoomControls(true)
         context.hideMainFragment()
+        hideInstructionText()
     }
 
     private fun setDefaultResult() {

@@ -1,5 +1,8 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 
+import android.view.View
+import android.widget.TextView
+import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
 import kotlinx.android.synthetic.main.activity_main.*
@@ -59,7 +62,7 @@ class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
     override fun present() {
         val map = context.map
         region = createInitialRegion(map)
-
+        showInstructionText("CHOOSE A REGION")
         map.overlays.add(region.polygon)
         region.dragPoints.forEach { marker ->
             map.overlays += marker
@@ -76,7 +79,7 @@ class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
                 it.setOnMarkerClickListener { _, _ -> true } // needed to prevent info box pop up
             }
         }
-
+        hideInstructionText()
         parameter.parameter.result = region.polygon.points.map {
             GPSPosition(it.latitude, it.longitude, it.altitude)
         }
