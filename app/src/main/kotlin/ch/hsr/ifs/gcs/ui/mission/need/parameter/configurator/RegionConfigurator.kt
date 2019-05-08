@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 
+import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
@@ -28,6 +29,9 @@ class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
                         GeoPoint(lowerRight.latitude, upperLeft.longitude)
                 )
                 id = "region_polygon"
+                fillColor = GCS.context.resources.getColor(R.color.selectionTransparent, null)
+                strokeColor = GCS.context.resources.getColor(R.color.selectionTransparent, null)
+                strokeWidth = 0.0f
             }
 
         val dragPoints: List<Marker>
@@ -60,7 +64,7 @@ class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
     override fun present() {
         val map = context.map
         region = createInitialRegion(map)
-        showInstructionText("CHOOSE A REGION")
+        showInstructionText(GCS.context.getString(R.string.region_instruction))
         map.overlays.add(region.polygon)
         region.dragPoints.forEach { marker ->
             marker.icon = context.getDrawable(R.drawable.ic_location_marker)
@@ -74,8 +78,7 @@ class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
         val map = context.map
         map.overlays.forEach {
             if (it is Marker) {
-                it.isDraggable = false
-                it.setOnMarkerClickListener { _, _ -> true } // needed to prevent info box pop up
+                map.overlayManager.remove(it)
             }
         }
         hideInstructionText()

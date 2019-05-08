@@ -1,37 +1,44 @@
 <resources>
     <string name="app_name">GCS</string>
-    <string name="new_need_button_text">New Need</string>
+    <!-- Mission Results List -->
     <string name="mission_results_list_title">Results</string>
+    <string name="mission_result_title">Result</string>
+    <!-- Mission Statuses List -->
     <string name="mission_statuses_list_title">Mission State</string>
+    <string name="mission_status_title">Status</string>
+    <!-- Need Navigation Menu-->
+    <string name="default_need_name">Default Need Name</string>
+    <string name="new_need_button_text">New Need</string>
+    <string name="choose_button_text">Default Option</string>
+    <string name="button_start_mission">Start Mission</string>
     <string name="need_navigation_button_text">Next</string>
     <string name="new_need_list_title">New Need</string>
     <string name="select_need_button_text">Select</string>
+    <!-- Need Instructions -->
     <string name="instruction_text">Default Instruction</string>
     <string name="instruction_title">Default Need Instruction</string>
-    <string name="mission_status_title">Status</string>
-    <string name="mission_result_title">Result</string>
-    <string name="default_need_name">Default Need Name</string>
-    <string name="chooseButtonText">Default Option</string>
-    <string name="altitude_box_title">Altitude</string>
-    <string name="altitude_value_text">0m</string>
-    <string name="increase_button_text">+</string>
-    <string name="decrease_button_text">-</string>
+    <string name="cargo_type_instruction">CHOOSE A CARGO</string>
+    <string name="map_type_instruction">CHOOSE A MAP TYPE</string>
+    <string name="target_instruction">CHOOSE A TARGET</string>
+    <string name="region_instruction">CHOOSE A REGION</string>
+    <!-- Need Parameter Selection -->
     <string name="choose_medkit_cargo">Choose Medkit Cargo</string>
     <string name="choose_radiation_maptype">Choose Radiation Maptype</string>
-    <string name="button_start_mission">Start Mission</string>
-    <string name="speedLimit_value_text">m/s</string>
-    <string name="speedLimit_box_title">Travel Speed Limit</string>
+
     <string name="settings_activity_label">GCS Settings</string>
+    <!-- General Settings -->
     <string name="general_settings_category_name">General Settings</string>
     <string name="enable_null_platform">Enable \'Null\' Platform</string>
     <string name="enable_null_platform_summary">Enable a fake platform that does nothing</string>
     <string name="map_source_summary">Select the source of the map tiles</string>
     <string name="map_source">Map Source</string>
+    <!-- Call-In Settings -->
     <string name="call_in_settings_category_name">Call-In Default Settings</string>
     <string name="call_in_altitude">Altitude</string>
     <string name="call_in_altitude_summary">The altitude in [m] during mission execution</string>
     <string name="call_in_travel_speed">Travel Speed</string>
     <string name="call_in_travel_speed_summary">The travel speed in [m/s] during mission execution</string>
+    <!-- Mapping Settings -->
     <string name="mapping_settings_category_name">Mapping Default Settings</string>
     <string name="mapping_altitude">Altitude</string>
     <string name="mapping_altitude_summary">The altitude in [m] during mission execution</string>

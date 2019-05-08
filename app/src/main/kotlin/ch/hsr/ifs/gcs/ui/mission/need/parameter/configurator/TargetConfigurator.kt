@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 
 import android.graphics.Canvas
 import android.view.MotionEvent
+import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
@@ -23,7 +24,7 @@ class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
         posMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
         posMarker.icon = context.getDrawable(R.drawable.ic_location_marker)
         mapView.overlays.add(posMarker)
-        showInstructionText("CHOOSE A TARGET")
+        showInstructionText(GCS.context.getString(R.string.target_instruction))
         mapView.invalidate()
         posMarker.isDraggable = true
         posMarker.setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
