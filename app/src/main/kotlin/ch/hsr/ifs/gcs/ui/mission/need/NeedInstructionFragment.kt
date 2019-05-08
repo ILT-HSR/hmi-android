@@ -1,6 +1,5 @@
 package ch.hsr.ifs.gcs.ui.mission.need
 
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -9,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ch.hsr.ifs.gcs.*
-import ch.hsr.ifs.gcs.ui.*
+import ch.hsr.ifs.gcs.ui.MainActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.*
 import kotlinx.android.synthetic.main.fragment_need_instruction_list.view.*
@@ -45,7 +44,7 @@ class NeedInstructionFragment : Fragment() {
                 fAdapter.completeCurrent()
                 if(fAdapter.isDone) {
                     needNavigationButton.text = getString(R.string.button_start_mission)
-                    needNavigationButton.setBackgroundColor(Color.parseColor("#68e180"))
+                    needNavigationButton.setBackgroundColor(context.getColor(R.color.selectionSolid))
                     needNavigationButton.setOnClickListener {
                         fModel.submit(NeedConfigurationFinished)
                     }

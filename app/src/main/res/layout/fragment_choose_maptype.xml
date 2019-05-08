@@ -11,7 +11,7 @@ tools:context=".ui.mission.need.parameter.configurator.MapTypeConfigurator">
     android:id="@+id/mapTypeSelectionView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white" />
+    android:background="@android:color/black" />
 
 <Button
     android:id="@+id/mapTypeButton"
@@ -27,7 +27,7 @@ tools:context=".ui.mission.need.parameter.configurator.MapTypeConfigurator">
     android:paddingStart="15dp"
     android:paddingEnd="15dp"
     android:paddingTop="15dp"
-    android:text="@string/chooseButtonText"
+    android:text="@string/choose_button_text"
     android:textAllCaps="false"
     android:textSize="20sp"
     app:layout_constraintBottom_toBottomOf="parent"

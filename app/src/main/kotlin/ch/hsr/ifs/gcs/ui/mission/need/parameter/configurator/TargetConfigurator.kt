@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 
 import android.graphics.Canvas
 import android.view.MotionEvent
+import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
@@ -21,7 +22,9 @@ class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
         val posMarker = Marker(mapView)
         posMarker.position = mapView.mapCenter as GeoPoint?
         posMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        posMarker.icon = context.getDrawable(R.drawable.ic_location_marker)
         mapView.overlays.add(posMarker)
+        showInstructionText(GCS.context.getString(R.string.target_instruction))
         mapView.invalidate()
         posMarker.isDraggable = true
         posMarker.setOnMarkerDragListener(object : Marker.OnMarkerDragListener {
@@ -51,6 +54,7 @@ class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
         val posMarker = mapView.overlays[mapView.overlays.size - 1] as Marker
         posMarker.isDraggable = false
         posMarker.setOnMarkerClickListener { _, _ -> true } // needed to prevent info box pop up
+        hideInstructionText()
         mapView.invalidate()
     }
 

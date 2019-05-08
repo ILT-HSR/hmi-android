@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
 import kotlinx.android.synthetic.main.activity_main.*
@@ -27,11 +28,13 @@ class MapTypeConfigurator : ParameterConfigurator<String>() {
         setDefaultResult()
         context.map.setBuiltInZoomControls(false)
         context.showMainFragment(this)
+        showInstructionText(GCS.context.getString(R.string.map_type_instruction))
     }
 
     override fun destroy() {
         context.map.setBuiltInZoomControls(true)
         context.hideMainFragment()
+        hideInstructionText()
     }
 
     private fun setDefaultResult() {

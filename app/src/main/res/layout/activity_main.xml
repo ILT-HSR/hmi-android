@@ -8,7 +8,6 @@
     tools:context=".ui.MainActivity">
 
     <FrameLayout
-        android:id="@+id/mapholder"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,10 +15,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <org.osmdroid.views.MapView
-            android:id="@+id/map"
+        <FrameLayout
+            android:id="@+id/mapholder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/parameterInstructionText"
+            android:textSize="12pt"
+            android:textColor="@color/selectionSolid"
+            android:textAlignment="center"
+            android:background="@android:color/black"
+            android:visibility="invisible"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_margin="5dp" />
 
     </FrameLayout>
 

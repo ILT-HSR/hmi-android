@@ -213,14 +213,10 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         map.controller.setZoom(18.0)
         map.setBuiltInZoomControls(true)
 
+
         MyLocationNewOverlay(fLocationProvider, map).apply {
             runOnFirstFix { runOnUiThread { map.controller.animateTo(GeoPoint(myLocation)) } }
             enableMyLocation()
-            map.overlays += this
-        }
-
-        CompassOverlay(this, map).apply {
-            enableCompass()
             map.overlays += this
         }
     }
