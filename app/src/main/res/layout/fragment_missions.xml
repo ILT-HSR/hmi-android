@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:gravity="center"
-        android:text="@string/mission_status_title"
+        android:text="@string/mission_title"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceListItem"
         app:layout_constraintBottom_toBottomOf="parent"

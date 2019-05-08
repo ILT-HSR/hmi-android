@@ -12,11 +12,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Mission
-import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
+import kotlinx.android.synthetic.main.fragment_missions.view.*
 import kotlin.properties.Delegates
 
-class MissionStatusesRecyclerViewAdapter(view: RecyclerView)
-    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>() {
+class MissionsRecyclerViewAdapter(view: RecyclerView)
+    : RecyclerView.Adapter<MissionsRecyclerViewAdapter.ViewHolder>() {
 
     private var fSelectedMission: Mission? = null
     private val fActiveItemColor = view.resources.getColor(R.color.activeListItem, null)
@@ -71,7 +71,7 @@ class MissionStatusesRecyclerViewAdapter(view: RecyclerView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.fragment_missionstatuses, parent, false)
+                .inflate(R.layout.fragment_missions, parent, false)
         return ViewHolder(view)
     }
 

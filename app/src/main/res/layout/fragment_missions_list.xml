@@ -13,7 +13,7 @@
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:gravity="center_vertical|start"
-        android:text="@string/mission_statuses_list_title"
+        android:text="@string/missions_list_title"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -32,8 +32,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleText"
-        tools:context=".ui.mission.MissionStatusesFragment"
-        tools:listitem="@layout/fragment_missionresults" />
+        tools:context=".ui.mission.MissionsFragment"
+        tools:listitem="@layout/fragment_missions" />
 
     <Button
         android:id="@+id/statusesAddButton"

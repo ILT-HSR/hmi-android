@@ -108,15 +108,15 @@ class MainModel {
 
     private val fAvailableNeeds = MutableLiveData<List<Need>>().apply { value = emptyList() }
     private val fActiveNeed = MutableLiveData<Need>()
-    private val fActiveMissions = MutableLiveData<List<Mission>>().apply { value = emptyList() }
+    private val fMissions = MutableLiveData<List<Mission>>().apply { value = emptyList() }
     private val fMissionResults = MutableLiveData<List<Result>>().apply { value = emptyList() }
-    private val fActiveMenuFragment = MutableLiveData<MenuFragmentID>().apply { value = MenuFragmentID.MISSION_STATUSES_FRAGMENT }
+    private val fActiveMenuFragment = MutableLiveData<MenuFragmentID>().apply { value = MenuFragmentID.MISSIONS_FRAGMENT }
 
     private val fActor = GlobalScope.actor<MainModelEvent>(Main, Channel.UNLIMITED) {
         for (event in this) {
             when (event) {
                 is MissionAvailable -> {
-                    fActiveMissions.value = fActiveMissions.value!! + event.mission
+                    fMissions.value = fMissions.value!! + event.mission
                 }
                 is NeedAvailable -> {
                     fAvailableNeeds.value = fAvailableNeeds.value!! + event.need
@@ -137,16 +137,16 @@ class MainModel {
                 }
                 is NeedConfigurationFinished -> {
                     fActiveNeed.value?.let(::Mission)?.let {
-                        fActiveMissions.value = fActiveMissions.value!! + it
+                        fMissions.value = fMissions.value!! + it
                     }
                     fActiveNeed.value = null
-                    fActiveMenuFragment.value = MenuFragmentID.MISSION_STATUSES_FRAGMENT
+                    fActiveMenuFragment.value = MenuFragmentID.MISSIONS_FRAGMENT
                 }
                 is NeedOverviewRequested -> {
                     fActiveMenuFragment.value = MenuFragmentID.NEEDS_FRAGMENT
                 }
                 is MissionOverviewRequested -> {
-                    fActiveMenuFragment.value = MenuFragmentID.MISSION_STATUSES_FRAGMENT
+                    fActiveMenuFragment.value = MenuFragmentID.MISSIONS_FRAGMENT
                 }
             }
         }
@@ -171,7 +171,7 @@ class MainModel {
      *
      * @since 1.0.0
      */
-    val activeMissions: LiveData<List<Mission>> = fActiveMissions
+    val missions: LiveData<List<Mission>> = fMissions
 
     /**
      * The list of available mission results

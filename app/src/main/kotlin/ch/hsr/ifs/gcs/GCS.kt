@@ -51,7 +51,7 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
         fNeedManager.onCreate(fResourceModel)
         fPlatformManager.start(this)
 
-        fMainModel.activeMissions.observeForever {
+        fMainModel.missions.observeForever {
             (it ?: emptyList()).forEach(fScheduler::launch)
         }
 
