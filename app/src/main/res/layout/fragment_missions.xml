@@ -9,13 +9,26 @@
         android:id="@+id/mission_name"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
+        android:layout_marginLeft="15dp"
         android:gravity="center"
         android:text="@string/mission_title"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceListItem"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/mission_status"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center"
+        android:text="@string/mission_status"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceListItem"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <View

@@ -2,7 +2,8 @@
     <string name="app_name">GCS</string>
     <!-- Mission List -->
     <string name="missions_list_title">Missions</string>
-    <string name="mission_title">Mission</string>
+    <string name="mission_title">Default Mission</string>
+    <string name="mission_status">Default Status</string>
     <!-- Need Navigation Menu-->
     <string name="default_need_name">Default Need Name</string>
     <string name="new_need_button_text">New Need</string>

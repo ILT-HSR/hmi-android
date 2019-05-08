@@ -12,6 +12,7 @@ import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.MainModel
 import ch.hsr.ifs.gcs.NeedOverviewRequested
+import ch.hsr.ifs.gcs.ui.MainActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missions_list.*
 import kotlinx.android.synthetic.main.fragment_missions_list.view.*
@@ -31,7 +32,7 @@ class MissionsFragment : Fragment() {
         val list = view.list
         if (list is RecyclerView) {
             with(list) {
-                fAdapter = MissionsRecyclerViewAdapter(this)
+                fAdapter = MissionsRecyclerViewAdapter(context as MainActivity)
                 layoutManager = LinearLayoutManager(context)
                 adapter = fAdapter
             }
