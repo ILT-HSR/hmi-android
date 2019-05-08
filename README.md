@@ -5,7 +5,7 @@ GCS is a ground control station developed at HSR for easy coordination of multip
 
 # Installation
 
-Open the following links in a browser on your android device to install the newest release directly from here:
+Open the following links in a browser on your Android device to install the newest release:
 
 ## Stable Releases
 
@@ -25,21 +25,29 @@ Open the following links in a browser on your android device to install the newe
 
 # Build
 
-The master branch always contains a stable version of the application. To build it, clone the master branch from the repository and run:
-> TBD
+The master branch always contains a stable version of the application. The developer branch on the other side contains unstable versions.
 
-# Developer Build
+## Howto
 
-The developer branch contains unstable versions of the application. To build it, clone the developer branch from the repository and run:
-> TBD
+To build either of these branches, do the following:
+
+1. Clone this repository (use `git clone --recursive` to include submodules).
+2. Navigate to the root directory on your command line.
+3. Run the command `./gradlew build`.
+4. The generated apk can be found in the subdirectory `app/build/outputs/apk/debug/`.
+5. Copy this apk to your Android phone to install.
+
+Alternatively, you can use Android Studio to build and run the application.
 
 # Contribution
+
+Developing a ground control station requires a lot of work. If you think you have an important contribution, please do not hesitate.
 
 ## Howto
 
 Follow the steps below to contribute to this project:
 
-1. Clone this repository.
+1. Clone this repository (use `git clone --recursive` to include submodules).
 2. Check out the `develop` branch (if not already checked out).
 3. Create a feature branch using GitFlow.
 4. Make your changes.
@@ -57,5 +65,4 @@ and keep it short.
 
 # Documentation
 
-Visit the source documentation at:
-> TBD
+Click on the `docs` badges above. This will route you to the documentation for the corresponding release.
