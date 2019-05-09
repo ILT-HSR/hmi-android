@@ -14,8 +14,7 @@ import android.view.View
 import ch.hsr.ifs.gcs.*
 import ch.hsr.ifs.gcs.R.drawable.abort_mission
 import ch.hsr.ifs.gcs.R.layout.activity_main
-import ch.hsr.ifs.gcs.ui.mission.MissionResultsFragment
-import ch.hsr.ifs.gcs.ui.mission.MissionStatusesFragment
+import ch.hsr.ifs.gcs.ui.mission.MissionsFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedItemFactory
 import ch.hsr.ifs.gcs.ui.mission.need.NeedsFragment
@@ -55,7 +54,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     private lateinit var fLocationProvider: IMyLocationProvider
     private lateinit var fModel: MainModel
 
-    private var fMenuFragment = MenuFragmentID.MISSION_STATUSES_FRAGMENT
+    private var fMenuFragment = MenuFragmentID.MISSIONS_FRAGMENT
     private var fMainFragment: Fragment? = null
 
     private lateinit var fParameterItemFactory: ParameterItemFactory
@@ -123,7 +122,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         fModel = (application as GCS).mainModel
         fModel.activeMenuFragment.observe(this, Observer {
             if (it == null) {
-                showMenuFragment(MenuFragmentID.MISSION_STATUSES_FRAGMENT)
+                showMenuFragment(MenuFragmentID.MISSIONS_FRAGMENT)
             } else {
                 showMenuFragment(it)
             }
@@ -167,8 +166,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             }
 
     private fun createFragment(id: MenuFragmentID): Fragment = when (id) {
-        MenuFragmentID.MISSION_RESULTS_FRAGMENT -> MissionResultsFragment()
-        MenuFragmentID.MISSION_STATUSES_FRAGMENT -> MissionStatusesFragment()
+        MenuFragmentID.MISSIONS_FRAGMENT -> MissionsFragment()
         MenuFragmentID.NEEDS_FRAGMENT -> NeedsFragment()
         MenuFragmentID.NEED_INSTRUCTION_FRAGMENT -> NeedInstructionFragment()
     }

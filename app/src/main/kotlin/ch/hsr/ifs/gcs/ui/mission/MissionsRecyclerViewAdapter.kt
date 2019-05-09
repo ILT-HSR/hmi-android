@@ -12,14 +12,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Mission
-import kotlinx.android.synthetic.main.fragment_missionstatuses.view.*
+import ch.hsr.ifs.gcs.ui.MainActivity
+import kotlinx.android.synthetic.main.fragment_missions.view.*
 import kotlin.properties.Delegates
 
-class MissionStatusesRecyclerViewAdapter(view: RecyclerView)
-    : RecyclerView.Adapter<MissionStatusesRecyclerViewAdapter.ViewHolder>() {
+class MissionsRecyclerViewAdapter(private val fContext: MainActivity)
+    : RecyclerView.Adapter<MissionsRecyclerViewAdapter.ViewHolder>() {
 
     private var fSelectedMission: Mission? = null
-    private val fActiveItemColor = view.resources.getColor(R.color.activeListItem, null)
+    private val fActiveItemColor = fContext.resources.getColor(R.color.activeListItem, null)
 
     var missions: List<Mission> by Delegates.observable(emptyList()) { _, old, new ->
         if (old != new) {
@@ -38,6 +39,7 @@ class MissionStatusesRecyclerViewAdapter(view: RecyclerView)
 
     inner class ViewHolder(private val fView: View) : RecyclerView.ViewHolder(fView), Mission.Listener {
         private val fMissionName: TextView = fView.mission_name
+        private val fMissionStatus: TextView = fView.mission_status
 
         var mission by Delegates.observable<Mission?>(null) { _, old, new ->
             when (new) {
@@ -49,7 +51,9 @@ class MissionStatusesRecyclerViewAdapter(view: RecyclerView)
                         select(item)
                     }
                     fView.setBackgroundColor(if (fSelectedMission == new) fActiveItemColor else Color.TRANSPARENT)
-                    fMissionName.text = new.status.name
+                    val needItem = fContext.needItemFactory.instantiate(new.need)
+                    fMissionName.text = needItem.name
+                    fMissionStatus.text = new.status.name
                 }
             }
 
@@ -71,7 +75,7 @@ class MissionStatusesRecyclerViewAdapter(view: RecyclerView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.fragment_missionstatuses, parent, false)
+                .inflate(R.layout.fragment_missions, parent, false)
         return ViewHolder(view)
     }
 

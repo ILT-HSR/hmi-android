@@ -12,26 +12,27 @@ import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.MainModel
 import ch.hsr.ifs.gcs.NeedOverviewRequested
+import ch.hsr.ifs.gcs.ui.MainActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_missionstatuses_list.*
-import kotlinx.android.synthetic.main.fragment_missionstatuses_list.view.*
+import kotlinx.android.synthetic.main.fragment_missions_list.*
+import kotlinx.android.synthetic.main.fragment_missions_list.view.*
 
 
 /**
  * A fragment representing a list of mission status items combined with a button to add
  * additional needs.
  */
-class MissionStatusesFragment : Fragment() {
+class MissionsFragment : Fragment() {
 
     private lateinit var fModel: MainModel
-    private lateinit var fAdapter: MissionStatusesRecyclerViewAdapter
+    private lateinit var fAdapter: MissionsRecyclerViewAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_missionstatuses_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_missions_list, container, false)
         val list = view.list
         if (list is RecyclerView) {
             with(list) {
-                fAdapter = MissionStatusesRecyclerViewAdapter(this)
+                fAdapter = MissionsRecyclerViewAdapter(context as MainActivity)
                 layoutManager = LinearLayoutManager(context)
                 adapter = fAdapter
             }
@@ -42,7 +43,7 @@ class MissionStatusesFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         fModel = (activity!!.application as GCS).mainModel
-        fModel.activeMissions.observe(this, Observer {
+        fModel.missions.observe(this, Observer {
             fAdapter.missions = it ?: emptyList()
         })
         fModel.availableNeeds.observe(this, Observer {
