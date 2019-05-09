@@ -135,7 +135,7 @@ This class provides a data connection from the underlying application logic to t
     :since: 1.0.0
     
    
-   .. kotlin:val:: activeMissions: LiveData<List<Mission>> = fActiveMissions
+   .. kotlin:val:: missions: LiveData<List<Mission>> = fMissions
    
     The list of currently active needs
     
