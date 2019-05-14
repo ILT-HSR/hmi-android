@@ -12,7 +12,7 @@
         android:background="@color/tableHeaderBackground"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
-        android:gravity="center_vertical|start"
+        android:gravity="center"
         android:text="@string/new_need_list_title"
         android:textColor="@android:color/white"
         android:textSize="18sp"
