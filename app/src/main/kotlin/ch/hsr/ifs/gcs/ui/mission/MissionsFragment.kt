@@ -44,7 +44,7 @@ class MissionsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         fModel = (activity!!.application as GCS).mainModel
         fModel.missions.observe(this, Observer {
-            fAdapter.missions = it ?: emptyList()
+            fAdapter.missions = it?.reversed() ?: emptyList()
         })
         fModel.availableNeeds.observe(this, Observer {
             statusesAddButton.isEnabled = it != null && it.isNotEmpty()
