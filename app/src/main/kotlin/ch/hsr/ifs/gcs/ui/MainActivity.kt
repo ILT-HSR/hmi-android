@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import ch.hsr.ifs.gcs.*
-import ch.hsr.ifs.gcs.R.drawable.abort_mission
 import ch.hsr.ifs.gcs.R.layout.activity_main
 import ch.hsr.ifs.gcs.ui.mission.MissionsFragment
 import ch.hsr.ifs.gcs.ui.mission.need.NeedInstructionFragment
@@ -23,12 +22,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.tileprovider.tilesource.bing.BingMapTileSource
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.compass.CompassOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.IMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.util.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.Bitmap
+import android.support.v4.content.res.ResourcesCompat
+import org.osmdroid.util.GeoPoint
+
 
 const val PERMISSION_REQUEST_ID_MAP = 42
 
@@ -93,7 +95,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
         showMenuFragment(fMenuFragment)
 
-        leftButton.background = applicationContext.getDrawable(abort_mission)
+        leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
 
         fParameterItemFactory = ParameterItemFactory(this)
         fNeedItemFactory = NeedItemFactory(this)
@@ -211,8 +213,14 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         map.controller.setZoom(18.0)
         map.setBuiltInZoomControls(true)
 
-
         MyLocationNewOverlay(fLocationProvider, map).apply {
+            val currentDraw = ResourcesCompat.getDrawable(resources, R.drawable.current_location, null)
+            var currentIcon: Bitmap? = null
+            if (currentDraw != null) {
+                currentIcon = (currentDraw as BitmapDrawable).bitmap
+            }
+            setPersonIcon(currentIcon)
+            setDirectionArrow(currentIcon, currentIcon)
             runOnFirstFix { runOnUiThread { map.controller.animateTo(GeoPoint(myLocation)) } }
             enableMyLocation()
             map.overlays += this
