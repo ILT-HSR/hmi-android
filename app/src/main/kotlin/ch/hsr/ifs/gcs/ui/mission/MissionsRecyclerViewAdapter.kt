@@ -16,6 +16,7 @@ import ch.hsr.ifs.gcs.ui.MainActivity
 import kotlinx.android.synthetic.main.fragment_missions.view.*
 import kotlin.properties.Delegates
 
+
 class MissionsRecyclerViewAdapter(private val fContext: MainActivity)
     : RecyclerView.Adapter<MissionsRecyclerViewAdapter.ViewHolder>() {
 
@@ -31,6 +32,7 @@ class MissionsRecyclerViewAdapter(private val fContext: MainActivity)
                     it
                 }
             } ?: new.firstOrNull()
+            fSelectedMission?.let { select(it) }
             notifyDataSetChanged()
         }
     }
@@ -90,8 +92,15 @@ class MissionsRecyclerViewAdapter(private val fContext: MainActivity)
     private fun select(item: Mission) {
         fSelectedMission = item
         Log.i("MSRVA", "thread: ${Thread.currentThread().name}")
+
+        showMissionRelatedOverlays(item)
+
         notifyDataSetChanged()
     }
 
+    private fun showMissionRelatedOverlays(mission: Mission) {
+        val missionItem = MissionItem(mission, fContext)
+        missionItem.draw()
+    }
 
 }

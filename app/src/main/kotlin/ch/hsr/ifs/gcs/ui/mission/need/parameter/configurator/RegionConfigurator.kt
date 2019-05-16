@@ -13,7 +13,7 @@ import org.osmdroid.views.overlay.Polygon
 @Suppress("unused")
 class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
 
-    private data class RectangularRegion(private var upperLeft: GeoPoint, private var lowerRight: GeoPoint, private val map: MapView) {
+    data class RectangularRegion(private var upperLeft: GeoPoint, private var lowerRight: GeoPoint, private val map: MapView) {
 
         private val dragPointMap = mapOf(
                 "region_marker_UL" to this::upperLeft,

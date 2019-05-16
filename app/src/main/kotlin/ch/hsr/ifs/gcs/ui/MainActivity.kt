@@ -126,7 +126,11 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             when (it) {
                 null -> showMenuFragment(MenuFragmentID.MISSIONS_FRAGMENT)
                 MenuFragmentID.NEEDS_FRAGMENT, MenuFragmentID.MISSIONS_FRAGMENT -> {
-                    map.overlays.clear()
+                    map.overlays.forEach { overlay ->
+                        if(overlay !is MyLocationNewOverlay) {
+                            map.overlays.remove(overlay)
+                        }
+                    }
                     map.invalidate()
                     showMenuFragment(it)
                 }
