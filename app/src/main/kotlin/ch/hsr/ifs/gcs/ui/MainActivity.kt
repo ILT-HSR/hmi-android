@@ -123,10 +123,14 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
         fModel = (application as GCS).mainModel
         fModel.activeMenuFragment.observe(this, Observer {
-            if (it == null) {
-                showMenuFragment(MenuFragmentID.MISSIONS_FRAGMENT)
-            } else {
-                showMenuFragment(it)
+            when (it) {
+                null -> showMenuFragment(MenuFragmentID.MISSIONS_FRAGMENT)
+                MenuFragmentID.NEEDS_FRAGMENT, MenuFragmentID.MISSIONS_FRAGMENT -> {
+                    map.overlays.clear()
+                    map.invalidate()
+                    showMenuFragment(it)
+                }
+                else -> showMenuFragment(it)
             }
         })
     }
