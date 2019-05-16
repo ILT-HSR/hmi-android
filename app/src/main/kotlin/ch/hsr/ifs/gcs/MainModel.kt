@@ -174,13 +174,6 @@ class MainModel {
     val missions: LiveData<List<Mission>> = fMissions
 
     /**
-     * The list of available mission results
-     *
-     * @since 1.0.0
-     */
-    val missionResults: LiveData<List<Result>> = fMissionResults
-
-    /**
      * The currently selected menu fragment
      *
      * @since 1.0.0
