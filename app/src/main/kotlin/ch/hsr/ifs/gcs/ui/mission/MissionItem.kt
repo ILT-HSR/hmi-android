@@ -23,7 +23,10 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
                 is String -> {
                     when (result) {
                         "Medkit" -> icon = R.drawable.ic_medkit_location_marker
-                        "Radiation" -> color = context.getColor(R.color.radiationMapTransparent)
+                        "Radiation" -> {
+                            icon = R.drawable.ic_radiation_maptype_marker
+                            color = context.getColor(R.color.radiationMapTransparent)
+                        }
                     }
                 }
                 is GPSPosition -> targets.add(result)
@@ -59,6 +62,11 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
                     strokeWidth = 0.0f
                 }
                 mapView.overlays.add(polygon)
+                val mapTypeMarker = Marker(mapView)
+                mapTypeMarker.position = GeoPoint(polygon.points[0])
+                mapTypeMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                mapTypeMarker.icon = context.getDrawable(icon)
+                mapView.overlays.add(mapTypeMarker)
             }
         }
         mapView.invalidate()
