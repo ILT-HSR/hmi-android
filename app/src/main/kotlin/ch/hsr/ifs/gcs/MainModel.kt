@@ -136,11 +136,13 @@ class MainModel {
                     fActiveMenuFragment.value = MenuFragmentID.NEEDS_FRAGMENT
                 }
                 is NeedConfigurationFinished -> {
-                    fActiveNeed.value?.let(::Mission)?.let {
-                        fMissions.value = fMissions.value!! + it
+                    fActiveNeed.value?.let {need ->
+                        Mission(need.copy())?.let {mission ->
+                            fMissions.value = fMissions.value!! + mission
+                        }
+                        fActiveNeed.value = null
+                        fActiveMenuFragment.value = MenuFragmentID.MISSIONS_FRAGMENT
                     }
-                    fActiveNeed.value = null
-                    fActiveMenuFragment.value = MenuFragmentID.MISSIONS_FRAGMENT
                 }
                 is NeedOverviewRequested -> {
                     fActiveMenuFragment.value = MenuFragmentID.NEEDS_FRAGMENT

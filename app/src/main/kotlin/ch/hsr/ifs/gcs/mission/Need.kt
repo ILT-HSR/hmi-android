@@ -13,6 +13,8 @@ import ch.hsr.ifs.gcs.mission.need.task.Task
  */
 interface Need {
 
+    fun copy(): Need
+
     /**
      * A unique ID for the concrete need
      *

@@ -33,12 +33,12 @@ class Mapping(override val resource: Resource) : Need {
 
     private val fPreferences = PreferenceManager.getDefaultSharedPreferences(GCS.context)
 
-    private val fMapType = MapType()
-    private val fRegion = Region()
+    private var fMapType = MapType()
+    private var fRegion = Region()
 
     override val id = "ch.hsr.ifs.gcs.mission.need.mapping" //TODO: Move mapping to need descriptor
 
-    override val parameterList = listOf(
+    override var parameterList = listOf(
             fMapType,
             fRegion
     )
@@ -80,6 +80,16 @@ class Mapping(override val resource: Resource) : Need {
                     MoveToPosition(currentPoint)
             )
         }.flatten().toCollection(flightPlan)
+    }
+
+    override fun copy(): Mapping {
+        val copy = Mapping(resource)
+        copy.fMapType = fMapType.copy() as MapType
+        copy.fRegion = fRegion.copy() as Region
+        copy.parameterList = listOf(
+                copy.fMapType, copy.fRegion
+        )
+        return copy
     }
 
 }

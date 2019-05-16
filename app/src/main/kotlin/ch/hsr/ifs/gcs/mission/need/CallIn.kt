@@ -23,12 +23,12 @@ class CallIn(override val resource: Resource) : Need {
 
     private val fPreferences = PreferenceManager.getDefaultSharedPreferences(GCS.context)
 
-    private val fTarget = Target()
-    private val fCargo = Cargo()
+    private var fTarget = Target()
+    private var fCargo = Cargo()
 
     override val id = "ch.hsr.ifs.gcs.mission.need.callIn" //TODO: Move mapping to need descriptor
 
-    override val parameterList = listOf(
+    override var parameterList = listOf(
             fCargo,
             fTarget
     )
@@ -46,5 +46,15 @@ class CallIn(override val resource: Resource) : Need {
         get() = listOf(
                 Capability(CAPABILITY_CAN_FLY, true)
         )
+
+    override fun copy(): CallIn {
+        val copy = CallIn(resource)
+        copy.fCargo = fCargo.copy() as Cargo
+        copy.fTarget = fTarget.copy() as Target
+        copy.parameterList = listOf(
+                copy.fCargo, copy.fTarget
+        )
+        return copy
+    }
 
 }

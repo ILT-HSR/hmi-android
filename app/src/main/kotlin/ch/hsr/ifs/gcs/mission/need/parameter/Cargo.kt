@@ -16,4 +16,10 @@ class Cargo : Parameter<String> {
         return result
     }
 
+    override fun copy(): Parameter<String> {
+        val copy = Cargo()
+        copy.result = result
+        return copy
+    }
+
 }
