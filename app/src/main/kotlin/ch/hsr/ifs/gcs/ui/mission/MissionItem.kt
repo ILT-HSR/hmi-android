@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.ui.mission
 
+import android.graphics.drawable.Drawable
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
@@ -12,7 +13,15 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 class MissionItem(val mission: Mission, val context: MainActivity) {
 
-    private var icon: Int = 0
+    var icon: Int = 0
+    val statusIcon: Drawable
+        get() {
+            return when(mission.status) {
+                Mission.Status.PREPARING, Mission.Status.ACTIVE -> context.getDrawable(R.drawable.checkbox_active_incomplete)
+                Mission.Status.FINISHED -> context.getDrawable(R.drawable.checkbox_active_complete)
+                Mission.Status.ABORTED, Mission.Status.FAILED -> context.getDrawable(R.drawable.checkbox_aborted)
+            }
+        }
     private var color: Int = 0
     private var targets: MutableList<GPSPosition> = emptyList<GPSPosition>().toMutableList()
     private var regions: MutableList<List<GPSPosition>> = emptyList<List<GPSPosition>>().toMutableList()

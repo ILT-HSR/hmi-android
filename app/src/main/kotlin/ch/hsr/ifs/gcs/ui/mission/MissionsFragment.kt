@@ -57,7 +57,7 @@ class MissionsFragment : Fragment() {
             leftButton?.apply {
                 background = applicationContext?.getDrawable(R.drawable.cancel_action)
                 setOnClickListener{
-                    fAdapter.selection?.abort()
+                    fAdapter.selection?.mission?.abort()
                 }
             }
         }
