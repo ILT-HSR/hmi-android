@@ -55,7 +55,7 @@ class MissionsFragment : Fragment() {
                 fModel.submit(NeedOverviewRequested)
             }
             leftButton?.apply {
-                background = applicationContext?.getDrawable(R.drawable.cancel_action)
+                text = "Abort Mission"
                 setOnClickListener{
                     fAdapter.selection?.mission?.abort()
                 }

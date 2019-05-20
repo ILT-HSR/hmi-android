@@ -6,6 +6,7 @@
     <color name="activeListItem">#DEF5E5</color>
     <color name="navigationSolid">#FFFEFD66</color>
     <color name="selectionSolid">#FF68E180</color>
+    <color name="cancelSolid">#FFFF6842</color>
     <color name="selectionTransparent">#5068E180</color>
     <color name="radiationMapTransparent">#50F1CD05</color>
     <color name="tableHeaderBackground">#616161</color>

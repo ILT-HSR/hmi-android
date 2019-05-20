@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
         showMenuFragment(fMenuFragment)
 
-        leftButton.background = applicationContext.getDrawable(R.drawable.abort_mission)
+        leftButton.text = "Abort Mission"
 
         fParameterItemFactory = ParameterItemFactory(this)
         fNeedItemFactory = NeedItemFactory(this)
