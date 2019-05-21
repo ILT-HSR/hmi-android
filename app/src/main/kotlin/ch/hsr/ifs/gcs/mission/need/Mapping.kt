@@ -84,8 +84,8 @@ class Mapping(override val resource: Resource) : Need {
 
     override fun copy(): Mapping {
         val copy = Mapping(resource)
-        copy.fMapType = fMapType.copy() as MapType
-        copy.fRegion = fRegion.copy() as Region
+        copy.fMapType = fMapType.copy()
+        copy.fRegion = fRegion.copy()
         copy.parameterList = listOf(
                 copy.fMapType, copy.fRegion
         )

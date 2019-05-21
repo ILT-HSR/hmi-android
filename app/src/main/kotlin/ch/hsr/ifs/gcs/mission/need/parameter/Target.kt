@@ -24,7 +24,7 @@ class Target : Parameter<GPSPosition> {
         }
     }
 
-    override fun copy(): Parameter<GPSPosition> {
+    override fun copy(): Target {
         val copy = Target()
         copy.result = result
         return copy

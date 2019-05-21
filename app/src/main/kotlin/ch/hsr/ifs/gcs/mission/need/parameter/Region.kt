@@ -16,7 +16,7 @@ class Region : Parameter<List<GPSPosition>> {
 
     override fun resultToString() = "${result.size} waypoints"
 
-    override fun copy(): Parameter<List<GPSPosition>> {
+    override fun copy(): Region {
         val copy = Region()
         copy.result = result
         return copy

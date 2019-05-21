@@ -16,7 +16,7 @@ class MapType : Parameter<String> {
         return result
     }
 
-    override fun copy(): Parameter<String> {
+    override fun copy(): MapType {
         val copy = MapType()
         copy.result = result
         return copy

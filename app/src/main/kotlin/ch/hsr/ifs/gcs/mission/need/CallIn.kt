@@ -49,8 +49,8 @@ class CallIn(override val resource: Resource) : Need {
 
     override fun copy(): CallIn {
         val copy = CallIn(resource)
-        copy.fCargo = fCargo.copy() as Cargo
-        copy.fTarget = fTarget.copy() as Target
+        copy.fCargo = fCargo.copy()
+        copy.fTarget = fTarget.copy()
         copy.parameterList = listOf(
                 copy.fCargo, copy.fTarget
         )
