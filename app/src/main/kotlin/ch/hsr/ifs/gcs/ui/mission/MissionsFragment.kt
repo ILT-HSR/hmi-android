@@ -44,7 +44,7 @@ class MissionsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         fModel = (activity!!.application as GCS).mainModel
         fModel.missions.observe(this, Observer {
-            fAdapter.missions = it ?: emptyList()
+            fAdapter.missions = it?.reversed() ?: emptyList()
         })
         fModel.availableNeeds.observe(this, Observer {
             statusesAddButton.isEnabled = it != null && it.isNotEmpty()
@@ -55,9 +55,9 @@ class MissionsFragment : Fragment() {
                 fModel.submit(NeedOverviewRequested)
             }
             leftButton?.apply {
-                background = applicationContext?.getDrawable(R.drawable.cancel_action)
+                text = "Abort Mission"
                 setOnClickListener{
-                    fAdapter.selection?.abort()
+                    fAdapter.selection?.mission?.abort()
                 }
             }
         }

@@ -9,6 +9,7 @@ import ch.hsr.ifs.gcs.resource.CAPABILITY_CAN_FLY
 import ch.hsr.ifs.gcs.resource.CAPABILITY_CAN_MOVE
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
+import kotlin.reflect.full.createType
 import kotlin.reflect.full.primaryConstructor
 
 class NeedManager(private val fListener: Listener) {
@@ -45,6 +46,7 @@ class NeedManager(private val fListener: Listener) {
     }
 
     private fun instantiate(id: String, resource: Resource) =
-            fNeedMap[id]!!.first.primaryConstructor!!.call(resource)
-
+            fNeedMap[id]!!.first.constructors.first {
+                it.parameters.size == 1 && it.parameters.first().type == Resource::class.createType()
+            }.call(resource)
 }

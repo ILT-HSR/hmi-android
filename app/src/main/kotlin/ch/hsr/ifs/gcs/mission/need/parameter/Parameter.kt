@@ -5,6 +5,8 @@ package ch.hsr.ifs.gcs.mission.need.parameter
  */
 interface Parameter<Result> {
 
+    fun copy(): Parameter<Result>
+
     val id: String
 
     /**

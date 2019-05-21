@@ -136,11 +136,13 @@ class MainModel {
                     fActiveMenuFragment.value = MenuFragmentID.NEEDS_FRAGMENT
                 }
                 is NeedConfigurationFinished -> {
-                    fActiveNeed.value?.let(::Mission)?.let {
-                        fMissions.value = fMissions.value!! + it
+                    fActiveNeed.value?.let {need ->
+                        Mission(need.copy())?.let {mission ->
+                            fMissions.value = fMissions.value!! + mission
+                        }
+                        fActiveNeed.value = null
+                        fActiveMenuFragment.value = MenuFragmentID.MISSIONS_FRAGMENT
                     }
-                    fActiveNeed.value = null
-                    fActiveMenuFragment.value = MenuFragmentID.MISSIONS_FRAGMENT
                 }
                 is NeedOverviewRequested -> {
                     fActiveMenuFragment.value = MenuFragmentID.NEEDS_FRAGMENT
@@ -172,13 +174,6 @@ class MainModel {
      * @since 1.0.0
      */
     val missions: LiveData<List<Mission>> = fMissions
-
-    /**
-     * The list of available mission results
-     *
-     * @since 1.0.0
-     */
-    val missionResults: LiveData<List<Result>> = fMissionResults
 
     /**
      * The currently selected menu fragment

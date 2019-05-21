@@ -19,19 +19,17 @@ import ch.hsr.ifs.gcs.support.geo.GPSPosition
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class CallIn(override val resource: Resource) : Need {
+
+class CallIn private constructor(override val resource: Resource, private val fCargo: Cargo, private val fTarget: Target) : Need {
+
+    @Suppress("unused")
+    constructor(resource: Resource) : this(resource, Cargo(), Target())
 
     private val fPreferences = PreferenceManager.getDefaultSharedPreferences(GCS.context)
 
-    private val fTarget = Target()
-    private val fCargo = Cargo()
-
     override val id = "ch.hsr.ifs.gcs.mission.need.callIn" //TODO: Move mapping to need descriptor
 
-    override val parameterList = listOf(
-            fCargo,
-            fTarget
-    )
+    override val parameterList get() = listOf(fCargo, fTarget)
 
     override val tasks: List<Task>?
         get() = listOf(
@@ -46,5 +44,8 @@ class CallIn(override val resource: Resource) : Need {
         get() = listOf(
                 Capability(CAPABILITY_CAN_FLY, true)
         )
+
+    override fun copy() =
+            CallIn(resource, fCargo.copy(), fTarget.copy())
 
 }

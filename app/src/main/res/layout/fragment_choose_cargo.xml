@@ -23,7 +23,7 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/medkit"
         android:contentDescription="@string/choose_medkit_cargo"
-        android:gravity="top|start"
+        android:gravity="top|center"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:paddingTop="15dp"

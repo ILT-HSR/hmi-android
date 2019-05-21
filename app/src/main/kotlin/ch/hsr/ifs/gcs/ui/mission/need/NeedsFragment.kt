@@ -48,7 +48,7 @@ class NeedsFragment : Fragment() {
             }
 
             // TODO: Move to model/activity?
-            leftButton?.background = applicationContext.getDrawable(R.drawable.cancel_action)
+            leftButton.text = "Cancel"
             leftButton.setOnClickListener {
                 fModel.submit(MissionOverviewRequested)
             }

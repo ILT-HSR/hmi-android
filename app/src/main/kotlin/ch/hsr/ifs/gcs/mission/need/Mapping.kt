@@ -22,8 +22,12 @@ import kotlin.math.floor
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class Mapping(override val resource: Resource) : Need {
+class Mapping private constructor(override val resource: Resource, private val fMapType: MapType, private val fRegion: Region) : Need {
 
+    @Suppress("unused")
+    constructor(resource: Resource) : this(resource, MapType(), Region())
+
+    @Deprecated("Should live in configuration")
     private companion object {
         const val SCAN_CORRIDOR_WIDTH = 2.0
         const val COMPASS_BEARING_EAST = 90.0
@@ -33,15 +37,9 @@ class Mapping(override val resource: Resource) : Need {
 
     private val fPreferences = PreferenceManager.getDefaultSharedPreferences(GCS.context)
 
-    private val fMapType = MapType()
-    private val fRegion = Region()
-
     override val id = "ch.hsr.ifs.gcs.mission.need.mapping" //TODO: Move mapping to need descriptor
 
-    override val parameterList = listOf(
-            fMapType,
-            fRegion
-    )
+    override val parameterList get() = listOf(fMapType, fRegion)
 
     override val tasks: List<Task>?
         get() {
@@ -81,5 +79,8 @@ class Mapping(override val resource: Resource) : Need {
             )
         }.flatten().toCollection(flightPlan)
     }
+
+    override fun copy() =
+            Mapping(resource, fMapType.copy(), fRegion.copy())
 
 }
