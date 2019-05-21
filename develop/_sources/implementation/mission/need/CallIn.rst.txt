@@ -2,16 +2,3 @@ Documentation for mission/need/CallIn.kt
 ========================================
 
 
-.. kotlin:class:: CallIn
-
-This [Need] implementation represents the need to drop a cargo at a chosen location.
-
-:since: 1.0.0
-:author: IFS Institute for Software
-
-   .. kotlin:constructor:: constructor(override val resource Resource)
-   
-    Main constructor
-    
-   
-

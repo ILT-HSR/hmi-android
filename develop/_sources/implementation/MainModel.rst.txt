@@ -142,13 +142,6 @@ This class provides a data connection from the underlying application logic to t
     :since: 1.0.0
     
    
-   .. kotlin:val:: missionResults: LiveData<List<Result>> = fMissionResults
-   
-    The list of available mission results
-    
-    :since: 1.0.0
-    
-   
    .. kotlin:val:: activeMenuFragment: LiveData<MenuFragmentID> = fActiveMenuFragment
    
     The currently selected menu fragment

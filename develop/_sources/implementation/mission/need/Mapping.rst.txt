@@ -10,7 +10,7 @@ provided region using a certain mode.
 :since: 1.0.0
 :author: IFS Institute for Software
 
-   .. kotlin:constructor:: constructor(override val resource Resource)
+   .. kotlin:constructor:: constructor(override val resource Resource, fMapType: MapType, fRegion: Region)
    
     Main constructor
     
