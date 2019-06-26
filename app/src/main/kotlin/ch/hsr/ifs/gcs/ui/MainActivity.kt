@@ -231,7 +231,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             setDirectionArrow(currentIcon, currentIcon)
             runOnFirstFix { runOnUiThread { map.controller.animateTo(GeoPoint(myLocation)) } }
             enableMyLocation()
-            setPersonHotspot(69.5f, 69.5f)
+            setPersonHotspot(26.5f, 26.5f)
             map.overlays += this
         }
     }
