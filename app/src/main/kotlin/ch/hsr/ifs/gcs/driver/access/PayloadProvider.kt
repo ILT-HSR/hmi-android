@@ -1,9 +1,9 @@
 package ch.hsr.ifs.gcs.driver.access
 
-import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.mavlink.payload.Gripper
 import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ilt.uxv.hmi.core.driver.Payload
+import ch.hsr.ilt.uxv.hmi.core.driver.Platform
 
 object PayloadProvider {
 

@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver
 
 import ch.hsr.ilt.uxv.hmi.core.driver.Command
+import ch.hsr.ilt.uxv.hmi.core.driver.Vehicle
 
 /**
  * The interface of drivers for aerial vehicles

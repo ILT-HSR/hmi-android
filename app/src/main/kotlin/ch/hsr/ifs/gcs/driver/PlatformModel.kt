@@ -3,6 +3,7 @@ package ch.hsr.ifs.gcs.driver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import android.util.Log
+import ch.hsr.ilt.uxv.hmi.core.driver.Platform
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.channels.Channel

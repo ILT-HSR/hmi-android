@@ -10,6 +10,7 @@ import ch.hsr.ifs.gcs.mission.Scheduler
 import ch.hsr.ifs.gcs.mission.access.NeedManager
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.ResourceManager
+import ch.hsr.ilt.uxv.hmi.core.driver.Platform
 
 class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, NeedManager.Listener {
 

@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.driver.mavlink.platform
 
-import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ilt.uxv.hmi.core.driver.Platform
 import java.nio.channels.ByteChannel
 
 /**

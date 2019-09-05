@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.resource
 
-import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ilt.uxv.hmi.core.driver.Platform
+
 
 /**
  * A resource is an abstract representation of a platform.

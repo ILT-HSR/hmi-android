@@ -1,8 +1,8 @@
 package ch.hsr.ifs.gcs.driver
 
-import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ilt.uxv.hmi.core.driver.Command
 import ch.hsr.ilt.uxv.hmi.core.driver.Payload
+import ch.hsr.ilt.uxv.hmi.core.mission.Execution
 import ch.hsr.ilt.uxv.hmi.core.support.geo.GPSPosition
 
 class NullPlatform : AerialVehicle {

@@ -4,9 +4,9 @@ import androidx.lifecycle.Observer
 import android.content.Context
 import android.content.res.AssetManager
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.PlatformModel
 import ch.hsr.ifs.gcs.driver.access.PayloadProvider
+import ch.hsr.ilt.uxv.hmi.core.driver.Platform
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import java.io.InputStream

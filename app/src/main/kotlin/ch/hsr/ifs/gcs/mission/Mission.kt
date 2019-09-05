@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.mission
 
 import android.util.Log
+import ch.hsr.ilt.uxv.hmi.core.mission.Execution
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.properties.Delegates

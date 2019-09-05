@@ -2,15 +2,15 @@ package ch.hsr.ifs.gcs.driver.mavlink.platform
 
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.AerialVehicle
-import ch.hsr.ifs.gcs.driver.PlatformContext
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommand
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
-import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.concurrent.every
 import ch.hsr.ilt.uxv.hmi.core.driver.Command
 import ch.hsr.ilt.uxv.hmi.core.driver.Payload
+import ch.hsr.ilt.uxv.hmi.core.driver.PlatformContext
+import ch.hsr.ilt.uxv.hmi.core.mission.Execution
 import ch.hsr.ilt.uxv.hmi.core.support.geo.GPSPosition
 import ch.hsr.ilt.uxv.hmi.core.support.geo.WGS89Position
 import kotlinx.coroutines.*

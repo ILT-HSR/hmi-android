@@ -1,7 +1,7 @@
 package ch.hsr.ifs.gcs.resource
 
-import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.resource.Resource.Status
+import ch.hsr.ilt.uxv.hmi.core.driver.Platform
 
 class LocalResource(override val id: String,
                     override val driverId: String,
