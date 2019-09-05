@@ -3,8 +3,8 @@ package ch.hsr.ifs.gcs.ui.mission
 import android.graphics.drawable.Drawable
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Mission
-import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.MainActivity
+import ch.hsr.ilt.uxv.hmi.core.support.geo.GPSPosition
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker

@@ -11,7 +11,7 @@ import ch.hsr.ifs.gcs.mission.need.task.*
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.CAPABILITY_CAN_FLY
-import ch.hsr.ifs.gcs.support.geo.GPSPosition
+import ch.hsr.ilt.uxv.hmi.core.support.geo.GPSPosition
 
 /**
  * This [Need] implementation represents the need to drop a cargo at a chosen location.

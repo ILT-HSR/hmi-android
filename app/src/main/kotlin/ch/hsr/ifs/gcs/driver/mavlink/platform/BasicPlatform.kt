@@ -9,10 +9,10 @@ import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.concurrent.every
-import ch.hsr.ifs.gcs.support.geo.GPSPosition
-import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import ch.hsr.ilt.uxv.hmi.core.driver.Command
 import ch.hsr.ilt.uxv.hmi.core.driver.Payload
+import ch.hsr.ilt.uxv.hmi.core.support.geo.GPSPosition
+import ch.hsr.ilt.uxv.hmi.core.support.geo.WGS89Position
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor

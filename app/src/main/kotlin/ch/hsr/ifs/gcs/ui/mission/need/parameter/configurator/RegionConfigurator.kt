@@ -2,8 +2,8 @@ package ch.hsr.ifs.gcs.ui.mission.need.parameter.configurator
 
 import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.R
-import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.mission.need.parameter.ParameterConfigurator
+import ch.hsr.ilt.uxv.hmi.core.support.geo.GPSPosition
 import kotlinx.android.synthetic.main.activity_main.*
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView

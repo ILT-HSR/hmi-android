@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.mission.need.parameter
 
-import ch.hsr.ifs.gcs.support.geo.GPSPosition
+import ch.hsr.ilt.uxv.hmi.core.support.geo.GPSPosition
 
 /**
  * This [Parameter] implementation is used to configure the target of the vehicle.
