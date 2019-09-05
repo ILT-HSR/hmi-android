@@ -5,6 +5,6 @@ import ch.hsr.ifs.gcs.resource.Resource
 class TriggerPayload(val payload: String) : Task {
 
     override fun executeOn(resource: Resource) =
-            listOf(resource.plaform.payload.trigger())
+            resource.plaform.payload.trigger()
 
 }

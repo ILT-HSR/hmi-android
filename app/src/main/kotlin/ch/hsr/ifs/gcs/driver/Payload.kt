@@ -2,6 +2,6 @@ package ch.hsr.ifs.gcs.driver
 
 interface Payload {
 
-    fun trigger(): Command<*>
+    fun trigger(): List<Command<*>>
 
 }

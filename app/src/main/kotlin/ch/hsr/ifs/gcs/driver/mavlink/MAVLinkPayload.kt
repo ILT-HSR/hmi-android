@@ -7,6 +7,6 @@ interface MAVLinkPayload : Payload {
 
     val commandDescriptor: MAVLinkMissionCommand
 
-    override fun trigger() = MAVLinkCommand(commandDescriptor)
+    override fun trigger() = listOf(MAVLinkCommand(commandDescriptor))
 
 }
