@@ -4,3 +4,6 @@
 [submodule "usb-serial-for-android"]
 	path = usb-serial-for-android
 	url = ../usb-serial-for-android
+[submodule "core"]
+	path = core
+	url = ../hmi-core

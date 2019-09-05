@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.driver
 
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
+import ch.hsr.ilt.uxv.hmi.core.driver.Payload
 import kotlinx.coroutines.newSingleThreadContext
 
 val PlatformContext = newSingleThreadContext("PlatformContext")

@@ -1,7 +1,7 @@
 package ch.hsr.ifs.gcs.mission.need.task
 
-import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.resource.Resource
+import ch.hsr.ilt.uxv.hmi.core.driver.Command
 
 /**
  * This interface specifies the basic tasks that vehicles are capable of on an abstract level.

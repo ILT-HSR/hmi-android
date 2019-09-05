@@ -2,6 +2,8 @@ package ch.hsr.ifs.gcs.driver
 
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
+import ch.hsr.ilt.uxv.hmi.core.driver.Command
+import ch.hsr.ilt.uxv.hmi.core.driver.Payload
 
 class NullPlatform : AerialVehicle {
     override fun limitTravelSpeed(speed: Double): Command<*> {

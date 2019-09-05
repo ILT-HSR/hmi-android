@@ -1,11 +1,11 @@
 package ch.hsr.ifs.gcs.support.file
 
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommand
 import ch.hsr.ifs.gcs.driver.mavlink.support.LongCommand
 import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkMissionCommand
 import ch.hsr.ifs.gcs.driver.mavlink.support.NavigationFrame
+import ch.hsr.ilt.uxv.hmi.core.driver.Command
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException

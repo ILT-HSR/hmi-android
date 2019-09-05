@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver
 
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
+import ch.hsr.ilt.uxv.hmi.core.driver.Command
 
 /**
  * The interface of drivers for vehicles

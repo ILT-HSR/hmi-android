@@ -1,2 +1,2 @@
-include ':app', ':jMAVlib', ':usbSerialForAndroid'
+include ':app', ':jMAVlib', ':usbSerialForAndroid', ':core'
 project(':usbSerialForAndroid').projectDir = new File('usb-serial-for-android/usbSerialForAndroid')

@@ -90,6 +90,7 @@ dependencies {
     // Local Libraries
     implementation project(':jMAVlib')
     implementation project(':usbSerialForAndroid')
+    implementation project(':core')
 
     // Testing
     testImplementation "junit:junit:$junitVersion"

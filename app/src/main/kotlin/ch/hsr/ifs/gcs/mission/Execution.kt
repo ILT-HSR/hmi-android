@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.mission
 
-import ch.hsr.ifs.gcs.driver.Command
+import ch.hsr.ilt.uxv.hmi.core.driver.Command
 
 abstract class Execution {
 

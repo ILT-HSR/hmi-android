@@ -2,9 +2,9 @@ package ch.hsr.ifs.gcs.mission.need.task
 
 import android.util.Log
 import ch.hsr.ifs.gcs.GCS
-import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.support.file.readQGCPlan
+import ch.hsr.ilt.uxv.hmi.core.driver.Command
 import java.io.IOException
 
 class RunPlan(val name: String) : Task {
