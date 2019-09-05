@@ -5,7 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -68,7 +68,7 @@ class MissionsRecyclerViewAdapter(private val fContext: MainActivity)
             }
         }
 
-        private fun statusIconForMission(item: MissionItem): Drawable {
+        private fun statusIconForMission(item: MissionItem): Drawable? {
             return item.statusIcon
         }
 

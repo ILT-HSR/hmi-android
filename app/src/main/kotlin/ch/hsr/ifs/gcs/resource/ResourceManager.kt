@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.resource
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Context
 import android.content.res.AssetManager
 import android.util.Log
@@ -83,7 +83,7 @@ class ResourceManager(private val fListener: Listener) {
     }
 
     fun onCreate(context: Context, platformModel: PlatformModel) {
-        fKnownResources = context.assets.list(RESOURCES_DIRECTORY).mapNotNull {
+        fKnownResources = context.assets.list(RESOURCES_DIRECTORY)!!.mapNotNull {
             try {
                 ResourceDescriptor.load(context.assets.open("$RESOURCES_DIRECTORY/$it", AssetManager.ACCESS_STREAMING))
             } catch (e: IllegalStateException) {

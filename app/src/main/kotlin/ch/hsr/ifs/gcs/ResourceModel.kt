@@ -1,7 +1,7 @@
 package ch.hsr.ifs.gcs
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import android.util.Log
 import ch.hsr.ifs.gcs.resource.Resource
 import kotlinx.coroutines.Dispatchers.Main

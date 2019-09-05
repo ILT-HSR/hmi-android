@@ -14,7 +14,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 class MissionItem(val mission: Mission, val context: MainActivity) {
 
     var icon: Int = 0
-    val statusIcon: Drawable
+    val statusIcon: Drawable?
         get() {
             return when(mission.status) {
                 Mission.Status.PREPARING, Mission.Status.ACTIVE -> context.getDrawable(R.drawable.checkbox_active_incomplete)

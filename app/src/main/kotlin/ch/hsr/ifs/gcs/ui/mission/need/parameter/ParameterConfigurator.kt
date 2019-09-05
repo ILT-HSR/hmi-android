@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.ui.mission.need.parameter
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.TextView
 import ch.hsr.ifs.gcs.R

@@ -1,6 +1,6 @@
 package ch.hsr.ifs.gcs.mission.access
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import ch.hsr.ifs.gcs.ResourceModel
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.need.CallIn

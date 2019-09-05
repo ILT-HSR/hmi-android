@@ -1,14 +1,14 @@
 package ch.hsr.ifs.gcs.ui
 
 import android.Manifest
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import ch.hsr.ifs.gcs.*
@@ -28,7 +28,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.util.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.Bitmap
-import android.support.v4.content.res.ResourcesCompat
+import androidx.core.content.res.ResourcesCompat
 import org.osmdroid.util.GeoPoint
 
 
@@ -73,9 +73,9 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
     fun hideMainFragment() {
-        if (fMainFragment != null) {
+        fMainFragment?.let {
             supportFragmentManager.beginTransaction()
-                    .remove(fMainFragment)
+                    .remove(it)
                     .commit()
             fMainFragment = null
         }

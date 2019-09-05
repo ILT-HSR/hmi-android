@@ -33,11 +33,11 @@ class ParameterItemFactory(context: MainActivity) {
     private val fDescriptors = mutableMapOf<String, ParameterItemDescriptor>()
 
     init {
-        context.assets.list(PARAMETER_ITEM_DESCRIPTOR_DIRECTORY).forEach { d ->
+        context.assets.list(PARAMETER_ITEM_DESCRIPTOR_DIRECTORY)?.forEach { d ->
             try {
-                context.assets.open("$PARAMETER_ITEM_DESCRIPTOR_DIRECTORY/$d")?.let {
+                context.assets.open("$PARAMETER_ITEM_DESCRIPTOR_DIRECTORY/$d").let {
                     ParameterItemDescriptor.load(it)
-                }?.apply {
+                }.apply {
                     configurator.context = context
                     fDescriptors[id] = this
                 }

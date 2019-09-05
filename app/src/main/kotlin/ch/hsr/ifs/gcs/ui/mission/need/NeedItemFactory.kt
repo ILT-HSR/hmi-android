@@ -31,11 +31,11 @@ class NeedItemFactory(context: Context) {
     private val fConstructors = mutableMapOf<String, (Need) -> NeedItem>()
 
     init {
-        context.assets.list(NEED_ITEM_DESCRIPTOR_DIRECTORY).forEach { f ->
+        context.assets.list(NEED_ITEM_DESCRIPTOR_DIRECTORY)?.forEach { f ->
             try {
-                context.assets.open("$NEED_ITEM_DESCRIPTOR_DIRECTORY/$f")?.let {
+                context.assets.open("$NEED_ITEM_DESCRIPTOR_DIRECTORY/$f").let {
                     NeedItemDescriptor.load(it)
-                }?.apply {
+                }.apply {
                     fConstructors[id] = { need -> NeedItem(need, name) }
                 }
             } catch (e: IllegalStateException) {
