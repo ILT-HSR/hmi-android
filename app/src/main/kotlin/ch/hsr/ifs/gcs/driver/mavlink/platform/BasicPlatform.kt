@@ -118,7 +118,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 }
                 is MessageEvent.LongCommandAcknowledgement -> event.message.let { message ->
                     val pending = fPendingLongCommand
-                    Log.i(LOG_TAG, "Command response: $message")
+                    Log.i(LOG_TAG, "Long-Command response: $message")
                     when {
                         pending == null -> Log.w(LOG_TAG, "Unexpected long command ack: $message")
                         pending.first != message.getInt("command") -> Log.w(LOG_TAG, "Stray long command ack: $message")
@@ -130,6 +130,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 }
                 is MessageEvent.MissionRequest -> event.message.let { message ->
                     val pending = fPendingMissionCommand
+                    Log.i(LOG_TAG, "Mission Item Request: $message")
                     when {
                         pending == null -> Log.w(LOG_TAG, "Unexpected mission command response: $message")
                         pending.first != MessageID.MISSION_REQUEST -> Log.w(LOG_TAG, "Stray mission command response: $message")
@@ -141,6 +142,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 }
                 is MessageEvent.MissionAcknowledgement -> event.message.let { message ->
                     val pending = fPendingMissionCommand
+                    Log.i(LOG_TAG, "Mission Item Acknowledgement: $message")
                     when {
                         pending == null -> Log.w(LOG_TAG, "Unexpected mission command response: $message")
                         pending.first != MessageID.MISSION_ACK -> Log.w(LOG_TAG, "Stray mission command response: $message")
