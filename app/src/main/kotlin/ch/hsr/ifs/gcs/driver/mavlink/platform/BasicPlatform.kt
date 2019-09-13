@@ -44,11 +44,16 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         /**
          * The component id of the onboard MAVLink mission planner
          */
+        private const val COMPONENT_AUTOPILOT = 1
+
+        /**
+         * The component id of the onboard MAVLink mission planner
+         */
         private const val COMPONENT_MISSION_PLANNER = 190
     }
 
-    private val fSender = MAVLinkSystem(8, 250)
-    private val fTarget = MAVLinkSystem(1, 1)
+    private val fSender = MAVLinkSystem(255, COMPONENT_MISSION_PLANNER)
+    private val fTarget = MAVLinkSystem(1, COMPONENT_AUTOPILOT)
 
     private val fMessageStream = MAVLinkStream(schema, channel)
     private val fMessageQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
@@ -175,7 +180,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     protected open inner class NativeMissionExecution(target: MAVLinkSystem) : Execution(), MAVLinkExecution {
 
         private var fState = ExecutionState.CREATED
-        private val fMissionPlanner = MAVLinkSystem(target.id, COMPONENT_MISSION_PLANNER)
 
         override fun tick() = runBlocking(PlatformContext) {
             when (fState) {
@@ -197,7 +201,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
         private suspend fun upload() {
             Log.i(LOG_TAG, "Starting upload")
-            val count = createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fMissionPlanner, schema)
+            val count = createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fTarget, schema)
             count["count"] = fCommands.size
 
             if (sendMissionCommand(count, MessageID.MISSION_REQUEST) == null) {
@@ -240,7 +244,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
         private suspend fun sendItem(index: Int, command: Command<*>): MAVLinkMessage? {
             val nativeCommand = command.nativeCommand as MAVLinkMissionCommand
-            val item = createTargetedMAVLinkMessage(MessageID.MISSION_ITEM, senderSystem, fMissionPlanner, schema)
+            val item = createTargetedMAVLinkMessage(MessageID.MISSION_ITEM, senderSystem, fTarget, schema)
 
             item["seq"] = index
             item["frame"] = nativeCommand.frame.ordinal
