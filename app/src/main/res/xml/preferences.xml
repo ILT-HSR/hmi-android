@@ -22,13 +22,13 @@
     <PreferenceCategory
         android:title="@string/call_in_settings_category_name" >
 
-        <android.support.v7.preference.SeekBarPreference
+        <androidx.preference.SeekBarPreference
             android:defaultValue="5"
             android:max="15"
             android:key="call_in_altitude"
             android:summary="@string/call_in_altitude_summary"
             android:title="@string/call_in_altitude" />
-        <android.support.v7.preference.SeekBarPreference
+        <androidx.preference.SeekBarPreference
             android:defaultValue="1"
             android:max="5"
             android:key="call_in_travel_speed"
@@ -40,13 +40,13 @@
     <PreferenceCategory
         android:title="@string/mapping_settings_category_name" >
 
-        <android.support.v7.preference.SeekBarPreference
+        <androidx.preference.SeekBarPreference
             android:defaultValue="5"
             android:max="15"
             android:key="mapping_altitude"
             android:summary="@string/mapping_altitude_summary"
             android:title="@string/mapping_altitude" />
-        <android.support.v7.preference.SeekBarPreference
+        <androidx.preference.SeekBarPreference
             android:defaultValue="1"
             android:max="5"
             android:key="mapping_travel_speed"
