@@ -10,7 +10,6 @@ import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
-import ch.hsr.ifs.gcs.support.concurrent.every
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
 import kotlinx.coroutines.*
@@ -22,7 +21,6 @@ import java.nio.channels.ByteChannel
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 /**
@@ -60,8 +58,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     private val fHeartbeatJob: Job
     private val fSurveillanceJob: Job
-
-    private val fIORunner = Executors.newSingleThreadScheduledExecutor()
+    private val fReceiverJob: Job
+    private val fSenderJob: Job
 
     private var fCurrentExecution = NativeMissionExecution(fTarget)
 
@@ -278,7 +276,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     }
 
     init {
-        beginSerialIO()
+        fReceiverJob = startReceiver()
+        fSenderJob = startSender()
         fHeartbeatJob = startHeartbeat()
         fSurveillanceJob = startSurveyor()
         GlobalScope.launch(PlatformContext) {
@@ -427,18 +426,23 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     // Private implementation
 
-    /**
-     * Initialize the serial I/O connection with the vehicle.
-     *
-     * We communicate with the vehicle using a serial (RS232) interface. The serial connection is
-     * wrapped in a MAVLink message stream, which allows us to work on a more 'abstract' level.
-     */
-    private fun beginSerialIO() {
-        fIORunner.every(Duration.ofMillis(10)) {
+    private fun startReceiver() = GlobalScope.launch(Dispatchers.IO) {
+        while(isActive) {
             try {
-                fMessageStream.read()?.let(this::dispatch)
-                fMessageQueue.poll()?.let(fMessageStream::write)
+                fMessageStream.read()?.let { dispatch(it) }
             } catch (e: IOException) {
+                Log.w(LOG_TAG, "I/O Exception while reading message from remote: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    private fun startSender() = GlobalScope.launch(Dispatchers.IO) {
+        while(isActive) {
+            try {
+                fMessageQueue.poll()?.let(fMessageStream::write)
+                delay(10)
+            } catch (e: IOException) {
+                Log.w(LOG_TAG, "I/O Exception while sending message to remote: ${e.localizedMessage}")
             }
         }
     }
