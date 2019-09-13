@@ -458,9 +458,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      */
     private fun startSurveyor() = GlobalScope.launch(PlatformContext) {
         while (isActive) {
-            if (fIsAlive && fLastHeartbeat + Duration.ofSeconds(10) < Instant.now()) {
-                fIsAlive = false
-            }
+            fIsAlive = fLastHeartbeat + Duration.ofSeconds(10) > Instant.now()
             delay(500)
         }
     }
