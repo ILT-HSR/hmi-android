@@ -32,6 +32,9 @@ proguard/
 # Android Studio captures folder
 captures/
 
+# Android Studio Annotation Generator
+annotations/
+
 # IntelliJ
 *.iml
 .idea/workspace.xml
