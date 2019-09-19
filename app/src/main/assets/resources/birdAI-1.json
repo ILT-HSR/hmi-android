@@ -17,7 +17,7 @@
     "type": "aerialVehicle",
     "payload": {
       "type": "ch.hsr.ilt.gripper",
-      "driver": "ch.hsr.ifs.gcs.driver.mavlink.payload.gripper"
+      "driver": "ch.hsr.ifs.gcs.driver.mavlink.payload.radiationSensor"
     }
   }
 }

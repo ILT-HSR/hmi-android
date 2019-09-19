@@ -66,7 +66,10 @@ class Mapping private constructor(override val resource: Resource, private val f
 
         var currentPoint = topLeft.positionAt(remainder / 2 * SCAN_CORRIDOR_WIDTH, COMPASS_BEARING_SOUTH)
         val flightPlan = mutableListOf<Task>(MoveToPosition(currentPoint))
-        return (0 until realLines).map {
+
+        flightPlan += ToggleSensor()
+
+        flightPlan += (0 until realLines).map {
             val result = if ((it % 2) == 0) {
                 currentPoint.positionAt(width, COMPASS_BEARING_EAST)
             } else {
@@ -77,7 +80,9 @@ class Mapping private constructor(override val resource: Resource, private val f
                     MoveToPosition(result),
                     MoveToPosition(currentPoint)
             )
-        }.flatten().toCollection(flightPlan)
+        }.flatten()
+
+        return flightPlan + ToggleSensor()
     }
 
     override fun copy() =

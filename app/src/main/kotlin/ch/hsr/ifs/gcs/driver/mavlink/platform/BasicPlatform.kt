@@ -11,6 +11,7 @@ import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
+import com.google.android.gms.nearby.messages.Messages
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
@@ -78,6 +79,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     private var fCurrentMissionItem = -1
     private var fCurrentLandedState = -1
+    private var fCurrentMissionItemReached = false
 
     private val fTriggeredItems: MutableMap<Int, MAVLinkMessage> = mutableMapOf()
 
@@ -157,7 +159,13 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     }
                 }
                 is MessageEvent.MissionItemReached -> with(event.sequenceNumber) {
-                    Log.d(LOG_TAG, "Reached mission item '$this'")
+                    if(fCurrentMissionItem == this) {
+                        fCurrentMissionItemReached = true
+                        Log.d(LOG_TAG, "Reached mission item '$this'")
+                        if(fTriggeredItems.contains(this)) {
+                            sendMessage(fTriggeredItems[this]!!)
+                        }
+                    }
                 }
                 is MessageEvent.MissionCurrentChanged -> with(event.sequenceNumber) {
                     if(fCurrentMissionItem != this) {
@@ -210,6 +218,11 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     protected open inner class NativeMissionExecution(target: MAVLinkSystem) : Execution(), MAVLinkExecution {
 
         private var fState = ExecutionState.CREATED
+        private val fPlanSize by lazy {
+            fCommands.filterIsInstance<MAVLinkCommand>().filter {
+                it.nativeCommand is PlanCommand
+            }.size
+        }
 
         override fun tick() = runBlocking(PlatformContext) {
             when (fState) {
@@ -231,9 +244,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
         private suspend fun upload() {
             val count = createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fTarget, schema)
-            count["count"] = fCommands.filterIsInstance<MAVLinkCommand>().filter {
-                it.nativeCommand is PlanCommand
-            }.size
+            count["count"] = fPlanSize
 
             if (sendMissionCommand(count, MessageID.MISSION_REQUEST) == null) {
                 fState = ExecutionState.FAILED
@@ -254,7 +265,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                         planIndex += 1
                     }
                     is MessageCommand -> {
-                        response = handleMessageItem(planIndex, native)
+                        response = handleMessageItem(planIndex - 1, native)
                     }
                 }
             }
@@ -299,7 +310,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             item["y"] = command.y
             item["z"] = command.z
 
-            if (index < fCommands.size - 1) {
+            if (index < fPlanSize - 1) {
                 return sendMissionCommand(item, MessageID.MISSION_REQUEST)
             }
 
@@ -311,6 +322,10 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             val message = createMAVLinkMessage(name, fSender, schema)
             for(field in data) {
                 message.set(field.key, field.value)
+            }
+            if(name == MessageID.COMMAND_LONG.name) {
+                    message.set("target_system", if(isForPayload) 3 else fTarget.id)
+                    message.set("target_component", if(isForPayload) 34 else fTarget.component)
             }
             fTriggeredItems[index] = message
             return message
