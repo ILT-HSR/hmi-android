@@ -20,6 +20,14 @@ enum class LongCommand(val value: Int) {
 
 sealed class NativeCommand()
 
+/**
+ * @brief A command that is executed as part of a mission plan
+ *
+ * Commands of this type will be executed as mission items. How they are executed (e.g. uploaded as
+ * a mission, or ticked by the driver) is up the the respective [execution][Execution] type.
+ *
+ * @since 1.2.0
+ */
 data class PlanCommand(
         val id: LongCommand,
         val frame: NavigationFrame,
@@ -31,6 +39,16 @@ data class PlanCommand(
         val y: Float = 0.0f,
         val z: Float = 0.0f) : NativeCommand()
 
+/**
+ * @brief A command that is executed outside of a mission plan
+ *
+ * Commands of this type shall be executed outside of a mission plan. They may be intermixed with
+ * [plan commands][PlanCommand] as to facilitate event driven messaging for external payload or
+ * platforms. [Execution]s shall never upload [message commands][MessageCommand] to the vehicle
+ * as part of a mission.
+ *
+ * @since 1.2.0
+ */
 data class MessageCommand(val message: MAVLinkMessage) : NativeCommand()
 
 data class MAVLinkCommand(override val nativeCommand: NativeCommand) : Command<NativeCommand>
