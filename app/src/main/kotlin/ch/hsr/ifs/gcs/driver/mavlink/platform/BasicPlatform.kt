@@ -46,6 +46,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
         /**
          * The component id of the onboard MAVLink mission planner
+         *
          */
         private const val COMPONENT_MISSION_PLANNER = 190
     }
@@ -101,7 +102,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     fLastHeartbeat = Instant.now()
                 }
                 is MessageEvent.Position -> event.message.let { message ->
-                    Log.i(LOG_TAG, "Position update: $message")
                     fTimeSinceBoot = message.getInt("time_boot_ms")
                     fPosition = GPSPosition(WGS89Position(message.getInt("lat"), message.getInt("lon"), message.getInt("alt")))
                     fGroundSpeed.north = message.getInt("vx")
@@ -109,7 +109,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     fGroundSpeed.up = message.getInt("vz")
                 }
                 is MessageEvent.Version -> event.message.let { message ->
-                    Log.i(LOG_TAG, "Version: $message")
                     fVendor = MAVLinkVendors[message["vendor_id"] as? Int ?: 0]
                     fProduct = MAVLinkProducts[message["product_id"] as? Int ?: 0]
                     fId = message.getLong("uid")
@@ -156,7 +155,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     if (fPendingLongCommand != null) {
                         Log.w(LOG_TAG, "Another command is already waiting. Dropping: $message")
                     } else {
-                        Log.i(LOG_TAG, "Sending command: $message")
+                        Log.i(LOG_TAG, "Sending Long-Command: $message")
                         fPendingLongCommand = Pair(message.getInt("command"), event.result)
                         sendMessage(message)
                     }
@@ -200,7 +199,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         }
 
         private suspend fun upload() {
-            Log.i(LOG_TAG, "Starting upload")
             val count = createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fTarget, schema)
             count["count"] = fCommands.size
 
@@ -471,7 +469,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      * Dispatch a received MAVLink message via the main actor
      */
     private fun dispatch(message: MAVLinkMessage) {
-        //Log.v(LOG_TAG, "Received message: $message")
         when (MessageID.from(message.msgName)) {
             MessageID.HEARTBEAT -> {
                 fMainActor.offer(MessageEvent.Heartbeat(message))
