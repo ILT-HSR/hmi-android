@@ -4,12 +4,14 @@ import ch.hsr.ifs.gcs.driver.Payload
 import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.driver.mavlink.payload.Gripper
 import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
+import ch.hsr.ifs.gcs.driver.mavlink.payload.RadiationSensor
 
 object PayloadProvider {
 
     private val fDrivers = mutableMapOf<String, () -> Payload>(
             NullPayload.DRIVER_ID to ::NullPayload,
-            Gripper.DRIVER_ID to ::Gripper
+            Gripper.DRIVER_ID to ::Gripper,
+            RadiationSensor.DRIVER_ID to :: RadiationSensor
     )
 
     /**
