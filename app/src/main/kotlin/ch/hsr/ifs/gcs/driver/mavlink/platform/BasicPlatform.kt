@@ -79,6 +79,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     private var fCurrentMissionItem = -1
     private var fCurrentLandedState = -1
 
+    private val fTriggeredItems: MutableMap<Int, MAVLinkMessage> = mutableMapOf()
+
     private var fPendingLongCommand: Pair<Int, CompletableDeferred<MAVLinkMessage>>? = null
     private var fPendingMissionCommand: Pair<MessageID, CompletableDeferred<MAVLinkMessage>>? = null
 
@@ -229,7 +231,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
         private suspend fun upload() {
             val count = createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fTarget, schema)
-            count["count"] = fCommands.size
+            count["count"] = fCommands.filterIsInstance<PlanCommand>().size
 
             if (sendMissionCommand(count, MessageID.MISSION_REQUEST) == null) {
                 fState = ExecutionState.FAILED
@@ -237,21 +239,31 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             }
 
             var response: MAVLinkMessage? = null
-            fCommands.filterIsInstance<MAVLinkCommand>().forEachIndexed { idx, cmd ->
-                response = sendItem(idx, cmd)
-                if (response == null) {
-                    fState = ExecutionState.FAILED
-                    return
+            val commands = fCommands.filterIsInstance<MAVLinkCommand>()
+            var planIndex = 0
+            for(command in commands) {
+                when(val native = command.nativeCommand) {
+                    is PlanCommand -> {
+                        response = sendPlanItem(planIndex, native)
+                        if(response == null) {
+                            fState = ExecutionState.FAILED
+                            return
+                        }
+                        planIndex += 1
+                    }
+                    is MessageCommand -> {
+                        response = handleMessageItem(planIndex, native)
+                    }
                 }
             }
 
-            if (response?.msgName != MessageID.MISSION_ACK.name || response?.getInt("type") != 0) {
+            if (response?.msgName != MessageID.MISSION_ACK.name || response.getInt("type") != 0) {
                 fState = ExecutionState.FAILED
                 return
             }
 
             response = sendLongCommand(createArmMessage(fSender, fTarget, schema))
-            if (response == null || response?.getInt("result") != 0) {
+            if (response == null || response.getInt("result") != 0) {
                 fState = ExecutionState.FAILED
                 return
             }
@@ -261,19 +273,13 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 set("param2", fCommands.size - 1)
             }
             response = sendLongCommand(launch)
-            if (response == null || response?.getInt("result") != 0) {
+            if (response == null || response.getInt("result") != 0) {
                 fState = ExecutionState.FAILED
                 return
             }
 
             fState = ExecutionState.RUNNING
         }
-
-        private suspend fun sendItem(index: Int, command: MAVLinkCommand) =
-            when (val nativeCommand = command.nativeCommand) {
-                is PlanCommand -> sendPlanItem(index, nativeCommand)
-                is MessageCommand -> nativeCommand.message
-            }
 
         private suspend fun sendPlanItem(index: Int, command: PlanCommand): MAVLinkMessage? {
             val item = createTargetedMAVLinkMessage(MessageID.MISSION_ITEM, senderSystem, fTarget, schema)
@@ -296,6 +302,16 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             }
 
             return sendMissionCommand(item, MessageID.MISSION_ACK)
+        }
+
+        private fun handleMessageItem(index: Int, command: MessageCommand): MAVLinkMessage {
+            val (name, data, isForPayload) = command
+            val message = createMAVLinkMessage(name, fSender, schema)
+            for(field in data) {
+                message.set(field.key, field.value)
+            }
+            fTriggeredItems[index] = message
+            return message
         }
 
     }

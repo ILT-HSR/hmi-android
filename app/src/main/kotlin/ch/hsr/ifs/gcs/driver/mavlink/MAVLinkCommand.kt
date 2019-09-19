@@ -49,6 +49,6 @@ data class PlanCommand(
  *
  * @since 1.2.0
  */
-data class MessageCommand(val message: MAVLinkMessage) : NativeCommand()
+data class MessageCommand(val name: String, val data: Map<String, Any>, val forPayload: Boolean = false) : NativeCommand()
 
 data class MAVLinkCommand(override val nativeCommand: NativeCommand) : Command<NativeCommand>
