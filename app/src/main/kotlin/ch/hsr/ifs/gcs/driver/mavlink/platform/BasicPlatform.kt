@@ -76,6 +76,9 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         var up = 0
     }
 
+    private var fCurrentMissionItem = -1
+    private var fCurrentLandedState = -1
+
     private var fPendingLongCommand: Pair<Int, CompletableDeferred<MAVLinkMessage>>? = null
     private var fPendingMissionCommand: Pair<MessageID, CompletableDeferred<MAVLinkMessage>>? = null
 
@@ -86,6 +89,9 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         data class LongCommandAcknowledgement(val message: MAVLinkMessage) : MessageEvent()
         data class MissionRequest(val message: MAVLinkMessage) : MessageEvent()
         data class MissionAcknowledgement(val message: MAVLinkMessage) : MessageEvent()
+        data class MissionItemReached(val sequenceNumber: Int) : MessageEvent()
+        data class MissionCurrentChanged(val sequenceNumber: Int) : MessageEvent()
+        data class ExtendedSystemState(val vtolState: Int, val landedState: Int) : MessageEvent()
 
         data class SendLongCommand(val message: MAVLinkMessage, val result: CompletableDeferred<MAVLinkMessage>) : MessageEvent()
         data class SendMessage(val message: MAVLinkMessage) : MessageEvent()
@@ -146,6 +152,30 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                             pending.second.complete(message)
                             fPendingMissionCommand = null
                         }
+                    }
+                }
+                is MessageEvent.MissionItemReached -> with(event.sequenceNumber) {
+                    Log.d(LOG_TAG, "Reached mission item '$this'")
+                }
+                is MessageEvent.MissionCurrentChanged -> with(event.sequenceNumber) {
+                    if(fCurrentMissionItem != this) {
+                        Log.d(LOG_TAG, "Current mission item is now '$this'")
+                        fCurrentMissionItem = this
+                    }
+                }
+                is MessageEvent.ExtendedSystemState -> {
+                    val landed = when(event.landedState) {
+                        0 -> "unknown"
+                        1 -> "landed"
+                        2 -> "in-air"
+                        3 -> "takeoff"
+                        4 -> "landing"
+                        else -> "undefined"
+                    }
+
+                    if(fCurrentLandedState != event.landedState) {
+                        Log.d(LOG_TAG, "Current landed state is '$landed'")
+                        fCurrentLandedState = event.landedState
                     }
                 }
 
@@ -492,6 +522,15 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             }
             MessageID.MISSION_ACK -> {
                 fMainActor.offer(MessageEvent.MissionAcknowledgement(message))
+            }
+            MessageID.MISSION_ITEM_REACHED -> {
+                fMainActor.offer(MessageEvent.MissionItemReached(message.getInt("seq")))
+            }
+            MessageID.MISSION_CURRENT -> {
+                fMainActor.offer(MessageEvent.MissionCurrentChanged(message.getInt("seq")))
+            }
+            MessageID.EXTENDED_SYS_STATE -> {
+                fMainActor.offer(MessageEvent.ExtendedSystemState(message.getInt("vtol_state"), message.getInt("landed_state")))
             }
             else -> {
                 Log.v(LOG_TAG, "Unhandled message: $message")
