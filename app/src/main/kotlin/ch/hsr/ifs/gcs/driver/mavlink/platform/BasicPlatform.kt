@@ -231,7 +231,9 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
         private suspend fun upload() {
             val count = createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fTarget, schema)
-            count["count"] = fCommands.filterIsInstance<PlanCommand>().size
+            count["count"] = fCommands.filterIsInstance<MAVLinkCommand>().filter {
+                it.nativeCommand is PlanCommand
+            }.size
 
             if (sendMissionCommand(count, MessageID.MISSION_REQUEST) == null) {
                 fState = ExecutionState.FAILED
