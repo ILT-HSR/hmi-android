@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.driver.mavlink.support
 
+import ch.hsr.ifs.gcs.driver.mavlink.LongCommand
 import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 
@@ -81,14 +82,14 @@ internal fun createTargetedMAVLinkMessage(id: MessageID, sender: MAVLinkSystem, 
 /**
  * @internal
  *
- * Create a new MAVLink 'Long Command' message
+ * Create a new MAVLink 'Long NativeCommand' message
  *
  * @param sender The sender system
  * @param target The target system
  * @param schema The message schema
- * @param command The 'Long Command'
+ * @param command The 'Long NativeCommand'
  *
- * @return A new, empty MAVLink 'Long Command' message
+ * @return A new, empty MAVLink 'Long NativeCommand' message
  */
 internal fun createLongCommandMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema, command: LongCommand): MAVLinkMessage {
     val msg = createTargetedMAVLinkMessage(MessageID.COMMAND_LONG, sender, target, schema)
@@ -122,13 +123,13 @@ fun createHeartbeatMessage(sender: MAVLinkSystem, schema: MAVLinkSchema): MAVLin
 /**
  * @internal
  *
- * Create a new MAVLink 'Long Command' message for arming or disarming the vehicle
+ * Create a new MAVLink 'Long NativeCommand' message for arming or disarming the vehicle
  *
  * @param sender The sender system
  * @param target The target system
  * @param schema The message schema
  *
- * @return A new MAVLink 'Long Command' containing a partially configured 'Arm/Disarm' command
+ * @return A new MAVLink 'Long NativeCommand' containing a partially configured 'Arm/Disarm' command
  */
 internal fun newArmDisarmMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema) =
         createLongCommandMessage(sender, target, schema, LongCommand.COMPONENT_ARM_DISARM)
@@ -140,7 +141,7 @@ internal fun newArmDisarmMessage(sender: MAVLinkSystem, target: MAVLinkSystem, s
  * @param target The target system
  * @param schema The message schema
  *
- * @return a new MAVLink 'Long Command' message containing an 'Arm' command
+ * @return a new MAVLink 'Long NativeCommand' message containing an 'Arm' command
  */
 fun createArmMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage {
     val msg = newArmDisarmMessage(sender, target, schema)
@@ -157,7 +158,7 @@ fun createArmMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLi
  * @param target The target system
  * @param schema The message schema
  *
- * @return a new MAVLink 'Long Command' message containing a 'Disarm' command
+ * @return a new MAVLink 'Long NativeCommand' message containing a 'Disarm' command
  */
 @Suppress("unused")
 fun createDisarmMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage {
@@ -175,7 +176,7 @@ fun createDisarmMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MA
  * @param target The target system
  * @param schema The message schema
  *
- * @return a new MAVLink 'Long Command' message containing a 'Request Autopilot Capabilities' command
+ * @return a new MAVLink 'Long NativeCommand' message containing a 'Request Autopilot Capabilities' command
  */
 fun createRequestAutopilotCapabilitiesMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage {
     val msg = createLongCommandMessage(sender, target, schema, LongCommand.REQUEST_AUTOPILOT_CAPABILITIES)

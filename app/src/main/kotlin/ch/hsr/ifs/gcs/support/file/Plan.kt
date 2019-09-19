@@ -3,8 +3,8 @@ package ch.hsr.ifs.gcs.support.file
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommand
-import ch.hsr.ifs.gcs.driver.mavlink.support.LongCommand
-import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkMissionCommand
+import ch.hsr.ifs.gcs.driver.mavlink.LongCommand
+import ch.hsr.ifs.gcs.driver.mavlink.PlanCommand
 import ch.hsr.ifs.gcs.driver.mavlink.support.NavigationFrame
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -29,7 +29,7 @@ private fun processMission(mission: JsonObject) =
         mission["items"].asJsonArray.map { processItem(it.asJsonObject) }
 
 private fun processItem(item: JsonObject) = item["params"].asJsonArray.let{ params ->
-    MAVLinkMissionCommand(
+    PlanCommand(
             LongCommand.values().find { it.value == item["command"].asInt }
                     ?: throw IllegalArgumentException("Unknown command ${item["command"].asInt}"),
             NavigationFrame.values().find { it.ordinal == item["frame"].asInt }

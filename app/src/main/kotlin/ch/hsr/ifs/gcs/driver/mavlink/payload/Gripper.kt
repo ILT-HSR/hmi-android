@@ -1,8 +1,8 @@
 package ch.hsr.ifs.gcs.driver.mavlink.payload
 
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPayload
-import ch.hsr.ifs.gcs.driver.mavlink.support.LongCommand
-import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkMissionCommand
+import ch.hsr.ifs.gcs.driver.mavlink.LongCommand
+import ch.hsr.ifs.gcs.driver.mavlink.PlanCommand
 import ch.hsr.ifs.gcs.driver.mavlink.support.NavigationFrame
 
 class Gripper : MAVLinkPayload {
@@ -11,7 +11,7 @@ class Gripper : MAVLinkPayload {
         const val DRIVER_ID = "ch.hsr.ifs.gcs.driver.mavlink.payload.gripper"
     }
 
-    override val commandDescriptor = MAVLinkMissionCommand(
+    override val commandDescriptor = PlanCommand(
             LongCommand.DO_SET_SERVO,
             NavigationFrame.MISSION,
             1.toFloat(),

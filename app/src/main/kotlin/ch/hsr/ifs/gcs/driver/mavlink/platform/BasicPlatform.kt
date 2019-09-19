@@ -5,8 +5,7 @@ import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.driver.Payload
 import ch.hsr.ifs.gcs.driver.PlatformContext
-import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommand
-import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
+import ch.hsr.ifs.gcs.driver.mavlink.*
 import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
@@ -115,7 +114,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 }
                 is MessageEvent.LongCommandAcknowledgement -> event.message.let { message ->
                     val pending = fPendingLongCommand
-                    Log.i(LOG_TAG, "Long-Command response: $message")
+                    Log.i(LOG_TAG, "Long-NativeCommand response: $message")
                     when {
                         pending == null -> Log.w(LOG_TAG, "Unexpected long command ack: $message")
                         pending.first != message.getInt("command") -> Log.w(LOG_TAG, "Stray long command ack: $message")
@@ -155,7 +154,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     if (fPendingLongCommand != null) {
                         Log.w(LOG_TAG, "Another command is already waiting. Dropping: $message")
                     } else {
-                        Log.i(LOG_TAG, "Sending Long-Command: $message")
+                        Log.i(LOG_TAG, "Sending Long-NativeCommand: $message")
                         fPendingLongCommand = Pair(message.getInt("command"), event.result)
                         sendMessage(message)
                     }
@@ -208,7 +207,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             }
 
             var response: MAVLinkMessage? = null
-            fCommands.forEachIndexed { idx, cmd ->
+            fCommands.filterIsInstance<MAVLinkCommand>().forEachIndexed { idx, cmd ->
                 response = sendItem(idx, cmd)
                 if (response == null) {
                     fState = ExecutionState.FAILED
@@ -240,22 +239,27 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             fState = ExecutionState.RUNNING
         }
 
-        private suspend fun sendItem(index: Int, command: Command<*>): MAVLinkMessage? {
-            val nativeCommand = command.nativeCommand as MAVLinkMissionCommand
+        private suspend fun sendItem(index: Int, command: MAVLinkCommand) =
+            when (val nativeCommand = command.nativeCommand) {
+                is PlanCommand -> sendPlanItem(index, nativeCommand)
+                is MessageCommand -> nativeCommand.message
+            }
+
+        private suspend fun sendPlanItem(index: Int, command: PlanCommand): MAVLinkMessage? {
             val item = createTargetedMAVLinkMessage(MessageID.MISSION_ITEM, senderSystem, fTarget, schema)
 
             item["seq"] = index
-            item["frame"] = nativeCommand.frame.ordinal
-            item["command"] = nativeCommand.id.value
+            item["frame"] = command.frame.ordinal
+            item["command"] = command.id.value
             item["current"] = if (index == 0) 1 else 0
             item["autocontinue"] = 1
-            item["param1"] = nativeCommand.param1
-            item["param2"] = nativeCommand.param2
-            item["param3"] = nativeCommand.param3
-            item["param4"] = nativeCommand.param4
-            item["x"] = nativeCommand.x
-            item["y"] = nativeCommand.y
-            item["z"] = nativeCommand.z
+            item["param1"] = command.param1
+            item["param2"] = command.param2
+            item["param3"] = command.param3
+            item["param4"] = command.param4
+            item["x"] = command.x
+            item["y"] = command.y
+            item["z"] = command.z
 
             if (index < fCommands.size - 1) {
                 return sendMissionCommand(item, MessageID.MISSION_REQUEST)
@@ -265,6 +269,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         }
 
     }
+
 
     protected enum class ExecutionState {
         CREATED,
@@ -293,7 +298,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     // AerialVehicle implementation
 
-    override fun moveTo(position: GPSPosition) = MAVLinkCommand(MAVLinkMissionCommand(
+    override fun moveTo(position: GPSPosition) = MAVLinkCommand(PlanCommand(
             LongCommand.NAV_WAYPOINT,
             frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
             param4 = Float.NaN,
@@ -302,18 +307,18 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             z = position.altitude.toFloat()
     ))
 
-    override fun changeAltitude(altitude: AerialVehicle.Altitude) = MAVLinkCommand(MAVLinkMissionCommand(
+    override fun changeAltitude(altitude: AerialVehicle.Altitude) = MAVLinkCommand(PlanCommand(
             LongCommand.NAV_LOITER_TO_ALT,
             frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
             z = altitude.meters.toFloat()
     ))
 
-    override fun returnToLaunch() = MAVLinkCommand(MAVLinkMissionCommand(
+    override fun returnToLaunch() = MAVLinkCommand(PlanCommand(
             LongCommand.NAV_RETURN_TO_LAUNCH,
             frame = NavigationFrame.MISSION
     ))
 
-    override fun takeOff(altitude: AerialVehicle.Altitude) = MAVLinkCommand(MAVLinkMissionCommand(
+    override fun takeOff(altitude: AerialVehicle.Altitude) = MAVLinkCommand(PlanCommand(
             LongCommand.NAV_TAKEOFF,
             frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
             x = fPosition?.latitude?.toFloat() ?: Float.NaN,
@@ -321,7 +326,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             z = altitude.meters.toFloat()
     ))
 
-    override fun land() = MAVLinkCommand(MAVLinkMissionCommand(
+    override fun land() = MAVLinkCommand(PlanCommand(
             LongCommand.NAV_LAND,
             frame = NavigationFrame.GLOBAL_RELATIVE_ALTITUDE,
             x = Float.NaN,
@@ -329,7 +334,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             z = Float.NaN
     ))
 
-    override fun limitTravelSpeed(speed: Double) = MAVLinkCommand(MAVLinkMissionCommand(
+    override fun limitTravelSpeed(speed: Double) = MAVLinkCommand(PlanCommand(
             LongCommand.DO_CHANGE_SPEED,
             frame = NavigationFrame.MISSION,
             param1 = 1.0f,
@@ -340,13 +345,13 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
     // MAVLinkPlatform implementation
 
-    override fun arm() = MAVLinkCommand(MAVLinkMissionCommand(
+    override fun arm() = MAVLinkCommand(PlanCommand(
             LongCommand.COMPONENT_ARM_DISARM,
             frame = NavigationFrame.MISSION,
             param1 = 1.toFloat()
     ))
 
-    override fun disarm() = MAVLinkCommand(MAVLinkMissionCommand(
+    override fun disarm() = MAVLinkCommand(PlanCommand(
             LongCommand.COMPONENT_ARM_DISARM,
             frame = NavigationFrame.MISSION,
             param1 = 1.toFloat()
