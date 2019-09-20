@@ -112,7 +112,7 @@ fun createHeartbeatMessage(sender: MAVLinkSystem, schema: MAVLinkSchema): MAVLin
     val heartbeat = createMAVLinkMessage(MessageID.HEARTBEAT, sender, schema)
 
     heartbeat.set("type", 6)
-    heartbeat.set("autopilot", 0)
+    heartbeat.set("autopilot", 8)
     heartbeat.set("base_mode", 128)
     heartbeat.set("custom_mode", 0)
     heartbeat.set("system_status", 4)

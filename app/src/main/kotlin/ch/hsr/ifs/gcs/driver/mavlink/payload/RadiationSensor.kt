@@ -19,9 +19,10 @@ class RadiationSensor : MAVLinkPayload, ToggleablePayload {
     override val commandDescriptor: NativeCommand
         get() = MessageCommand(MessageID.COMMAND_LONG.name,
                 mapOf(
+                        "target_system" to 1,
+                        "target_component" to 25,
                         "command" to 40001,
-                        "confirmation" to 0,
-                        "param1" to if (fIsOn) 1 else 0
+                        "param1" to if(fIsOn) 1.0f else 0.0f
                 ),
                 forPayload = true
         )

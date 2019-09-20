@@ -7,16 +7,17 @@ import ch.hsr.ifs.gcs.driver.Payload
 import ch.hsr.ifs.gcs.driver.PlatformContext
 import ch.hsr.ifs.gcs.driver.mavlink.*
 import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
+import ch.hsr.ifs.gcs.driver.mavlink.payload.RadiationSensor
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
-import com.google.android.gms.nearby.messages.Messages
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
 import me.drton.jmavlib.mavlink.*
 import java.io.IOException
+import java.nio.ByteBuffer
 import java.nio.channels.ByteChannel
 import java.time.Duration
 import java.time.Instant
@@ -40,19 +41,25 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         private val LOG_TAG = BasicPlatform::class.simpleName
 
         /**
-         * The component id of the onboard MAVLink mission planner
+         * The component id of the platforms autopilot
          */
         private const val COMPONENT_AUTOPILOT = 1
 
         /**
-         * The component id of the onboard MAVLink mission planner
+         * The component id of the payload
+         */
+        private const val COMPONENT_USER1 = 25
+
+        /**
+         * The component id of the local mission planner
          *
          */
         private const val COMPONENT_MISSION_PLANNER = 190
     }
 
-    private val fSender = MAVLinkSystem(255, COMPONENT_MISSION_PLANNER)
-    private val fTarget = MAVLinkSystem(1, COMPONENT_AUTOPILOT)
+    private val fLocalSystem = MAVLinkSystem(255, COMPONENT_MISSION_PLANNER)
+    private val fPlatformSystem = MAVLinkSystem(1, COMPONENT_AUTOPILOT)
+    private val fPayloadSystem = MAVLinkSystem(1, COMPONENT_USER1)
 
     private val fMessageStream = MAVLinkStream(schema, channel)
     private val fMessageQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
@@ -62,7 +69,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     private val fReceiverJob: Job
     private val fSenderJob: Job
 
-    private var fCurrentExecution = NativeMissionExecution(fTarget)
+    private var fCurrentExecution = NativeMissionExecution(fPlatformSystem)
 
     private var fIsAlive = false
     private var fLastHeartbeat = Instant.ofEpochSecond(0)
@@ -76,6 +83,9 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         var east = 0
         var up = 0
     }
+
+    private val fTunnelSchema = MAVLinkSchemaRegistry["arktis_radiation_sensor_bridge"]!!;
+    private val fTunnelStream = TunneledMavlinkStream(fTunnelSchema)
 
     private var fCurrentMissionItem = -1
     private var fCurrentLandedState = -1
@@ -96,10 +106,22 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         data class MissionItemReached(val sequenceNumber: Int) : MessageEvent()
         data class MissionCurrentChanged(val sequenceNumber: Int) : MessageEvent()
         data class ExtendedSystemState(val vtolState: Int, val landedState: Int) : MessageEvent()
+        data class Ping(val message: MAVLinkMessage) : MessageEvent()
+        data class TunneledMessage(val message: MAVLinkMessage) : MessageEvent()
 
         data class SendLongCommand(val message: MAVLinkMessage, val result: CompletableDeferred<MAVLinkMessage>) : MessageEvent()
         data class SendMessage(val message: MAVLinkMessage) : MessageEvent()
         data class SendMissionMessage(val message: MAVLinkMessage, val expected: MessageID, val result: CompletableDeferred<MAVLinkMessage>) : MessageEvent()
+    }
+
+    class TunneledMavlinkStream(val schema: MAVLinkSchema) {
+
+        private var sequenceNumber: Byte = 0
+
+        fun decode(data: ByteArray) = MAVLinkMessage(schema, ByteBuffer.wrap(data))
+
+        fun encode(message: MAVLinkMessage) = message.encode(sequenceNumber++)
+
     }
 
     private val fMainActor = GlobalScope.actor<MessageEvent>(PlatformContext, Channel.UNLIMITED) {
@@ -159,22 +181,22 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     }
                 }
                 is MessageEvent.MissionItemReached -> with(event.sequenceNumber) {
-                    if(fCurrentMissionItem == this) {
+                    if (fCurrentMissionItem == this) {
                         fCurrentMissionItemReached = true
                         Log.d(LOG_TAG, "Reached mission item '$this'")
-                        if(fTriggeredItems.contains(this)) {
+                        if (fTriggeredItems.contains(this)) {
                             sendMessage(fTriggeredItems[this]!!)
                         }
                     }
                 }
                 is MessageEvent.MissionCurrentChanged -> with(event.sequenceNumber) {
-                    if(fCurrentMissionItem != this) {
+                    if (fCurrentMissionItem != this) {
                         Log.d(LOG_TAG, "Current mission item is now '$this'")
                         fCurrentMissionItem = this
                     }
                 }
                 is MessageEvent.ExtendedSystemState -> {
-                    val landed = when(event.landedState) {
+                    val landed = when (event.landedState) {
                         0 -> "unknown"
                         1 -> "landed"
                         2 -> "in-air"
@@ -183,9 +205,28 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                         else -> "undefined"
                     }
 
-                    if(fCurrentLandedState != event.landedState) {
+                    if (fCurrentLandedState != event.landedState) {
                         Log.d(LOG_TAG, "Current landed state is '$landed'")
                         fCurrentLandedState = event.landedState
+                    }
+                }
+                is MessageEvent.Ping -> event.message.let { ping ->
+                    createMAVLinkMessage(MessageID.PING, fLocalSystem, schema).let { pong ->
+                        pong.set("time_usec", ping.getLong("time_usec"))
+                        pong.set("seq", ping.getInt("seq"))
+                        pong.set("target_system", ping.systemID)
+                        pong.set("target_component", ping.componentID)
+
+                        sendMessage(pong)
+                    }
+                }
+                is MessageEvent.TunneledMessage -> event.message.let { tunneled ->
+                    try {
+                        val payload = tunneled.get("payload") as ByteArray
+                        val message = fTunnelStream.decode(payload)
+                        Log.i(LOG_TAG, "Received ${message.msgName} from ${message.systemID}:${message.componentID}")
+                    } catch (e: Throwable) {
+                        Log.e(LOG_TAG, "Failed to parse tunneled message: $e")
                     }
                 }
 
@@ -225,16 +266,43 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         }
 
         override fun tick() = runBlocking(PlatformContext) {
-            when (fState) {
-                ExecutionState.CREATED -> {
-                    fState = ExecutionState.UPLOADING
-                    launch(PlatformContext) { upload() }
-                    Status.PREPARING
+            if (fState != ExecutionState.CREATED) {
+                Status.FINISHED
+            } else {
+                when (val sensor = payload) {
+                    is RadiationSensor -> {
+                        val msgs = sensor.turnOn()
+
+                        for (msg in msgs) {
+                            val (name, data, isForPayload) = msg.nativeCommand as MessageCommand
+                            val message = createMAVLinkMessage(name, fLocalSystem, schema)
+                            for (field in data) {
+                                message.set(field.key, field.value)
+                            }
+                            val encoded = fTunnelStream.encode(message).array()
+                            val tunnel_message = createMAVLinkMessage(MessageID.TUNNEL, fLocalSystem, schema)
+                            tunnel_message.set("target_system", fPayloadSystem.id)
+                            tunnel_message.set("target_component", fPayloadSystem.component)
+                            tunnel_message.set("payload_length", encoded.size)
+                            tunnel_message.set("payload_type", 0)
+                            tunnel_message.set("payload", encoded)
+                            sendMessage(tunnel_message)
+                        }
+                    }
                 }
-                ExecutionState.UPLOADING -> Status.PREPARING
-                ExecutionState.RUNNING -> Status.RUNNING
-                ExecutionState.FAILED -> Status.FAILURE
+                fState = ExecutionState.RUNNING
+                Status.FINISHED
             }
+//            when (fState) {
+//                ExecutionState.CREATED -> {
+//                    fState = ExecutionState.UPLOADING
+//                    launch(PlatformContext) { upload() }
+//                    Status.PREPARING
+//                }
+//                ExecutionState.UPLOADING -> Status.PREPARING
+//                ExecutionState.RUNNING -> Status.RUNNING
+//                ExecutionState.FAILED -> Status.FAILURE
+//            }
         }
 
         override operator fun plusAssign(command: Command<*>) {
@@ -243,7 +311,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         }
 
         private suspend fun upload() {
-            val count = createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fTarget, schema)
+            val count = createTargetedMAVLinkMessage(MessageID.MISSION_COUNT, senderSystem, fPlatformSystem, schema)
             count["count"] = fPlanSize
 
             if (sendMissionCommand(count, MessageID.MISSION_REQUEST) == null) {
@@ -254,11 +322,11 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             var response: MAVLinkMessage? = null
             val commands = fCommands.filterIsInstance<MAVLinkCommand>()
             var planIndex = 0
-            for(command in commands) {
-                when(val native = command.nativeCommand) {
+            for (command in commands) {
+                when (val native = command.nativeCommand) {
                     is PlanCommand -> {
                         response = sendPlanItem(planIndex, native)
-                        if(response == null) {
+                        if (response == null) {
                             fState = ExecutionState.FAILED
                             return
                         }
@@ -275,13 +343,13 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                 return
             }
 
-            response = sendLongCommand(createArmMessage(fSender, fTarget, schema))
+            response = sendLongCommand(createArmMessage(fLocalSystem, fPlatformSystem, schema))
             if (response == null || response.getInt("result") != 0) {
                 fState = ExecutionState.FAILED
                 return
             }
 
-            val launch = createLongCommandMessage(fSender, fTarget, schema, LongCommand.MISSION_START).apply {
+            val launch = createLongCommandMessage(fLocalSystem, fPlatformSystem, schema, LongCommand.MISSION_START).apply {
                 set("param1", 0)
                 set("param2", fCommands.size - 1)
             }
@@ -295,7 +363,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         }
 
         private suspend fun sendPlanItem(index: Int, command: PlanCommand): MAVLinkMessage? {
-            val item = createTargetedMAVLinkMessage(MessageID.MISSION_ITEM, senderSystem, fTarget, schema)
+            val item = createTargetedMAVLinkMessage(MessageID.MISSION_ITEM, senderSystem, fPlatformSystem, schema)
 
             item["seq"] = index
             item["frame"] = command.frame.ordinal
@@ -319,13 +387,13 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
 
         private fun handleMessageItem(index: Int, command: MessageCommand): MAVLinkMessage {
             val (name, data, isForPayload) = command
-            val message = createMAVLinkMessage(name, fSender, schema)
-            for(field in data) {
+            val message = createMAVLinkMessage(name, fLocalSystem, schema)
+            for (field in data) {
                 message.set(field.key, field.value)
             }
-            if(name == MessageID.COMMAND_LONG.name) {
-                    message.set("target_system", if(isForPayload) 3 else fTarget.id)
-                    message.set("target_component", if(isForPayload) 34 else fTarget.component)
+            if (name == MessageID.COMMAND_LONG.name) {
+                message.set("target_system", if (isForPayload) 3 else fPlatformSystem.id)
+                message.set("target_component", if (isForPayload) 34 else fPlatformSystem.component)
             }
             fTriggeredItems[index] = message
             return message
@@ -347,7 +415,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         fHeartbeatJob = startHeartbeat()
         fSurveillanceJob = startSurveyor()
         GlobalScope.launch(PlatformContext) {
-            sendLongCommand(createRequestAutopilotCapabilitiesMessage(fSender, fTarget, schema))
+            sendLongCommand(createRequestAutopilotCapabilitiesMessage(fLocalSystem, fPlatformSystem, schema))
         }
     }
 
@@ -425,14 +493,14 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      *
      * @since 1.0.0
      */
-    override val senderSystem get() = fSender
+    override val senderSystem get() = fLocalSystem
 
     /**
      * Get the target system
      *
      * @since 1.0.0
      */
-    override val targetSystem get() = fTarget
+    override val targetSystem get() = fPlatformSystem
 
     // Protected implementation
 
@@ -493,7 +561,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     // Private implementation
 
     private fun startReceiver() = GlobalScope.launch(Dispatchers.IO) {
-        while(isActive) {
+        while (isActive) {
             try {
                 fMessageStream.read()?.let { dispatch(it) }
             } catch (e: IOException) {
@@ -503,7 +571,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     }
 
     private fun startSender() = GlobalScope.launch(Dispatchers.IO) {
-        while(isActive) {
+        while (isActive) {
             try {
                 fMessageQueue.poll()?.let(fMessageStream::write)
                 delay(10)
@@ -518,7 +586,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
      */
     private fun startHeartbeat() = GlobalScope.launch(PlatformContext) {
         while (isActive) {
-            sendMessage(createHeartbeatMessage(fSender, schema))
+            sendMessage(createHeartbeatMessage(fLocalSystem, schema))
             delay(TimeUnit.SECONDS.toMillis(1))
         }
     }
@@ -564,6 +632,12 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
             }
             MessageID.EXTENDED_SYS_STATE -> {
                 fMainActor.offer(MessageEvent.ExtendedSystemState(message.getInt("vtol_state"), message.getInt("landed_state")))
+            }
+            MessageID.PING -> {
+                fMainActor.offer(MessageEvent.Ping(message))
+            }
+            MessageID.TUNNEL -> {
+                fMainActor.offer(MessageEvent.TunneledMessage(message))
             }
             else -> {
                 Log.v(LOG_TAG, "Unhandled message: $message")
