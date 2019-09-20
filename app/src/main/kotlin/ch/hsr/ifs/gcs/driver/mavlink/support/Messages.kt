@@ -29,7 +29,7 @@ data class MAVLinkSystem(val id: Int, val component: Int)
  * @return A new, empty MAVLink message
  */
 internal fun createMAVLinkMessage(name: String, sender: MAVLinkSystem, schema: MAVLinkSchema) =
-        MAVLinkMessage(schema, name, sender.id, sender.component)
+        MAVLinkMessage(schema, name, sender.id, sender.component, 2)
 
 /**
  * @internal
