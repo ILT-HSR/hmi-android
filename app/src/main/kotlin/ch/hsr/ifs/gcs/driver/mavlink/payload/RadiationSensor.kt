@@ -1,10 +1,9 @@
 package ch.hsr.ifs.gcs.driver.mavlink.payload
 
 import ch.hsr.ifs.gcs.driver.ToggleablePayload
-import ch.hsr.ifs.gcs.driver.access.PayloadProvider
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommand
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPayload
-import ch.hsr.ifs.gcs.driver.mavlink.MessageCommand
+import ch.hsr.ifs.gcs.driver.mavlink.PayloadCommand
 import ch.hsr.ifs.gcs.driver.mavlink.NativeCommand
 import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkSystem
 import ch.hsr.ifs.gcs.driver.mavlink.support.MessageID
@@ -17,14 +16,13 @@ class RadiationSensor : MAVLinkPayload, ToggleablePayload {
     }
 
     override val commandDescriptor: NativeCommand
-        get() = MessageCommand(MessageID.COMMAND_LONG.name,
+        get() = PayloadCommand(MessageID.COMMAND_LONG.name,
                 mapOf(
                         "target_system" to 1,
                         "target_component" to 25,
                         "command" to 40001,
                         "param1" to if(fIsOn) 1.0f else 0.0f
-                ),
-                forPayload = true
+                )
         )
 
     override val system = MAVLinkSystem(id = 3, component = 1)

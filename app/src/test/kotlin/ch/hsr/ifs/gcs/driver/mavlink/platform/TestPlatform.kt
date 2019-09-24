@@ -7,7 +7,7 @@ import java.nio.channels.ByteChannel
 
 class TestPlatform(channel: ByteChannel, schema: MAVLinkSchema) : BasicPlatform(channel, schema) {
 
-    private inner class TestExecution(target: MAVLinkSystem) : BasicPlatform.NativeMissionExecution(target), IntrospectableExecution {
+    private inner class TestExecution(target: MAVLinkSystem) : BasicPlatform.NativeMissionExecution(), IntrospectableExecution {
         override val size get() = fCommands.size
         override val commands get() = fCommands
     }

@@ -1,8 +1,10 @@
 package ch.hsr.ifs.gcs.driver.mavlink
 
 import ch.hsr.ifs.gcs.driver.Command
+import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkSystem
 import ch.hsr.ifs.gcs.driver.mavlink.support.NavigationFrame
-import me.drton.jmavlib.mavlink.MAVLinkMessage
+import ch.hsr.ifs.gcs.driver.mavlink.support.createLongCommandMessage
+import me.drton.jmavlib.mavlink.MAVLinkSchema
 
 enum class LongCommand(val value: Int) {
     NAV_WAYPOINT(16),
@@ -37,18 +39,31 @@ data class PlanCommand(
         val param4: Float = 0.0f,
         val x: Float = 0.0f,
         val y: Float = 0.0f,
-        val z: Float = 0.0f) : NativeCommand()
+        val z: Float = 0.0f) : NativeCommand() {
+
+    fun asMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema) =
+            createLongCommandMessage(sender, target, schema, id).also {
+                it.set("param1", param1)
+                it.set("param2", param2)
+                it.set("param3", param3)
+                it.set("param4", param4)
+                it.set("param5", x)
+                it.set("param6", y)
+                it.set("param7", z)
+            }
+
+}
 
 /**
  * @brief A command that is executed outside of a mission plan
  *
  * Commands of this type shall be executed outside of a mission plan. They may be intermixed with
  * [plan commands][PlanCommand] as to facilitate event driven messaging for external payload or
- * platforms. [Execution]s shall never upload [message commands][MessageCommand] to the vehicle
+ * platforms. [Execution]s shall never upload [message commands][PayloadCommand] to the vehicle
  * as part of a mission.
  *
  * @since 1.2.0
  */
-data class MessageCommand(val name: String, val data: Map<String, Any>, val forPayload: Boolean = false) : NativeCommand()
+data class PayloadCommand(val name: String, val data: Map<String, Any>) : NativeCommand()
 
 data class MAVLinkCommand(override val nativeCommand: NativeCommand) : Command<NativeCommand>
