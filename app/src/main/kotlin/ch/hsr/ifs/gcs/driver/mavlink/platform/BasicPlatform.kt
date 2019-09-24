@@ -4,10 +4,7 @@ import android.util.Log
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Payload
 import ch.hsr.ifs.gcs.driver.PlatformContext
-import ch.hsr.ifs.gcs.driver.mavlink.LongCommand
-import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkCommand
-import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
-import ch.hsr.ifs.gcs.driver.mavlink.PlanCommand
+import ch.hsr.ifs.gcs.driver.mavlink.*
 import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
@@ -18,7 +15,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
 import me.drton.jmavlib.mavlink.*
 import java.io.IOException
-import java.nio.ByteBuffer
 import java.nio.channels.ByteChannel
 import java.time.Duration
 import java.time.Instant
@@ -85,9 +81,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         var up = 0
     }
 
-    private val fTunnelSchema = MAVLinkSchemaRegistry["arktis_radiation_sensor_bridge"]!!;
-    private val fTunnelStream = TunneledMavlinkStream(fTunnelSchema)
-
     private var fPendingLongCommand: Pair<Int, CompletableDeferred<MAVLinkMessage>>? = null
     private var fPendingAcknowledgements: MutableMap<MessageID, MutableList<Pair<(MAVLinkMessage) -> Boolean, CompletableDeferred<MAVLinkMessage>>>> = mutableMapOf()
 
@@ -103,16 +96,6 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
         data class TunneledMessage(val message: MAVLinkMessage) : MessageEvent()
 
         data class SendMessage(val message: MAVLinkMessage) : MessageEvent()
-    }
-
-    class TunneledMavlinkStream(val schema: MAVLinkSchema) {
-
-        private var sequenceNumber: Byte = 0
-
-        fun decode(data: ByteArray) = MAVLinkMessage(schema, ByteBuffer.wrap(data))
-
-        fun encode(message: MAVLinkMessage) = message.encode(sequenceNumber++)
-
     }
 
     private val fMainActor = GlobalScope.actor<MessageEvent>(PlatformContext, Channel.UNLIMITED) {
@@ -167,13 +150,8 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     }
                 }
                 is MessageEvent.TunneledMessage -> event.message.let { tunneled ->
-                    try {
-                        val payload = tunneled.get("payload") as ByteArray
-                        val message = fTunnelStream.decode(payload)
-                        Log.i(LOG_TAG, "Received ${message.msgName} from ${message.systemID}:${message.componentID}")
-                    } catch (e: Throwable) {
-                        Log.e(LOG_TAG, "Failed to parse tunneled message: $e")
-                    }
+                    val innerMessage = payloadTunnel.decode(tunneled)
+                    (payload as MAVLinkPayload).handle(innerMessage)
                 }
 
                 // Outgoing messages
@@ -200,7 +178,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     override val name get() = runBlocking(PlatformContext) { fProduct }
     override val isAlive get() = runBlocking(PlatformContext) { fIsAlive }
     override val currentPosition get() = runBlocking(PlatformContext) { fPosition }
-    override var payload: Payload = NullPayload()
+    override lateinit var payload: Payload
     override val execution: Execution get() = fExecution
 
 // AerialVehicle implementation
@@ -251,6 +229,11 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     ))
 
 // MAVLinkPlatform implementation
+
+    override val payloadTunnel by lazy {
+        assert(payload is MAVLinkPayload)
+        MAVLinkTunnel(this, fPayloadSystem, fLocalSystem, (payload as MAVLinkPayload).schema)
+    }
 
     override fun arm() = MAVLinkCommand(PlanCommand(
             LongCommand.COMPONENT_ARM_DISARM,

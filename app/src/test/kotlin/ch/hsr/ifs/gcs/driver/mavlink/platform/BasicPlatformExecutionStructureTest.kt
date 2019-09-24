@@ -3,12 +3,15 @@ package ch.hsr.ifs.gcs.driver.mavlink.platform
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.driver.channel.TestChannel
+import me.drton.jmavlib.internal.JMAVLibInitProvider
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.hamcrest.core.IsEqual.equalTo
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 
@@ -17,7 +20,14 @@ class `Structural tests for BasicPlatform's Execution` {
 
     private val fSchema = MAVLinkSchema(RuntimeEnvironment.application, "schemas/common.xml")
     private val fChannel = TestChannel()
-    private val fPlatform = TestPlatform(fChannel, fSchema)
+    private val fPlatform by lazy { TestPlatform(fChannel, fSchema) }
+
+    companion object {
+        @BeforeClass
+        fun setupClass() {
+            Robolectric.buildContentProvider(JMAVLibInitProvider::class.java)
+        }
+    }
 
     @Test
     fun `Execution allows adding of commands`() {

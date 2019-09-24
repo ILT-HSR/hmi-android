@@ -7,6 +7,8 @@ import ch.hsr.ifs.gcs.driver.mavlink.PayloadCommand
 import ch.hsr.ifs.gcs.driver.mavlink.NativeCommand
 import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkSystem
 import ch.hsr.ifs.gcs.driver.mavlink.support.MessageID
+import me.drton.jmavlib.mavlink.MAVLinkMessage
+import me.drton.jmavlib.mavlink.MAVLinkSchemaRegistry
 
 class RadiationSensor : MAVLinkPayload, ToggleablePayload {
     private var fIsOn = false
@@ -14,6 +16,12 @@ class RadiationSensor : MAVLinkPayload, ToggleablePayload {
     companion object {
         const val DRIVER_ID = "ch.hsr.ifs.gcs.driver.mavlink.payload.radiationSensor"
     }
+
+    override val schema = MAVLinkSchemaRegistry["arktis_radiation_sensor_bridge"]!!
+
+    override fun handle(message: MAVLinkMessage) {
+    }
+
 
     override val commandDescriptor: NativeCommand
         get() = PayloadCommand(MessageID.COMMAND_LONG.name,

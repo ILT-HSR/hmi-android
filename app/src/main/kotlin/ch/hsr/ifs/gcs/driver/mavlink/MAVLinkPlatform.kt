@@ -4,6 +4,7 @@ import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.driver.SerialPlatform
 import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkSystem
+import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkTunnel
 import ch.hsr.ifs.gcs.driver.mavlink.support.MessageID
 import kotlinx.coroutines.CompletableDeferred
 import me.drton.jmavlib.mavlink.MAVLinkMessage
@@ -37,6 +38,13 @@ interface MAVLinkPlatform : AerialVehicle, SerialPlatform {
      * @since 1.0.0
      */
     val targetSystem: MAVLinkSystem
+
+    /**
+     * A tunnel used to directyly addess the payload
+     *
+     * @since 1.2.0
+     */
+    val payloadTunnel: MAVLinkTunnel
 
     /**
      * Arm the vehicle for takeoff
