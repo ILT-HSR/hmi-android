@@ -160,7 +160,6 @@ abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, fina
 
                 // Outgoing messages
                 is MessageEvent.SendMessage -> event.message.let { message ->
-                    Log.i(LOG_TAG, "Sending message: $message")
                     fMessageQueue.offer(message)
                 }
             }
