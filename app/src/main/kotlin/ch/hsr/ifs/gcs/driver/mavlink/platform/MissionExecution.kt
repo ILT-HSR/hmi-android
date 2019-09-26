@@ -24,6 +24,18 @@ private enum class ExecutionState {
     COMPLETED
 }
 
+private enum class LandedState {
+    UNDEFINED,
+    ON_GROUND,
+    IN_AIR,
+    TAKEOFF,
+    LANDING;
+
+    companion object {
+        fun from(value: Int) = values().sortedBy(LandedState::ordinal)[value]
+    }
+}
+
 private sealed class ItemKind
 
 private object Last : ItemKind()
@@ -60,6 +72,7 @@ open class MissionExecution(private val fPlatform: MAVLinkPlatform) : Execution(
     private var fIsOnGround = false
     private var fIsLanding = false
     private var fDidTakeOff = false
+    private var fIsTakingOff = false
 
     // 'Execution' implementation
 
@@ -89,7 +102,13 @@ open class MissionExecution(private val fPlatform: MAVLinkPlatform) : Execution(
                 Status.PREPARING
             }
             ExecutionState.LAUNCHING -> Status.PREPARING
-            ExecutionState.LAUNCHED -> Status.RUNNING
+            ExecutionState.LAUNCHED ->
+                if (fDidTakeOff && fIsOnGround) {
+                    fState = ExecutionState.COMPLETED
+                    Status.FINISHED
+                } else {
+                    Status.RUNNING
+                }
             ExecutionState.FAILED -> Status.FAILURE
             ExecutionState.COMPLETED -> Status.FINISHED
         }
@@ -119,28 +138,33 @@ open class MissionExecution(private val fPlatform: MAVLinkPlatform) : Execution(
     }
 
     override fun handleLandedState(state: Int) {
-        when (state) {
-            0 -> {
+        assert(state in 0 .. 4)
+        when (LandedState.from(state)) {
+            LandedState.UNDEFINED -> {
                 fIsOnGround = false
-                fIsLanding = false
                 fDidTakeOff = false
-            }
-            1 -> {
-                fIsOnGround = true
-            }
-            2 -> {
-                fIsOnGround = false
-                fDidTakeOff = true
+                fIsTakingOff = false
                 fIsLanding = false
             }
-            3 -> {
+            LandedState.ON_GROUND -> {
                 fIsOnGround = true
-                fDidTakeOff = false
                 fIsLanding = false
+                fIsTakingOff = false
             }
-            4 -> {
+            LandedState.IN_AIR -> {
                 fIsOnGround = false
                 fIsLanding = false
+                fDidTakeOff = fIsTakingOff
+            }
+            LandedState.TAKEOFF -> {
+                fIsTakingOff = false
+                fIsOnGround = true
+                fIsLanding = false
+                fIsTakingOff = true
+            }
+            LandedState.LANDING -> {
+                fIsOnGround = false
+                fIsLanding = true
             }
         }
     }
