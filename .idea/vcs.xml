@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/jMAVlib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/jMAVlib/src/main/assets/schemas" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/usb-serial-for-android" vcs="Git" />
   </component>
 </project>
