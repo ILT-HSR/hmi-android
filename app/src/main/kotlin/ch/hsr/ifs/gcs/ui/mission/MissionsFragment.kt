@@ -12,6 +12,8 @@ import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.MainModel
 import ch.hsr.ifs.gcs.NeedOverviewRequested
+import ch.hsr.ifs.gcs.mission.Mission
+import ch.hsr.ifs.gcs.mission.Result
 import ch.hsr.ifs.gcs.ui.MainActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_missions_list.*
@@ -26,6 +28,7 @@ class MissionsFragment : Fragment() {
 
     private lateinit var fModel: MainModel
     private lateinit var fAdapter: MissionsRecyclerViewAdapter
+    private val fResults = mutableMapOf<Mission, Result>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_missions_list, container, false)
@@ -48,6 +51,15 @@ class MissionsFragment : Fragment() {
         })
         fModel.availableNeeds.observe(this, Observer {
             statusesAddButton.isEnabled = it != null && it.isNotEmpty()
+        })
+        fModel.missionResults.observe(this, Observer { missions ->
+            val items = fAdapter.items.filterNot(MissionItem::hasResult)
+            missions.forEach { result ->
+                items.find{ it.mission == result.mission }?.let {
+                    it.result = result
+                    it.draw()
+                }
+            }
         })
 
         activity?.apply {

@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.mission
 
 import android.util.Log
+import ch.hsr.ifs.gcs.driver.RecordingPayload
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.properties.Delegates
@@ -60,6 +61,12 @@ class Mission(val need: Need) {
 
     val status get() = runBlocking(MISSION_CONTEXT) { fStatus }
 
+    val resultData
+        get() = when(val payload = fPlatform.payload) {
+            is RecordingPayload -> Result.Data(payload.recording)
+            else -> Result.Data(Unit)
+            }
+
     fun abort() {
         if (!fIsAborted.getAndSet(true)) {
             Log.i(LOG_TAG, "Abortion requested for $this")
@@ -78,7 +85,7 @@ class Mission(val need: Need) {
     suspend fun tick() {
         if (!fIsAborted.get()) {
             fActiveTick?.let {
-                if(!it.isActive) {
+                if (!it.isActive) {
                     performTick()
                 } else {
                     it.join()
@@ -94,8 +101,7 @@ class Mission(val need: Need) {
                 Execution.Status.PREPARING -> Status.PREPARING
                 Execution.Status.RUNNING -> Status.ACTIVE
                 Execution.Status.FINISHED -> Status.FINISHED
-                }
             }
         }
-
+    }
 }

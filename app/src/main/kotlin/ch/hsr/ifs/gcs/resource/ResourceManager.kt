@@ -106,8 +106,8 @@ class ResourceManager(private val fListener: Listener) {
 
             val payloads = res.payloadDrivers.map(PayloadProvider::instantiate).filterNotNull()
 
-//            val channel = createUdpChannel()
-            val channel = createSerialChannel(context)
+            val channel = createUdpChannel()
+//            val channel = createSerialChannel(context)
 
             val platform = channel?.run {
                 deviceFactory(this, payloads)

@@ -108,7 +108,7 @@ class MainModel : Mission.Listener {
 
     override fun onMissionStatusChanged(mission: Mission, status: Mission.Status) {
         if(status == Mission.Status.FINISHED) {
-            fActor.offer(ResultAvailable(Result(mission)))
+            fActor.offer(ResultAvailable(Result(mission, mission.resultData)))
         }
     }
 

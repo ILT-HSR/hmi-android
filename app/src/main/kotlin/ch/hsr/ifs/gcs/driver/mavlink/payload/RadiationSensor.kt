@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver.mavlink.payload
 
 import android.util.Log
+import ch.hsr.ifs.gcs.driver.MapRecording
 import ch.hsr.ifs.gcs.driver.PlatformContext
 import ch.hsr.ifs.gcs.driver.Recording
 import ch.hsr.ifs.gcs.driver.RecordingPayload
@@ -17,7 +18,7 @@ class RadiationSensor : MAVLinkPayload, RecordingPayload {
 
     data class Measurement(val timestamp: Float, val value: Int)
 
-    class RadiationMap : Recording<List<Pair<GPSPosition, Measurement>>> {
+    class RadiationMap : MapRecording<Measurement> {
 
         private val fData = mutableListOf<Pair<GPSPosition, Measurement>>()
 

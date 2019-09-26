@@ -12,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import ch.hsr.ifs.gcs.GCS
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.ui.MainActivity
@@ -29,8 +31,8 @@ class MissionsRecyclerViewAdapter(private val fContext: MainActivity)
     var missions: List<Mission> by Delegates.observable(emptyList()) { _, old, new ->
         if (old != new) {
             fItems = new.map { MissionItem(it, fContext) }
-            fSelectedMission?.let { act ->
-                fItems.find { it.mission == act.mission }
+            fSelectedMission?.let { current ->
+                fItems.find { it.mission == current.mission }
             } ?: fItems.firstOrNull()?.let {
                 select(it)
             }
@@ -39,6 +41,8 @@ class MissionsRecyclerViewAdapter(private val fContext: MainActivity)
     }
 
     val selection get() = fSelectedMission
+
+    val items get() = fItems
 
     inner class ViewHolder(private val fView: View) : RecyclerView.ViewHolder(fView), Mission.Listener {
         private val fMissionSubType: ImageView = fView.mission_subtype
