@@ -45,6 +45,7 @@ class Mission(val need: Need) {
     }
 
     init {
+        fExecution.reset()
         need.tasks?.apply {
             flatMap { it.executeOn(need.resource) }
                     .forEach(fExecution::add)
@@ -52,6 +53,10 @@ class Mission(val need: Need) {
     }
 
     val isAborted get() = fIsAborted.get()
+
+    val hasFinished get() = fStatus == Status.FINISHED
+
+    val hasFailed get() = fStatus == Status.FAILED
 
     val status get() = runBlocking(MISSION_CONTEXT) { fStatus }
 
@@ -89,8 +94,8 @@ class Mission(val need: Need) {
                 Execution.Status.PREPARING -> Status.PREPARING
                 Execution.Status.RUNNING -> Status.ACTIVE
                 Execution.Status.FINISHED -> Status.FINISHED
+                }
             }
         }
-    }
 
 }
