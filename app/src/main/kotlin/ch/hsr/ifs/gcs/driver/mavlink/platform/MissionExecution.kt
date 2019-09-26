@@ -54,9 +54,13 @@ open class MissionExecution(private val fPlatform: MAVLinkPlatform) : Execution(
     private val fContext = newSingleThreadContext("MissionExecution_${this.hashCode()}")
 
     private var fState = ExecutionState.CREATED
-
     private var fMissionSize = 0
-
+    private var fCurrentMissionItem = -1
+    private var fLastReachedMissionItem = -1
+    private var fIsOnGround = false
+    private var fIsLanding = false
+    private var fDidTakeOff = false
+    private var fIsTakingOff = false
     private var fReactiveCommands = mutableMapOf<Int, PayloadCommand>()
 
     private val fSender = fPlatform.senderSystem
@@ -67,12 +71,6 @@ open class MissionExecution(private val fPlatform: MAVLinkPlatform) : Execution(
         (fPlatform.payload as MAVLinkPayload).schema
     }
 
-    private var fCurrentMissionItem = -1
-    private var fLastReachedMissionItem = -1
-    private var fIsOnGround = false
-    private var fIsLanding = false
-    private var fDidTakeOff = false
-    private var fIsTakingOff = false
 
     // 'Execution' implementation
 
@@ -167,6 +165,19 @@ open class MissionExecution(private val fPlatform: MAVLinkPlatform) : Execution(
                 fIsLanding = true
             }
         }
+    }
+
+    override fun reset() {
+        fState = ExecutionState.CREATED
+        fMissionSize = 0
+        fCurrentMissionItem = -1
+        fLastReachedMissionItem = -1
+        fIsOnGround = false
+        fIsLanding = false
+        fDidTakeOff = false
+        fIsTakingOff = false
+        fReactiveCommands = mutableMapOf<Int, PayloadCommand>()
+        super.reset()
     }
 
     // 'Private' implementation
