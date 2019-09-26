@@ -1,16 +1,24 @@
 package ch.hsr.ifs.gcs.resource
 
-import androidx.lifecycle.Observer
 import android.content.Context
 import android.content.res.AssetManager
+import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbManager
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.Platform
-import ch.hsr.ifs.gcs.driver.PlatformModel
+import ch.hsr.ifs.gcs.driver.DriverRegistry
 import ch.hsr.ifs.gcs.driver.access.PayloadProvider
+import ch.hsr.ifs.gcs.driver.channel.SerialDataChannelFactory
+import ch.hsr.ifs.gcs.driver.channel.UdpDataChannelFactory
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.hoho.android.usbserial.driver.UsbSerialDriver
+import com.hoho.android.usbserial.driver.UsbSerialProber
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.io.Serializable
+import java.nio.channels.ByteChannel
+import java.util.concurrent.Executors
 
 class ResourceManager(private val fListener: Listener) {
 
@@ -20,38 +28,48 @@ class ResourceManager(private val fListener: Listener) {
         fun onResourceUnavailable(resource: Resource)
     }
 
-    data class ResourceDescriptor(val id: String, val driver: String, val payload: String?, val capabilities: List<Capability<*>>) {
+    data class ResourceDescriptor(val id: String, val driver: String, val payloadDrivers: List<String>, val capabilities: List<Capability<*>>) {
         companion object {
             fun load(stream: InputStream): ResourceDescriptor =
                     JsonParser().parse(InputStreamReader(stream, Charsets.UTF_8)).asJsonObject.let { res ->
                         val id = res["id"].asString
-                        val capabilities = res["capabilities"].asJsonArray
-                                .asSequence()
-                                .map(JsonElement::getAsJsonObject)
-                                .mapNotNull { obj ->
-                                    BUILTIN_CAPABILITIES[obj["id"].asString]?.let { cap ->
-                                        when (cap.type) {
-                                            "boolean" -> Capability(cap, obj["value"].asBoolean)
-                                            "number" -> Capability(cap, obj["value"].asNumber)
-                                            else -> null
-                                        }
-                                    }
-                                }
-                                .toList()
+                        val capabilities = loadCapabilities(res)
                         val platformDescriptor = res["platform"].asJsonObject
-                        val payloadDriver = if (platformDescriptor.has("payload")) {
-                            platformDescriptor["payload"].asJsonObject["driver"].asString
-                        } else {
-                            null
-                        }
-
+                        val payloadDrivers = loadPayloadDrivers(res)
                         ResourceDescriptor(
                                 id,
                                 platformDescriptor["driver"].asString,
-                                payloadDriver,
+                                payloadDrivers,
                                 capabilities
                         )
                     }
+
+            private fun loadPayloadDrivers(res: JsonObject) =
+                    if (res.has("payloads")) {
+                        res["payloads"].asJsonArray
+                                .asSequence()
+                                .map(JsonElement::getAsJsonObject)
+                                .mapNotNull { it["driver"].asString }
+                                .toList()
+                    } else {
+                        emptyList()
+                    }
+
+            private fun loadCapabilities(res: JsonObject): List<Capability<out Serializable>> {
+                return res["capabilities"].asJsonArray
+                        .asSequence()
+                        .map(JsonElement::getAsJsonObject)
+                        .mapNotNull { obj ->
+                            BUILTIN_CAPABILITIES[obj["id"].asString]?.let { cap ->
+                                when (cap.type) {
+                                    "boolean" -> Capability(cap, obj["value"].asBoolean)
+                                    "number" -> Capability(cap, obj["value"].asNumber)
+                                    else -> null
+                                }
+                            }
+                        }
+                        .toList()
+            }
         }
     }
 
@@ -60,29 +78,12 @@ class ResourceManager(private val fListener: Listener) {
         private const val LOG_TAG = "ResourceManager"
     }
 
+    private val fDeviceScanner = Executors.newSingleThreadExecutor()
+    private val fUsbDeviceFilter: (UsbSerialDriver) -> Boolean = { it.device.manufacturerName != "Arduino LLC" }
     private var fKnownResources = emptyList<ResourceDescriptor>()
-    private var fLocalResources = emptyList<Resource>()
+    private var fLocalResources = mutableListOf<Resource>()
 
-    private val fPlatformObserver = Observer<List<Platform>> { lp ->
-        lp?.apply {
-            val platformCandidates = filter { fLocalResources.none { r -> r.plaform == it } }
-            platformCandidates.forEach { p ->
-                fKnownResources.find { it.driver == p.driverId }?.let { d ->
-                    if(d.payload != null){
-                        val payload = PayloadProvider.instantiate(d.payload) ?: return@forEach
-                        p.payload = payload
-                    }
-                    val resource = LocalResource(d.id, d.driver, d.payload, d.capabilities).apply {
-                        plaform = p
-                    }
-                    fListener.onNewResourceAvailable(resource)
-                    return@forEach
-                }
-            }
-        }
-    }
-
-    fun onCreate(context: Context, platformModel: PlatformModel) {
+    fun onCreate(context: Context) {
         fKnownResources = context.assets.list(RESOURCES_DIRECTORY)!!.mapNotNull {
             try {
                 ResourceDescriptor.load(context.assets.open("$RESOURCES_DIRECTORY/$it", AssetManager.ACCESS_STREAMING))
@@ -92,11 +93,55 @@ class ResourceManager(private val fListener: Listener) {
             }
         }
 
-        platformModel.availablePlatforms.observeForever(fPlatformObserver)
+        fDeviceScanner.submit { scan(context) }
     }
 
-    fun onDestroy(platformModel: PlatformModel) {
-        platformModel.availablePlatforms.removeObserver(fPlatformObserver)
+    fun onDestroy() {
+        fDeviceScanner.shutdownNow()
+    }
+
+    private fun scan(context: Context) {
+        for (res in fKnownResources) {
+            val deviceFactory = DriverRegistry.drivers[res.driver] ?: continue
+
+            val payloads = res.payloadDrivers.map(PayloadProvider::instantiate).filterNotNull()
+
+//            val channel = createUdpChannel()
+            val channel = createSerialChannel(context)
+
+            val platform = channel?.run {
+                deviceFactory(this, payloads)
+            } ?: continue
+
+            val resource = LocalResource(res.id, platform.driverId, res.payloadDrivers, res.capabilities).also {
+                it.plaform = platform
+            }
+
+            fLocalResources.add(resource)
+            fListener.onNewResourceAvailable(resource)
+
+        }
+    }
+
+    private fun createUdpChannel(): ByteChannel? {
+        val parameters = UdpDataChannelFactory.Parameters(14550)
+        return UdpDataChannelFactory.createChannel(parameters)
+    }
+
+    private fun createSerialChannel(context: Context): ByteChannel? {
+        val manager = context.getSystemService(Context.USB_SERVICE) as UsbManager
+        return UsbSerialProber.getDefaultProber().findAllDrivers(manager).filter(fUsbDeviceFilter).map { usbDriver ->
+            val parameters = SerialDataChannelFactory.Parameters(context, usbDriver.ports[0])
+            SerialDataChannelFactory.createChannel(parameters)
+        }.firstOrNull()
+    }
+
+    fun deviceAttached(context: Context, device: UsbDevice) {
+
+    }
+
+    fun deviceDetached(device: UsbDevice) {
+
     }
 
 }

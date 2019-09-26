@@ -15,6 +15,6 @@ interface MAVLinkPayload : Payload {
 
     override fun trigger() = listOf(MAVLinkCommand(commandDescriptor))
 
-    fun handle(message: MAVLinkMessage)
+    fun handle(message: MAVLinkMessage, platform: MAVLinkPlatform)
 
 }

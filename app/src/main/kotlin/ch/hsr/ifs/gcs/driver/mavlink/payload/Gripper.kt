@@ -2,6 +2,7 @@ package ch.hsr.ifs.gcs.driver.mavlink.payload
 
 import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPayload
 import ch.hsr.ifs.gcs.driver.mavlink.LongCommand
+import ch.hsr.ifs.gcs.driver.mavlink.MAVLinkPlatform
 import ch.hsr.ifs.gcs.driver.mavlink.PlanCommand
 import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkSystem
 import ch.hsr.ifs.gcs.driver.mavlink.support.NavigationFrame
@@ -17,7 +18,7 @@ class Gripper : MAVLinkPayload {
 
     override val schema: MAVLinkSchema = MAVLinkSchemaRegistry.get("common")!!
 
-    override fun handle(message: MAVLinkMessage) = Unit
+    override fun handle(message: MAVLinkMessage, platform: MAVLinkPlatform) = Unit
 
     override val commandDescriptor = PlanCommand(
             LongCommand.DO_SET_SERVO,

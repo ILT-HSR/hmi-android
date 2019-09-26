@@ -3,6 +3,7 @@ package ch.hsr.ifs.gcs.driver.mavlink.platform
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Payload
+import ch.hsr.ifs.gcs.driver.PayloadContext
 import ch.hsr.ifs.gcs.driver.PlatformContext
 import ch.hsr.ifs.gcs.driver.mavlink.*
 import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
@@ -29,7 +30,7 @@ import java.util.concurrent.TimeUnit
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-abstract class BasicPlatform(channel: ByteChannel, final override val schema: MAVLinkSchema) : MAVLinkPlatform {
+abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, final override val schema: MAVLinkSchema) : MAVLinkPlatform {
 
     companion object {
         /**
@@ -61,12 +62,12 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     private val fMessageStream = MAVLinkStream(schema, channel)
     private val fMessageQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
 
-    private val fHeartbeatJob: Job
-    private val fSurveillanceJob: Job
-    private val fReceiverJob: Job
-    private val fSenderJob: Job
+    private lateinit var fHeartbeatJob: Job
+    private lateinit var fSurveillanceJob: Job
+    private lateinit var fReceiverJob: Job
+    private lateinit var fSenderJob: Job
 
-    private var fExecution = MissionExecution(this)
+    protected abstract var fExecution: MissionExecution
 
     private var fIsAlive = false
     private var fLastHeartbeat = Instant.ofEpochSecond(0)
@@ -150,20 +151,23 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
                     }
                 }
                 is MessageEvent.TunneledMessage -> event.message.let { tunneled ->
+                    Log.i(LOG_TAG, "Tunneled Message")
                     val innerMessage = payloadTunnel.decode(tunneled)
-                    (payload as MAVLinkPayload).handle(innerMessage)
+                    launch(PayloadContext) {
+                        (payload as MAVLinkPayload).handle(innerMessage, this@BasicPlatform)
+                    }
                 }
 
                 // Outgoing messages
                 is MessageEvent.SendMessage -> event.message.let { message ->
+                    Log.i(LOG_TAG, "Sending message: $message")
                     fMessageQueue.offer(message)
                 }
             }
         }
     }
 
-
-    init {
+    protected fun start() {
         fReceiverJob = startReceiver()
         fSenderJob = startSender()
         fHeartbeatJob = startHeartbeat()
@@ -178,7 +182,7 @@ abstract class BasicPlatform(channel: ByteChannel, final override val schema: MA
     override val name get() = runBlocking(PlatformContext) { fProduct }
     override val isAlive get() = runBlocking(PlatformContext) { fIsAlive }
     override val currentPosition get() = runBlocking(PlatformContext) { fPosition }
-    override lateinit var payload: Payload
+    override var payload: Payload = payloads[0]
     override val execution: Execution get() = fExecution
 
 // AerialVehicle implementation

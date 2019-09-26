@@ -4,8 +4,8 @@ import ch.hsr.ifs.gcs.driver.Platform
 import ch.hsr.ifs.gcs.resource.Resource.Status
 
 class LocalResource(override val id: String,
-                    override val driverId: String,
-                    override val payloadDriverId: String?,
+                    override val platformDriver: String,
+                    override val payloadDrivers: List<String>,
                     override val capabilities: List<Capability<*>>) : Resource {
 
     private lateinit var fPlatform: Platform
