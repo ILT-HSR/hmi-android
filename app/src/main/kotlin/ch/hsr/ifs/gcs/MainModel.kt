@@ -104,7 +104,13 @@ data class ResultAvailable(val result: Result) : MainModelEvent()
  * @author IFS Institute for Software
  * @since 1.0.0
  */
-class MainModel {
+class MainModel : Mission.Listener {
+
+    override fun onMissionStatusChanged(mission: Mission, status: Mission.Status) {
+        if(status == Mission.Status.FINISHED) {
+            fActor.offer(ResultAvailable(Result(mission)))
+        }
+    }
 
     private val fAvailableNeeds = MutableLiveData<List<Need>>().apply { value = emptyList() }
     private val fActiveNeed = MutableLiveData<Need>()
@@ -116,7 +122,9 @@ class MainModel {
         for (event in this) {
             when (event) {
                 is MissionAvailable -> {
-                    fMissions.value = fMissions.value!! + event.mission
+                    val mission = event.mission
+                    mission.addListener(this@MainModel)
+                    fMissions.value = fMissions.value!! + mission
                 }
                 is NeedAvailable -> {
                     fAvailableNeeds.value = fAvailableNeeds.value!! + event.need
@@ -137,9 +145,7 @@ class MainModel {
                 }
                 is NeedConfigurationFinished -> {
                     fActiveNeed.value?.let {need ->
-                        Mission(need.copy())?.let {mission ->
-                            fMissions.value = fMissions.value!! + mission
-                        }
+                        channel.offer(MissionAvailable(Mission(need.copy())))
                         fActiveNeed.value = null
                         fActiveMenuFragment.value = MenuFragmentID.MISSIONS_FRAGMENT
                     }
@@ -181,6 +187,8 @@ class MainModel {
      * @since 1.0.0
      */
     val activeMenuFragment: LiveData<MenuFragmentID> = fActiveMenuFragment
+
+    val missionResults: LiveData<List<Result>> = fMissionResults
 
     /**
      * Submit an event to the model
