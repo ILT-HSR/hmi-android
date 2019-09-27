@@ -40,10 +40,10 @@ class RadiationSensor : MAVLinkPayload, RecordingPayload {
         const val DRIVER_ID = "ch.hsr.ifs.gcs.driver.mavlink.payload.radiationSensor"
     }
 
-    override val schema = MAVLinkSchemaRegistry["arktis_radiation_sensor_bridge"]!!
+    override val schema = MAVLinkSchemaRegistry["radiation_detector"]!!
 
     override fun handle(message: MAVLinkMessage, platform: MAVLinkPlatform) {
-        if (message.msgName != "RADIATION_DATA") {
+        if (message.msgName != "RADIATION_DETECTOR_DATA") {
             return
         }
         val dataPoint = platform.currentPosition?.run {
