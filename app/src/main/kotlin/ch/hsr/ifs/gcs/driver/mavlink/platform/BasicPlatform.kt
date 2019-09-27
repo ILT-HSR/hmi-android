@@ -29,7 +29,10 @@ import java.util.concurrent.TimeUnit
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, final override val schema: MAVLinkSchema) : MAVLinkPlatform {
+abstract class BasicPlatform(
+        channel: ByteChannel,
+        final override val payloads: List<Payload>,
+        final override val schema: MAVLinkSchema) : MAVLinkPlatform {
 
     companion object {
         /**
@@ -43,11 +46,6 @@ abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, fina
         private const val COMPONENT_AUTOPILOT = 1
 
         /**
-         * The component id of the payload
-         */
-        private const val COMPONENT_USER1 = 25
-
-        /**
          * The component id of the local mission planner
          *
          */
@@ -56,7 +54,6 @@ abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, fina
 
     private val fLocalSystem = MAVLinkSystem(255, COMPONENT_MISSION_PLANNER)
     private val fPlatformSystem = MAVLinkSystem(1, COMPONENT_AUTOPILOT)
-    private val fPayloadSystem = MAVLinkSystem(1, COMPONENT_USER1)
 
     private val fMessageStream = MAVLinkStream(schema, channel)
     private val fMessageQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
@@ -102,10 +99,22 @@ abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, fina
         for (event in this) {
             @Suppress("IMPLICIT_CAST_TO_ANY")
             when (event) {
-                // Incoming messages
+
+                // MAVLink "liveliness" messages
                 is MessageEvent.Heartbeat -> {
                     fLastHeartbeat = Instant.now()
                 }
+                is MessageEvent.Ping -> event.message.let { ping ->
+                    createMAVLinkMessage(MessageID.PING, fLocalSystem, schema).let { pong ->
+                        pong.set("time_usec", ping.getLong("time_usec"))
+                        pong.set("seq", ping.getInt("seq"))
+                        pong.set("target_system", ping.systemID)
+                        pong.set("target_component", ping.componentID)
+                        send(pong)
+                    }
+                }
+
+                // MAVLink "general information" messages
                 is MessageEvent.Position -> event.message.let { message ->
                     fTimeSinceBoot = message.getInt("time_boot_ms")
                     fPosition = GPSPosition(WGS89Position(message.getInt("lat"), message.getInt("lon"), message.getInt("alt")))
@@ -118,9 +127,10 @@ abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, fina
                     fProduct = MAVLinkProducts[message["product_id"] as? Int ?: 0]
                     fId = message.getLong("uid")
                 }
+
+                // MAVLink "command" messages
                 is MessageEvent.LongCommandAcknowledgement -> event.message.let { message ->
                     val pending = fPendingLongCommand
-                    Log.i(LOG_TAG, "Long-Command response: $message")
                     when {
                         pending == null -> Log.w(LOG_TAG, "Unexpected long command ack: $message")
                         pending.first != message.getInt("command") -> Log.w(LOG_TAG, "Stray long command ack: $message")
@@ -131,6 +141,7 @@ abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, fina
                     }
                 }
 
+                // MAVLink "mission" messages
                 is MessageEvent.MissionItemReached -> with(event.sequenceNumber) {
                     fExecution.handleMissionItemReached(this)
                 }
@@ -140,20 +151,18 @@ abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, fina
                 is MessageEvent.ExtendedSystemState -> {
                     fExecution.handleLandedState(event.landedState)
                 }
-                is MessageEvent.Ping -> event.message.let { ping ->
-                    createMAVLinkMessage(MessageID.PING, fLocalSystem, schema).let { pong ->
-                        pong.set("time_usec", ping.getLong("time_usec"))
-                        pong.set("seq", ping.getInt("seq"))
-                        pong.set("target_system", ping.systemID)
-                        pong.set("target_component", ping.componentID)
-                        send(pong)
-                    }
-                }
+
+                // MAVLink "application specific" message
                 is MessageEvent.TunneledMessage -> event.message.let { tunneled ->
-                    Log.i(LOG_TAG, "Tunneled Message")
-                    val innerMessage = payloadTunnel.decode(tunneled)
-                    launch(PayloadContext) {
-                        (payload as MAVLinkPayload).handle(innerMessage, this@BasicPlatform)
+                    payloadTunnels[tunneled.sender]?.let { tunnel ->
+                        try {
+                            val innerMessage = tunnel.decode(tunneled)
+                            payloads.filterIsInstance<MAVLinkPayload>()
+                                    .filter { it.system == innerMessage.sender }
+                                    .forEach { launch(PayloadContext) { it.handle(innerMessage, this@BasicPlatform) } }
+                        } catch (e: Exception) {
+                            Log.e(LOG_TAG, "Error while processing tunneled message: ${e.message}")
+                        }
                     }
                 }
 
@@ -180,7 +189,6 @@ abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, fina
     override val name get() = runBlocking(PlatformContext) { fProduct }
     override val isAlive get() = runBlocking(PlatformContext) { fIsAlive }
     override val currentPosition get() = runBlocking(PlatformContext) { fPosition }
-    override var payload: Payload = payloads[0]
     override val execution: Execution get() = fExecution
 
 // AerialVehicle implementation
@@ -232,10 +240,11 @@ abstract class BasicPlatform(channel: ByteChannel, payloads: List<Payload>, fina
 
 // MAVLinkPlatform implementation
 
-    override val payloadTunnel by lazy {
-        assert(payload is MAVLinkPayload)
-        MAVLinkTunnel(this, fPayloadSystem, fLocalSystem, (payload as MAVLinkPayload).schema)
-    }
+    override val payloadTunnels: Map<MAVLinkSystem, MAVLinkTunnel> =
+            payloads.filterIsInstance<MAVLinkPayload>()
+                    .filter { it.system != null }
+                    .map { it.system!! to MAVLinkTunnel(this, it.system!!, fLocalSystem, it.schema) }
+                    .toMap()
 
     override fun arm() = MAVLinkCommand(PlanCommand(
             LongCommand.COMPONENT_ARM_DISARM,

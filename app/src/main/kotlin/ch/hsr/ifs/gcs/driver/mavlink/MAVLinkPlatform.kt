@@ -44,7 +44,7 @@ interface MAVLinkPlatform : AerialVehicle, SerialPlatform {
      *
      * @since 1.2.0
      */
-    val payloadTunnel: MAVLinkTunnel
+    val payloadTunnels: Map<MAVLinkSystem, MAVLinkTunnel>
 
     /**
      * Arm the vehicle for takeoff

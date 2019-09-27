@@ -6,12 +6,14 @@ import me.drton.jmavlib.mavlink.MAVLinkSchema
 import org.junit.Test
 import java.nio.channels.ByteChannel
 
-class TestPlatform(channel: ByteChannel, schema: MAVLinkSchema) : BasicPlatform(channel, schema) {
+class TestPlatform(channel: ByteChannel, schema: MAVLinkSchema) : BasicPlatform(channel, emptyList(), schema) {
 
     private inner class TestExecution(platform: TestPlatform, target: MAVLinkSystem) : MissionExecution(platform), IntrospectableExecution {
         override val size get() = fCommands.size
         override val commands get() = fCommands
     }
+
+    override var fExecution: MissionExecution = TestExecution(this, MAVLinkSystem(42, 21))
 
     override val driverId = "ch.hsr.ifs.gcs.driver.mavlink.platform.TestPlatform"
 

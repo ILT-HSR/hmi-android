@@ -57,13 +57,14 @@ class RadiationSensor : MAVLinkPayload, RecordingPayload {
 
     override val commandDescriptor: NativeCommand
         get() = PayloadCommand(MessageID.COMMAND_LONG.name,
+                system,
                 mapOf(
                         "command" to 40001,
                         "param1" to if (fIsOn) 1.0f else 0.0f
                 )
         )
 
-    override val system = MAVLinkSystem(id = 3, component = 1)
+    override val system = MAVLinkSystem(id = 1, component = 25)
 
     override fun turnOn(): List<MAVLinkCommand> {
         fIsOn = true

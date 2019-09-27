@@ -9,7 +9,7 @@ import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import java.nio.channels.ByteChannel
 
-class NullPlatform(channel: ByteChannel, payloads: List<Payload>) : AerialVehicle {
+class NullPlatform(channel: ByteChannel, override val payloads: List<Payload>) : AerialVehicle {
 
     companion object {
         const val DRIVER_ID = "ch.hsr.ifs.gcs.driver.generic.platform.null"
@@ -43,21 +43,13 @@ class NullPlatform(channel: ByteChannel, payloads: List<Payload>) : AerialVehicl
         return NullCommand()
     }
 
-    override val driverId: String
-        get() = "ch.hsr.ifs.gcs.driver.platform.null"
+    override val driverId = DRIVER_ID
 
-    override val name: String
-        get() = "NullPlatform"
+    override val name = "NullPlatform"
 
-    override val isAlive: Boolean
-        get() = true
+    override val isAlive = true
 
-    override val currentPosition: GPSPosition?
-        get() = null
-
-    override var payload: Payload
-        get() = fPayload
-        set(value) {fPayload = value}
+    override val currentPosition = null
 
     override val execution: Execution
         get() = object : Execution() {

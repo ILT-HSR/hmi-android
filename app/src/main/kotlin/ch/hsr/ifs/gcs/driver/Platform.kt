@@ -23,12 +23,6 @@ val PlatformContext = newSingleThreadContext("PlatformContext")
  */
 interface Platform {
 
-//    interface Listener {
-//
-//        fun onLivelinessChanged(platform: Platform)
-//
-//    }
-
     /**
      * The driver id of the specific implementation
      *
@@ -62,9 +56,9 @@ interface Platform {
     /**
      * Get the payload attached to the vehicle
      *
-     * @since 1.0.0
+     * @since 1.2.0
      */
-    var payload: Payload
+    val payloads: List<Payload>
 
     /**
      * Get the mission execution strategy for the specific platform implementation
@@ -73,21 +67,4 @@ interface Platform {
      */
     val execution: Execution
 
-//    /**
-//     * Add the given [platform listener][Platform.Listener] to this [Platform]
-//     *
-//     * @param listener An implementation of [Platform.Listener]
-//     *
-//     * @since 1.0.0
-//     */
-//    fun addListener(listener: Listener)
-//
-//    /**
-//     * Remove the given [platform listener][Platform.Listener] from this [Platform]
-//     *
-//     * @param listener An implementation of [Platform.Listener]
-//     *
-//     * @since 1.0.0
-//     */
-//    fun removeListener(listener: Listener)
 }

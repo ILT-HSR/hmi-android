@@ -62,10 +62,10 @@ class Mission(val need: Need) {
     val status get() = runBlocking(MISSION_CONTEXT) { fStatus }
 
     val resultData
-        get() = when(val payload = fPlatform.payload) {
+        get() = when (val payload = fPlatform.payloads.firstOrNull()) {
             is RecordingPayload -> Result.Data(payload.recording)
             else -> Result.Data(Unit)
-            }
+        }
 
     fun abort() {
         if (!fIsAborted.getAndSet(true)) {

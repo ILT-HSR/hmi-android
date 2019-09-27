@@ -65,12 +65,7 @@ open class MissionExecution(private val fPlatform: MAVLinkPlatform) : Execution(
 
     private val fSender = fPlatform.senderSystem
     private val fTarget = fPlatform.targetSystem
-    private val fPayload = MAVLinkSystem(fTarget.id, 25)
     private val fPlatformSchema = fPlatform.schema
-    private val fPayloadSchema by lazy {
-        (fPlatform.payload as MAVLinkPayload).schema
-    }
-
 
     // 'Execution' implementation
 
@@ -123,20 +118,26 @@ open class MissionExecution(private val fPlatform: MAVLinkPlatform) : Execution(
     override fun handleMissionItemReached(itemNumber: Int) {
         if (itemNumber != fLastReachedMissionItem) {
             fLastReachedMissionItem = itemNumber
-            fReactiveCommands[itemNumber]?.run {
-                Log.i(LOG_TAG, "Reacting to having reached point: $itemNumber ")
-                val message = createTargetedMAVLinkMessage(name, fSender, fPayload, fPayloadSchema).apply {
-                    for (param in data) {
-                        set(param.key, param.value)
-                    }
-                }
-                fPlatform.send(fPlatform.payloadTunnel.encode(message))
-            }
+            fReactiveCommands[itemNumber]?.let { fire(it) }
         }
     }
 
+    private fun fire(command: PayloadCommand): Unit {
+        val payload = fPlatform.payloads.filterIsInstance<MAVLinkPayload>()
+                .find { it.system == command.system } ?: return
+        val tunnel = fPlatform.payloadTunnels[payload.system] ?: return
+
+        val message = createTargetedMAVLinkMessage(command.name, fSender, payload.system!!, payload.schema).apply {
+            command.data.forEach { (parameter, value) ->
+                set(parameter, value)
+            }
+        }
+        Log.i(LOG_TAG, "Firing payload command: $message")
+        fPlatform.send(tunnel.encode(message))
+    }
+
     override fun handleLandedState(state: Int) {
-        assert(state in 0 .. 4)
+        assert(state in 0..4)
         when (LandedState.from(state)) {
             LandedState.UNDEFINED -> {
                 fIsOnGround = false
