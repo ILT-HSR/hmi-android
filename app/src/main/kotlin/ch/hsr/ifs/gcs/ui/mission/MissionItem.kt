@@ -1,10 +1,11 @@
 package ch.hsr.ifs.gcs.ui.mission
 
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.Log
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.MapRecording
-import ch.hsr.ifs.gcs.driver.mavlink.payload.RadiationSensor
+import ch.hsr.ifs.gcs.driver.mavlink.payload.RadiationSensor.Measurement
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Result
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
@@ -14,15 +15,21 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
-import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
 
 class MissionItem(val mission: Mission, val context: MainActivity) {
+
+    companion object {
+
+        var GRADIENT = (0..15).map {
+            Color.argb(128, 255, 0x11 * it, 0)
+        }.toTypedArray()
+
+    }
 
     var icon: Int = 0
     val statusIcon: Drawable?
         get() {
-            return when(mission.status) {
+            return when (mission.status) {
                 Mission.Status.PREPARING, Mission.Status.ACTIVE -> context.getDrawable(R.drawable.checkbox_active_incomplete)
                 Mission.Status.FINISHED -> context.getDrawable(R.drawable.checkbox_active_complete)
                 Mission.Status.ABORTED, Mission.Status.FAILED -> context.getDrawable(R.drawable.checkbox_aborted)
@@ -57,7 +64,7 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
     fun draw() {
         val mapView = context.findViewById<MapView>(R.id.map)
         mapView.overlays.forEach { overlay ->
-            if(overlay !is MyLocationNewOverlay) {
+            if (overlay !is MyLocationNewOverlay) {
                 mapView.overlays.remove(overlay)
             }
         }
@@ -89,18 +96,38 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
             }
         }
         if (hasResult) {
-            when(val data = result?.data?.nativeData) {
+            when (val data = result?.data?.nativeData) {
                 is MapRecording<*> -> data.nativeRecording.let { points ->
-                    val geoPoints = points.filter{ it.second is RadiationSensor.Measurement}
-                            .map{ GeoPoint(it.first.latitude, it.first.longitude) }
-                    val pointAdapter = SimplePointTheme(geoPoints)
-                    val overlay = SimpleFastPointOverlay(pointAdapter)
-                    Log.e("MissionItem", "adding overlay")
-                    mapView.overlays.add(overlay)
+                    drawMapRecording(points, mapView)
                 }
             }
         }
         mapView.invalidate()
+    }
+
+    private fun drawMapRecording(recording: List<Pair<GPSPosition, Any?>>, mapView: MapView): Unit {
+        @Suppress("UNCHECKED_CAST")
+        val measurements = recording.filter { it.second is Measurement } as List<Pair<GPSPosition, Measurement>>
+        val (min, max) = measurements.fold(Pair(Int.MAX_VALUE, Int.MIN_VALUE)) { acc, current ->
+            val value = current.second.value
+            when {
+                value < acc.first -> Pair(value, acc.second)
+                value > acc.second -> Pair(acc.first, value)
+                else -> acc
+            }
+        }
+        val step = (max - min) / 16
+
+
+        measurements.map { (position, value) ->
+            val idx = (value.value - min) / (step + 1)
+            Log.i("MissionItem", "step == $step  |||  idx == $idx")
+            Polygon().apply {
+                points = Polygon.pointsAsCircle(GeoPoint(position.latitude, position.longitude), 1.0)
+                fillColor = GRADIENT[idx]
+                strokeWidth = 0.0f
+            }
+        }.forEach{ mapView.overlays.add(it) }
     }
 
 }

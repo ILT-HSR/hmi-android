@@ -16,7 +16,7 @@ import me.drton.jmavlib.mavlink.MAVLinkSchemaRegistry
 
 class RadiationSensor : MAVLinkPayload, RecordingPayload {
 
-    data class Measurement(val timestamp: Float, val value: Int)
+    data class Measurement(val timestamp: Int, val value: Int)
 
     class RadiationMap : MapRecording<Measurement> {
 
@@ -47,7 +47,7 @@ class RadiationSensor : MAVLinkPayload, RecordingPayload {
             return
         }
         val dataPoint = platform.currentPosition?.run {
-            val timestamp = message.getFloat("timestamp")
+            val timestamp = message.getInt("timestamp")
             val counts = message.getInt("sensor_value")
             Pair(this, Measurement(timestamp, counts))
         } ?: return
