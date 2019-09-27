@@ -33,13 +33,13 @@ class DeviceHandler : BroadcastReceiver() {
 
     private fun handleDeviceAttached(context: Context, device: UsbDevice) {
         Log.i(LOG_TAG, "Device attached")
-        (context.applicationContext as? GCS)?.platformManager?.deviceAttached(context, device)
+        (context.applicationContext as? GCS)?.resourceManager?.deviceAttached(context, device)
 
     }
 
     private fun handleDeviceDetached(context: Context, device: UsbDevice) {
         Log.i(LOG_TAG, "Device detached")
-        (context.applicationContext as? GCS)?.platformManager?.deviceDetached(device)
+        (context.applicationContext as? GCS)?.resourceManager?.deviceDetached(device)
     }
 
 }

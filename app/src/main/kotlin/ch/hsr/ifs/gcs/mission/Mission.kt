@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.mission
 
 import android.util.Log
+import ch.hsr.ifs.gcs.driver.RecordingPayload
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.properties.Delegates
@@ -45,6 +46,7 @@ class Mission(val need: Need) {
     }
 
     init {
+        fExecution.reset()
         need.tasks?.apply {
             flatMap { it.executeOn(need.resource) }
                     .forEach(fExecution::add)
@@ -53,7 +55,17 @@ class Mission(val need: Need) {
 
     val isAborted get() = fIsAborted.get()
 
+    val hasFinished get() = fStatus == Status.FINISHED
+
+    val hasFailed get() = fStatus == Status.FAILED
+
     val status get() = runBlocking(MISSION_CONTEXT) { fStatus }
+
+    val resultData
+        get() = when (val payload = fPlatform.payloads.firstOrNull()) {
+            is RecordingPayload -> Result.Data(payload.recording)
+            else -> Result.Data(Unit)
+        }
 
     fun abort() {
         if (!fIsAborted.getAndSet(true)) {
@@ -73,7 +85,7 @@ class Mission(val need: Need) {
     suspend fun tick() {
         if (!fIsAborted.get()) {
             fActiveTick?.let {
-                if(!it.isActive) {
+                if (!it.isActive) {
                     performTick()
                 } else {
                     it.join()
@@ -92,5 +104,4 @@ class Mission(val need: Need) {
             }
         }
     }
-
 }

@@ -1,8 +1,12 @@
 package ch.hsr.ifs.gcs.ui.mission
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import ch.hsr.ifs.gcs.R
+import ch.hsr.ifs.gcs.driver.MapRecording
+import ch.hsr.ifs.gcs.driver.mavlink.payload.RadiationSensor
 import ch.hsr.ifs.gcs.mission.Mission
+import ch.hsr.ifs.gcs.mission.Result
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.ui.MainActivity
 import org.osmdroid.util.GeoPoint
@@ -10,6 +14,8 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
+import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
 
 class MissionItem(val mission: Mission, val context: MainActivity) {
 
@@ -44,6 +50,10 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
         }
     }
 
+    var result: Result? = null
+
+    val hasResult get() = result != null
+
     fun draw() {
         val mapView = context.findViewById<MapView>(R.id.map)
         mapView.overlays.forEach { overlay ->
@@ -76,6 +86,18 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
                 mapTypeMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 mapTypeMarker.icon = context.getDrawable(icon)
                 mapView.overlays.add(mapTypeMarker)
+            }
+        }
+        if (hasResult) {
+            when(val data = result?.data?.nativeData) {
+                is MapRecording<*> -> data.nativeRecording.let { points ->
+                    val geoPoints = points.filter{ it.second is RadiationSensor.Measurement}
+                            .map{ GeoPoint(it.first.latitude, it.first.longitude) }
+                    val pointAdapter = SimplePointTheme(geoPoints)
+                    val overlay = SimpleFastPointOverlay(pointAdapter)
+                    Log.e("MissionItem", "adding overlay")
+                    mapView.overlays.add(overlay)
+                }
             }
         }
         mapView.invalidate()

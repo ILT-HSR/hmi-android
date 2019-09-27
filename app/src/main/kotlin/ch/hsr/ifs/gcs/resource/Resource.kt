@@ -64,14 +64,14 @@ interface Resource {
      *
      * @since 1.0.0
      */
-    val driverId: String
+    val platformDriver: String
 
     /**
      * The id of the payload driver if any
      *
      * @since 1.0.0
      */
-    val payloadDriverId: String?
+    val payloadDrivers: List<String>
 
     /**
      * The list of capabilities of this resource

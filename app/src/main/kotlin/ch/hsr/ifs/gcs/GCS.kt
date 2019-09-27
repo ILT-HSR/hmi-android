@@ -4,14 +4,14 @@ import android.app.Application
 import android.content.Context
 import android.preference.PreferenceManager
 import ch.hsr.ifs.gcs.driver.*
-import ch.hsr.ifs.gcs.driver.access.PlatformManager
+import ch.hsr.ifs.gcs.driver.generic.platform.NullPlatform
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Scheduler
 import ch.hsr.ifs.gcs.mission.access.NeedManager
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.ResourceManager
 
-class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, NeedManager.Listener {
+class GCS : Application(), ResourceManager.Listener, NeedManager.Listener {
 
     companion object {
         private lateinit var fContext: Context
@@ -25,12 +25,11 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
 
     private lateinit var fResourceManager: ResourceManager
     private lateinit var fNeedManager: NeedManager
-    private lateinit var fPlatformManager: PlatformManager
 
     private val fScheduler = Scheduler()
 
     val mainModel get() = fMainModel
-    val platformManager get() = fPlatformManager
+    val resourceManager get() = fResourceManager
 
 
     // Application implementation
@@ -45,27 +44,19 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
 
         fResourceManager = ResourceManager(this)
         fNeedManager = NeedManager(this)
-        fPlatformManager = PlatformManager(this)
 
-        fResourceManager.onCreate(this, fPlatformModel)
+        fResourceManager.onCreate(this)
         fNeedManager.onCreate(fResourceModel)
-        fPlatformManager.start(this)
 
         fMainModel.missions.observeForever {
             (it ?: emptyList()).forEach(fScheduler::launch)
-        }
-
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        if (preferences.getBoolean(PREFERENCE_KEY_ENABLE_NULL_PLATFORM, false)) {
-            fPlatformModel.submit(NewPlatformAvailable(NullPlatform()))
         }
     }
 
     override fun onTerminate() {
         super.onTerminate()
-        fPlatformManager.stop()
         fNeedManager.onDestroy(fResourceModel)
-        fResourceManager.onDestroy(fPlatformModel)
+        fResourceManager.onDestroy()
         fMainModel.onDestroy()
     }
 
@@ -79,12 +70,6 @@ class GCS : Application(), ResourceManager.Listener, PlatformManager.Listener, N
     }
 
     override fun onResourceUnavailable(resource: Resource) {
-    }
-
-    // PlatformManager.Listener implementation
-
-    override fun onNewPlatformAvailable(platform: Platform) {
-        fPlatformModel.submit(NewPlatformAvailable(platform))
     }
 
     // NeedManager.Listener implementation

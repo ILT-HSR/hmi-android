@@ -6,7 +6,7 @@ import ch.hsr.ifs.gcs.resource.Resource
 
 class ToggleSensor : Task {
     override fun executeOn(resource: Resource) = with(resource.plaform as Vehicle) {
-        when(val sensor = payload) {
+        when(val sensor = payloads.firstOrNull()) {
             is ToggleablePayload -> sensor.trigger()
             else -> listOf()
         }

@@ -4,6 +4,10 @@ import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Command
 import ch.hsr.ifs.gcs.driver.SerialPlatform
 import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkSystem
+import ch.hsr.ifs.gcs.driver.mavlink.support.MAVLinkTunnel
+import ch.hsr.ifs.gcs.driver.mavlink.support.MessageID
+import kotlinx.coroutines.CompletableDeferred
+import me.drton.jmavlib.mavlink.MAVLinkMessage
 import me.drton.jmavlib.mavlink.MAVLinkSchema
 
 /**
@@ -22,20 +26,6 @@ interface MAVLinkPlatform : AerialVehicle, SerialPlatform {
     val schema: MAVLinkSchema
 
     /**
-     * Arm the vehicle for takeoff
-     *
-     * @since 1.0.0
-     */
-    fun arm(): Command<*>
-
-    /**
-     * Disarm the vehicle, preventing takeoff
-     *
-     * @since 1.0.0
-     */
-    fun disarm(): Command<*>
-
-    /**
      * The MAVLink system identifying the GCS
      *
      * @since 1.0.0
@@ -48,4 +38,46 @@ interface MAVLinkPlatform : AerialVehicle, SerialPlatform {
      * @since 1.0.0
      */
     val targetSystem: MAVLinkSystem
+
+    /**
+     * A tunnel used to directyly addess the payload
+     *
+     * @since 1.2.0
+     */
+    val payloadTunnels: Map<MAVLinkSystem, MAVLinkTunnel>
+
+    /**
+     * Arm the vehicle for takeoff
+     *
+     * @since 1.0.0
+     */
+    fun arm(): MAVLinkCommand
+
+    /**
+     * Disarm the vehicle, preventing takeoff
+     *
+     * @since 1.0.0
+     */
+    fun disarm(): MAVLinkCommand
+
+    /**
+     * Send a fire-and-forget MAVLink message to the attached target system
+     *
+     * @since 1.2.0
+     */
+    fun send(message: MAVLinkMessage)
+
+    /**
+     * Send an acknowledged MAVLinkMessage to the attached target system
+     *
+     * @since 1.2.0
+     */
+    suspend fun sendWithAck(message: MAVLinkMessage, ack: MessageID, retries: Int = 5, matching: (MAVLinkMessage) -> Boolean = {true}) : Boolean
+
+    /**
+     * Send a 'Long Command' MAVLinkMessage to the attached target system
+     *
+     * @since 1.2.0
+     */
+    suspend fun sendCommand(message: MAVLinkMessage) : Boolean
 }

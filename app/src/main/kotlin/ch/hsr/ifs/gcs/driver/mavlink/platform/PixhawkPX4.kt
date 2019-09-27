@@ -1,5 +1,6 @@
 package ch.hsr.ifs.gcs.driver.mavlink.platform
 
+import ch.hsr.ifs.gcs.driver.Payload
 import ch.hsr.ifs.gcs.driver.Platform
 import java.nio.channels.ByteChannel
 
@@ -13,7 +14,7 @@ import java.nio.channels.ByteChannel
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-internal class PixhawkPX4 private constructor(channel: ByteChannel) : CommonPlatform(channel) {
+internal class PixhawkPX4 private constructor(channel: ByteChannel, payloads: List<Payload>) : CommonPlatform(channel, payloads) {
 
     companion object {
         /**
@@ -24,7 +25,7 @@ internal class PixhawkPX4 private constructor(channel: ByteChannel) : CommonPlat
          */
         const val DRIVER_MAVLINK_PIXHAWK_PX4 = "ch.hsr.ifs.gcs.driver.mavlink.platform.PixhawkPX4"
 
-        fun instantiate(channel: ByteChannel): PixhawkPX4? = PixhawkPX4(channel)
+        fun instantiate(channel: ByteChannel, payloads: List<Payload>): PixhawkPX4? = PixhawkPX4(channel, payloads)
     }
 
     enum class PX4CustomMode(val id: Int) {
@@ -52,4 +53,9 @@ internal class PixhawkPX4 private constructor(channel: ByteChannel) : CommonPlat
 
     override val driverId get() = DRIVER_MAVLINK_PIXHAWK_PX4
 
+    override var fExecution = MissionExecution(this)
+
+    init {
+        start()
+    }
 }

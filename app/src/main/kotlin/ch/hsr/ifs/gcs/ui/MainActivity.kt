@@ -137,6 +137,9 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
                 else -> showMenuFragment(it)
             }
         })
+        fModel.missionResults.observe(this, Observer {
+            Log.i(this@MainActivity::class.simpleName, "results changed: '$it'")
+        })
     }
 
     override fun onPause() {

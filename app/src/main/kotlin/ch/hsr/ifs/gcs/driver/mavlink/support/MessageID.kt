@@ -18,7 +18,9 @@ enum class MessageID {
     MISSION_ACK,
     MISSION_ITEM_REACHED,
     MISSION_CURRENT,
-    EXTENDED_SYS_STATE;
+    EXTENDED_SYS_STATE,
+    PING,
+    TUNNEL;
 
     companion object {
 

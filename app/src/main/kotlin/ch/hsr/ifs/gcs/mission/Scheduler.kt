@@ -15,6 +15,7 @@ class Scheduler(private val fTickInterval: Duration = Duration.ofMillis(100)) {
     private sealed class Event {
         data class LaunchMission(val mission: Mission) : Event()
         data class MissionAborted(val mission: Mission) : Event()
+        data class MissionEnded(val mission: Mission) : Event()
     }
 
     private val fScheduledMissions = mutableMapOf<Mission, Job>()
@@ -34,6 +35,9 @@ class Scheduler(private val fTickInterval: Duration = Duration.ofMillis(100)) {
                         }
                     }
                 }
+                is Event.MissionEnded -> event.mission.let { mission ->
+                    fScheduledMissions[mission]?.join()
+                }
             }
         }
     }
@@ -47,14 +51,17 @@ class Scheduler(private val fTickInterval: Duration = Duration.ofMillis(100)) {
 
         while (isActive) {
             delay(fTickInterval.toMillis())
+
+            if(mission.hasFinished || mission.hasFailed) {
+                fActor.offer(Event.MissionEnded(mission))
+                break;
+            }
+
             if (!mission.isAborted) {
                 mission.tick()
             } else {
                 fActor.send(Event.MissionAborted(mission))
             }
         }
-
-        mission.abort()
-        fActor.send(Event.MissionAborted(mission))
     }
 }

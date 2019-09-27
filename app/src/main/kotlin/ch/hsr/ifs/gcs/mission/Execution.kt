@@ -22,4 +22,8 @@ abstract class Execution {
     fun add(command: Command<*>) {
         this += command
     }
+
+    open fun reset() {
+        fCommands.clear()
+    }
 }

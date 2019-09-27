@@ -1,6 +1,6 @@
 {
   "id": "ch.hsr.ilt.resource.birdAI1",
-  "name": "Bird AI with gripper",
+  "name": "Bird AI with radiation sensor",
   "capabilities": [
     {
       "id": "ch.hsr.ifs.gcs.capability.canMove",
@@ -15,9 +15,19 @@
     "id": "ch.hsr.ilt.platform.birdAI1",
     "driver": "ch.hsr.ifs.gcs.driver.mavlink.platform.PixhawkPX4",
     "type": "aerialVehicle",
-    "payload": {
-      "type": "ch.hsr.ilt.gripper",
-      "driver": "ch.hsr.ifs.gcs.driver.mavlink.payload.radiationSensor"
+    "params": {
+      "systemId": 1,
+      "componentId": 1
     }
-  }
+  },
+  "payloads": [
+    {
+      "type": "ch.hsr.ilt.radiationSensor",
+      "driver": "ch.hsr.ifs.gcs.driver.mavlink.payload.radiationSensor",
+      "params": {
+        "systemId": 1,
+        "componentId": 25
+      }
+    }
+  ]
 }
