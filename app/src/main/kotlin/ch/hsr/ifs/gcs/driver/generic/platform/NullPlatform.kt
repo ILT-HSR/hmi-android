@@ -1,9 +1,22 @@
-package ch.hsr.ifs.gcs.driver
+package ch.hsr.ifs.gcs.driver.generic.platform
 
+import ch.hsr.ifs.gcs.driver.AerialVehicle
+import ch.hsr.ifs.gcs.driver.Command
+import ch.hsr.ifs.gcs.driver.Payload
+import ch.hsr.ifs.gcs.driver.generic.NullCommand
+import ch.hsr.ifs.gcs.driver.generic.payload.NullPayload
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
+import java.nio.channels.ByteChannel
 
-class NullPlatform : AerialVehicle {
+class NullPlatform(channel: ByteChannel, payloads: List<Payload>) : AerialVehicle {
+
+    companion object {
+        const val DRIVER_ID = "ch.hsr.ifs.gcs.driver.generic.platform.null"
+
+        fun instantiate(channel: ByteChannel, payloads: List<Payload>): NullPlatform = NullPlatform(channel, payloads)
+    }
+
     override fun limitTravelSpeed(speed: Double): Command<*> {
         return NullCommand()
     }

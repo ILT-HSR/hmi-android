@@ -1,12 +1,10 @@
-package ch.hsr.ifs.gcs.driver.access
+package ch.hsr.ifs.gcs.driver
 
-import ch.hsr.ifs.gcs.driver.Payload
-import ch.hsr.ifs.gcs.driver.Platform
+import ch.hsr.ifs.gcs.driver.generic.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.payload.Gripper
-import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.payload.RadiationSensor
 
-object PayloadProvider {
+object PayloadDrivers {
 
     private val fDrivers = mutableMapOf<String, () -> Payload>(
             NullPayload.DRIVER_ID to ::NullPayload,

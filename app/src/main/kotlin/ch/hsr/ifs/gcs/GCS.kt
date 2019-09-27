@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.preference.PreferenceManager
 import ch.hsr.ifs.gcs.driver.*
+import ch.hsr.ifs.gcs.driver.generic.platform.NullPlatform
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Scheduler
 import ch.hsr.ifs.gcs.mission.access.NeedManager
@@ -49,11 +50,6 @@ class GCS : Application(), ResourceManager.Listener, NeedManager.Listener {
 
         fMainModel.missions.observeForever {
             (it ?: emptyList()).forEach(fScheduler::launch)
-        }
-
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        if (preferences.getBoolean(PREFERENCE_KEY_ENABLE_NULL_PLATFORM, false)) {
-            fPlatformModel.submit(NewPlatformAvailable(NullPlatform()))
         }
     }
 

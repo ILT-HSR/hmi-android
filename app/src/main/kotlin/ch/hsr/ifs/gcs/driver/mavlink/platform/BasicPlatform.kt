@@ -6,7 +6,6 @@ import ch.hsr.ifs.gcs.driver.Payload
 import ch.hsr.ifs.gcs.driver.PayloadContext
 import ch.hsr.ifs.gcs.driver.PlatformContext
 import ch.hsr.ifs.gcs.driver.mavlink.*
-import ch.hsr.ifs.gcs.driver.mavlink.payload.NullPayload
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition

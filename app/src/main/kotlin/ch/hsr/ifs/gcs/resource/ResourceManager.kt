@@ -5,8 +5,8 @@ import android.content.res.AssetManager
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.util.Log
-import ch.hsr.ifs.gcs.driver.DriverRegistry
-import ch.hsr.ifs.gcs.driver.access.PayloadProvider
+import ch.hsr.ifs.gcs.driver.PlatformDrivers
+import ch.hsr.ifs.gcs.driver.PayloadDrivers
 import ch.hsr.ifs.gcs.driver.channel.SerialDataChannelFactory
 import ch.hsr.ifs.gcs.driver.channel.UdpDataChannelFactory
 import com.google.gson.JsonElement
@@ -102,9 +102,9 @@ class ResourceManager(private val fListener: Listener) {
 
     private fun scan(context: Context) {
         for (res in fKnownResources) {
-            val deviceFactory = DriverRegistry.drivers[res.driver] ?: continue
+            val deviceFactory = PlatformDrivers.drivers[res.driver] ?: continue
 
-            val payloads = res.payloadDrivers.map(PayloadProvider::instantiate).filterNotNull()
+            val payloads = res.payloadDrivers.map(PayloadDrivers::instantiate).filterNotNull()
 
             val channel = createUdpChannel()
 //            val channel = createSerialChannel(context)
