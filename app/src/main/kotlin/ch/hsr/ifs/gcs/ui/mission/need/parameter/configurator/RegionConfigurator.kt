@@ -96,16 +96,16 @@ class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
     }
 
     private fun createInitialRegion(mapView: MapView): RectangularRegion {
-        val zoomLevel = mapView.zoomLevelDouble
         val currentGeoPoint = mapView.mapCenter
         val currentLatitude = currentGeoPoint.latitude
         val currentLongitude = currentGeoPoint.longitude
-        val latitudeDiff = (0.00007 / 2) * zoomLevel
-        val longitudeDiff = (0.0001 / 2) * zoomLevel
+
+        val height = mapView.projection.boundingBox.longitudeSpan
+        val width = mapView.projection.boundingBox.latitudeSpan
 
         return RectangularRegion(
-                GeoPoint(currentLatitude + latitudeDiff, currentLongitude - longitudeDiff),
-                GeoPoint(currentLatitude - latitudeDiff, currentLongitude + longitudeDiff),
+                GeoPoint(currentLatitude + width / 2 * 0.75, currentLongitude - height / 2 * 0.75),
+                GeoPoint(currentLatitude - width / 2 * 0.75, currentLongitude + height / 2 * 0.75),
                 mapView
         )
     }
