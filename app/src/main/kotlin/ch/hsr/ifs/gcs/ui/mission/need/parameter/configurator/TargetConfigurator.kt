@@ -16,6 +16,7 @@ import org.osmdroid.views.overlay.Overlay
 class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
 
     override fun present() {
+        super.present()
         val mapView = context.findViewById<MapView>(R.id.map)
         val mapCenter = mapView.mapCenter as GeoPoint
         parameter.parameter.result = GPSPosition(mapCenter.latitude, mapCenter.longitude, mapCenter.altitude)
@@ -56,10 +57,12 @@ class TargetConfigurator : ParameterConfigurator<GPSPosition>() {
         posMarker.setOnMarkerClickListener { _, _ -> true } // needed to prevent info box pop up
         hideInstructionText()
         mapView.invalidate()
+        super.destroy()
     }
 
     override fun abort() {
         context.map.overlays.clear()
         context.map.invalidate()
+        super.abort()
     }
 }

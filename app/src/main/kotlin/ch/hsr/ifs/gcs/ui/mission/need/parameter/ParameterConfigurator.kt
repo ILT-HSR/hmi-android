@@ -5,6 +5,8 @@ import android.view.View
 import android.widget.TextView
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.ui.MainActivity
+import kotlinx.android.synthetic.main.activity_main.*
+import org.osmdroid.views.overlay.Overlay
 
 abstract class ParameterConfigurator<ResultType> : Fragment() {
 
@@ -12,11 +14,27 @@ abstract class ParameterConfigurator<ResultType> : Fragment() {
 
     lateinit var parameter: ParameterItem<ResultType>
 
-    open fun present() = Unit
+    private lateinit var fOldOverlays: List<Overlay>
 
-    open fun destroy() = Unit
+    open fun present() {
+        fOldOverlays = context.map.overlays.toList()
+    }
 
-    open fun abort() = destroy()
+    open fun destroy() {
+        fOldOverlays.forEach{
+            if (!context.map.overlays.contains(it)) {
+                context.map.overlays.add(it)
+            }
+        }
+    }
+
+    open fun abort() {
+        fOldOverlays.forEach{
+            if (!context.map.overlays.contains(it)) {
+                context.map.overlays.add(it)
+            }
+        }
+    }
 
     fun showInstructionText(instructionText: String) {
         val parameterInstructionText = context.findViewById<TextView>(R.id.parameterInstructionText)

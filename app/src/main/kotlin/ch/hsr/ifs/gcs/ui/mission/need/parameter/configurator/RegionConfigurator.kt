@@ -62,6 +62,7 @@ class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
     private lateinit var region: RectangularRegion
 
     override fun present() {
+        super.present()
         val map = context.map
         region = createInitialRegion(map)
         showInstructionText(GCS.context.getString(R.string.region_instruction))
@@ -85,11 +86,13 @@ class RegionConfigurator : ParameterConfigurator<List<GPSPosition>>() {
         parameter.parameter.result = region.polygon.points.map {
             GPSPosition(it.latitude, it.longitude, it.altitude)
         }
+        super.destroy()
     }
 
     override fun abort() {
         context.map.overlays.clear()
         context.map.invalidate()
+        super.abort()
     }
 
     private fun createInitialRegion(mapView: MapView): RectangularRegion {

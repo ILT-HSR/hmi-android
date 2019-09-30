@@ -25,6 +25,7 @@ class MapTypeConfigurator : ParameterConfigurator<String>() {
     }
 
     override fun present() {
+        super.present()
         setDefaultResult()
         context.map.setBuiltInZoomControls(false)
         context.showMainFragment(this)
@@ -35,6 +36,7 @@ class MapTypeConfigurator : ParameterConfigurator<String>() {
         context.map.setBuiltInZoomControls(true)
         context.hideMainFragment()
         hideInstructionText()
+        super.destroy()
     }
 
     private fun setDefaultResult() {
