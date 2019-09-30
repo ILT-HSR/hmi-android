@@ -1,5 +1,7 @@
 package ch.hsr.ifs.gcs.support.geo
 
+import org.osmdroid.util.GeoPoint
+
 /**
  * A simple value type to hold GPS floating point coordinates
  *
@@ -62,5 +64,6 @@ data class GPSPosition(val latitude: Double, val longitude: Double, val altitude
         return GPSPosition(Math.toDegrees(newLatitude), Math.toDegrees(newLongitude), altitude)
     }
 
+    val geoPoint: GeoPoint get() = GeoPoint(latitude, longitude, altitude)
 
 }

@@ -8,6 +8,7 @@ import ch.hsr.ifs.gcs.driver.mavlink.payload.RadiationSensor.Measurement
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Result
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
+import ch.hsr.ifs.gcs.support.osmdroid.CircleOverlay
 import ch.hsr.ifs.gcs.ui.MainActivity
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -20,12 +21,12 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
     companion object {
 
         var GRADIENT = (0..31).map {
-            val green = if(it > 16) 0xFF - 0x11 * it else 0xFF
-            val red = if(it < 16) 0x11 * it else 0xFF
-            Color.argb(128, red, green, 0)
+            val green = if (it > 16) 0xFF - 0x11 * it else 0xFF
+            val red = if (it < 16) 0x11 * it else 0xFF
+            Color.argb(0x7F, red, green, 0)
         }.toTypedArray()
 
-        fun colorForValue(value: Int, min: Int, max: Int) : Int {
+        fun colorForValue(value: Int, min: Int, max: Int): Int {
             val index = (value - min) * GRADIENT.lastIndex / (max - min)
             return GRADIENT[index]
         }
@@ -124,12 +125,8 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
         }
 
         measurements.map { (position, value) ->
-            Polygon().apply {
-                points = Polygon.pointsAsCircle(GeoPoint(position.latitude, position.longitude), 1.0)
-                fillColor = colorForValue(value.value, min, max)
-                strokeWidth = 0.0f
-            }
-        }.forEach{ mapView.overlays.add(it) }
+            CircleOverlay(position.geoPoint, radiusInMeters = 1.0, fillColor = colorForValue(value.value, min, max))
+        }.forEach { mapView.overlays.add(it) }
     }
 
 }
