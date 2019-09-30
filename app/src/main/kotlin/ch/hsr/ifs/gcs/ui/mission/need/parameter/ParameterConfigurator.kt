@@ -21,6 +21,9 @@ abstract class ParameterConfigurator<ResultType> : Fragment() {
     }
 
     open fun destroy() {
+        context.map.setBuiltInZoomControls(true)
+        context.hideMainFragment()
+        hideInstructionText()
         fOldOverlays.forEach{
             if (!context.map.overlays.contains(it)) {
                 context.map.overlays.add(it)
@@ -29,6 +32,9 @@ abstract class ParameterConfigurator<ResultType> : Fragment() {
     }
 
     open fun abort() {
+        context.map.setBuiltInZoomControls(true)
+        context.hideMainFragment()
+        hideInstructionText()
         fOldOverlays.forEach{
             if (!context.map.overlays.contains(it)) {
                 context.map.overlays.add(it)
