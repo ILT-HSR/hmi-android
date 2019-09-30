@@ -43,9 +43,15 @@
         <androidx.preference.SeekBarPreference
             android:defaultValue="5"
             android:max="15"
-            android:key="mapping_altitude"
-            android:summary="@string/mapping_altitude_summary"
-            android:title="@string/mapping_altitude" />
+            android:key="mapping_takeoff_altitude"
+            android:summary="@string/mapping_takeoff_altitude_summary"
+            android:title="@string/mapping_takeoff_altitude" />
+        <androidx.preference.SeekBarPreference
+            android:defaultValue="1"
+            android:max="15"
+            android:key="mapping_survey_altitude"
+            android:summary="@string/mapping_survey_altitude_summary"
+            android:title="@string/mapping_survey_altitude" />
         <androidx.preference.SeekBarPreference
             android:defaultValue="1"
             android:max="5"

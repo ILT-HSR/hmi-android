@@ -1,9 +1,7 @@
 package ch.hsr.ifs.gcs.mission.need
 
 import android.preference.PreferenceManager
-import ch.hsr.ifs.gcs.GCS
-import ch.hsr.ifs.gcs.PREFERENCE_KEY_MAPPING_ALTITUDE
-import ch.hsr.ifs.gcs.PREFERENCE_KEY_MAPPING_TRAVEL_SPEED
+import ch.hsr.ifs.gcs.*
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.need.parameter.MapType
 import ch.hsr.ifs.gcs.mission.need.parameter.Region
@@ -44,8 +42,8 @@ class Mapping private constructor(override val resource: Resource, private val f
     override val tasks: List<Task>?
         get() {
             return listOf(
-                    LimitTravelSpeed(fPreferences.getInt(PREFERENCE_KEY_MAPPING_TRAVEL_SPEED, 1).toDouble()),
-                    TakeOff(fPreferences.getInt(PREFERENCE_KEY_MAPPING_ALTITUDE, 1))) + buildFlightplan() + ReturnToHome()
+                    LimitTravelSpeed(fPreferences.getInt(PREFERENCE_KEY_MAPPING_TRAVEL_SPEED, PREFERENCE_DEFAULT_MAPPING_TRAVEL_SPEED).toDouble()),
+                    TakeOff(fPreferences.getInt(PREFERENCE_KEY_MAPPING_TAKEOFF_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_TAKEOFF_ALTITUDE))) + buildFlightplan() + ReturnToHome()
         }
 
     override val requirements: List<Capability<*>>
@@ -55,9 +53,9 @@ class Mapping private constructor(override val resource: Resource, private val f
 
     private fun buildFlightplan(): List<Task> {
         val corners = fRegion.result
-        val topLeft = GPSPosition(corners[0].latitude, corners[0].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_ALTITUDE, 1).toDouble())
-        val topRight = GPSPosition(corners[1].latitude, corners[1].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_ALTITUDE, 1).toDouble())
-        val bottomLeft = GPSPosition(corners[3].latitude, corners[3].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_ALTITUDE, 1).toDouble())
+        val topLeft = GPSPosition(corners[0].latitude, corners[0].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_SURVEY_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_SURVEY_ALTITUDE).toDouble())
+        val topRight = GPSPosition(corners[1].latitude, corners[1].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_SURVEY_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_SURVEY_ALTITUDE).toDouble())
+        val bottomLeft = GPSPosition(corners[3].latitude, corners[3].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_SURVEY_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_SURVEY_ALTITUDE).toDouble())
 
         val width = topLeft.distanceTo(topRight)
         val height = topLeft.distanceTo(bottomLeft)

@@ -39,8 +39,10 @@
     <string name="call_in_travel_speed_summary">The travel speed in [m/s] during mission execution</string>
     <!-- Mapping Settings -->
     <string name="mapping_settings_category_name">Mapping Default Settings</string>
-    <string name="mapping_altitude">Altitude</string>
-    <string name="mapping_altitude_summary">The altitude in [m] during mission execution</string>
+    <string name="mapping_takeoff_altitude">Take-off Altitude</string>
+    <string name="mapping_takeoff_altitude_summary">The altitude in [m] during take-off</string>
+    <string name="mapping_survey_altitude">Survey Altitude</string>
+    <string name="mapping_survey_altitude_summary">The altitude in [m] during mission execution</string>
     <string name="mapping_travel_speed">Travel Speed</string>
     <string name="mapping_travel_speed_summary">The travel speed in [m/s] during mission execution</string>
 </resources>
