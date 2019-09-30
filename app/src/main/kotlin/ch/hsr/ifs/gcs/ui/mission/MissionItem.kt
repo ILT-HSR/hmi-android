@@ -2,7 +2,6 @@ package ch.hsr.ifs.gcs.ui.mission
 
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.util.Log
 import ch.hsr.ifs.gcs.R
 import ch.hsr.ifs.gcs.driver.MapRecording
 import ch.hsr.ifs.gcs.driver.mavlink.payload.RadiationSensor.Measurement
@@ -20,9 +19,16 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
 
     companion object {
 
-        var GRADIENT = (0..15).map {
-            Color.argb(128, 255, 0x11 * it, 0)
+        var GRADIENT = (0..31).map {
+            val green = if(it > 16) 0xFF - 0x11 * it else 0xFF
+            val red = if(it < 16) 0x11 * it else 0xFF
+            Color.argb(128, red, green, 0)
         }.toTypedArray()
+
+        fun colorForValue(value: Int, min: Int, max: Int) : Int {
+            val index = (value - min) * GRADIENT.lastIndex / (max - min)
+            return GRADIENT[index]
+        }
 
     }
 
@@ -116,15 +122,11 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
                 else -> acc
             }
         }
-        val step = (max - min) / 16
-
 
         measurements.map { (position, value) ->
-            val idx = (value.value - min) / (step + 1)
-            Log.i("MissionItem", "step == $step  |||  idx == $idx")
             Polygon().apply {
                 points = Polygon.pointsAsCircle(GeoPoint(position.latitude, position.longitude), 1.0)
-                fillColor = GRADIENT[idx]
+                fillColor = colorForValue(value.value, min, max)
                 strokeWidth = 0.0f
             }
         }.forEach{ mapView.overlays.add(it) }
