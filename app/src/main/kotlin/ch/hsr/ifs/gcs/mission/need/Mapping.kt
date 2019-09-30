@@ -43,7 +43,11 @@ class Mapping private constructor(override val resource: Resource, private val f
         get() {
             return listOf(
                     LimitTravelSpeed(fPreferences.getInt(PREFERENCE_KEY_MAPPING_TRAVEL_SPEED, PREFERENCE_DEFAULT_MAPPING_TRAVEL_SPEED).toDouble()),
-                    TakeOff(fPreferences.getInt(PREFERENCE_KEY_MAPPING_TAKEOFF_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_TAKEOFF_ALTITUDE))) + buildFlightplan() + ReturnToHome()
+                    TakeOff(fPreferences.getInt(PREFERENCE_KEY_MAPPING_TAKEOFF_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_TAKEOFF_ALTITUDE))) +
+                    ToggleSensor() +
+                    buildFlightplan() +
+                    ToggleSensor() +
+                    ReturnToHome()
         }
 
     override val requirements: List<Capability<*>>
@@ -52,35 +56,30 @@ class Mapping private constructor(override val resource: Resource, private val f
         )
 
     private fun buildFlightplan(): List<Task> {
+        assert(fRegion.result.size == 4)
+
+        val altitude = fPreferences.getInt(PREFERENCE_KEY_MAPPING_SURVEY_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_SURVEY_ALTITUDE).toDouble()
+
         val corners = fRegion.result
-        val topLeft = GPSPosition(corners[0].latitude, corners[0].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_SURVEY_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_SURVEY_ALTITUDE).toDouble())
-        val topRight = GPSPosition(corners[1].latitude, corners[1].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_SURVEY_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_SURVEY_ALTITUDE).toDouble())
-        val bottomLeft = GPSPosition(corners[3].latitude, corners[3].longitude, fPreferences.getInt(PREFERENCE_KEY_MAPPING_SURVEY_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_SURVEY_ALTITUDE).toDouble())
+        val (northWest, northEast, southEast) = corners.map { GPSPosition(it.latitude, it.longitude, altitude) }
 
-        val width = topLeft.distanceTo(topRight)
-        val height = topLeft.distanceTo(bottomLeft)
-        val realLines = floor(height / SCAN_CORRIDOR_WIDTH).toInt()
+        val width = northWest.distanceTo(northEast)
+        val height = northEast.distanceTo(southEast)
+
         val remainder = height.IEEErem(SCAN_CORRIDOR_WIDTH)
+        val realLines = floor(height / SCAN_CORRIDOR_WIDTH).toInt()
 
-        var currentPoint = topLeft.positionAt(remainder / 2 * SCAN_CORRIDOR_WIDTH, COMPASS_BEARING_SOUTH)
-        val flightPlan = mutableListOf<Task>(MoveToPosition(currentPoint))
+        val startPoint = northWest.positionAt(remainder / 2 * SCAN_CORRIDOR_WIDTH, COMPASS_BEARING_SOUTH)
 
-        flightPlan += ToggleSensor()
-
-        flightPlan += (0 until realLines).map {
-            val result = if ((it % 2) == 0) {
-                currentPoint.positionAt(width, COMPASS_BEARING_EAST)
+        return (0 until realLines).fold(listOf(MoveToPosition(startPoint))) { plan, step ->
+            val currentPoint = plan.last()
+            val rowEnd = MoveToPosition(if(step % 2 == 0) {
+                currentPoint.targetLocation.positionAt(width, COMPASS_BEARING_EAST)
             } else {
-                currentPoint.positionAt(width, COMPASS_BEARING_WEST)
-            }
-            currentPoint = result.positionAt(SCAN_CORRIDOR_WIDTH, COMPASS_BEARING_SOUTH)
-            listOf(
-                    MoveToPosition(result),
-                    MoveToPosition(currentPoint)
-            )
-        }.flatten()
-
-        return flightPlan + ToggleSensor()
+                currentPoint.targetLocation.positionAt(width, COMPASS_BEARING_WEST)
+            })
+            plan + rowEnd + MoveToPosition(rowEnd.targetLocation.positionAt(SCAN_CORRIDOR_WIDTH, COMPASS_BEARING_SOUTH))
+        }
     }
 
     override fun copy() =
