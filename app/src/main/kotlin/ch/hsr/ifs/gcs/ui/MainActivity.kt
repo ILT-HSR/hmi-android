@@ -206,7 +206,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         when (mapSource) {
             PREFERENCE_VAL_MAP_SOURCE_OSM -> {
                 map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
-                map.setBuiltInZoomControls(true)
             }
             PREFERENCE_VAL_MAP_SOURCE_BING -> {
                 BingMapTileSource.retrieveBingKey(this)
@@ -224,18 +223,13 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         map.controller.setZoom(18.0)
         map.setBuiltInZoomControls(true)
 
-        MyLocationNewOverlay(fLocationProvider, map).apply {
+        map.overlays += MyLocationNewOverlay(fLocationProvider, map).apply {
             val currentDraw = ResourcesCompat.getDrawable(resources, R.drawable.current_location, null)
-            var currentIcon: Bitmap? = null
-            if (currentDraw != null) {
-                currentIcon = (currentDraw as BitmapDrawable).bitmap
-            }
-            setPersonIcon(currentIcon)
+            val currentIcon: Bitmap? = (currentDraw as BitmapDrawable?)?.bitmap
             setDirectionArrow(currentIcon, currentIcon)
             runOnFirstFix { runOnUiThread { map.controller.animateTo(GeoPoint(myLocation)) } }
             enableMyLocation()
-            setPersonHotspot(26.5f, 26.5f)
-            map.overlays += this
+            setPersonHotspot(currentIcon?.width?.let{ it / 2.0f - 0.5f } ?: 26.5f, currentIcon?.height?.let{ it / 2.0f - 0.5f } ?: 26.5f)
         }
     }
 
