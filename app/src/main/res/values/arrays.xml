@@ -8,4 +8,13 @@
         <item>osm</item>
         <item>bing</item>
     </string-array>
+
+    <string-array name="channel_type_names">
+        <item>Serial Data Channel</item>
+        <item>UDP Data Channel</item>
+    </string-array>
+    <string-array name="channel_type_values">
+        <item>ch.hsr.ilt.driver.channel.SerialDataChannel</item>
+        <item>ch.hsr.ilt.driver.channel.UdpDataChannel</item>
+    </string-array>
 </resources>

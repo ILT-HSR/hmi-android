@@ -16,6 +16,13 @@
             android:key="map_source"
             android:summary="@string/map_source_summary"
             android:title="@string/map_source" />
+        <ListPreference
+            android:defaultValue="ch.hsr.ilt.driver.channel.SerialDataChannel"
+            android:entries="@array/channel_type_names"
+            android:entryValues="@array/channel_type_values"
+            android:key="channel_type"
+            android:summary="@string/channel_type_summary"
+            android:title="@string/channel_type" />
 
     </PreferenceCategory>
 

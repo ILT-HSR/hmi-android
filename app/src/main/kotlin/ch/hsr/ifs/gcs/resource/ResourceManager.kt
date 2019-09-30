@@ -20,7 +20,7 @@ import java.io.Serializable
 import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
 
-class ResourceManager(private val fListener: Listener) {
+class ResourceManager(private val fListener: Listener, private val fChannelType: String) {
 
     interface Listener {
         fun onNewResourceAvailable(resource: Resource)
@@ -76,6 +76,11 @@ class ResourceManager(private val fListener: Listener) {
     companion object {
         private const val RESOURCES_DIRECTORY = "resources"
         private const val LOG_TAG = "ResourceManager"
+
+        private val CHANNEL_FACTORIES: Map<String, (Context, ResourceManager) -> ByteChannel?> = mapOf(
+                "ch.hsr.ilt.driver.channel.UdpDataChannel" to {_: Context, rm -> rm.createUdpChannel()},
+                "ch.hsr.ilt.driver.channel.SerialDataChannel" to {ctx: Context, rm -> rm.createSerialChannel(ctx)}
+        )
     }
 
     private val fDeviceScanner = Executors.newSingleThreadExecutor()
@@ -106,8 +111,9 @@ class ResourceManager(private val fListener: Listener) {
 
             val payloads = res.payloadDrivers.map(PayloadDrivers::instantiate).filterNotNull()
 
-            val channel = createUdpChannel()
-//            val channel = createSerialChannel(context)
+            val channelFactory = CHANNEL_FACTORIES[fChannelType] ?: return
+
+            val channel = channelFactory(context, this)
 
             val platform = channel?.run {
                 deviceFactory(this, payloads)

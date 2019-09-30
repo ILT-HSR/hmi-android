@@ -31,6 +31,8 @@
     <string name="enable_null_platform_summary">Enable a fake platform that does nothing</string>
     <string name="map_source_summary">Select the source of the map tiles</string>
     <string name="map_source">Map Source</string>
+    <string name="channel_type_summary">Select the communication channel to use</string>
+    <string name="channel_type">Communication Channel</string>
     <!-- Call-In Settings -->
     <string name="call_in_settings_category_name">Call-In Default Settings</string>
     <string name="call_in_altitude">Altitude</string>

@@ -38,11 +38,15 @@ class GCS : Application(), ResourceManager.Listener, NeedManager.Listener {
         super.onCreate()
         fContext = this
 
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+
         fResourceModel = ResourceModel()
         fPlatformModel = PlatformModel()
         fMainModel = MainModel()
 
-        fResourceManager = ResourceManager(this)
+        val channelType = preferences.getString(PREFERENCE_KEY_CHANNEL_TYPE, PREFERENCE_DEFAULT_CHANNEL_TYPE)
+
+        fResourceManager = ResourceManager(this, channelType!!)
         fNeedManager = NeedManager(this)
 
         fResourceManager.onCreate(this)
