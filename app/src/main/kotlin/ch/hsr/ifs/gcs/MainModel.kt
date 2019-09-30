@@ -1,13 +1,14 @@
 package ch.hsr.ifs.gcs
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ch.hsr.ifs.gcs.mission.Mission
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Result
 import ch.hsr.ifs.gcs.ui.MenuFragmentID
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
 
@@ -145,7 +146,9 @@ class MainModel : Mission.Listener {
                 }
                 is NeedConfigurationFinished -> {
                     fActiveNeed.value?.let {need ->
-                        channel.offer(MissionAvailable(Mission(need.copy())))
+                        launch(Dispatchers.Default) {
+                            channel.offer(MissionAvailable(Mission(need.copy())))
+                        }
                         fActiveNeed.value = null
                         fActiveMenuFragment.value = MenuFragmentID.MISSIONS_FRAGMENT
                     }
