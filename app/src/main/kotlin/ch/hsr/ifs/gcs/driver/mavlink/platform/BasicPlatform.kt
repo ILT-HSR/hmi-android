@@ -317,7 +317,11 @@ abstract class BasicPlatform(
     private fun startReceiver() = GlobalScope.launch(Dispatchers.IO) {
         while (isActive) {
             try {
-                fMessageStream.read()?.let { dispatch(it) }
+                try {
+                    fMessageStream.read()?.let { dispatch(it) }
+                } catch (e: Throwable) {
+                    Log.e(LOG_TAG, "Read exception: $e")
+                }
             } catch (e: IOException) {
                 Log.w(LOG_TAG, "I/O Exception while reading message from remote: ${e.localizedMessage}")
             }
