@@ -26,14 +26,14 @@ the status of the resource.
     :since: 1.0.0
     
    
-   .. kotlin:val:: driverId: String
+   .. kotlin:val:: platformDriver: String
    
     The driver id of a resource
     
     :since: 1.0.0
     
    
-   .. kotlin:val:: payloadDriverId: String?
+   .. kotlin:val:: payloadDrivers: List<String>
    
     The id of the payload driver if any
     

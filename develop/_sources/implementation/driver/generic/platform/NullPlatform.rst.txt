@@ -1,0 +1,4 @@
+Documentation for driver/generic/platform/NullPlatform.kt
+=========================================================
+
+

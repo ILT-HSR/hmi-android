@@ -34,7 +34,7 @@ Create a new MAVLink 'Arm' message
 :parameter target: The target system
 :parameter schema: The message schema
 
-:returns: a new MAVLink 'Long Command' message containing an 'Arm' command
+:returns: a new MAVLink 'Long NativeCommand' message containing an 'Arm' command
 
 
 .. kotlin:fun:: createRequestAutopilotCapabilitiesMessage(sender: MAVLinkSystem, target: MAVLinkSystem, schema: MAVLinkSchema): MAVLinkMessage 
@@ -45,6 +45,6 @@ Create a new MAVLink 'Request Autopilot Capabilities' message
 :parameter target: The target system
 :parameter schema: The message schema
 
-:returns: a new MAVLink 'Long Command' message containing a 'Request Autopilot Capabilities' command
+:returns: a new MAVLink 'Long NativeCommand' message containing a 'Request Autopilot Capabilities' command
 
 

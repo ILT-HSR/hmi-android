@@ -205,11 +205,6 @@
      <tr>
        <td></td>
        <td>
-       <a href="implementation/driver/mavlink/platform/CommonPlatform.html#class CommonPlatform"><code class="xref">class CommonPlatform</code></a> <em>(class)</em></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
        <a href="implementation/resource/Capability.html#data_class Capability"><code class="xref">data_class Capability</code></a> <em>(data class)</em></td><td>
        <em></em></td></tr>
      <tr>
@@ -312,6 +307,16 @@
      <tr>
        <td></td>
        <td>
+       <a href="implementation/driver/mavlink/MAVLinkCommand.html#data_class PayloadCommand"><code class="xref">data_class PayloadCommand</code></a> <em>(data class)</em></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="implementation/driver/mavlink/MAVLinkCommand.html#data_class PlanCommand"><code class="xref">data_class PlanCommand</code></a> <em>(data class)</em></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="implementation/mission/need/parameter/Parameter.html#interface Parameter"><code class="xref">interface Parameter</code></a> <em>(interface)</em></td><td>
        <em></em></td></tr>
      <tr>
@@ -405,7 +410,7 @@
      <tr>
        <td></td>
        <td>
-       <a href="implementation/driver/mavlink/MAVLinkPlatform.html#arm()-Command<*>"><code class="xref">arm()</code></a> <em>(fun)</em></td><td>
+       <a href="implementation/driver/mavlink/MAVLinkPlatform.html#arm()-MAVLinkCommand"><code class="xref">arm()</code></a> <em>(fun)</em></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -443,6 +448,11 @@
      <tr>
        <td></td>
        <td>
+       <a href="implementation/driver/mavlink/MAVLinkCommand.html#constructor(id:frame:param1:param2:param3:param4:x:y:z:)"><code class="xref">constructor(id:frame:param1:param2:param3:param4:x:y:z:)</code></a> <em>(constructor)</em></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="implementation/resource/CapabilityDescriptor.html#constructor(id:type:)"><code class="xref">constructor(id:type:)</code></a> <em>(constructor)</em></td><td>
        <em></em></td></tr>
      <tr>
@@ -454,6 +464,11 @@
        <td></td>
        <td>
        <a href="implementation/MainModel.html#constructor(mission:)"><code class="xref">constructor(mission:)</code></a> <em>(constructor)</em></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="implementation/driver/mavlink/MAVLinkCommand.html#constructor(name:system:data:)"><code class="xref">constructor(name:system:data:)</code></a> <em>(constructor)</em></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -501,12 +516,12 @@
      <tr>
        <td></td>
        <td>
-       <a href="implementation/driver/mavlink/MAVLinkPlatform.html#disarm()-Command<*>"><code class="xref">disarm()</code></a> <em>(fun)</em></td><td>
+       <a href="implementation/driver/mavlink/MAVLinkPlatform.html#disarm()-MAVLinkCommand"><code class="xref">disarm()</code></a> <em>(fun)</em></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
        <td>
-       <a href="implementation/resource/Resource.html#driverId"><code class="xref">driverId</code></a> <em>(val)</em></td><td>
+       <a href="implementation/driver/Platform.html#driverId"><code class="xref">driverId</code></a> <em>(val)</em></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-E"><td></td><td>
@@ -620,17 +635,27 @@
      <tr>
        <td></td>
        <td>
-       <a href="implementation/driver/Platform.html#payload"><code class="xref">payload</code></a> <em>(var)</em></td><td>
+       <a href="implementation/resource/Resource.html#payloadDrivers"><code class="xref">payloadDrivers</code></a> <em>(val)</em></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
        <td>
-       <a href="implementation/resource/Resource.html#payloadDriverId"><code class="xref">payloadDriverId</code></a> <em>(val)</em></td><td>
+       <a href="implementation/driver/mavlink/MAVLinkPlatform.html#payloadTunnels"><code class="xref">payloadTunnels</code></a> <em>(val)</em></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="implementation/driver/Platform.html#payloads"><code class="xref">payloads</code></a> <em>(val)</em></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
        <td>
        <a href="implementation/resource/Resource.html#plaform"><code class="xref">plaform</code></a> <em>(var)</em></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="implementation/resource/Resource.html#platformDriver"><code class="xref">platformDriver</code></a> <em>(val)</em></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-R"><td></td><td>
@@ -672,6 +697,11 @@
        <td></td>
        <td>
        <a href="implementation/driver/mavlink/MAVLinkPlatform.html#schema"><code class="xref">schema</code></a> <em>(val)</em></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="implementation/driver/mavlink/MAVLinkPlatform.html#send(message:)"><code class="xref">send(message:)</code></a> <em>(fun)</em></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>

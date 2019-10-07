@@ -112,7 +112,7 @@ Event type to signal that the result of a mission has become available
     
    
 
-.. kotlin:class:: MainModel
+.. kotlin:class:: MainModel : Mission.Listener
 
 The main application model
 

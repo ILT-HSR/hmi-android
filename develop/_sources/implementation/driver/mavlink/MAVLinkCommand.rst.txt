@@ -2,3 +2,35 @@ Documentation for driver/mavlink/MAVLinkCommand.kt
 ==================================================
 
 
+.. kotlin:data_class:: PlanCommand
+
+@brief A command that is executed as part of a mission plan
+
+Commands of this type will be executed as mission items. How they are executed (e.g. uploaded as
+a mission, or ticked by the driver) is up the the respective [execution][Execution] type.
+
+:since: 1.2.0
+
+   .. kotlin:constructor:: constructor(id: LongCommand, frame: NavigationFrame, param1: Float = 0.0f, param2: Float = 0.0f, param3: Float = 0.0f, param4: Float = 0.0f, x: Float = 0.0f, y: Float = 0.0f, z: Float = 0.0f)
+   
+    Main constructor
+    
+   
+
+.. kotlin:data_class:: PayloadCommand
+
+@brief A command that is executed outside of a mission plan
+
+Commands of this type shall be executed outside of a mission plan. They may be intermixed with
+[plan commands][PlanCommand] as to facilitate event driven messaging for external payload or
+platforms. [Execution]s shall never upload [message commands][PayloadCommand] to the vehicle
+as part of a mission.
+
+:since: 1.2.0
+
+   .. kotlin:constructor:: constructor(name: String, system: MAVLinkSystem, data: Map<String,  Any>)
+   
+    Main constructor
+    
+   
+

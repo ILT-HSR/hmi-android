@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Documentation for driver/mavlink/MAVLinkPlatform.kt" href="MAVLinkPlatform.html" />
-    <link rel="prev" title="Documentation for driver/mavlink/support/MAVLinkMissionCommand.kt" href="support/MAVLinkMissionCommand.html" /> 
+    <link rel="prev" title="Documentation for driver/mavlink/support/NavigationFrame.kt" href="support/NavigationFrame.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,28 +90,20 @@
 <li class="toctree-l3"><a class="reference internal" href="../channel/SerialDataChannelFactory.html">Documentation for driver/channel/SerialDataChannelFactory.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../channel/ChannelFactory.html">Documentation for driver/channel/ChannelFactory.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../SerialPlatform.html">Documentation for driver/SerialPlatform.kt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../NullPlatform.html">Documentation for driver/NullPlatform.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="platform/BasicPlatform.html">Documentation for driver/mavlink/platform/BasicPlatform.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="platform/PixhawkPX4.html">Documentation for driver/mavlink/platform/PixhawkPX4.kt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="platform/CommonPlatform.html">Documentation for driver/mavlink/platform/CommonPlatform.kt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="payload/NullPayload.html">Documentation for driver/mavlink/payload/NullPayload.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="payload/Gripper.html">Documentation for driver/mavlink/payload/Gripper.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="support/MAVLinkExecution.html">Documentation for driver/mavlink/support/MAVLinkExecution.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="support/VehicleMode.html">Documentation for driver/mavlink/support/VehicleMode.kt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="support/LongCommand.html">Documentation for driver/mavlink/support/LongCommand.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="support/MessageID.html">Documentation for driver/mavlink/support/MessageID.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="support/Messages.html">Documentation for driver/mavlink/support/Messages.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="support/NavigationFrame.html">Documentation for driver/mavlink/support/NavigationFrame.kt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="support/MAVLinkMissionCommand.html">Documentation for driver/mavlink/support/MAVLinkMissionCommand.kt</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Documentation for driver/mavlink/MAVLinkCommand.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="MAVLinkPlatform.html">Documentation for driver/mavlink/MAVLinkPlatform.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="MAVLinkPayload.html">Documentation for driver/mavlink/MAVLinkPayload.kt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../access/PlatformManager.html">Documentation for driver/access/PlatformManager.kt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../access/PayloadProvider.html">Documentation for driver/access/PayloadProvider.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Payload.html">Documentation for driver/Payload.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Vehicle.html">Documentation for driver/Vehicle.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../PlatformModel.html">Documentation for driver/PlatformModel.kt</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../NullCommand.html">Documentation for driver/NullCommand.kt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../Platform.html">Documentation for driver/Platform.kt</a></li>
 </ul>
 </li>
@@ -191,6 +183,46 @@
             
   <div class="section" id="documentation-for-driver-mavlink-mavlinkcommand-kt">
 <h1>Documentation for driver/mavlink/MAVLinkCommand.kt<a class="headerlink" href="#documentation-for-driver-mavlink-mavlinkcommand-kt" title="Permalink to this headline">¶</a></h1>
+<dl class="data_class">
+<dt id="data_class PlanCommand">
+<code class="sig-prename descclassname">data class </code><code class="sig-name descname">PlanCommand</code><a class="headerlink" href="#data_class PlanCommand" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>&#64;brief A command that is executed as part of a mission plan</p>
+<p>Commands of this type will be executed as mission items. How they are executed (e.g. uploaded as
+a mission, or ticked by the driver) is up the the respective [execution][Execution] type.</p>
+<dl class="field-list">
+<dt class="field-odd">since</dt>
+<dd class="field-odd"><p>1.2.0</p>
+<dl class="constructor">
+<dt id="constructor(id:frame:param1:param2:param3:param4:x:y:z:)">
+<code class="sig-prename descclassname">fun </code><code class="sig-name descname">constructor</code><span class="sig-paren">(</span><em class="sig-param">id: LongCommand</em>, <em class="sig-param">frame: NavigationFrame</em>, <em class="sig-param">param1: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">param2: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">param3: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">param4: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">x: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">y: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">z: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em><span class="sig-paren">)</span><a class="headerlink" href="#constructor(id:frame:param1:param2:param3:param4:x:y:z:)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main constructor</p>
+</dd></dl>
+
+</dd>
+</dl>
+<dl class="data_class">
+<dt id="data_class PayloadCommand">
+<code class="sig-prename descclassname">data class </code><code class="sig-name descname">PayloadCommand</code><a class="headerlink" href="#data_class PayloadCommand" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>&#64;brief A command that is executed outside of a mission plan</p>
+<p>Commands of this type shall be executed outside of a mission plan. They may be intermixed with
+[plan commands][PlanCommand] as to facilitate event driven messaging for external payload or
+platforms. [Execution]s shall never upload [message commands][PayloadCommand] to the vehicle
+as part of a mission.</p>
+<dl class="field-list">
+<dt class="field-odd">since</dt>
+<dd class="field-odd"><p>1.2.0</p>
+<dl class="constructor">
+<dt id="constructor(name:system:data:)">
+<code class="sig-prename descclassname">fun </code><code class="sig-name descname">constructor</code><span class="sig-paren">(</span><em class="sig-param">name: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html" title="String">String</a></em>, <em class="sig-param">system: <a class="reference internal" href="support/Messages.html#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a></em>, <em class="sig-param">data: Map&lt;String,  Any&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#constructor(name:system:data:)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main constructor</p>
+</dd></dl>
+
+</dd>
+</dl>
 </div>
 
 
@@ -204,7 +236,7 @@
         <a href="MAVLinkPlatform.html" class="btn btn-neutral float-right" title="Documentation for driver/mavlink/MAVLinkPlatform.kt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="support/MAVLinkMissionCommand.html" class="btn btn-neutral float-left" title="Documentation for driver/mavlink/support/MAVLinkMissionCommand.kt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="support/NavigationFrame.html" class="btn btn-neutral float-left" title="Documentation for driver/mavlink/support/NavigationFrame.kt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

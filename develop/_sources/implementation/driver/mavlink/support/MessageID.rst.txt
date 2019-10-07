@@ -18,4 +18,9 @@ An enumeration of messages IDs commonly used by MAVLink vehicles
    - MISSION_REQUEST
    - MISSION_ITEM
    - MISSION_ACK
+   - MISSION_ITEM_REACHED
+   - MISSION_CURRENT
+   - EXTENDED_SYS_STATE
+   - PING
+   - TUNNEL
 

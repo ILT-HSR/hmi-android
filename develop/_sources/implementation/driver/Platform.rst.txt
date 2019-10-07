@@ -48,11 +48,11 @@ platforms.
     :since: 1.0.0
     
    
-   .. kotlin:var:: payload: Payload
+   .. kotlin:val:: payloads: List<Payload>
    
     Get the payload attached to the vehicle
     
-    :since: 1.0.0
+    :since: 1.2.0
     
    
    .. kotlin:val:: execution: Execution
