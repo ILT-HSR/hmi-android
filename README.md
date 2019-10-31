@@ -39,7 +39,62 @@ To build either of these branches, do the following:
 
 Alternatively, you can use Android Studio to build and run the application.
 
-# Contribution
+# Running in a PX4 Simulation Environment
+
+GCS supports interaction with PX4 SITL/HITL simulation environments. In order to run in such an
+environment, you will need to follow the steps outlined below.
+
+## Prepare Custom AVD Emulation
+
+Since the introduction of the WiFi feature in the Android emulator, there is an
+[issue](https://issuetracker.google.com/issues/37095198) that prevents UDP redirection from working
+if this feature is enabled. Therefore, you will need to start the emulator manually instead of
+launching it directly from Android Studio. Make sure to disable WiFi using a command like this:
+
+```bash
+$ emulator -avd <YOUR_AVD_ID> -feature -Wifi
+```
+
+## Enable UDP Forwarding in the Emulator
+
+The PX4 simulation uses UDP to communicate with base stations. It expects the GCS to listen on port
+`14550`. Since the emulator's network is NATed through the host, you need to enable UDP redirection
+using the emulator's Telnet interface:
+
+```bash
+$ telnet 127.0.0.1 5554
+> auth <YOUR_EMULATOR_AUTH_KEY>
+> redir add udp:14550:14550
+```
+
+## Running the PX4 Simulation
+
+First make sure you have a copy of the [PX4 firmware](https://github.com/PX4/Firmware) repository
+available. Enter into the root of your copy and run the following command:
+
+```bash
+$ make px4_sitl_default jmavsim
+```
+
+This will start the PX4 simulation using jMAVSim. You might want to adjust your simulated GPS
+location to something near where your Android emulator believes it is located. You can do that
+by setting the `PX4_HOME_LAT`, `PX4_HOME_LON`, and `PX4_HOME_ALT` environment variables before
+starting the simulation. For example, in order to set the location to the main building of HSR, you
+can use the following command:
+
+```
+$ PX4_HOME_LAT=47.2233607 PX4_HOME_LON=8.8173627 make px4_sitl_default jmavsim
+```
+
+## Start the GCS Application in the Emulator
+
+You are now equipped to start using the simulation environment from the GCS application. Make sure
+to install the application in the emulator (for example by running it from within Android Studio).
+Before you can use the application in conjunction with the simulation, you have to make sure that
+the application uses the UDP data channel for vehicle communication. You can select the channel in
+the GCS preferences activity.
+
+# Contributing
 
 Developing a ground control station requires a lot of work. If you think you have an important contribution, please do not hesitate.
 
