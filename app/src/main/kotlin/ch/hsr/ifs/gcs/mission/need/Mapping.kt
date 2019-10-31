@@ -10,7 +10,6 @@ import ch.hsr.ifs.gcs.resource.CAPABILITY_CAN_FLY
 import ch.hsr.ifs.gcs.resource.Capability
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
-import kotlin.math.IEEErem
 import kotlin.math.floor
 
 /**
@@ -35,6 +34,8 @@ class Mapping private constructor(override val resource: Resource, private val f
 
     private val fPreferences = PreferenceManager.getDefaultSharedPreferences(GCS.context)
 
+    private val fFlightPlan by lazy { buildFlightplan() }
+
     override val id = "ch.hsr.ifs.gcs.mission.need.mapping" //TODO: Move mapping to need descriptor
 
     override val parameterList get() = listOf(fMapType, fRegion)
@@ -44,8 +45,8 @@ class Mapping private constructor(override val resource: Resource, private val f
             return listOf(
                     LimitTravelSpeed(fPreferences.getInt(PREFERENCE_KEY_MAPPING_TRAVEL_SPEED, PREFERENCE_DEFAULT_MAPPING_TRAVEL_SPEED).toDouble()),
                     TakeOff(fPreferences.getInt(PREFERENCE_KEY_MAPPING_TAKEOFF_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_TAKEOFF_ALTITUDE))) +
-                    ToggleSensor() +
-                    buildFlightplan() +
+                    MoveToPosition(getStartingPointAt(fPreferences.getInt(PREFERENCE_KEY_MAPPING_TAKEOFF_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_TAKEOFF_ALTITUDE).toDouble())) +
+                    fFlightPlan.subList(0, 1) + ToggleSensor() + fFlightPlan.subList(1, fFlightPlan.size) +
                     ToggleSensor() +
                     ReturnToHome()
         }
@@ -55,25 +56,31 @@ class Mapping private constructor(override val resource: Resource, private val f
                 Capability(CAPABILITY_CAN_FLY, true)
         )
 
-    private fun buildFlightplan(): List<Task> {
+    private fun getSurveyCornersAt(altitude: Double) = fRegion.result.map {
         assert(fRegion.result.size == 4)
+        GPSPosition(it.latitude, it.longitude, altitude)
+    }
 
+    private fun getStartingPointAt(altitude: Double) = run {
+        val corners = getSurveyCornersAt(altitude)
+        val northWestCorner = corners.first()
+        val southWestCorner = corners.last()
+        val areaHeight = northWestCorner.distanceTo(southWestCorner)
+        val remainder = areaHeight.rem(SCAN_CORRIDOR_WIDTH)
+
+        northWestCorner.positionAt(remainder / 2, COMPASS_BEARING_SOUTH)
+    }
+
+    private fun buildFlightplan(): List<Task> {
         val altitude = fPreferences.getInt(PREFERENCE_KEY_MAPPING_SURVEY_ALTITUDE, PREFERENCE_DEFAULT_MAPPING_SURVEY_ALTITUDE).toDouble()
-
-        val corners = fRegion.result
-        val (northWest, northEast, southEast) = corners.map { GPSPosition(it.latitude, it.longitude, altitude) }
+        val (northWest, northEast, southEast) = getSurveyCornersAt(altitude)
 
         val width = northWest.distanceTo(northEast)
-        val height = northEast.distanceTo(southEast)
+        val realLines = floor(northEast.distanceTo(southEast) / SCAN_CORRIDOR_WIDTH).toInt()
 
-        val remainder = height.IEEErem(SCAN_CORRIDOR_WIDTH)
-        val realLines = floor(height / SCAN_CORRIDOR_WIDTH).toInt()
-
-        val startPoint = northWest.positionAt(remainder / 2 * SCAN_CORRIDOR_WIDTH, COMPASS_BEARING_SOUTH)
-
-        return (0 until realLines).fold(listOf(MoveToPosition(startPoint))) { plan, step ->
+        return (0 until realLines).fold(listOf(MoveToPosition(getStartingPointAt(altitude)))) { plan, step ->
             val currentPoint = plan.last()
-            val rowEnd = MoveToPosition(if(step % 2 == 0) {
+            val rowEnd = MoveToPosition(if (step % 2 == 0) {
                 currentPoint.targetLocation.positionAt(width, COMPASS_BEARING_EAST)
             } else {
                 currentPoint.targetLocation.positionAt(width, COMPASS_BEARING_WEST)
