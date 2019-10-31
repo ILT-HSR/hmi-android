@@ -1,7 +1,8 @@
 GCS - GroundControlStation HSR
 ==============================
 
-GCS is a ground control station developed at HSR for easy coordination of multiple unmanned vehicles without hours of prior training.
+GCS is a ground control station developed at HSR for easy coordination of multiple unmanned vehicles
+without hours of prior training.
 
 # Installation
 
@@ -25,7 +26,8 @@ Open the following links in a browser on your Android device to install the newe
 
 # Build
 
-The master branch always contains a stable version of the application. The developer branch on the other side contains unstable versions.
+The master branch always contains a stable version of the application. The develop branch on the
+other side contains unstable versions.
 
 ## Howto
 
@@ -96,7 +98,8 @@ the GCS preferences activity.
 
 # Contributing
 
-Developing a ground control station requires a lot of work. If you think you have an important contribution, please do not hesitate.
+Developing a ground control station requires a lot of work. If you think you have an important
+contribution, please do not hesitate.
 
 ## Howto
 
@@ -113,11 +116,16 @@ Follow the steps below to contribute to this project:
 
 To contribute to this project, we require you to follow a few simple guidelines:
 
-- **GitFlow** - All development in this repository is done following the GitFlow workflow. The `master` and `develop` branch are therefore protected and feature branches have to be used to make adjustments and contributions.
+- **GitFlow** - All development in this repository is done following the GitFlow workflow. The
+  `master` and `develop` branch are therefore protected and feature branches have to be used to make
+  adjustments and contributions.
 - **Commit Messages** - Outline a broad description of your change in the first line of your commit,
-and keep it short.
-- **Issue Tracking** - Please update/adjust issues you are working on. If your feature is not described in an issue yet, please create a new issue. This also holds if you find a bug or have a feature request without wanting to contribute.
+  and keep it short.
+- **Issue Tracking** - Please update/adjust issues you are working on. If your feature is not
+  described in an issue yet, please create a new issue. This also holds if you find a bug or have a
+  feature request without wanting to contribute.
 
 # Documentation
 
-Click on the `docs` badges above. This will route you to the documentation for the corresponding release.
+Click on the `docs` badges above. This will route you to the documentation for the corresponding
+release.
