@@ -124,9 +124,9 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
             }
         }
 
-        measurements.map { (position, value) ->
-            CircleOverlay(position.geoPoint, radiusInMeters = 1.0, fillColor = colorForValue(value.value, min, max))
-        }.forEach { mapView.overlays.add(it) }
+        val colors = measurements.map { colorForValue(it.second.value, min, max) }
+        val positions = measurements.map { it.first.geoPoint }
+        mapView.overlays.add(CircleOverlay(positions, radiusInMeters = 1.0, colors = colors))
     }
 
 }
