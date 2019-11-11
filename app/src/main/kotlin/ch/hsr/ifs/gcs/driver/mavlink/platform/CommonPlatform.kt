@@ -1,6 +1,7 @@
 package ch.hsr.ifs.gcs.driver.mavlink.platform
 
 import ch.hsr.ifs.gcs.driver.Payload
+import ch.hsr.ifs.gcs.driver.channel.Channel
 import me.drton.jmavlib.mavlink.MAVLinkSchemaRegistry
 import java.nio.channels.ByteChannel
 
@@ -12,7 +13,7 @@ import java.nio.channels.ByteChannel
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-abstract class CommonPlatform(channel: ByteChannel, payloads: List<Payload>) : BasicPlatform(channel, payloads, MAVLinkSchemaRegistry["common"]!!) {
+abstract class CommonPlatform(channel: Channel, payloads: List<Payload>) : BasicPlatform(channel, payloads, MAVLinkSchemaRegistry["common"]!!) {
 
     companion object {
         /**

@@ -4,8 +4,9 @@ import android.content.Context
 import android.hardware.usb.UsbManager
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import java.io.IOException
-import java.nio.ByteBuffer
-import java.nio.channels.ByteChannel
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 /**
  * A byte channel to communicate with serial devices
@@ -16,7 +17,7 @@ import java.nio.channels.ByteChannel
  * @since 1.0.0
  * @author IFS Institute for Software
  */
-class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : ByteChannel {
+class SerialDataChannel private constructor(private val fPort: UsbSerialPort, private val fConfiguration: Configuration) : Channel {
 
     companion object {
 
@@ -33,7 +34,7 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
                 try {
                     port.open(it)
                     port.setParameters(configuration.baudRate, configuration.dataBits, configuration.stopBits, configuration.parity.value)
-                    SerialDataChannel(port)
+                    SerialDataChannel(port, configuration)
                 } catch (e: IOException) {
                     null
                 }
@@ -43,11 +44,12 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
 
     }
 
-    data class Configuration(
+    data class Configuration @ExperimentalTime constructor(
             val baudRate: Int = 57600,
             val dataBits: Int = 8,
             val stopBits: Int = 1,
-            val parity: Parity = Parity.NONE
+            val parity: Parity = Parity.NONE,
+            val ioTimeout: Duration = 0.064.seconds
     )
 
     /**
@@ -56,6 +58,7 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
      * @since 1.0.0
      * @author IFS Institute for Software
      */
+    @Suppress("unused")
     enum class Parity(val value: Int) {
 
         /**
@@ -85,39 +88,20 @@ class SerialDataChannel private constructor(private val fPort: UsbSerialPort) : 
     }
 
     private var fIsOpen = true
-    private val fIncoming = ByteArray(2048)
 
-    override fun isOpen() = fIsOpen
+    override val isOpen get() = fIsOpen
 
-    override fun write(src: ByteBuffer?): Int {
-        return when (src) {
-            null -> 0
-            else -> {
-                when (src.remaining()) {
-                    0 -> 0
-                    else -> {
-                        val data = ByteArray(src.remaining())
-                        src.get(data)
-                        fPort.write(data, 64)
-                    }
-                }
+    @ExperimentalTime
+    override fun read(incoming: ByteArray) =
+            fPort.read(incoming, fConfiguration.ioTimeout.inMilliseconds.toInt())
+
+    @ExperimentalTime
+    override fun write(outgoing: ByteArray) =
+            fPort.write(outgoing, fConfiguration.ioTimeout.inMilliseconds.toInt())
+
+    override fun close() =
+            fPort.close().also {
+                fIsOpen = false
             }
-        }
-    }
 
-    override fun close() {
-        fPort.close()
-        fIsOpen = false
-    }
-
-    override fun read(dst: ByteBuffer?): Int {
-        return when (dst) {
-            null -> 0
-            else -> {
-                    val read = fPort.read(fIncoming, 64)
-                    dst.put(fIncoming, 0, read)
-                    read
-            }
-        }
-    }
 }

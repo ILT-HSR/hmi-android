@@ -10,6 +10,7 @@ import ch.hsr.ifs.gcs.mission.Scheduler
 import ch.hsr.ifs.gcs.mission.access.NeedManager
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.ResourceManager
+import kotlin.time.ExperimentalTime
 
 class GCS : Application(), ResourceManager.Listener, NeedManager.Listener {
 
@@ -34,6 +35,7 @@ class GCS : Application(), ResourceManager.Listener, NeedManager.Listener {
 
     // Application implementation
 
+    @ExperimentalTime
     override fun onCreate() {
         super.onCreate()
         fContext = this

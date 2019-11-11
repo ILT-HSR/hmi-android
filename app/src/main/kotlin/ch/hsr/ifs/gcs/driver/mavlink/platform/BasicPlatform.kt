@@ -5,17 +5,18 @@ import ch.hsr.ifs.gcs.driver.AerialVehicle
 import ch.hsr.ifs.gcs.driver.Payload
 import ch.hsr.ifs.gcs.driver.PayloadContext
 import ch.hsr.ifs.gcs.driver.PlatformContext
+import ch.hsr.ifs.gcs.driver.channel.ByteChannelAdaptor
 import ch.hsr.ifs.gcs.driver.mavlink.*
 import ch.hsr.ifs.gcs.driver.mavlink.support.*
 import ch.hsr.ifs.gcs.mission.Execution
 import ch.hsr.ifs.gcs.support.geo.GPSPosition
 import ch.hsr.ifs.gcs.support.geo.WGS89Position
+import ch.hsr.ifs.gcs.driver.channel.Channel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.channels.actor
 import me.drton.jmavlib.mavlink.*
 import java.io.IOException
-import java.nio.channels.ByteChannel
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -30,7 +31,7 @@ import java.util.concurrent.TimeUnit
  * @author IFS Institute for Software
  */
 abstract class BasicPlatform(
-        channel: ByteChannel,
+        channel: Channel,
         final override val payloads: List<Payload>,
         final override val schema: MAVLinkSchema) : MAVLinkPlatform {
 
@@ -55,7 +56,7 @@ abstract class BasicPlatform(
     private val fLocalSystem = MAVLinkSystem(255, COMPONENT_MISSION_PLANNER)
     private val fPlatformSystem = MAVLinkSystem(1, COMPONENT_AUTOPILOT)
 
-    private val fMessageStream = MAVLinkStream(schema, channel)
+    private val fMessageStream = MAVLinkStream(schema, ByteChannelAdaptor.adapt(channel))
     private val fMessageQueue = ConcurrentLinkedQueue<MAVLinkMessage>()
 
     private lateinit var fHeartbeatJob: Job
@@ -95,7 +96,7 @@ abstract class BasicPlatform(
         data class SendMessage(val message: MAVLinkMessage) : MessageEvent()
     }
 
-    private val fMainActor = GlobalScope.actor<MessageEvent>(PlatformContext, Channel.UNLIMITED) {
+    private val fMainActor = GlobalScope.actor<MessageEvent>(PlatformContext, UNLIMITED) {
         for (event in this) {
             @Suppress("IMPLICIT_CAST_TO_ANY")
             when (event) {

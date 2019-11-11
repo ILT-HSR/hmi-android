@@ -7,12 +7,14 @@ import android.hardware.usb.UsbManager
 import android.util.Log
 import ch.hsr.ifs.gcs.driver.PlatformDrivers
 import ch.hsr.ifs.gcs.driver.PayloadDrivers
+import ch.hsr.ifs.gcs.driver.channel.Channel
 import ch.hsr.ifs.gcs.driver.channel.SerialDataChannelFactory
 import ch.hsr.ifs.gcs.driver.channel.UdpDataChannelFactory
 import com.hoho.android.usbserial.driver.UsbSerialDriver
 import com.hoho.android.usbserial.driver.UsbSerialProber
 import java.nio.channels.ByteChannel
 import java.util.concurrent.Executors
+import kotlin.time.ExperimentalTime
 
 class ResourceManager(private val fListener: Listener, private val fChannelType: String) {
 
@@ -26,7 +28,8 @@ class ResourceManager(private val fListener: Listener, private val fChannelType:
         private const val RESOURCES_DIRECTORY = "resources"
         private const val LOG_TAG = "ResourceManager"
 
-        private val CHANNEL_FACTORIES: Map<String, (Context, ResourceManager) -> ByteChannel?> = mapOf(
+        @ExperimentalTime
+        private val CHANNEL_FACTORIES: Map<String, (Context, ResourceManager) -> Channel?> = mapOf(
                 "ch.hsr.ilt.driver.channel.UdpDataChannel" to {_: Context, rm -> rm.createUdpChannel()},
                 "ch.hsr.ilt.driver.channel.SerialDataChannel" to {ctx: Context, rm -> rm.createSerialChannel(ctx)}
         )
@@ -37,6 +40,7 @@ class ResourceManager(private val fListener: Listener, private val fChannelType:
     private var fKnownResources = emptyList<ResourceDescriptor>()
     private var fLocalResources = mutableListOf<Resource>()
 
+    @ExperimentalTime
     fun onCreate(context: Context) {
         fKnownResources = context.assets.list(RESOURCES_DIRECTORY)!!.mapNotNull {
             try {
@@ -54,6 +58,7 @@ class ResourceManager(private val fListener: Listener, private val fChannelType:
         fDeviceScanner.shutdownNow()
     }
 
+    @ExperimentalTime
     private fun scan(context: Context) {
         for (res in fKnownResources) {
             val deviceFactory = PlatformDrivers.drivers[res.driver] ?: continue
@@ -78,12 +83,13 @@ class ResourceManager(private val fListener: Listener, private val fChannelType:
         }
     }
 
-    private fun createUdpChannel(): ByteChannel? {
+    private fun createUdpChannel(): Channel? {
         val parameters = UdpDataChannelFactory.Parameters(14550)
         return UdpDataChannelFactory.createChannel(parameters)
     }
 
-    private fun createSerialChannel(context: Context): ByteChannel? {
+    @ExperimentalTime
+    private fun createSerialChannel(context: Context): Channel? {
         val manager = context.getSystemService(Context.USB_SERVICE) as UsbManager
         return UsbSerialProber.getDefaultProber().findAllDrivers(manager).filter(fUsbDeviceFilter).map { usbDriver ->
             val parameters = SerialDataChannelFactory.Parameters(context, usbDriver.ports[0])

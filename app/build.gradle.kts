@@ -38,6 +38,7 @@ dependencies {
     implementation(group = "org.osmdroid", name = "osmdroid-android", version = "6.0.2")
     implementation(group = "org.osmdroid", name = "osmdroid-third-party", version = "6.0.1")
     implementation(group = "com.google.code.gson", name = "gson", version = "2.8.4")
+    implementation(group = "com.squareup.okhttp3", name = "okhttp", version = "4.2.2")
 
     // Local Libraries
     implementation(project(":jMAVlib"))
