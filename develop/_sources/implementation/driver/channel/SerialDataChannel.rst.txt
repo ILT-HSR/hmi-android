@@ -12,7 +12,7 @@ to serial devices.
 :since: 1.0.0
 :author: IFS Institute for Software
 
-   .. kotlin:constructor:: constructor(fPort: UsbSerialPort)
+   .. kotlin:constructor:: constructor(fPort: UsbSerialPort, fConfiguration: Configuration)
    
     Main constructor
     
