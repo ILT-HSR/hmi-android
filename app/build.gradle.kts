@@ -4,6 +4,8 @@ val versionMajor = 1
 val versionMinor = 1
 val versionPatch = 0
 
+apply(plugin="kotlinx-serialization")
+
 android {
     defaultConfig {
         applicationId = "ch.hsr.ifs.gcs"
@@ -23,6 +25,7 @@ dependencies {
     // Kotlin
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version = "1.3.1")
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.3.1")
+    implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-runtime", version = "0.13.0")
 
     // Android
     implementation(group = "androidx.appcompat", name = "appcompat", version = "1.0.2")
