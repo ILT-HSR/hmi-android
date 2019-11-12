@@ -3,14 +3,17 @@ package ch.hsr.ifs.gcs
 import android.app.Application
 import android.content.Context
 import android.preference.PreferenceManager
-import ch.hsr.ifs.gcs.driver.*
-import ch.hsr.ifs.gcs.driver.generic.platform.NullPlatform
+import ch.hsr.ifs.gcs.driver.PlatformModel
 import ch.hsr.ifs.gcs.mission.Need
 import ch.hsr.ifs.gcs.mission.Scheduler
 import ch.hsr.ifs.gcs.mission.access.NeedManager
 import ch.hsr.ifs.gcs.resource.Resource
 import ch.hsr.ifs.gcs.resource.ResourceManager
-import kotlin.time.ExperimentalTime
+import ch.hsr.ifs.gcs.resource.ResourceNode
+import java.nio.charset.Charset
+import java.util.*
+
+private const val RESOURCES_DIRECTORY = "resources"
 
 class GCS : Application(), ResourceManager.Listener, NeedManager.Listener {
 
@@ -30,12 +33,9 @@ class GCS : Application(), ResourceManager.Listener, NeedManager.Listener {
     private val fScheduler = Scheduler()
 
     val mainModel get() = fMainModel
-    val resourceManager get() = fResourceManager
-
 
     // Application implementation
 
-    @ExperimentalTime
     override fun onCreate() {
         super.onCreate()
         fContext = this
@@ -47,12 +47,31 @@ class GCS : Application(), ResourceManager.Listener, NeedManager.Listener {
         fMainModel = MainModel()
 
         val channelType = preferences.getString(PREFERENCE_KEY_CHANNEL_TYPE, PREFERENCE_DEFAULT_CHANNEL_TYPE)
+        val resourceFiles = assets.list(RESOURCES_DIRECTORY)?.mapNotNull {
+            val charset = Charset.defaultCharset().name()
+            Scanner(assets.open("$RESOURCES_DIRECTORY/$it"), charset).use { scn ->
+                scn.useDelimiter("\\A").next()
+            }
+        } ?: emptyList()
 
-        fResourceManager = ResourceManager(this, channelType!!)
-        fNeedManager = NeedManager(this)
+        val resourceManagerConfiguration = ResourceManager.Parameters(
+                resourceFiles,
+                channelType!!,
+                this,
+                ResourceNode.Parameters(
+                        "10.0.2.2",
+                        2222
+                ),
+                this
+        )
 
-        fResourceManager.onCreate(this)
-        fNeedManager.onCreate(fResourceModel)
+        fResourceManager = ResourceManager(resourceManagerConfiguration).apply {
+            start()
+        }
+
+        fNeedManager = NeedManager(this).apply {
+            onCreate(fResourceModel)
+        }
 
         fMainModel.missions.observeForever {
             (it ?: emptyList()).forEach(fScheduler::launch)
@@ -61,9 +80,9 @@ class GCS : Application(), ResourceManager.Listener, NeedManager.Listener {
 
     override fun onTerminate() {
         super.onTerminate()
-        fNeedManager.onDestroy(fResourceModel)
-        fResourceManager.onDestroy()
         fMainModel.onDestroy()
+        fNeedManager.onDestroy(fResourceModel)
+        fResourceManager.stop()
     }
 
     // ResourceManager.Listener implementation

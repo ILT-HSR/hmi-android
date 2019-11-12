@@ -3,15 +3,13 @@ package ch.hsr.ifs.gcs.resource
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import java.io.InputStream
-import java.io.InputStreamReader
 import java.io.Serializable
 
 data class ResourceDescriptor(val id: String, val driver: String, val payloadDrivers: List<String>, val capabilities: List<Capability<*>>) {
 
     companion object {
-        fun load(stream: InputStream): ResourceDescriptor =
-                JsonParser().parse(InputStreamReader(stream, Charsets.UTF_8)).asJsonObject.let { res ->
+        fun load(data: String): ResourceDescriptor =
+                JsonParser().parse(data).asJsonObject.let { res ->
                     val id = res["id"].asString
                     val capabilities = loadCapabilities(res)
                     val platformDescriptor = res["platform"].asJsonObject

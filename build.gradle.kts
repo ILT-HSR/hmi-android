@@ -1,5 +1,6 @@
 import com.android.build.gradle.BaseExtension
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.konan.util.profile
 
 buildscript {
@@ -93,5 +94,13 @@ subprojects {
 
         "testImplementation"(group = "junit", name = "junit", version = "4.12")
         "testImplementation"(group = "org.hamcrest", name = "hamcrest-library", version = "1.3")
+    }
+
+    tasks {
+        withType<KotlinCompile> {
+            kotlinOptions.freeCompilerArgs += listOf(
+                    "-Xuse-experimental=kotlin.time.ExperimentalTime"
+            )
+        }
     }
 }
