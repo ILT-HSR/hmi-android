@@ -27,22 +27,6 @@ internal class CommonUGV private constructor(channel: Channel, payloads: List<Pa
         fun instantiate(channel: Channel, payloads: List<Payload>): CommonUGV? = CommonUGV(channel, payloads)
     }
 
-    enum class UGVCustomMode(val id: Int) {
-        MANUAL(1),
-        SPEED_CONTROL(2),
-        POSITION_CONTROL(3),
-        AUTOMATIC(4),
-        OFFBOARD_CONTROL(5)
-    }
-
-    enum class PX4AutomaticModeSubMode(val id: Int) {
-        READY(1),
-        MISSION(2),
-        RETURN_TO_HOME(3),
-        RETURN_TO_GROUND_STATION(4),
-        FOLLOW_TARGET(5)
-    }
-
     override val driverId get() = DRIVER_MAVLINK_COMMON_UGV
 
     override var fExecution = MissionExecution(this)
