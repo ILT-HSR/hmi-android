@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Documentation for resource/ResourceManager.kt" href="ResourceManager.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> HSR HMI for Android
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> HSR HMI for Android
           
 
           
@@ -73,6 +74,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -102,6 +104,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -140,7 +143,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Implementation</a> &raquo;</li>
         
@@ -167,7 +170,7 @@
             
   <div class="section" id="documentation-for-resource-resource-kt">
 <h1>Documentation for resource/Resource.kt<a class="headerlink" href="#documentation-for-resource-resource-kt" title="Permalink to this headline">¶</a></h1>
-<dl class="interface">
+<dl class="kotlin interface">
 <dt id="interface Resource">
 <code class="sig-prename descclassname">interface </code><code class="sig-name descname">Resource</code><a class="headerlink" href="#interface Resource" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -181,7 +184,7 @@ the status of the resource.</p>
 </dd>
 <dt class="field-even">author</dt>
 <dd class="field-even"><p>IFS Institute for Software</p>
-<dl class="val">
+<dl class="kotlin val">
 <dt id="status">
 <code class="sig-prename descclassname">val </code><code class="sig-name descname">status</code> : <a class="reference internal" href="#enum_class Status" title="Status">Status</a><a class="headerlink" href="#status" title="Permalink to this definition">¶</a></dt>
 <dd><p>The status of the resource</p>
@@ -192,7 +195,7 @@ the status of the resource.</p>
 </dl>
 </dd></dl>
 
-<dl class="val">
+<dl class="kotlin val">
 <dt id="id">
 <code class="sig-prename descclassname">val </code><code class="sig-name descname">id</code> : <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html" title="String">String</a><a class="headerlink" href="#id" title="Permalink to this definition">¶</a></dt>
 <dd><p>The unique identification of a resource</p>
@@ -203,7 +206,7 @@ the status of the resource.</p>
 </dl>
 </dd></dl>
 
-<dl class="val">
+<dl class="kotlin val">
 <dt id="platformDriver">
 <code class="sig-prename descclassname">val </code><code class="sig-name descname">platformDriver</code> : <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html" title="String">String</a><a class="headerlink" href="#platformDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>The driver id of a resource</p>
@@ -214,7 +217,7 @@ the status of the resource.</p>
 </dl>
 </dd></dl>
 
-<dl class="val">
+<dl class="kotlin val">
 <dt id="payloadDrivers">
 <code class="sig-prename descclassname">val </code><code class="sig-name descname">payloadDrivers</code> : List&lt;String&gt;<a class="headerlink" href="#payloadDrivers" title="Permalink to this definition">¶</a></dt>
 <dd><p>The id of the payload driver if any</p>
@@ -225,7 +228,7 @@ the status of the resource.</p>
 </dl>
 </dd></dl>
 
-<dl class="val">
+<dl class="kotlin val">
 <dt id="capabilities">
 <code class="sig-prename descclassname">val </code><code class="sig-name descname">capabilities</code> : List&lt;Capability&lt;*&gt;&gt;<a class="headerlink" href="#capabilities" title="Permalink to this definition">¶</a></dt>
 <dd><p>The list of capabilities of this resource</p>
@@ -236,7 +239,7 @@ the status of the resource.</p>
 </dl>
 </dd></dl>
 
-<dl class="val">
+<dl class="kotlin val">
 <dt id="isAvailable">
 <code class="sig-prename descclassname">val </code><code class="sig-name descname">isAvailable</code> : <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html" title="Boolean">Boolean</a><a class="headerlink" href="#isAvailable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if this resource is available</p>
@@ -247,7 +250,7 @@ the status of the resource.</p>
 </dl>
 </dd></dl>
 
-<dl class="var">
+<dl class="kotlin var">
 <dt id="plaform">
 <code class="sig-prename descclassname">var </code><code class="sig-name descname">plaform</code> : <a class="reference internal" href="../driver/Platform.html#interface Platform" title="Platform">Platform</a><a class="headerlink" href="#plaform" title="Permalink to this definition">¶</a></dt>
 <dd><p>The platform of this resource</p>
@@ -258,7 +261,7 @@ the status of the resource.</p>
 </dl>
 </dd></dl>
 
-<dl class="fun">
+<dl class="kotlin fun">
 <dt id="has(capability:)-Boolean">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">has</code><span class="sig-paren">(</span><em class="sig-param">capability: Capability&lt;*&gt;</em><span class="sig-paren">)</span> : <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html" title="Boolean">Boolean</a><a class="headerlink" href="#has(capability:)-Boolean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the resource has the given capability</p>
@@ -277,13 +280,13 @@ the status of the resource.</p>
 </dl>
 </dd></dl>
 
-<dl class="fun">
+<dl class="kotlin fun">
 <dt id="markAs(status:)">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">markAs</code><span class="sig-paren">(</span><em class="sig-param">status: <a class="reference internal" href="#enum_class Status" title="Status">Status</a></em><span class="sig-paren">)</span><a class="headerlink" href="#markAs(status:)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the status of the resource to the given status</p>
 </dd></dl>
 
-<dl class="enum_class">
+<dl class="kotlin enum_class">
 <dt id="enum_class Status">
 <code class="sig-prename descclassname">enum class </code><code class="sig-name descname">Status</code><a class="headerlink" href="#enum_class Status" title="Permalink to this definition">¶</a></dt>
 <dd><p>A [resource][Resource] can be in one of several states, allowing for further filtering</p>
@@ -325,11 +328,19 @@ the status of the resource.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright (c) 2019, ILT Institute for Lab Automation and Mechatronics and IFS Institute for Software
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -340,7 +351,6 @@ the status of the resource.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Documentation for driver/mavlink/MAVLinkPlatform.kt" href="MAVLinkPlatform.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> HSR HMI for Android
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> HSR HMI for Android
           
 
           
@@ -73,6 +74,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -118,6 +120,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -156,7 +159,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Implementation</a> &raquo;</li>
         
@@ -183,7 +186,7 @@
             
   <div class="section" id="documentation-for-driver-mavlink-mavlinkcommand-kt">
 <h1>Documentation for driver/mavlink/MAVLinkCommand.kt<a class="headerlink" href="#documentation-for-driver-mavlink-mavlinkcommand-kt" title="Permalink to this headline">¶</a></h1>
-<dl class="data_class">
+<dl class="kotlin data_class">
 <dt id="data_class PlanCommand">
 <code class="sig-prename descclassname">data class </code><code class="sig-name descname">PlanCommand</code><a class="headerlink" href="#data_class PlanCommand" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -194,7 +197,7 @@ a mission, or ticked by the driver) is up the the respective [execution][Executi
 <dl class="field-list">
 <dt class="field-odd">since</dt>
 <dd class="field-odd"><p>1.2.0</p>
-<dl class="constructor">
+<dl class="kotlin constructor">
 <dt id="constructor(id:frame:param1:param2:param3:param4:x:y:z:)">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">constructor</code><span class="sig-paren">(</span><em class="sig-param">id: LongCommand</em>, <em class="sig-param">frame: NavigationFrame</em>, <em class="sig-param">param1: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">param2: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">param3: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">param4: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">x: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">y: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em>, <em class="sig-param">z: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html" title="Float">Float</a> = 0.0f</em><span class="sig-paren">)</span><a class="headerlink" href="#constructor(id:frame:param1:param2:param3:param4:x:y:z:)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main constructor</p>
@@ -202,7 +205,7 @@ a mission, or ticked by the driver) is up the the respective [execution][Executi
 
 </dd>
 </dl>
-<dl class="data_class">
+<dl class="kotlin data_class">
 <dt id="data_class PayloadCommand">
 <code class="sig-prename descclassname">data class </code><code class="sig-name descname">PayloadCommand</code><a class="headerlink" href="#data_class PayloadCommand" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -215,7 +218,7 @@ as part of a mission.</p>
 <dl class="field-list">
 <dt class="field-odd">since</dt>
 <dd class="field-odd"><p>1.2.0</p>
-<dl class="constructor">
+<dl class="kotlin constructor">
 <dt id="constructor(name:system:data:)">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">constructor</code><span class="sig-paren">(</span><em class="sig-param">name: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html" title="String">String</a></em>, <em class="sig-param">system: <a class="reference internal" href="support/Messages.html#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a></em>, <em class="sig-param">data: Map&lt;String,  Any&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#constructor(name:system:data:)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main constructor</p>
@@ -245,11 +248,19 @@ as part of a mission.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright (c) 2019, ILT Institute for Lab Automation and Mechatronics and IFS Institute for Software
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -260,7 +271,6 @@ as part of a mission.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

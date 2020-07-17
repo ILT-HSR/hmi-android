@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="Documentation for driver/mavlink/support/NavigationFrame.kt" href="NavigationFrame.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="../../../../index.html" class="icon icon-home"> HSR HMI for Android
+            <a href="../../../../index.html" class="icon icon-home" alt="Documentation Home"> HSR HMI for Android
           
 
           
@@ -73,6 +74,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -118,6 +120,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -156,7 +159,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../../index.html">Implementation</a> &raquo;</li>
         
@@ -183,7 +186,7 @@
             
   <div class="section" id="documentation-for-driver-mavlink-support-messages-kt">
 <h1>Documentation for driver/mavlink/support/Messages.kt<a class="headerlink" href="#documentation-for-driver-mavlink-support-messages-kt" title="Permalink to this headline">¶</a></h1>
-<dl class="data_class">
+<dl class="kotlin data_class">
 <dt id="data_class MAVLinkSystem">
 <code class="sig-prename descclassname">data class </code><code class="sig-name descname">MAVLinkSystem</code><a class="headerlink" href="#data_class MAVLinkSystem" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -195,7 +198,7 @@
 </dd>
 <dt class="field-even">author</dt>
 <dd class="field-even"><p>IFS Institute for Software</p>
-<dl class="constructor">
+<dl class="kotlin constructor">
 <dt id="constructor(id:component:)">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">constructor</code><span class="sig-paren">(</span><em class="sig-param">id: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html" title="Int">Int</a></em>, <em class="sig-param">component: <a class="reference external" href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html" title="Int">Int</a></em><span class="sig-paren">)</span><a class="headerlink" href="#constructor(id:component:)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main constructor</p>
@@ -203,7 +206,7 @@
 
 </dd>
 </dl>
-<dl class="fun">
+<dl class="kotlin fun">
 <dt id="createHeartbeatMessage(sender:schema:)-MAVLinkMessage">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">createHeartbeatMessage</code><span class="sig-paren">(</span><em class="sig-param">sender: <a class="reference internal" href="#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a></em>, <em class="sig-param">schema: MAVLinkSchema</em><span class="sig-paren">)</span> : MAVLinkMessage<a class="headerlink" href="#createHeartbeatMessage(sender:schema:)-MAVLinkMessage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -220,7 +223,7 @@
 <dd class="field-odd"><p>A new MAVLink ‘Heartbeat’ message</p>
 </dd>
 </dl>
-<dl class="fun">
+<dl class="kotlin fun">
 <dt id="createArmMessage(sender:target:schema:)-MAVLinkMessage">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">createArmMessage</code><span class="sig-paren">(</span><em class="sig-param">sender: <a class="reference internal" href="#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a></em>, <em class="sig-param">target: <a class="reference internal" href="#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a></em>, <em class="sig-param">schema: MAVLinkSchema</em><span class="sig-paren">)</span> : MAVLinkMessage<a class="headerlink" href="#createArmMessage(sender:target:schema:)-MAVLinkMessage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -240,7 +243,7 @@
 <dd class="field-even"><p>a new MAVLink ‘Long NativeCommand’ message containing an ‘Arm’ command</p>
 </dd>
 </dl>
-<dl class="fun">
+<dl class="kotlin fun">
 <dt id="createDisarmMessage(sender:target:schema:)-MAVLinkMessage">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">createDisarmMessage</code><span class="sig-paren">(</span><em class="sig-param">sender: <a class="reference internal" href="#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a></em>, <em class="sig-param">target: <a class="reference internal" href="#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a></em>, <em class="sig-param">schema: MAVLinkSchema</em><span class="sig-paren">)</span> : MAVLinkMessage<a class="headerlink" href="#createDisarmMessage(sender:target:schema:)-MAVLinkMessage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -260,7 +263,7 @@
 <dd class="field-even"><p>a new MAVLink ‘Long NativeCommand’ message containing a ‘Disarm’ command</p>
 </dd>
 </dl>
-<dl class="fun">
+<dl class="kotlin fun">
 <dt id="createRequestAutopilotCapabilitiesMessage(sender:target:schema:)-MAVLinkMessage">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">createRequestAutopilotCapabilitiesMessage</code><span class="sig-paren">(</span><em class="sig-param">sender: <a class="reference internal" href="#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a></em>, <em class="sig-param">target: <a class="reference internal" href="#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a></em>, <em class="sig-param">schema: MAVLinkSchema</em><span class="sig-paren">)</span> : MAVLinkMessage<a class="headerlink" href="#createRequestAutopilotCapabilitiesMessage(sender:target:schema:)-MAVLinkMessage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -302,11 +305,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright (c) 2019, ILT Institute for Lab Automation and Mechatronics and IFS Institute for Software
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -317,7 +328,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

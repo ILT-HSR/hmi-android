@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,27 +11,29 @@
   
 
   
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Documentation for driver/mavlink/MAVLinkPayload.kt" href="MAVLinkPayload.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> HSR HMI for Android
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> HSR HMI for Android
           
 
           
@@ -73,6 +74,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -118,6 +120,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -156,7 +159,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Implementation</a> &raquo;</li>
         
@@ -183,7 +186,7 @@
             
   <div class="section" id="documentation-for-driver-mavlink-mavlinkplatform-kt">
 <h1>Documentation for driver/mavlink/MAVLinkPlatform.kt<a class="headerlink" href="#documentation-for-driver-mavlink-mavlinkplatform-kt" title="Permalink to this headline">¶</a></h1>
-<dl class="interface">
+<dl class="kotlin interface">
 <dt id="interface MAVLinkPlatform">
 <code class="sig-prename descclassname">interface </code><code class="sig-name descname">MAVLinkPlatform</code> : <a class="reference internal" href="../AerialVehicle.html#interface AerialVehicle" title="AerialVehicle">AerialVehicle</a><a class="reference internal" href="../SerialPlatform.html#interface SerialPlatform" title="SerialPlatform">, SerialPlatform</a><a class="headerlink" href="#interface MAVLinkPlatform" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -195,7 +198,7 @@
 </dd>
 <dt class="field-even">author</dt>
 <dd class="field-even"><p>IFS Institute for Software</p>
-<dl class="val">
+<dl class="kotlin val">
 <dt id="schema">
 <code class="sig-prename descclassname">val </code><code class="sig-name descname">schema</code> : MAVLinkSchema<a class="headerlink" href="#schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>The MAVLink message schema associated with this platform</p>
@@ -206,7 +209,7 @@
 </dl>
 </dd></dl>
 
-<dl class="val">
+<dl class="kotlin val">
 <dt id="senderSystem">
 <code class="sig-prename descclassname">val </code><code class="sig-name descname">senderSystem</code> : <a class="reference internal" href="support/Messages.html#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a><a class="headerlink" href="#senderSystem" title="Permalink to this definition">¶</a></dt>
 <dd><p>The MAVLink system identifying the GCS</p>
@@ -217,7 +220,7 @@
 </dl>
 </dd></dl>
 
-<dl class="val">
+<dl class="kotlin val">
 <dt id="targetSystem">
 <code class="sig-prename descclassname">val </code><code class="sig-name descname">targetSystem</code> : <a class="reference internal" href="support/Messages.html#data_class MAVLinkSystem" title="MAVLinkSystem">MAVLinkSystem</a><a class="headerlink" href="#targetSystem" title="Permalink to this definition">¶</a></dt>
 <dd><p>The MAVLink system identifying the Vehicle</p>
@@ -228,7 +231,7 @@
 </dl>
 </dd></dl>
 
-<dl class="val">
+<dl class="kotlin val">
 <dt id="payloadTunnels">
 <code class="sig-prename descclassname">val </code><code class="sig-name descname">payloadTunnels</code> : Map&lt;MAVLinkSystem, MAVLinkTunnel&gt;<a class="headerlink" href="#payloadTunnels" title="Permalink to this definition">¶</a></dt>
 <dd><p>A tunnel used to directyly addess the payload</p>
@@ -239,7 +242,7 @@
 </dl>
 </dd></dl>
 
-<dl class="fun">
+<dl class="kotlin fun">
 <dt id="arm()-MAVLinkCommand">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">arm</code><span class="sig-paren">(</span><span class="sig-paren">)</span> : MAVLinkCommand<a class="headerlink" href="#arm()-MAVLinkCommand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Arm the vehicle for takeoff</p>
@@ -250,7 +253,7 @@
 </dl>
 </dd></dl>
 
-<dl class="fun">
+<dl class="kotlin fun">
 <dt id="disarm()-MAVLinkCommand">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">disarm</code><span class="sig-paren">(</span><span class="sig-paren">)</span> : MAVLinkCommand<a class="headerlink" href="#disarm()-MAVLinkCommand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Disarm the vehicle, preventing takeoff</p>
@@ -261,7 +264,7 @@
 </dl>
 </dd></dl>
 
-<dl class="fun">
+<dl class="kotlin fun">
 <dt id="send(message:)">
 <code class="sig-prename descclassname">fun </code><code class="sig-name descname">send</code><span class="sig-paren">(</span><em class="sig-param">message: MAVLinkMessage</em><span class="sig-paren">)</span><a class="headerlink" href="#send(message:)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send a fire-and-forget MAVLink message to the attached target system</p>
@@ -296,11 +299,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright (c) 2019, ILT Institute for Lab Automation and Mechatronics and IFS Institute for Software
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -311,7 +322,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
