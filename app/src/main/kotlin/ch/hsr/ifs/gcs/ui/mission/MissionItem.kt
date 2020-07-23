@@ -56,6 +56,7 @@ class MissionItem(val mission: Mission, val context: MainActivity) {
                             icon = R.drawable.ic_radiation_maptype_marker
                             color = context.getColor(R.color.radiationMapTransparent)
                         }
+                        "Person" -> icon = R.drawable.ic_person_marker
                     }
                 }
                 is GPSPosition -> targets.add(result)

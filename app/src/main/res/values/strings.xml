@@ -20,10 +20,10 @@
     <string name="map_type_instruction">CHOOSE A MAP TYPE</string>
     <string name="target_instruction">CHOOSE A TARGET</string>
     <string name="region_instruction">CHOOSE A REGION</string>
+    <string name="person_instruction">CHOOSE A PERSON</string>
     <!-- Need Parameter Selection -->
     <string name="choose_medkit_cargo">Choose Medkit Cargo</string>
     <string name="choose_radiation_maptype">Choose Radiation Maptype</string>
-
     <string name="settings_activity_label">GCS Settings</string>
     <!-- General Settings -->
     <string name="general_settings_category_name">General Settings</string>
